@@ -3,11 +3,15 @@
   "1": "RULES.md — Two-Handed Euchre Rules Spec",
   "2": "reducer.ts",
   "3": "compilerOptions",
-  "4": "package.json",
+  "4": "devDependencies",
   "5": "rules.ts",
-  "6": "types.ts",
+  "6": "deck.ts",
   "7": "Hand A1 (Player A, selected/blind)",
   "8": "Hand B1 (Player B, selected/blind)",
   "9": "Two-Handed Euchre",
-  "10": "CLAUDE.md"
+  "10": "CLAUDE.md",
+  "11": "useGame.ts",
+  "12": "types.ts",
+  "13": "view.ts",
+  "14": "vite.config.ts"
 }
