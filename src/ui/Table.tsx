@@ -42,7 +42,7 @@ export function Table({ view }: { view: PlayerView }) {
               <div className="seat-label">{seatLabel(hand)}</div>
               <div className="seat-backs">
                 {Array.from({ length: count }).map((_, i) => (
-                  <CardBack key={i} />
+                  <CardBack key={i} mini />
                 ))}
               </div>
             </div>

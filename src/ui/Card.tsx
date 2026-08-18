@@ -1,35 +1,38 @@
 import type { Card as CardType } from '../../shared/engine/types.ts';
 
-const SUIT_SYMBOL: Record<CardType['suit'], string> = {
-  clubs: '♣',
-  diamonds: '♦',
-  hearts: '♥',
-  spades: '♠',
-};
-const RED_SUITS = new Set<CardType['suit']>(['diamonds', 'hearts']);
+function cardAsset(card: CardType): string {
+  return `/art/cards/${card.suit}_${card.rank}.png`;
+}
 
 export function Card({
   card,
   onClick,
   highlighted,
+  dimmed,
 }: {
   card: CardType;
   onClick?: () => void;
   highlighted?: boolean;
+  dimmed?: boolean;
 }) {
-  const red = RED_SUITS.has(card.suit);
   return (
     <button
       onClick={onClick}
       disabled={!onClick}
-      className={`card-face${red ? ' red' : ''}${highlighted ? ' highlighted' : ''}`}
+      className={`card-face${highlighted ? ' highlighted' : ''}${dimmed ? ' dimmed' : ''}`}
     >
-      <span>{card.rank}</span>
-      <span className="pip">{SUIT_SYMBOL[card.suit]}</span>
+      <img src={cardAsset(card)} alt={`${card.rank} of ${card.suit}`} draggable={false} />
     </button>
   );
 }
 
-export function CardBack() {
-  return <div className="card-back" />;
+export function CardBack({ mini }: { mini?: boolean }) {
+  return (
+    <img
+      className={`card-back${mini ? ' mini' : ''}`}
+      src="/art/card_back.png"
+      alt=""
+      draggable={false}
+    />
+  );
 }
