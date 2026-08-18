@@ -1,0 +1,220 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  background: #1a1410;
+  color: #f0e6d6;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+/* --- Phase 2a placeholder styling — no art yet, just legible and responsive. --- */
+
+.game-root {
+  height: 100dvh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+.scoreboard {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.scoreboard .is-dealer::after {
+  content: ' (dealer)';
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.status-banner {
+  text-align: center;
+  font-size: 0.95rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+.status-banner.big {
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 1rem;
+}
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.table {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+}
+
+.seats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.seat {
+  border: 1px solid #4a3728;
+  border-radius: 8px;
+  padding: 0.4rem;
+  background: #2a2018;
+}
+.seat.acting {
+  border-color: #ffd54a;
+  box-shadow: 0 0 8px rgba(255, 213, 74, 0.5);
+}
+.seat-label {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-bottom: 0.3rem;
+}
+.seat-backs {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+/* Idle seats only need to convey a count, not a legible card — keep them small so four
+   seats never force the page past a short landscape-phone viewport. */
+.seat-backs .card-back {
+  width: 20px;
+  height: 28px;
+  border-radius: 3px;
+  border-width: 1px;
+}
+
+.trick-area {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-height: 100px;
+  flex-wrap: wrap;
+  padding: 0.5rem;
+  border: 1px dashed #4a3728;
+  border-radius: 8px;
+}
+.trick-empty {
+  opacity: 0.5;
+  align-self: center;
+}
+.trick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.7rem;
+  opacity: 0.85;
+}
+
+.bid-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+.bid-button {
+  font-size: 0.95rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 2px solid #7a5a3a;
+  background: #3a2a1a;
+  color: #f0e6d6;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.bid-button:active {
+  background: #4a3524;
+}
+
+.hand-tray {
+  border-top: 2px solid #4a3728;
+  padding-top: 0.5rem;
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+.hand-tray-label {
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-bottom: 0.4rem;
+}
+.hand-tray-cards {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.card-face,
+.card-back {
+  width: 52px;
+  height: 74px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.card-face {
+  border: 2px solid #333;
+  background: #fdf6e3;
+  color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: default;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  touch-action: manipulation;
+}
+.card-face:not(:disabled) {
+  cursor: pointer;
+}
+.card-face.red {
+  color: #b3261e;
+}
+.card-face .pip {
+  font-size: 1.3rem;
+}
+.card-face.highlighted {
+  border-color: #ffd54a;
+  box-shadow: 0 0 8px #ffd54a;
+}
+.card-back {
+  border: 2px solid #3a2418;
+  background: repeating-linear-gradient(
+    45deg,
+    #5b3a29,
+    #5b3a29 4px,
+    #4a2e1f 4px,
+    #4a2e1f 8px
+  );
+}
+
+/* Landscape: give the table more horizontal room, four seats in a row. */
+@media (orientation: landscape) {
+  .seats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

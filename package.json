@@ -5,11 +5,22 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "fuzz": "tsx scripts/fuzz.ts"
+    "fuzz": "tsx scripts/fuzz.ts",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^4.7.0",
+    "tsx": "^4.19.0",
     "typescript": "^5.6.0",
-    "vitest": "^2.1.0",
-    "tsx": "^4.19.0"
+    "vite": "^5.4.21",
+    "vitest": "^2.1.0"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   }
 }

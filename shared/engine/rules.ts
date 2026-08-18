@@ -31,11 +31,19 @@ export function isTrump(card: Card, trump: Suit): boolean {
 
 const PLAIN_RANK_ORDER: Rank[] = ['9', '10', 'J', 'Q', 'K', 'A'];
 
-function trumpRank(card: Card, trump: Suit): number {
+export function trumpRank(card: Card, trump: Suit): number {
   if (isRightBower(card, trump)) return 6;
   if (isLeftBower(card, trump)) return 5;
   // A=4, K=3, Q=2, 10=1, 9=0 for the remaining trump-suit cards.
   return PLAIN_RANK_ORDER.indexOf(card.rank) - 1;
+}
+
+/** Context-free strength of a card under a given trump — for hand evaluation (bidding,
+ *  discarding, choosing what to lead), not for scoring a specific in-progress trick. Trump
+ *  cards always outrank non-trump, unlike trickWinnerIndex's led-suit-relative scoring. */
+export function cardStrength(card: Card, trump: Suit): number {
+  if (isTrump(card, trump)) return 100 + trumpRank(card, trump);
+  return PLAIN_RANK_ORDER.indexOf(card.rank);
 }
 
 /** Cards from `hand` that are legal to play given the trick's led effective suit. */

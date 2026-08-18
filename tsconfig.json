@@ -9,7 +9,18 @@
     "noEmit": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "jsx": "react-jsx"
   },
-  "include": ["shared", "src", "tests", "scripts"]
+  "include": [
+    "shared",
+    "src",
+    "tests",
+    "scripts"
+  ]
 }
