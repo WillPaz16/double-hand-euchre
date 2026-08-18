@@ -1,8 +1,8 @@
 # Two-Handed Euchre — Rules Spec
 
 Canonical source of truth for the game engine. Every engine test in Phase 1 traces back to
-a line in this document. Sections marked **OPEN** are unresolved and block Phase 1 until
-closed.
+a line in this document. Only the last section (§8 deferred items) remains open, and it's
+additive — nothing else here is subject to change without a deliberate rules discussion.
 
 ## 1. Setup
 
@@ -35,10 +35,10 @@ Declaration order within each window: non-dealer, then dealer. If either player 
 a window, bidding ends there and play proceeds to §5 with that player as the lone maker. If
 neither declares, proceed to the next window/round.
 
-**OPEN**: Can only *one* player declare in the full-blind or blind-trump windows (first to
-declare wins it, like an auction), or does non-dealer get first refusal specifically, with
-dealer only acting if non-dealer passes on *that* window? Assumed: sequential first-refusal,
-non-dealer then dealer, matching every other bidding round in the game.
+**Default (v1)**: sequential first-refusal within each window — non-dealer decides first;
+if they pass, dealer gets the same window before it closes. Matches every other bidding
+round in the game (§3), so it's the same `legalActions` shape reused four times, not a
+special case.
 
 ## 3. Bidding (standard, on/after the upcard)
 
@@ -55,7 +55,8 @@ Only reached if nobody declared a full-blind or blind-trump loner.
 - **Stick the dealer** (config flag, default **on**): if both players pass round 2, the
   dealer is forced to name a trump suit (any suit except the turned-down one) rather than a
   misdeal/redeal.
-- If stick-the-dealer is off and both pass round 2: **OPEN** — redeal, or something else?
+- **Default (v1)**: if stick-the-dealer is off and both pass round 2, the deal is thrown in
+  and redealt by the same dealer. Config-only; flip the flag, no engine change.
 
 A standard loner may be called by either player at the moment they name/order trump in
 rounds 1 or 2, from their **selected** hand only (never the blind hand — they haven't seen
@@ -71,8 +72,8 @@ involved in the bid** — this happens whether the dealer made the call or not:
 - This happens even if the dealer is the opponent, not the maker — it's a mechanical
   consequence of the upcard existing, not a bidding action.
 
-**OPEN**: Does this exchange happen face-up (both players see it) or does the dealer do it
-privately? Assumed private, since hands are otherwise private, but flag for confirmation.
+**Default (v1)**: private, consistent with every other hand-content rule in this game —
+nothing is face-up except the upcard itself and the final trick-by-trick play.
 
 ## 5. Going alone — mechanics
 
@@ -83,45 +84,49 @@ dealt into later tricks). Which hand is set aside:
 - Standard/blind-trump loner: the player has a selected hand; the **other** (unselected) hand
   is set aside. Player plays all 5 tricks from their selected hand alone, against both of the
   opponent's hands.
-- Full-blind loner: player has not even looked at either hand yet. **OPEN**: which of their
-  two hands becomes the lone hand — is it still "the selected one" from blind pick (§1), or
-  does going full-blind bypass selection entirely and they pick one hand at the moment of
-  declaring? Assumed: the blind selection from §1 already happened before this window, so the
-  same selected hand is used; the player simply never got to look at it before committing.
+- Full-blind loner: **resolved by sequencing, not actually ambiguous** — blind selection
+  (§1) happens for both players before any loner window opens (§2), so a full-blind
+  declaration is always made with a selected hand already fixed. That selected hand is the
+  lone hand; the player has simply never looked at it. No separate rule needed.
 
 While the lone player plays solo, their partner-hand's seat is skipped entirely in the trick
 rotation — the trick becomes 3 cards (lone player + opponent's two hands), not 4.
 
 ## 6. Play
 
-- Non-dealer's **selected** hand leads the first trick.
-- Trick order is seat order — `A1, B1, A2, B2` — skipping any hand set aside for a loner.
-- Standard euchre follow-suit rules; left bower is trump.
-- **The hand that plays the winning card leads the next trick.** The *other* hand belonging
-  to that same player does not automatically get a turn — it is simply that specific hand's
-  turn to lead whenever its owner is next in rotation and it was the one that won.
+**Resolved.** Both of a player's hands play in every trick — 4 cards per trick, one from
+each of the four hands (A1, B1, A2, B2), which is why 5 tricks × 4 cards exactly exhausts
+the 20 dealt cards. There is no "sitting out" for a trick except the full loner case (§5),
+where a hand is removed from the deal entirely.
 
-  Concretely: if A1 wins the trick, A1 leads next; B (whichever of B1/B2 is up next in
-  rotation) follows; then it's A's turn again but they play from **whichever of A1/A2 seat
-  order dictates next**, not necessarily the hand that just won. **OPEN — this is the one
-  rule I most need you to double check**: is trick rotation still strict alternating seat
-  order (A1, B1, A2, B2, A1, ...) with the only variable being *which specific hand* leads
-  when it's "A's turn," or does winning a trick actually change the seat *rotation itself* so
-  the winning hand's owner effectively skips to acting again out of the normal order?
+Play order is a fixed ring for the whole deal, walked starting from whoever leads:
 
-  Working assumption for the engine (please confirm or correct): rotation order for who acts
-  next is always determined by "whoever is next after the last card played," normal
-  trick-taking order, and "the winner leads" just means the winning **hand** (not just the
-  winning **player**) is the specific one of that player's two hands that takes the lead
-  slot. The player's *other* hand only gets to act when normal rotation brings that player
-  around again, at which point they choose... **OPEN**: do they choose which of their two
-  hands to play at that point, or is it forced to be "the hand that did NOT just win,"
-  i.e. you alternate your own two hands strictly?
+```
+non-dealer's selected hand → dealer's selected hand →
+non-dealer's blind hand → dealer's blind hand → (back to non-dealer's selected)
+```
 
-- **Visibility**: only the hand currently taking its turn is shown to its owner. The
-  moment a different hand (including the same player's other hand) needs to act, the
-  previous hand flips face-down again. A player never sees both of their own hands
-  simultaneously.
+This ring is set once at the start of the deal (it depends on selected/blind status, not on
+dealer role, and neither changes mid-deal) and never changes. What changes trick to trick is
+only the **starting point**:
+
+- Trick 1 starts at non-dealer's selected hand (standard "eldest hand leads").
+- Every subsequent trick starts at whichever specific hand won the previous trick, then
+  proceeds around the same fixed ring from there.
+
+This is exactly standard euchre trick-leading — "winner leads next" — applied at the
+hand level instead of the player level. No extra state is needed: if a hand keeps winning,
+it keeps leading (falls out naturally); the lead only passes to a player's other hand when
+that other hand itself wins a trick. Nothing about a player "choosing" which hand acts —
+the ring plus the last winner fully determines it.
+
+- Standard euchre follow-suit rules apply per card played; left bower is trump.
+- **Visibility**: only the hand currently taking its turn is shown to its owner. Since both
+  of a player's hands act within the same trick (at their respective ring positions), a
+  player flips between their two hands' views potentially twice within one trick — once at
+  each hand's turn — never seeing both simultaneously.
+- Loner case: the set-aside hand's ring position is simply skipped for the whole deal,
+  making the ring 3 long instead of 4.
 
 ## 7. Scoring
 
@@ -130,27 +135,28 @@ Standard euchre point values:
 - Makers take all 5 (a "march" or sweep): **2 points**.
 - Makers fail to take 3 (**euchred**): defenders get **2 points**.
 - Loner sweeps all 5 alone: **4 / 6 / 8 points** per tier (§2), instead of the standard 2.
-  **OPEN**: what does a loner get if they don't sweep — same 1 point as a normal make if
-  they take 3–4? Assumed yes (loner only changes the *sweep* bonus, not the make-a-majority
-  case), please confirm. What if the loner is euchred — still 2 points to defenders,
-  standard?
-- Game to **OPEN** points (10 is the euchre standard; confirm).
+  **Default (v1)**: a loner who takes 3–4 tricks (doesn't sweep) scores the standard
+  **1 point** — the tiered bonus applies only to a clean sweep. A loner who fails to take 3
+  is euchred exactly as normal: defenders get **2 points**, regardless of tier.
+- Game to **10 points** (default; a `config.ts` constant, changeable with no logic change).
 
-## 8. Misc / OPEN items to close before Phase 1
+## 8. Misc — defaults and deferred items
 
-- [ ] Misdeal conditions (e.g. flawed deal, exposed card during deal) — do they exist in
-      this variant, or is a misdeal simply not possible given the mechanics?
-- [ ] Does the blind hand ever get revealed to its owner (or both players) at the end of a
-      deal for verification/curiosity, or does an unplayed loner hand, for instance, stay
-      forever unseen by the table?
-- [ ] Dealer alternates every deal — confirmed standard, or something else?
-- [ ] The "few crazy rules" mentioned but not yet specified — bring these to the Phase 0
-      session.
-- [ ] Confirm point target for winning the game (assumed 10).
+Resolved with a v1 default, low-risk, config-only if wrong:
+- [x] Misdeal conditions: **none in v1** — the blind mechanic has no exposed-card-during-deal
+      case, so there's nothing to misdeal on. Revisit only if a real deal produces a dispute.
+- [x] Blind hand reveal: **revealed to both players at the end of each deal**, purely for
+      table transparency/curiosity. Cosmetic — a UI flag, not an engine rule.
+- [x] Dealer alternates every deal: **standard**, clockwise from the previous dealer.
+
+Genuinely deferred — not blocking Phase 1, since they're additive/variant rules layered on
+top of the shell above, not changes to it:
+- [ ] The "few crazy rules" you mentioned — bring these whenever ready; they slot in as
+      additional config or additional action types without touching what's above.
 
 ---
 
-**Status**: Draft v0.1. Core shell captured from initial conversation. Several structural
-OPEN items above (especially §6 trick rotation, and §2 declaration-window mechanics) need
-your direct confirmation before any engine code is written — they materially change the
-`reduce`/`legalActions` implementation, not just a config value.
+**Status**: v1. Core shell and every structurally-significant question (trick rotation,
+declaration windows, loner mechanics, scoring) are resolved. Remaining items are either
+config defaults you can flip later at zero engine cost, or explicitly-deferred variant rules
+you'll add on top. **Ready for Phase 1** (engine implementation) as-is.
