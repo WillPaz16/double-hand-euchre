@@ -65,6 +65,32 @@
       "id": "shared_engine_types_gamestate"
     },
     {
+      "label": "PlayerView",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L91",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "playerview",
+      "id": "shared_engine_types_playerview"
+    },
+    {
+      "label": "Action",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L75",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "types.ts",
+      "norm_label": "action",
+      "id": "shared_engine_types_action"
+    },
+    {
       "label": "Config",
       "file_type": "code",
       "source_file": "shared/engine/types.ts",
@@ -72,10 +98,101 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
+      "community": 12,
+      "community_name": "types.ts",
       "norm_label": "config",
       "id": "shared_engine_types_config"
+    },
+    {
+      "label": "HandId",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L11",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "types.ts",
+      "norm_label": "handid",
+      "id": "shared_engine_types_handid"
+    },
+    {
+      "label": "HandRole",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L4",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "types.ts",
+      "norm_label": "handrole",
+      "id": "shared_engine_types_handrole"
+    },
+    {
+      "label": "LonerTier",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L16",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "types.ts",
+      "norm_label": "lonertier",
+      "id": "shared_engine_types_lonertier"
+    },
+    {
+      "label": "Phase",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L18",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "types.ts",
+      "norm_label": "phase",
+      "id": "shared_engine_types_phase"
+    },
+    {
+      "label": "Rank",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L2",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "types.ts",
+      "norm_label": "rank",
+      "id": "shared_engine_types_rank"
+    },
+    {
+      "label": "Suit",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L1",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "types.ts",
+      "norm_label": "suit",
+      "id": "shared_engine_types_suit"
+    },
+    {
+      "label": "PlayStateOptions",
+      "file_type": "code",
+      "source_file": "tests/helpers.ts",
+      "source_location": "L41",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "types.ts",
+      "norm_label": "playstateoptions",
+      "id": "tests_helpers_playstateoptions"
     },
     {
       "label": "TrickCard",
@@ -99,22 +216,9 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "types.ts",
+      "community_name": "deck.ts",
       "norm_label": "deal",
       "id": "shared_engine_deck_deal"
-    },
-    {
-      "label": "Action",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L75",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "action",
-      "id": "shared_engine_types_action"
     },
     {
       "label": "Card",
@@ -125,61 +229,9 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "types.ts",
+      "community_name": "deck.ts",
       "norm_label": "card",
       "id": "shared_engine_types_card"
-    },
-    {
-      "label": "HandId",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L11",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "handid",
-      "id": "shared_engine_types_handid"
-    },
-    {
-      "label": "HandRole",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L4",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "handrole",
-      "id": "shared_engine_types_handrole"
-    },
-    {
-      "label": "LonerTier",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L16",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "lonertier",
-      "id": "shared_engine_types_lonertier"
-    },
-    {
-      "label": "Phase",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L18",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "phase",
-      "id": "shared_engine_types_phase"
     },
     {
       "label": "Player",
@@ -190,7 +242,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "types.ts",
+      "community_name": "deck.ts",
       "norm_label": "player",
       "id": "shared_engine_types_player"
     },
@@ -203,61 +255,9 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "types.ts",
+      "community_name": "deck.ts",
       "norm_label": "playerhands",
       "id": "shared_engine_types_playerhands"
-    },
-    {
-      "label": "PlayerView",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L91",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "playerview",
-      "id": "shared_engine_types_playerview"
-    },
-    {
-      "label": "Rank",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L2",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "rank",
-      "id": "shared_engine_types_rank"
-    },
-    {
-      "label": "Suit",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L1",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "suit",
-      "id": "shared_engine_types_suit"
-    },
-    {
-      "label": "PlayStateOptions",
-      "file_type": "code",
-      "source_file": "tests/helpers.ts",
-      "source_location": "L41",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "playstateoptions",
-      "id": "tests_helpers_playstateoptions"
     },
     {
       "label": "pick()",
@@ -296,18 +296,6 @@
       "id": "scripts_fuzz_seededrng"
     },
     {
-      "label": "actingHand()",
-      "file_type": "code",
-      "source_file": "shared/engine/legal.ts",
-      "source_location": "L17",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "actinghand()",
-      "id": "shared_engine_legal_actinghand"
-    },
-    {
       "label": "handCards()",
       "file_type": "code",
       "source_file": "shared/engine/legal.ts",
@@ -344,14 +332,218 @@
       "id": "shared_engine_legal_turnplayer"
     },
     {
+      "label": "App()",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L3",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_app_app",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "app()"
+    },
+    {
+      "label": "freshSeed()",
+      "file_type": "code",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L19",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_game_usegame_freshseed",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "freshseed()"
+    },
+    {
+      "label": "useGame()",
+      "file_type": "code",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L27",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_game_usegame_usegame",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "usegame()"
+    },
+    {
+      "label": "BidPanel()",
+      "file_type": "code",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L37",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_bidpanel_bidpanel",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "bidpanel()"
+    },
+    {
+      "label": "label()",
+      "file_type": "code",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L10",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_bidpanel_label",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "label()"
+    },
+    {
+      "label": "Card()",
+      "file_type": "code",
+      "source_file": "src/ui/Card.tsx",
+      "source_location": "L11",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_card_card",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "card()"
+    },
+    {
+      "label": "CardBack()",
+      "file_type": "code",
+      "source_file": "src/ui/Card.tsx",
+      "source_location": "L33",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_card_cardback",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "cardback()"
+    },
+    {
+      "label": "Game()",
+      "file_type": "code",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L8",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_game_game",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "game()"
+    },
+    {
+      "label": "HandTray()",
+      "file_type": "code",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L8",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_handtray_handtray",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "handtray()"
+    },
+    {
+      "label": "Scoreboard()",
+      "file_type": "code",
+      "source_file": "src/ui/Scoreboard.tsx",
+      "source_location": "L4",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_scoreboard_scoreboard",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "scoreboard()"
+    },
+    {
+      "label": "StatusBanner()",
+      "file_type": "code",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L12",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_statusbanner_statusbanner",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "statusbanner()"
+    },
+    {
+      "label": "remainingInHand()",
+      "file_type": "code",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L19",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_table_remaininginhand",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "remaininginhand()"
+    },
+    {
+      "label": "sameHand()",
+      "file_type": "code",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L12",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_table_samehand",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "samehand()"
+    },
+    {
+      "label": "seatLabel()",
+      "file_type": "code",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L24",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_table_seatlabel",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "seatlabel()"
+    },
+    {
+      "label": "Table()",
+      "file_type": "code",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L30",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_table_table",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "table()"
+    },
+    {
+      "label": "actingHand()",
+      "file_type": "code",
+      "source_file": "shared/engine/legal.ts",
+      "source_location": "L17",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "view.ts",
+      "norm_label": "actinghand()",
+      "id": "shared_engine_legal_actinghand"
+    },
+    {
+      "label": "assertLegal()",
+      "file_type": "code",
+      "source_file": "shared/engine/reducer.ts",
+      "source_location": "L51",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "view.ts",
+      "norm_label": "assertlegal()",
+      "id": "shared_engine_reducer_assertlegal"
+    },
+    {
       "label": "handsEqual()",
       "file_type": "code",
       "source_file": "shared/engine/view.ts",
       "source_location": "L6",
       "_callable": true,
       "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
+      "community": 13,
+      "community_name": "view.ts",
       "norm_label": "handsequal()",
       "id": "shared_engine_view_handsequal"
     },
@@ -362,8 +554,8 @@
       "source_location": "L18",
       "_callable": true,
       "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
+      "community": 13,
+      "community_name": "view.ts",
       "norm_label": "redact()",
       "id": "shared_engine_view_redact"
     },
@@ -374,8 +566,8 @@
       "source_location": "L10",
       "_callable": true,
       "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
+      "community": 13,
+      "community_name": "view.ts",
       "norm_label": "visible()",
       "id": "shared_engine_view_visible"
     },
@@ -390,18 +582,6 @@
       "community_name": "reducer.ts",
       "norm_label": "otherplayer()",
       "id": "shared_engine_legal_otherplayer"
-    },
-    {
-      "label": "assertLegal()",
-      "file_type": "code",
-      "source_file": "shared/engine/reducer.ts",
-      "source_location": "L51",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "assertlegal()",
-      "id": "shared_engine_reducer_assertlegal"
     },
     {
       "label": "buildRing()",
@@ -584,16 +764,136 @@
       "id": "tests_helpers_selecthands"
     },
     {
+      "label": "bestSuitByTrumpCount()",
+      "file_type": "code",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L21",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_bot_heuristic_bestsuitbytrumpcount",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "bestsuitbytrumpcount()"
+    },
+    {
+      "label": "byType()",
+      "file_type": "code",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L37",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_bot_heuristic_bytype",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "bytype()"
+    },
+    {
+      "label": "cardsEqual()",
+      "file_type": "code",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L33",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_bot_heuristic_cardsequal",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "cardsequal()"
+    },
+    {
+      "label": "chooseMove()",
+      "file_type": "code",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L57",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_bot_heuristic_choosemove",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "choosemove()"
+    },
+    {
+      "label": "countTrump()",
+      "file_type": "code",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L17",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_bot_heuristic_counttrump",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "counttrump()"
+    },
+    {
+      "label": "findCardAction()",
+      "file_type": "code",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L41",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_bot_heuristic_findcardaction",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "findcardaction()"
+    },
+    {
+      "label": "highest()",
+      "file_type": "code",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L25",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_bot_heuristic_highest",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "highest()"
+    },
+    {
+      "label": "lowest()",
+      "file_type": "code",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L29",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_bot_heuristic_lowest",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "lowest()"
+    },
+    {
+      "label": "wouldCurrentlyWin()",
+      "file_type": "code",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L52",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_bot_heuristic_wouldcurrentlywin",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "wouldcurrentlywin()"
+    },
+    {
+      "label": "cardStrength()",
+      "file_type": "code",
+      "source_file": "shared/engine/rules.ts",
+      "source_location": "L44",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_engine_rules_cardstrength",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "cardstrength()"
+    },
+    {
       "label": "effectiveSuit()",
       "file_type": "code",
       "source_file": "shared/engine/rules.ts",
       "source_location": "L23",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_effectivesuit",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "effectivesuit()",
-      "id": "shared_engine_rules_effectivesuit"
+      "norm_label": "effectivesuit()"
     },
     {
       "label": "isLeftBower()",
@@ -602,10 +902,10 @@
       "source_location": "L18",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_isleftbower",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "isleftbower()",
-      "id": "shared_engine_rules_isleftbower"
+      "norm_label": "isleftbower()"
     },
     {
       "label": "isRightBower()",
@@ -614,10 +914,10 @@
       "source_location": "L14",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_isrightbower",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "isrightbower()",
-      "id": "shared_engine_rules_isrightbower"
+      "norm_label": "isrightbower()"
     },
     {
       "label": "isTrump()",
@@ -626,10 +926,10 @@
       "source_location": "L28",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_istrump",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "istrump()",
-      "id": "shared_engine_rules_istrump"
+      "norm_label": "istrump()"
     },
     {
       "label": "leftBowerSuit()",
@@ -638,34 +938,34 @@
       "source_location": "L10",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_leftbowersuit",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "leftbowersuit()",
-      "id": "shared_engine_rules_leftbowersuit"
+      "norm_label": "leftbowersuit()"
     },
     {
       "label": "legalPlays()",
       "file_type": "code",
       "source_file": "shared/engine/rules.ts",
-      "source_location": "L42",
+      "source_location": "L50",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_legalplays",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "legalplays()",
-      "id": "shared_engine_rules_legalplays"
+      "norm_label": "legalplays()"
     },
     {
       "label": "trickWinnerIndex()",
       "file_type": "code",
       "source_file": "shared/engine/rules.ts",
-      "source_location": "L49",
+      "source_location": "L57",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_trickwinnerindex",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "trickwinnerindex()",
-      "id": "shared_engine_rules_trickwinnerindex"
+      "norm_label": "trickwinnerindex()"
     },
     {
       "label": "trumpRank()",
@@ -674,10 +974,10 @@
       "source_location": "L34",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_trumprank",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "trumprank()",
-      "id": "shared_engine_rules_trumprank"
+      "norm_label": "trumprank()"
     },
     {
       "label": "c()",
@@ -699,7 +999,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "types.ts",
+      "community_name": "deck.ts",
       "norm_label": "fulldeck()",
       "id": "shared_engine_deck_fulldeck"
     },
@@ -711,7 +1011,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "types.ts",
+      "community_name": "deck.ts",
       "norm_label": "seededrng()",
       "id": "shared_engine_deck_seededrng"
     },
@@ -723,7 +1023,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "types.ts",
+      "community_name": "deck.ts",
       "norm_label": "shuffleddeck()",
       "id": "shared_engine_deck_shuffleddeck"
     },
@@ -772,17 +1072,6 @@
       "id": "shared_engine_deck_suits"
     },
     {
-      "label": "index.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "index.ts",
-      "id": "shared_engine_index"
-    },
-    {
       "label": "legal.ts",
       "file_type": "code",
       "source_file": "shared/engine/legal.ts",
@@ -794,13 +1083,290 @@
       "id": "shared_engine_legal"
     },
     {
+      "label": "CLAUDE.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "CLAUDE.md",
+      "norm_label": "claude.md",
+      "id": "claude"
+    },
+    {
+      "label": "graphify",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 10,
+      "community_name": "CLAUDE.md",
+      "norm_label": "graphify",
+      "id": "claude_graphify"
+    },
+    {
+      "label": "bot/index.ts",
+      "file_type": "code",
+      "source_file": "shared/bot/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "shared_bot_index",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "bot/index.ts"
+    },
+    {
+      "label": "App.tsx",
+      "file_type": "code",
+      "source_file": "src/App.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_app",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "app.tsx"
+    },
+    {
+      "label": "useGame.ts",
+      "file_type": "code",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_game_usegame",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "usegame.ts"
+    },
+    {
+      "label": "BOT",
+      "file_type": "code",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "src_game_usegame_bot",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "bot"
+    },
+    {
+      "label": "HUMAN",
+      "file_type": "code",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "src_game_usegame_human",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "human"
+    },
+    {
+      "label": "main.tsx",
+      "file_type": "code",
+      "source_file": "src/main.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_main",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "main.tsx"
+    },
+    {
+      "label": "root",
+      "file_type": "code",
+      "source_file": "src/main.tsx",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "src_main_root",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "root"
+    },
+    {
+      "label": "BidPanel.tsx",
+      "file_type": "code",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_ui_bidpanel",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "bidpanel.tsx"
+    },
+    {
+      "label": "BID_PHASES",
+      "file_type": "code",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "src_ui_bidpanel_bid_phases",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "bid_phases"
+    },
+    {
+      "label": "SUIT_LABEL",
+      "file_type": "code",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "src_ui_bidpanel_suit_label",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "suit_label"
+    },
+    {
+      "label": "Card.tsx",
+      "file_type": "code",
+      "source_file": "src/ui/Card.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_ui_card",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "card.tsx"
+    },
+    {
+      "label": "RED_SUITS",
+      "file_type": "code",
+      "source_file": "src/ui/Card.tsx",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "src_ui_card_red_suits",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "red_suits"
+    },
+    {
+      "label": "SUIT_SYMBOL",
+      "file_type": "code",
+      "source_file": "src/ui/Card.tsx",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "src_ui_card_suit_symbol",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "suit_symbol"
+    },
+    {
+      "label": "Game.tsx",
+      "file_type": "code",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_ui_game",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "game.tsx"
+    },
+    {
+      "label": "HandTray.tsx",
+      "file_type": "code",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_ui_handtray",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "handtray.tsx"
+    },
+    {
+      "label": "Scoreboard.tsx",
+      "file_type": "code",
+      "source_file": "src/ui/Scoreboard.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_ui_scoreboard",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "scoreboard.tsx"
+    },
+    {
+      "label": "StatusBanner.tsx",
+      "file_type": "code",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_ui_statusbanner",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "statusbanner.tsx"
+    },
+    {
+      "label": "SUIT_LABEL",
+      "file_type": "code",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "src_ui_statusbanner_suit_label",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "suit_label"
+    },
+    {
+      "label": "Table.tsx",
+      "file_type": "code",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_ui_table",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "table.tsx"
+    },
+    {
+      "label": "SEATS",
+      "file_type": "code",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "src_ui_table_seats",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "seats"
+    },
+    {
+      "label": "config.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/config.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "types.ts",
+      "norm_label": "config.ts",
+      "id": "shared_engine_config"
+    },
+    {
+      "label": "engine/index.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "types.ts",
+      "norm_label": "engine/index.ts",
+      "id": "shared_engine_index"
+    },
+    {
+      "label": "types.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 12,
+      "community_name": "types.ts",
+      "norm_label": "types.ts",
+      "id": "shared_engine_types"
+    },
+    {
       "label": "view.ts",
       "file_type": "code",
       "source_file": "shared/engine/view.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
+      "community": 13,
+      "community_name": "view.ts",
       "norm_label": "view.ts",
       "id": "shared_engine_view"
     },
@@ -810,45 +1376,21 @@
       "source_file": "shared/engine/view.ts",
       "source_location": "L4",
       "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
+      "community": 13,
+      "community_name": "view.ts",
       "norm_label": "deal_over_phases",
       "id": "shared_engine_view_deal_over_phases"
     },
     {
-      "label": "CLAUDE.md",
-      "file_type": "document",
-      "node_kind": "page",
-      "source_file": "CLAUDE.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "claude",
-      "community": 10,
-      "community_name": "CLAUDE.md",
-      "norm_label": "claude.md"
-    },
-    {
-      "label": "graphify",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "CLAUDE.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "claude_graphify",
-      "community": 10,
-      "community_name": "CLAUDE.md",
-      "norm_label": "graphify"
-    },
-    {
-      "label": "config.ts",
+      "label": "vite.config.ts",
       "file_type": "code",
-      "source_file": "shared/engine/config.ts",
+      "source_file": "vite.config.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "config.ts",
-      "id": "shared_engine_config"
+      "id": "vite_config",
+      "community": 14,
+      "community_name": "vite.config.ts",
+      "norm_label": "vite.config.ts"
     },
     {
       "label": "DEFAULT_CONFIG",
@@ -900,10 +1442,10 @@
       "source_file": "tsconfig.json",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "tsconfig",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "tsconfig.json",
-      "id": "tsconfig"
+      "norm_label": "tsconfig.json"
     },
     {
       "label": "compilerOptions",
@@ -911,10 +1453,10 @@
       "source_file": "tsconfig.json",
       "source_location": "L2",
       "_origin": "ast",
+      "id": "tsconfig_compileroptions",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "compileroptions",
-      "id": "tsconfig_compileroptions"
+      "norm_label": "compileroptions"
     },
     {
       "label": "allowImportingTsExtensions",
@@ -922,10 +1464,10 @@
       "source_file": "tsconfig.json",
       "source_location": "L8",
       "_origin": "ast",
+      "id": "tsconfig_compileroptions_allowimportingtsextensions",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "allowimportingtsextensions",
-      "id": "tsconfig_compileroptions_allowimportingtsextensions"
+      "norm_label": "allowimportingtsextensions"
     },
     {
       "label": "esModuleInterop",
@@ -933,10 +1475,10 @@
       "source_file": "tsconfig.json",
       "source_location": "L11",
       "_origin": "ast",
+      "id": "tsconfig_compileroptions_esmoduleinterop",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "esmoduleinterop",
-      "id": "tsconfig_compileroptions_esmoduleinterop"
+      "norm_label": "esmoduleinterop"
     },
     {
       "label": "forceConsistentCasingInFileNames",
@@ -944,10 +1486,32 @@
       "source_file": "tsconfig.json",
       "source_location": "L12",
       "_origin": "ast",
+      "id": "tsconfig_compileroptions_forceconsistentcasinginfilenames",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "forceconsistentcasinginfilenames",
-      "id": "tsconfig_compileroptions_forceconsistentcasinginfilenames"
+      "norm_label": "forceconsistentcasinginfilenames"
+    },
+    {
+      "label": "jsx",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_jsx",
+      "community": 3,
+      "community_name": "compilerOptions",
+      "norm_label": "jsx"
+    },
+    {
+      "label": "lib",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_lib",
+      "community": 3,
+      "community_name": "compilerOptions",
+      "norm_label": "lib"
     },
     {
       "label": "module",
@@ -955,10 +1519,10 @@
       "source_file": "tsconfig.json",
       "source_location": "L4",
       "_origin": "ast",
+      "id": "tsconfig_compileroptions_module",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "module",
-      "id": "tsconfig_compileroptions_module"
+      "norm_label": "module"
     },
     {
       "label": "moduleResolution",
@@ -966,10 +1530,10 @@
       "source_file": "tsconfig.json",
       "source_location": "L5",
       "_origin": "ast",
+      "id": "tsconfig_compileroptions_moduleresolution",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "moduleresolution",
-      "id": "tsconfig_compileroptions_moduleresolution"
+      "norm_label": "moduleresolution"
     },
     {
       "label": "noEmit",
@@ -977,10 +1541,10 @@
       "source_file": "tsconfig.json",
       "source_location": "L9",
       "_origin": "ast",
+      "id": "tsconfig_compileroptions_noemit",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "noemit",
-      "id": "tsconfig_compileroptions_noemit"
+      "norm_label": "noemit"
     },
     {
       "label": "noUncheckedIndexedAccess",
@@ -988,10 +1552,10 @@
       "source_file": "tsconfig.json",
       "source_location": "L7",
       "_origin": "ast",
+      "id": "tsconfig_compileroptions_nouncheckedindexedaccess",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "nouncheckedindexedaccess",
-      "id": "tsconfig_compileroptions_nouncheckedindexedaccess"
+      "norm_label": "nouncheckedindexedaccess"
     },
     {
       "label": "skipLibCheck",
@@ -999,10 +1563,10 @@
       "source_file": "tsconfig.json",
       "source_location": "L10",
       "_origin": "ast",
+      "id": "tsconfig_compileroptions_skiplibcheck",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "skiplibcheck",
-      "id": "tsconfig_compileroptions_skiplibcheck"
+      "norm_label": "skiplibcheck"
     },
     {
       "label": "strict",
@@ -1010,10 +1574,10 @@
       "source_file": "tsconfig.json",
       "source_location": "L6",
       "_origin": "ast",
+      "id": "tsconfig_compileroptions_strict",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "strict",
-      "id": "tsconfig_compileroptions_strict"
+      "norm_label": "strict"
     },
     {
       "label": "target",
@@ -1021,65 +1585,98 @@
       "source_file": "tsconfig.json",
       "source_location": "L3",
       "_origin": "ast",
+      "id": "tsconfig_compileroptions_target",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "target",
-      "id": "tsconfig_compileroptions_target"
+      "norm_label": "target"
     },
     {
       "label": "include",
       "file_type": "code",
       "source_file": "tsconfig.json",
-      "source_location": "L14",
+      "source_location": "L20",
       "_origin": "ast",
+      "id": "tsconfig_include",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "include",
-      "id": "tsconfig_include"
+      "norm_label": "include"
+    },
+    {
+      "label": "DOM",
+      "file_type": "concept",
+      "source_file": "tsconfig.json",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "ref_dom",
+      "community": 3,
+      "community_name": "compilerOptions",
+      "norm_label": "dom"
+    },
+    {
+      "label": "DOM.Iterable",
+      "file_type": "concept",
+      "source_file": "tsconfig.json",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "ref_dom_iterable",
+      "community": 3,
+      "community_name": "compilerOptions",
+      "norm_label": "dom.iterable"
+    },
+    {
+      "label": "ES2022",
+      "file_type": "concept",
+      "source_file": "tsconfig.json",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "ref_es2022",
+      "community": 3,
+      "community_name": "compilerOptions",
+      "norm_label": "es2022"
     },
     {
       "label": "scripts",
       "file_type": "concept",
       "source_file": "tsconfig.json",
-      "source_location": "L14",
+      "source_location": "L20",
       "_origin": "ast",
+      "id": "ref_scripts",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "scripts",
-      "id": "ref_scripts"
+      "norm_label": "scripts"
     },
     {
       "label": "shared",
       "file_type": "concept",
       "source_file": "tsconfig.json",
-      "source_location": "L14",
+      "source_location": "L20",
       "_origin": "ast",
+      "id": "ref_shared",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "shared",
-      "id": "ref_shared"
+      "norm_label": "shared"
     },
     {
       "label": "src",
       "file_type": "concept",
       "source_file": "tsconfig.json",
-      "source_location": "L14",
+      "source_location": "L20",
       "_origin": "ast",
+      "id": "ref_src",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "src",
-      "id": "ref_src"
+      "norm_label": "src"
     },
     {
       "label": "tests",
       "file_type": "concept",
       "source_file": "tsconfig.json",
-      "source_location": "L14",
+      "source_location": "L20",
       "_origin": "ast",
+      "id": "ref_tests",
       "community": 3,
       "community_name": "compilerOptions",
-      "norm_label": "tests",
-      "id": "ref_tests"
+      "norm_label": "tests"
     },
     {
       "label": "package.json",
@@ -1087,54 +1684,131 @@
       "source_file": "package.json",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "package",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "package.json",
-      "id": "package"
+      "community_name": "devDependencies",
+      "norm_label": "package.json"
+    },
+    {
+      "label": "dependencies",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "package_dependencies",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "dependencies"
+    },
+    {
+      "label": "react",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "package_dependencies_react",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "react"
+    },
+    {
+      "label": "react-dom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "package_dependencies_react_dom",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "react-dom"
     },
     {
       "label": "devDependencies",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L10",
+      "source_location": "L13",
       "_origin": "ast",
+      "id": "package_devdependencies",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "devdependencies",
-      "id": "package_devdependencies"
+      "community_name": "devDependencies",
+      "norm_label": "devdependencies"
     },
     {
       "label": "tsx",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L13",
+      "source_location": "L17",
       "_origin": "ast",
+      "id": "package_devdependencies_tsx",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "tsx",
-      "id": "package_devdependencies_tsx"
+      "community_name": "devDependencies",
+      "norm_label": "tsx"
+    },
+    {
+      "label": "@types/react",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "package_devdependencies_types_react",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@types/react"
+    },
+    {
+      "label": "@types/react-dom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "package_devdependencies_types_react_dom",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@types/react-dom"
     },
     {
       "label": "typescript",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L11",
+      "source_location": "L18",
       "_origin": "ast",
+      "id": "package_devdependencies_typescript",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "typescript",
-      "id": "package_devdependencies_typescript"
+      "community_name": "devDependencies",
+      "norm_label": "typescript"
+    },
+    {
+      "label": "vite",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "package_devdependencies_vite",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "vite"
+    },
+    {
+      "label": "@vitejs/plugin-react",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "package_devdependencies_vitejs_plugin_react",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@vitejs/plugin-react"
     },
     {
       "label": "vitest",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L12",
+      "source_location": "L20",
       "_origin": "ast",
+      "id": "package_devdependencies_vitest",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "vitest",
-      "id": "package_devdependencies_vitest"
+      "community_name": "devDependencies",
+      "norm_label": "vitest"
     },
     {
       "label": "name",
@@ -1142,10 +1816,10 @@
       "source_file": "package.json",
       "source_location": "L2",
       "_origin": "ast",
+      "id": "package_name",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "name",
-      "id": "package_name"
+      "community_name": "devDependencies",
+      "norm_label": "name"
     },
     {
       "label": "private",
@@ -1153,10 +1827,10 @@
       "source_file": "package.json",
       "source_location": "L3",
       "_origin": "ast",
+      "id": "package_private",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "private",
-      "id": "package_private"
+      "community_name": "devDependencies",
+      "norm_label": "private"
     },
     {
       "label": "scripts",
@@ -1164,10 +1838,32 @@
       "source_file": "package.json",
       "source_location": "L5",
       "_origin": "ast",
+      "id": "package_scripts",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "scripts",
-      "id": "package_scripts"
+      "community_name": "devDependencies",
+      "norm_label": "scripts"
+    },
+    {
+      "label": "build",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "package_scripts_build",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "build"
+    },
+    {
+      "label": "dev",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "package_scripts_dev",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "dev"
     },
     {
       "label": "fuzz",
@@ -1175,10 +1871,21 @@
       "source_file": "package.json",
       "source_location": "L8",
       "_origin": "ast",
+      "id": "package_scripts_fuzz",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "fuzz",
-      "id": "package_scripts_fuzz"
+      "community_name": "devDependencies",
+      "norm_label": "fuzz"
+    },
+    {
+      "label": "preview",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "package_scripts_preview",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "preview"
     },
     {
       "label": "test",
@@ -1186,10 +1893,10 @@
       "source_file": "package.json",
       "source_location": "L6",
       "_origin": "ast",
+      "id": "package_scripts_test",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "test",
-      "id": "package_scripts_test"
+      "community_name": "devDependencies",
+      "norm_label": "test"
     },
     {
       "label": "test:watch",
@@ -1197,10 +1904,10 @@
       "source_file": "package.json",
       "source_location": "L7",
       "_origin": "ast",
+      "id": "package_scripts_test_watch",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "test:watch",
-      "id": "package_scripts_test_watch"
+      "community_name": "devDependencies",
+      "norm_label": "test:watch"
     },
     {
       "label": "type",
@@ -1208,43 +1915,131 @@
       "source_file": "package.json",
       "source_location": "L4",
       "_origin": "ast",
+      "id": "package_type",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "type",
-      "id": "package_type"
+      "community_name": "devDependencies",
+      "norm_label": "type"
+    },
+    {
+      "label": "react",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "react",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "react"
+    },
+    {
+      "label": "react-dom",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "react_dom",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "react-dom"
     },
     {
       "label": "tsx",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L13",
+      "source_location": "L17",
       "_origin": "ast",
+      "id": "tsx",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "tsx",
-      "id": "tsx"
+      "community_name": "devDependencies",
+      "norm_label": "tsx"
+    },
+    {
+      "label": "@types/react",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "types_react",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@types/react"
+    },
+    {
+      "label": "@types/react-dom",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "types_react_dom",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@types/react-dom"
     },
     {
       "label": "typescript",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L11",
+      "source_location": "L18",
       "_origin": "ast",
+      "id": "typescript",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "typescript",
-      "id": "typescript"
+      "community_name": "devDependencies",
+      "norm_label": "typescript"
+    },
+    {
+      "label": "vite",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "vite",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "vite"
+    },
+    {
+      "label": "@vitejs/plugin-react",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "vitejs_plugin_react",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@vitejs/plugin-react"
     },
     {
       "label": "vitest",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L12",
+      "source_location": "L20",
       "_origin": "ast",
+      "id": "vitest",
       "community": 4,
-      "community_name": "package.json",
-      "norm_label": "vitest",
-      "id": "vitest"
+      "community_name": "devDependencies",
+      "norm_label": "vitest"
+    },
+    {
+      "label": "heuristic.ts",
+      "file_type": "code",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "shared_bot_heuristic",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "heuristic.ts"
+    },
+    {
+      "label": "SUITS",
+      "file_type": "code",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "shared_bot_heuristic_suits",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "suits"
     },
     {
       "label": "rules.ts",
@@ -1252,10 +2047,10 @@
       "source_file": "shared/engine/rules.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "shared_engine_rules",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "rules.ts",
-      "id": "shared_engine_rules"
+      "norm_label": "rules.ts"
     },
     {
       "label": "PLAIN_RANK_ORDER",
@@ -1263,10 +2058,10 @@
       "source_file": "shared/engine/rules.ts",
       "source_location": "L32",
       "_origin": "ast",
+      "id": "shared_engine_rules_plain_rank_order",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "plain_rank_order",
-      "id": "shared_engine_rules_plain_rank_order"
+      "norm_label": "plain_rank_order"
     },
     {
       "label": "SAME_COLOR",
@@ -1274,10 +2069,10 @@
       "source_file": "shared/engine/rules.ts",
       "source_location": "L3",
       "_origin": "ast",
+      "id": "shared_engine_rules_same_color",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "same_color",
-      "id": "shared_engine_rules_same_color"
+      "norm_label": "same_color"
     },
     {
       "label": "rules.test.ts",
@@ -1297,7 +2092,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 6,
-      "community_name": "types.ts",
+      "community_name": "deck.ts",
       "norm_label": "deck.ts",
       "id": "shared_engine_deck"
     },
@@ -1308,20 +2103,9 @@
       "source_location": "L4",
       "_origin": "ast",
       "community": 6,
-      "community_name": "types.ts",
+      "community_name": "deck.ts",
       "norm_label": "ranks",
       "id": "shared_engine_deck_ranks"
-    },
-    {
-      "label": "types.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "types.ts",
-      "id": "shared_engine_types"
     },
     {
       "label": "deck.test.ts",
@@ -1330,7 +2114,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 6,
-      "community_name": "types.ts",
+      "community_name": "deck.ts",
       "norm_label": "deck.test.ts",
       "id": "tests_deck_test"
     },
@@ -1341,10 +2125,10 @@
       "source_file": "README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "readme",
       "community": 9,
       "community_name": "Two-Handed Euchre",
-      "norm_label": "readme.md"
+      "norm_label": "readme.md",
+      "id": "readme"
     },
     {
       "label": "Knowledge graph",
@@ -1353,10 +2137,10 @@
       "source_file": "README.md",
       "source_location": "L39",
       "_origin": "ast",
-      "id": "readme_knowledge_graph",
       "community": 9,
       "community_name": "Two-Handed Euchre",
-      "norm_label": "knowledge graph"
+      "norm_label": "knowledge graph",
+      "id": "readme_knowledge_graph"
     },
     {
       "label": "Repo layout",
@@ -1365,10 +2149,10 @@
       "source_file": "README.md",
       "source_location": "L21",
       "_origin": "ast",
-      "id": "readme_repo_layout",
       "community": 9,
       "community_name": "Two-Handed Euchre",
-      "norm_label": "repo layout"
+      "norm_label": "repo layout",
+      "id": "readme_repo_layout"
     },
     {
       "label": "Running the engine",
@@ -1377,10 +2161,10 @@
       "source_file": "README.md",
       "source_location": "L31",
       "_origin": "ast",
-      "id": "readme_running_the_engine",
       "community": 9,
       "community_name": "Two-Handed Euchre",
-      "norm_label": "running the engine"
+      "norm_label": "running the engine",
+      "id": "readme_running_the_engine"
     },
     {
       "label": "Status",
@@ -1389,10 +2173,10 @@
       "source_file": "README.md",
       "source_location": "L11",
       "_origin": "ast",
-      "id": "readme_status",
       "community": 9,
       "community_name": "Two-Handed Euchre",
-      "norm_label": "status"
+      "norm_label": "status",
+      "id": "readme_status"
     },
     {
       "label": "Two-Handed Euchre",
@@ -1401,10 +2185,10 @@
       "source_file": "README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "readme_two_handed_euchre",
       "community": 9,
       "community_name": "Two-Handed Euchre",
-      "norm_label": "two-handed euchre"
+      "norm_label": "two-handed euchre",
+      "id": "readme_two_handed_euchre"
     },
     {
       "label": "\u00a73 Bidding (standard, on/after the upcard)",
@@ -1935,6 +2719,162 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_bestsuitbytrumpcount",
+      "target": "shared_bot_heuristic_counttrump",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L115",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_choosemove",
+      "target": "shared_bot_heuristic_lowest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L116",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_choosemove",
+      "target": "shared_bot_heuristic_findcardaction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_choosemove",
+      "target": "shared_bot_heuristic_highest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L125",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_choosemove",
+      "target": "shared_bot_heuristic_wouldcurrentlywin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L64",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_choosemove",
+      "target": "shared_bot_heuristic_bytype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_choosemove",
+      "target": "shared_bot_heuristic_bestsuitbytrumpcount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_choosemove",
+      "target": "shared_bot_heuristic_counttrump",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_counttrump",
+      "target": "shared_engine_rules_istrump",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_findcardaction",
+      "target": "shared_bot_heuristic_cardsequal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_highest",
+      "target": "shared_engine_rules_cardstrength",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_lowest",
+      "target": "shared_engine_rules_cardstrength",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic_wouldcurrentlywin",
+      "target": "shared_engine_rules_trickwinnerindex",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
       "source_file": "shared/engine/deck.ts",
       "source_location": "L51",
       "weight": 1.0,
@@ -2248,12 +3188,24 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "shared/engine/rules.ts",
-      "source_location": "L24",
+      "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "shared_engine_rules_effectivesuit",
-      "target": "shared_engine_rules_isleftbower"
+      "source": "shared_engine_rules_cardstrength",
+      "target": "shared_engine_rules_istrump",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/engine/rules.ts",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_engine_rules_cardstrength",
+      "target": "shared_engine_rules_trumprank",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2263,9 +3215,21 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_effectivesuit",
-      "target": "shared_engine_rules_isrightbower"
+      "target": "shared_engine_rules_isleftbower",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/engine/rules.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_engine_rules_effectivesuit",
+      "target": "shared_engine_rules_isrightbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2275,9 +3239,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_isleftbower",
-      "target": "shared_engine_rules_leftbowersuit"
+      "target": "shared_engine_rules_leftbowersuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2287,45 +3251,21 @@
       "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_istrump",
-      "target": "shared_engine_rules_effectivesuit"
+      "target": "shared_engine_rules_effectivesuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "shared/engine/rules.ts",
-      "source_location": "L44",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_legalplays",
-      "target": "shared_engine_rules_effectivesuit"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "shared/engine/rules.ts",
-      "source_location": "L51",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "shared_engine_rules_trickwinnerindex",
-      "target": "shared_engine_rules_effectivesuit"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "shared/engine/rules.ts",
-      "source_location": "L58",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "shared_engine_rules_trickwinnerindex",
-      "target": "shared_engine_rules_istrump"
+      "target": "shared_engine_rules_effectivesuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2335,9 +3275,33 @@
       "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_trickwinnerindex",
-      "target": "shared_engine_rules_trumprank"
+      "target": "shared_engine_rules_effectivesuit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/engine/rules.ts",
+      "source_location": "L66",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_engine_rules_trickwinnerindex",
+      "target": "shared_engine_rules_istrump",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/engine/rules.ts",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_engine_rules_trickwinnerindex",
+      "target": "shared_engine_rules_trumprank",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2347,9 +3311,9 @@
       "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_trumprank",
-      "target": "shared_engine_rules_isrightbower"
+      "target": "shared_engine_rules_isrightbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2359,9 +3323,9 @@
       "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_trumprank",
-      "target": "shared_engine_rules_isleftbower"
+      "target": "shared_engine_rules_isleftbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2422,6 +3386,102 @@
       "confidence_score": 1.0,
       "source": "shared_engine_view_visible",
       "target": "shared_engine_view_handsequal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame_usegame",
+      "target": "src_game_usegame_freshseed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L55",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame_usegame",
+      "target": "shared_bot_heuristic_choosemove"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_bidpanel_bidpanel",
+      "target": "src_ui_bidpanel_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game_game",
+      "target": "src_game_usegame_usegame"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table_remaininginhand",
+      "target": "src_ui_table_samehand",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table_table",
+      "target": "src_ui_table_samehand",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table_table",
+      "target": "src_ui_table_remaininginhand",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table_table",
+      "target": "src_ui_table_seatlabel",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2578,6 +3638,18 @@
       "_origin": "ast",
       "source": "tests_helpers_selecthands",
       "target": "shared_engine_reducer_reduce"
+    },
+    {
+      "relation": "re_exports",
+      "context": "export",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/index.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_index",
+      "target": "shared_bot_heuristic",
+      "confidence_score": 1.0
     },
     {
       "relation": "re_exports",
@@ -2763,85 +3835,193 @@
       "relation": "extends",
       "confidence": "EXTRACTED",
       "source_file": "tsconfig.json",
-      "source_location": "L14",
-      "weight": 1.0,
-      "context": "import",
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tsconfig_include",
-      "target": "ref_scripts"
-    },
-    {
-      "relation": "extends",
-      "confidence": "EXTRACTED",
-      "source_file": "tsconfig.json",
-      "source_location": "L14",
-      "weight": 1.0,
-      "context": "import",
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tsconfig_include",
-      "target": "ref_shared"
-    },
-    {
-      "relation": "extends",
-      "confidence": "EXTRACTED",
-      "source_file": "tsconfig.json",
-      "source_location": "L14",
-      "weight": 1.0,
-      "context": "import",
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tsconfig_include",
-      "target": "ref_src"
-    },
-    {
-      "relation": "extends",
-      "confidence": "EXTRACTED",
-      "source_file": "tsconfig.json",
-      "source_location": "L14",
-      "weight": 1.0,
-      "context": "import",
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "tsconfig_include",
-      "target": "ref_tests"
-    },
-    {
-      "relation": "imports",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
       "source_location": "L13",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
+      "source": "tsconfig_compileroptions_lib",
+      "target": "ref_dom",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "tsconfig.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "tsconfig_compileroptions_lib",
+      "target": "ref_dom_iterable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "tsconfig.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "tsconfig_compileroptions_lib",
+      "target": "ref_es2022",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "tsconfig.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "tsconfig_include",
+      "target": "ref_scripts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "tsconfig.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "tsconfig_include",
+      "target": "ref_shared",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "tsconfig.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "tsconfig_include",
+      "target": "ref_src",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "tsconfig.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "tsconfig_include",
+      "target": "ref_tests",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L23",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_dependencies_react",
+      "target": "react",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L24",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_dependencies_react_dom",
+      "target": "react_dom",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
       "source": "package_devdependencies_tsx",
-      "target": "tsx"
+      "target": "tsx",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L11",
+      "source_location": "L14",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
+      "source": "package_devdependencies_types_react",
+      "target": "types_react",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_devdependencies_types_react_dom",
+      "target": "types_react_dom",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
       "source": "package_devdependencies_typescript",
-      "target": "typescript"
+      "target": "typescript",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L12",
+      "source_location": "L19",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
+      "source": "package_devdependencies_vite",
+      "target": "vite",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L16",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_devdependencies_vitejs_plugin_react",
+      "target": "vitejs_plugin_react",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
       "source": "package_devdependencies_vitest",
-      "target": "vitest"
+      "target": "vitest",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2914,6 +4094,90 @@
       "confidence_score": 1.0,
       "source": "scripts_fuzz",
       "target": "shared_engine_types_player"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_engine_types_action",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_engine_types_playerview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_engine_types_suit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_engine_rules_cardstrength",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_engine_rules_istrump",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_engine_rules_trickwinnerindex",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3235,9 +4499,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_types_card"
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3247,9 +4511,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_types_rank"
+      "target": "shared_engine_types_rank",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3259,9 +4523,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_types_suit"
+      "target": "shared_engine_types_suit",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3271,9 +4535,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_types_trickcard"
+      "target": "shared_engine_types_trickcard",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3346,6 +4610,390 @@
       "confidence_score": 1.0,
       "source": "shared_engine_view",
       "target": "shared_engine_legal_otherplayer"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app",
+      "target": "src_ui_game_game",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "shared_engine_types_action",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "shared_engine_types_gamestate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "shared_engine_types_player",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "shared_bot_heuristic_choosemove",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/main.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_main",
+      "target": "src_app_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_bidpanel",
+      "target": "shared_engine_types_action",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_bidpanel",
+      "target": "shared_engine_types_playerview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Card.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_card",
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_game_usegame_usegame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_ui_scoreboard_scoreboard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_ui_statusbanner_statusbanner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_ui_table_table",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_ui_bidpanel_bidpanel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_ui_handtray_handtray",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_handtray",
+      "target": "shared_engine_types_action",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_handtray",
+      "target": "shared_engine_types_playerview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_handtray",
+      "target": "src_ui_card_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Scoreboard.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_scoreboard",
+      "target": "shared_engine_types_playerview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Scoreboard.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_scoreboard",
+      "target": "src_game_usegame_bot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Scoreboard.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_scoreboard",
+      "target": "src_game_usegame_human",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_statusbanner",
+      "target": "shared_engine_types_playerview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_statusbanner",
+      "target": "src_game_usegame_bot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_statusbanner",
+      "target": "src_game_usegame_human",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_statusbanner",
+      "target": "src_ui_card_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_statusbanner",
+      "target": "src_ui_card_cardback",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "shared_engine_types_handid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "shared_engine_types_playerview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_game_usegame_bot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_game_usegame_human",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_ui_card_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_ui_card_cardback",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3807,6 +5455,30 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_engine_rules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "shared/engine/config.ts",
       "source_location": "L1",
       "weight": 1.0,
@@ -3919,9 +5591,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3946,6 +5618,282 @@
       "confidence_score": 1.0,
       "source": "shared_engine_view",
       "target": "shared_engine_legal"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app",
+      "target": "src_ui_game",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "shared_bot_index",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "shared_engine_index",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/main.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_main",
+      "target": "src_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_bidpanel",
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Card.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_card",
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_game_usegame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_ui_scoreboard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_ui_statusbanner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_ui_table",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_ui_bidpanel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_ui_handtray",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_handtray",
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_handtray",
+      "target": "src_ui_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Scoreboard.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_scoreboard",
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Scoreboard.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_scoreboard",
+      "target": "src_game_usegame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_statusbanner",
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_statusbanner",
+      "target": "src_game_usegame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_statusbanner",
+      "target": "src_ui_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_game_usegame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_ui_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -4098,8 +6046,173 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "claude",
-      "target": "claude_graphify",
+      "target": "claude_graphify"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package",
+      "target": "package_devdependencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package",
+      "target": "package_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package",
+      "target": "package_dependencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package",
+      "target": "package_private",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package",
+      "target": "package_type",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package",
+      "target": "package_scripts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_dependencies",
+      "target": "package_dependencies_react",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_dependencies",
+      "target": "package_dependencies_react_dom",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_types_react",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_types_react_dom",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_vitejs_plugin_react",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_vite",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_vitest",
       "confidence_score": 1.0
     },
     {
@@ -4109,53 +6222,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package",
-      "target": "package_devdependencies"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package",
-      "target": "package_name"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package",
-      "target": "package_private"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
-      "source_location": "L4",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package",
-      "target": "package_type"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
-      "source_location": "L5",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package",
-      "target": "package_scripts"
+      "source": "package_scripts",
+      "target": "package_scripts_build",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4164,31 +6233,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package_devdependencies",
-      "target": "package_devdependencies_typescript"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
-      "source_location": "L12",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package_devdependencies",
-      "target": "package_devdependencies_vitest"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
-      "source_location": "L13",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package_devdependencies",
-      "target": "package_devdependencies_tsx"
+      "source": "package_scripts",
+      "target": "package_scripts_preview",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4197,9 +6244,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_test"
+      "target": "package_scripts_test",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4208,9 +6255,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_test_watch"
+      "target": "package_scripts_test_watch",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4219,9 +6266,20 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_fuzz"
+      "target": "package_scripts_fuzz",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_scripts",
+      "target": "package_scripts_dev",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4230,9 +6288,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "readme",
-      "target": "readme_two_handed_euchre",
-      "confidence_score": 1.0
+      "target": "readme_two_handed_euchre"
     },
     {
       "relation": "contains",
@@ -4241,9 +6299,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "readme_two_handed_euchre",
-      "target": "readme_status",
-      "confidence_score": 1.0
+      "target": "readme_status"
     },
     {
       "relation": "contains",
@@ -4252,9 +6310,9 @@
       "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "readme_two_handed_euchre",
-      "target": "readme_repo_layout",
-      "confidence_score": 1.0
+      "target": "readme_repo_layout"
     },
     {
       "relation": "contains",
@@ -4263,9 +6321,9 @@
       "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "readme_two_handed_euchre",
-      "target": "readme_running_the_engine",
-      "confidence_score": 1.0
+      "target": "readme_running_the_engine"
     },
     {
       "relation": "contains",
@@ -4274,9 +6332,9 @@
       "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "readme_two_handed_euchre",
-      "target": "readme_knowledge_graph",
-      "confidence_score": 1.0
+      "target": "readme_knowledge_graph"
     },
     {
       "relation": "contains",
@@ -4332,6 +6390,116 @@
       "confidence_score": 1.0,
       "source": "scripts_fuzz",
       "target": "scripts_fuzz_outcomes"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_bot_heuristic_suits",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_bot_heuristic_counttrump",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_bot_heuristic_bestsuitbytrumpcount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_bot_heuristic_highest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_bot_heuristic_lowest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_bot_heuristic_cardsequal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_bot_heuristic_bytype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_bot_heuristic_findcardaction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_bot_heuristic_wouldcurrentlywin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/bot/heuristic.ts",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_bot_heuristic",
+      "target": "shared_bot_heuristic_choosemove",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4582,9 +6750,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_leftbowersuit"
+      "target": "shared_engine_rules_leftbowersuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4593,9 +6761,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_isrightbower"
+      "target": "shared_engine_rules_isrightbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4604,9 +6772,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_isleftbower"
+      "target": "shared_engine_rules_isleftbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4615,9 +6783,9 @@
       "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_effectivesuit"
+      "target": "shared_engine_rules_effectivesuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4626,9 +6794,9 @@
       "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_istrump"
+      "target": "shared_engine_rules_istrump",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4637,9 +6805,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_same_color"
+      "target": "shared_engine_rules_same_color",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4648,9 +6816,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_plain_rank_order"
+      "target": "shared_engine_rules_plain_rank_order",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4659,31 +6827,42 @@
       "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_trumprank"
+      "target": "shared_engine_rules_trumprank",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "shared/engine/rules.ts",
-      "source_location": "L42",
+      "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_legalplays"
+      "target": "shared_engine_rules_cardstrength",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "shared/engine/rules.ts",
-      "source_location": "L49",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_trickwinnerindex"
+      "target": "shared_engine_rules_legalplays",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/engine/rules.ts",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_engine_rules",
+      "target": "shared_engine_rules_trickwinnerindex",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4886,6 +7065,270 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_app",
+      "target": "src_app_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "src_game_usegame_human",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "src_game_usegame_bot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "src_game_usegame_freshseed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "src_game_usegame_usegame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/main.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_main",
+      "target": "src_main_root",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_bidpanel",
+      "target": "src_ui_bidpanel_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_bidpanel",
+      "target": "src_ui_bidpanel_bid_phases",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_bidpanel",
+      "target": "src_ui_bidpanel_suit_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_bidpanel",
+      "target": "src_ui_bidpanel_bidpanel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Card.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_card",
+      "target": "src_ui_card_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Card.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_card",
+      "target": "src_ui_card_suit_symbol",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Card.tsx",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_card",
+      "target": "src_ui_card_cardback",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Card.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_card",
+      "target": "src_ui_card_red_suits",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Game.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_game",
+      "target": "src_ui_game_game",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_handtray",
+      "target": "src_ui_handtray_handtray",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Scoreboard.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_scoreboard",
+      "target": "src_ui_scoreboard_scoreboard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_statusbanner",
+      "target": "src_ui_statusbanner_statusbanner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_statusbanner",
+      "target": "src_ui_statusbanner_suit_label",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_ui_table_samehand",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_ui_table_remaininginhand",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_ui_table_seatlabel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_ui_table_table",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_ui_table_seats",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "tests/helpers.ts",
       "source_location": "L106",
       "weight": 1.0,
@@ -4975,23 +7418,23 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tsconfig.json",
-      "source_location": "L14",
+      "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig",
-      "target": "tsconfig_include"
+      "target": "tsconfig_compileroptions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "tsconfig.json",
-      "source_location": "L2",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig",
-      "target": "tsconfig_compileroptions"
+      "target": "tsconfig_include",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5000,9 +7443,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_skiplibcheck"
+      "target": "tsconfig_compileroptions_skiplibcheck",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5011,9 +7454,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_esmoduleinterop"
+      "target": "tsconfig_compileroptions_esmoduleinterop",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5022,9 +7465,31 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_forceconsistentcasinginfilenames"
+      "target": "tsconfig_compileroptions_forceconsistentcasinginfilenames",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tsconfig.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tsconfig_compileroptions",
+      "target": "tsconfig_compileroptions_lib",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tsconfig.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tsconfig_compileroptions",
+      "target": "tsconfig_compileroptions_jsx",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5033,9 +7498,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_target"
+      "target": "tsconfig_compileroptions_target",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5044,9 +7509,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_module"
+      "target": "tsconfig_compileroptions_module",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5055,9 +7520,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_moduleresolution"
+      "target": "tsconfig_compileroptions_moduleresolution",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5066,9 +7531,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_strict"
+      "target": "tsconfig_compileroptions_strict",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5077,9 +7542,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_nouncheckedindexedaccess"
+      "target": "tsconfig_compileroptions_nouncheckedindexedaccess",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5088,9 +7553,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_allowimportingtsextensions"
+      "target": "tsconfig_compileroptions_allowimportingtsextensions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5099,9 +7564,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_noemit"
+      "target": "tsconfig_compileroptions_noemit",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -5110,9 +7575,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "readme",
-      "target": "shared_engine_rules",
-      "confidence_score": 1.0
+      "target": "shared_engine_rules"
     },
     {
       "relation": "conceptually_related_to",
@@ -5591,5 +8056,5 @@
       "source_file": "RULES.md"
     }
   ],
-  "built_at_commit": "aa271dec6293a799b6f80d551fa8ef4c5b343bbc"
+  "built_at_commit": "d0b795875599f66a7b7a9fa4b00f087c65cdc50d"
 }
