@@ -52,58 +52,6 @@
   },
   "nodes": [
     {
-      "label": "GameState",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L42",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "gamestate",
-      "id": "shared_engine_types_gamestate"
-    },
-    {
-      "label": "Config",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L85",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "config",
-      "id": "shared_engine_types_config"
-    },
-    {
-      "label": "TrickCard",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L37",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "trickcard",
-      "id": "shared_engine_types_trickcard"
-    },
-    {
-      "label": "deal",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L50",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "deal",
-      "id": "shared_engine_deck_deal"
-    },
-    {
       "label": "Action",
       "file_type": "code",
       "source_file": "shared/engine/types.ts",
@@ -111,23 +59,23 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "action",
-      "id": "shared_engine_types_action"
+      "id": "shared_engine_types_action",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "action"
     },
     {
-      "label": "Card",
+      "label": "GameState",
       "file_type": "code",
       "source_file": "shared/engine/types.ts",
-      "source_location": "L6",
+      "source_location": "L42",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "card",
-      "id": "shared_engine_types_card"
+      "id": "shared_engine_types_gamestate",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "gamestate"
     },
     {
       "label": "HandId",
@@ -137,10 +85,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "handid",
-      "id": "shared_engine_types_handid"
+      "id": "shared_engine_types_handid",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "handid"
     },
     {
       "label": "HandRole",
@@ -150,23 +98,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "handrole",
-      "id": "shared_engine_types_handrole"
-    },
-    {
-      "label": "LonerTier",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L16",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "lonertier",
-      "id": "shared_engine_types_lonertier"
+      "id": "shared_engine_types_handrole",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "handrole"
     },
     {
       "label": "Phase",
@@ -176,10 +111,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "phase",
-      "id": "shared_engine_types_phase"
+      "id": "shared_engine_types_phase",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "phase"
     },
     {
       "label": "Player",
@@ -189,23 +124,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "player",
-      "id": "shared_engine_types_player"
-    },
-    {
-      "label": "PlayerHands",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L30",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "playerhands",
-      "id": "shared_engine_types_playerhands"
+      "id": "shared_engine_types_player",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "player"
     },
     {
       "label": "PlayerView",
@@ -215,23 +137,36 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "playerview",
-      "id": "shared_engine_types_playerview"
+      "id": "shared_engine_types_playerview",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "playerview"
     },
     {
-      "label": "Rank",
+      "label": "Config",
       "file_type": "code",
       "source_file": "shared/engine/types.ts",
-      "source_location": "L2",
+      "source_location": "L85",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "rank",
-      "id": "shared_engine_types_rank"
+      "id": "shared_engine_types_config",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "config"
+    },
+    {
+      "label": "LonerTier",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L16",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "shared_engine_types_lonertier",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "lonertier"
     },
     {
       "label": "Suit",
@@ -241,10 +176,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "suit",
-      "id": "shared_engine_types_suit"
+      "id": "shared_engine_types_suit",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "suit"
     },
     {
       "label": "PlayStateOptions",
@@ -254,10 +189,75 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
+      "id": "tests_helpers_playstateoptions",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "playstateoptions"
+    },
+    {
+      "label": "TrickCard",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L37",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "shared_engine_types_trickcard",
+      "community": 5,
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "trickcard"
+    },
+    {
+      "label": "deal",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L50",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "shared_engine_deck_deal",
       "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "playstateoptions",
-      "id": "tests_helpers_playstateoptions"
+      "community_name": "Deck & Dealing",
+      "norm_label": "deal"
+    },
+    {
+      "label": "Card",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L6",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "shared_engine_types_card",
+      "community": 6,
+      "community_name": "Deck & Dealing",
+      "norm_label": "card"
+    },
+    {
+      "label": "PlayerHands",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L30",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "shared_engine_types_playerhands",
+      "community": 6,
+      "community_name": "Deck & Dealing",
+      "norm_label": "playerhands"
+    },
+    {
+      "label": "Rank",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L2",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "shared_engine_types_rank",
+      "community": 6,
+      "community_name": "Deck & Dealing",
+      "norm_label": "rank"
     },
     {
       "label": "pick()",
@@ -266,10 +266,10 @@
       "source_location": "L28",
       "_callable": true,
       "_origin": "ast",
+      "id": "scripts_fuzz_pick",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "pick()",
-      "id": "scripts_fuzz_pick"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "pick()"
     },
     {
       "label": "playRandomDeal()",
@@ -278,10 +278,10 @@
       "source_location": "L32",
       "_callable": true,
       "_origin": "ast",
+      "id": "scripts_fuzz_playrandomdeal",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "playrandomdeal()",
-      "id": "scripts_fuzz_playrandomdeal"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "playrandomdeal()"
     },
     {
       "label": "seededRng()",
@@ -290,10 +290,10 @@
       "source_location": "L13",
       "_callable": true,
       "_origin": "ast",
+      "id": "scripts_fuzz_seededrng",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "seededrng()",
-      "id": "scripts_fuzz_seededrng"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "seededrng()"
     },
     {
       "label": "actingHand()",
@@ -302,10 +302,10 @@
       "source_location": "L17",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_legal_actinghand",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "actinghand()",
-      "id": "shared_engine_legal_actinghand"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "actinghand()"
     },
     {
       "label": "handCards()",
@@ -314,10 +314,10 @@
       "source_location": "L27",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_legal_handcards",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "handcards()",
-      "id": "shared_engine_legal_handcards"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "handcards()"
     },
     {
       "label": "legalActions()",
@@ -326,10 +326,10 @@
       "source_location": "L32",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_legal_legalactions",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "legalactions()",
-      "id": "shared_engine_legal_legalactions"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "legalactions()"
     },
     {
       "label": "turnPlayer()",
@@ -338,58 +338,10 @@
       "source_location": "L10",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_legal_turnplayer",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "turnplayer()",
-      "id": "shared_engine_legal_turnplayer"
-    },
-    {
-      "label": "handsEqual()",
-      "file_type": "code",
-      "source_file": "shared/engine/view.ts",
-      "source_location": "L6",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "handsequal()",
-      "id": "shared_engine_view_handsequal"
-    },
-    {
-      "label": "redact()",
-      "file_type": "code",
-      "source_file": "shared/engine/view.ts",
-      "source_location": "L18",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "redact()",
-      "id": "shared_engine_view_redact"
-    },
-    {
-      "label": "visible()",
-      "file_type": "code",
-      "source_file": "shared/engine/view.ts",
-      "source_location": "L10",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "visible()",
-      "id": "shared_engine_view_visible"
-    },
-    {
-      "label": "otherPlayer()",
-      "file_type": "code",
-      "source_file": "shared/engine/legal.ts",
-      "source_location": "L5",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "otherplayer()",
-      "id": "shared_engine_legal_otherplayer"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "turnplayer()"
     },
     {
       "label": "assertLegal()",
@@ -398,22 +350,10 @@
       "source_location": "L51",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "assertlegal()",
-      "id": "shared_engine_reducer_assertlegal"
-    },
-    {
-      "label": "buildRing()",
-      "file_type": "code",
-      "source_file": "shared/engine/reducer.ts",
-      "source_location": "L65",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "buildring()",
-      "id": "shared_engine_reducer_buildring"
+      "id": "shared_engine_reducer_assertlegal",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "assertlegal()"
     },
     {
       "label": "cardsEqual()",
@@ -422,70 +362,10 @@
       "source_location": "L6",
       "_callable": true,
       "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "cardsequal()",
-      "id": "shared_engine_reducer_cardsequal"
-    },
-    {
-      "label": "enterDealerExchange()",
-      "file_type": "code",
-      "source_file": "shared/engine/reducer.ts",
-      "source_location": "L94",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "enterdealerexchange()",
-      "id": "shared_engine_reducer_enterdealerexchange"
-    },
-    {
-      "label": "enterPlay()",
-      "file_type": "code",
-      "source_file": "shared/engine/reducer.ts",
-      "source_location": "L79",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "enterplay()",
-      "id": "shared_engine_reducer_enterplay"
-    },
-    {
-      "label": "newGame()",
-      "file_type": "code",
-      "source_file": "shared/engine/reducer.ts",
-      "source_location": "L16",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "newgame()",
-      "id": "shared_engine_reducer_newgame"
-    },
-    {
-      "label": "nextDeal()",
-      "file_type": "code",
-      "source_file": "shared/engine/reducer.ts",
-      "source_location": "L45",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "nextdeal()",
-      "id": "shared_engine_reducer_nextdeal"
-    },
-    {
-      "label": "reduce()",
-      "file_type": "code",
-      "source_file": "shared/engine/reducer.ts",
-      "source_location": "L140",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "reduce()",
-      "id": "shared_engine_reducer_reduce"
+      "id": "shared_engine_reducer_cardsequal",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "cardsequal()"
     },
     {
       "label": "removeCard()",
@@ -494,10 +374,118 @@
       "source_location": "L10",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_reducer_removecard",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "removecard()"
+    },
+    {
+      "label": "handsEqual()",
+      "file_type": "code",
+      "source_file": "shared/engine/view.ts",
+      "source_location": "L6",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_engine_view_handsequal",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "handsequal()"
+    },
+    {
+      "label": "visible()",
+      "file_type": "code",
+      "source_file": "shared/engine/view.ts",
+      "source_location": "L10",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_engine_view_visible",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "visible()"
+    },
+    {
+      "label": "otherPlayer()",
+      "file_type": "code",
+      "source_file": "shared/engine/legal.ts",
+      "source_location": "L5",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_engine_legal_otherplayer",
       "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "removecard()",
-      "id": "shared_engine_reducer_removecard"
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "otherplayer()"
+    },
+    {
+      "label": "buildRing()",
+      "file_type": "code",
+      "source_file": "shared/engine/reducer.ts",
+      "source_location": "L65",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_engine_reducer_buildring",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "buildring()"
+    },
+    {
+      "label": "enterDealerExchange()",
+      "file_type": "code",
+      "source_file": "shared/engine/reducer.ts",
+      "source_location": "L94",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_engine_reducer_enterdealerexchange",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "enterdealerexchange()"
+    },
+    {
+      "label": "enterPlay()",
+      "file_type": "code",
+      "source_file": "shared/engine/reducer.ts",
+      "source_location": "L79",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_engine_reducer_enterplay",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "enterplay()"
+    },
+    {
+      "label": "newGame()",
+      "file_type": "code",
+      "source_file": "shared/engine/reducer.ts",
+      "source_location": "L16",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_engine_reducer_newgame",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "newgame()"
+    },
+    {
+      "label": "nextDeal()",
+      "file_type": "code",
+      "source_file": "shared/engine/reducer.ts",
+      "source_location": "L45",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_engine_reducer_nextdeal",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "nextdeal()"
+    },
+    {
+      "label": "reduce()",
+      "file_type": "code",
+      "source_file": "shared/engine/reducer.ts",
+      "source_location": "L140",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_engine_reducer_reduce",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "reduce()"
     },
     {
       "label": "settleScore()",
@@ -506,10 +494,22 @@
       "source_location": "L109",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_reducer_settlescore",
       "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "settlescore()",
-      "id": "shared_engine_reducer_settlescore"
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "settlescore()"
+    },
+    {
+      "label": "redact()",
+      "file_type": "code",
+      "source_file": "shared/engine/view.ts",
+      "source_location": "L18",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "shared_engine_view_redact",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "redact()"
     },
     {
       "label": "dealerDiscardFirstLegal()",
@@ -518,10 +518,10 @@
       "source_location": "L35",
       "_callable": true,
       "_origin": "ast",
+      "id": "tests_helpers_dealerdiscardfirstlegal",
       "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "dealerdiscardfirstlegal()",
-      "id": "tests_helpers_dealerdiscardfirstlegal"
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "dealerdiscardfirstlegal()"
     },
     {
       "label": "makePlayState()",
@@ -530,10 +530,10 @@
       "source_location": "L57",
       "_callable": true,
       "_origin": "ast",
+      "id": "tests_helpers_makeplaystate",
       "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "makeplaystate()",
-      "id": "tests_helpers_makeplaystate"
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "makeplaystate()"
     },
     {
       "label": "orderUpRound1()",
@@ -542,10 +542,10 @@
       "source_location": "L28",
       "_callable": true,
       "_origin": "ast",
+      "id": "tests_helpers_orderupround1",
       "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "orderupround1()",
-      "id": "tests_helpers_orderupround1"
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "orderupround1()"
     },
     {
       "label": "passLonerWindows()",
@@ -554,10 +554,10 @@
       "source_location": "L17",
       "_callable": true,
       "_origin": "ast",
+      "id": "tests_helpers_passlonerwindows",
       "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "passlonerwindows()",
-      "id": "tests_helpers_passlonerwindows"
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "passlonerwindows()"
     },
     {
       "label": "playOutHand()",
@@ -566,10 +566,10 @@
       "source_location": "L106",
       "_callable": true,
       "_origin": "ast",
+      "id": "tests_helpers_playouthand",
       "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "playouthand()",
-      "id": "tests_helpers_playouthand"
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "playouthand()"
     },
     {
       "label": "selectHands()",
@@ -578,10 +578,10 @@
       "source_location": "L6",
       "_callable": true,
       "_origin": "ast",
+      "id": "tests_helpers_selecthands",
       "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "selecthands()",
-      "id": "tests_helpers_selecthands"
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "selecthands()"
     },
     {
       "label": "effectiveSuit()",
@@ -590,10 +590,10 @@
       "source_location": "L23",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_effectivesuit",
       "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "effectivesuit()",
-      "id": "shared_engine_rules_effectivesuit"
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "effectivesuit()"
     },
     {
       "label": "isLeftBower()",
@@ -602,10 +602,10 @@
       "source_location": "L18",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_isleftbower",
       "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "isleftbower()",
-      "id": "shared_engine_rules_isleftbower"
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "isleftbower()"
     },
     {
       "label": "isRightBower()",
@@ -614,10 +614,10 @@
       "source_location": "L14",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_isrightbower",
       "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "isrightbower()",
-      "id": "shared_engine_rules_isrightbower"
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "isrightbower()"
     },
     {
       "label": "isTrump()",
@@ -626,10 +626,10 @@
       "source_location": "L28",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_istrump",
       "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "istrump()",
-      "id": "shared_engine_rules_istrump"
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "istrump()"
     },
     {
       "label": "leftBowerSuit()",
@@ -638,10 +638,10 @@
       "source_location": "L10",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_leftbowersuit",
       "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "leftbowersuit()",
-      "id": "shared_engine_rules_leftbowersuit"
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "leftbowersuit()"
     },
     {
       "label": "legalPlays()",
@@ -650,10 +650,10 @@
       "source_location": "L42",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_legalplays",
       "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "legalplays()",
-      "id": "shared_engine_rules_legalplays"
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "legalplays()"
     },
     {
       "label": "trickWinnerIndex()",
@@ -662,10 +662,10 @@
       "source_location": "L49",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_trickwinnerindex",
       "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "trickwinnerindex()",
-      "id": "shared_engine_rules_trickwinnerindex"
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "trickwinnerindex()"
     },
     {
       "label": "trumpRank()",
@@ -674,10 +674,10 @@
       "source_location": "L34",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_rules_trumprank",
       "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "trumprank()",
-      "id": "shared_engine_rules_trumprank"
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "trumprank()"
     },
     {
       "label": "c()",
@@ -686,10 +686,10 @@
       "source_location": "L11",
       "_callable": true,
       "_origin": "ast",
+      "id": "tests_rules_test_c",
       "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "c()",
-      "id": "tests_rules_test_c"
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "c()"
     },
     {
       "label": "fullDeck()",
@@ -698,10 +698,10 @@
       "source_location": "L6",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_deck_fulldeck",
       "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "fulldeck()",
-      "id": "shared_engine_deck_fulldeck"
+      "community_name": "Deck & Dealing",
+      "norm_label": "fulldeck()"
     },
     {
       "label": "seededRng()",
@@ -710,10 +710,10 @@
       "source_location": "L17",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_deck_seededrng",
       "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "seededrng()",
-      "id": "shared_engine_deck_seededrng"
+      "community_name": "Deck & Dealing",
+      "norm_label": "seededrng()"
     },
     {
       "label": "shuffledDeck()",
@@ -722,10 +722,10 @@
       "source_location": "L32",
       "_callable": true,
       "_origin": "ast",
+      "id": "shared_engine_deck_shuffleddeck",
       "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "shuffleddeck()",
-      "id": "shared_engine_deck_shuffleddeck"
+      "community_name": "Deck & Dealing",
+      "norm_label": "shuffleddeck()"
     },
     {
       "label": "fuzz.ts",
@@ -733,10 +733,10 @@
       "source_file": "scripts/fuzz.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "scripts_fuzz",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "fuzz.ts",
-      "id": "scripts_fuzz"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "fuzz.ts"
     },
     {
       "label": "outcomes",
@@ -744,10 +744,10 @@
       "source_file": "scripts/fuzz.ts",
       "source_location": "L71",
       "_origin": "ast",
+      "id": "scripts_fuzz_outcomes",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "outcomes",
-      "id": "scripts_fuzz_outcomes"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "outcomes"
     },
     {
       "label": "TERMINAL_PHASES",
@@ -755,21 +755,10 @@
       "source_file": "scripts/fuzz.ts",
       "source_location": "L10",
       "_origin": "ast",
+      "id": "scripts_fuzz_terminal_phases",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "terminal_phases",
-      "id": "scripts_fuzz_terminal_phases"
-    },
-    {
-      "label": "SUITS",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L3",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "suits",
-      "id": "shared_engine_deck_suits"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "terminal_phases"
     },
     {
       "label": "index.ts",
@@ -777,10 +766,10 @@
       "source_file": "shared/engine/index.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "shared_engine_index",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "index.ts",
-      "id": "shared_engine_index"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "index.ts"
     },
     {
       "label": "legal.ts",
@@ -788,78 +777,10 @@
       "source_file": "shared/engine/legal.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "shared_engine_legal",
       "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "legal.ts",
-      "id": "shared_engine_legal"
-    },
-    {
-      "label": "view.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/view.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "view.ts",
-      "id": "shared_engine_view"
-    },
-    {
-      "label": "DEAL_OVER_PHASES",
-      "file_type": "code",
-      "source_file": "shared/engine/view.ts",
-      "source_location": "L4",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "legal.ts",
-      "norm_label": "deal_over_phases",
-      "id": "shared_engine_view_deal_over_phases"
-    },
-    {
-      "label": "CLAUDE.md",
-      "file_type": "document",
-      "node_kind": "page",
-      "source_file": "CLAUDE.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "claude",
-      "community": 10,
-      "community_name": "CLAUDE.md",
-      "norm_label": "claude.md"
-    },
-    {
-      "label": "graphify",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "CLAUDE.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "claude_graphify",
-      "community": 10,
-      "community_name": "CLAUDE.md",
-      "norm_label": "graphify"
-    },
-    {
-      "label": "config.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/config.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "config.ts",
-      "id": "shared_engine_config"
-    },
-    {
-      "label": "DEFAULT_CONFIG",
-      "file_type": "code",
-      "source_file": "shared/engine/config.ts",
-      "source_location": "L3",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "default_config",
-      "id": "shared_engine_config_default_config"
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "legal.ts"
     },
     {
       "label": "reducer.ts",
@@ -867,450 +788,10 @@
       "source_file": "shared/engine/reducer.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "reducer.ts",
-      "id": "shared_engine_reducer"
-    },
-    {
-      "label": "helpers.ts",
-      "file_type": "code",
-      "source_file": "tests/helpers.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "helpers.ts",
-      "id": "tests_helpers"
-    },
-    {
-      "label": "reducer.test.ts",
-      "file_type": "code",
-      "source_file": "tests/reducer.test.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "reducer.test.ts",
-      "id": "tests_reducer_test"
-    },
-    {
-      "label": "tsconfig.json",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "tsconfig.json",
-      "id": "tsconfig"
-    },
-    {
-      "label": "compilerOptions",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L2",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "compileroptions",
-      "id": "tsconfig_compileroptions"
-    },
-    {
-      "label": "allowImportingTsExtensions",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L8",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "allowimportingtsextensions",
-      "id": "tsconfig_compileroptions_allowimportingtsextensions"
-    },
-    {
-      "label": "esModuleInterop",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L11",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "esmoduleinterop",
-      "id": "tsconfig_compileroptions_esmoduleinterop"
-    },
-    {
-      "label": "forceConsistentCasingInFileNames",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L12",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "forceconsistentcasinginfilenames",
-      "id": "tsconfig_compileroptions_forceconsistentcasinginfilenames"
-    },
-    {
-      "label": "module",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L4",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "module",
-      "id": "tsconfig_compileroptions_module"
-    },
-    {
-      "label": "moduleResolution",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L5",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "moduleresolution",
-      "id": "tsconfig_compileroptions_moduleresolution"
-    },
-    {
-      "label": "noEmit",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L9",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "noemit",
-      "id": "tsconfig_compileroptions_noemit"
-    },
-    {
-      "label": "noUncheckedIndexedAccess",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L7",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "nouncheckedindexedaccess",
-      "id": "tsconfig_compileroptions_nouncheckedindexedaccess"
-    },
-    {
-      "label": "skipLibCheck",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L10",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "skiplibcheck",
-      "id": "tsconfig_compileroptions_skiplibcheck"
-    },
-    {
-      "label": "strict",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L6",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "strict",
-      "id": "tsconfig_compileroptions_strict"
-    },
-    {
-      "label": "target",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L3",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "target",
-      "id": "tsconfig_compileroptions_target"
-    },
-    {
-      "label": "include",
-      "file_type": "code",
-      "source_file": "tsconfig.json",
-      "source_location": "L14",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "include",
-      "id": "tsconfig_include"
-    },
-    {
-      "label": "scripts",
-      "file_type": "concept",
-      "source_file": "tsconfig.json",
-      "source_location": "L14",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "scripts",
-      "id": "ref_scripts"
-    },
-    {
-      "label": "shared",
-      "file_type": "concept",
-      "source_file": "tsconfig.json",
-      "source_location": "L14",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "shared",
-      "id": "ref_shared"
-    },
-    {
-      "label": "src",
-      "file_type": "concept",
-      "source_file": "tsconfig.json",
-      "source_location": "L14",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "src",
-      "id": "ref_src"
-    },
-    {
-      "label": "tests",
-      "file_type": "concept",
-      "source_file": "tsconfig.json",
-      "source_location": "L14",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "compilerOptions",
-      "norm_label": "tests",
-      "id": "ref_tests"
-    },
-    {
-      "label": "package.json",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "package.json",
-      "id": "package"
-    },
-    {
-      "label": "devDependencies",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L10",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "devdependencies",
-      "id": "package_devdependencies"
-    },
-    {
-      "label": "tsx",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L13",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "tsx",
-      "id": "package_devdependencies_tsx"
-    },
-    {
-      "label": "typescript",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L11",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "typescript",
-      "id": "package_devdependencies_typescript"
-    },
-    {
-      "label": "vitest",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L12",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "vitest",
-      "id": "package_devdependencies_vitest"
-    },
-    {
-      "label": "name",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L2",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "name",
-      "id": "package_name"
-    },
-    {
-      "label": "private",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L3",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "private",
-      "id": "package_private"
-    },
-    {
-      "label": "scripts",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L5",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "scripts",
-      "id": "package_scripts"
-    },
-    {
-      "label": "fuzz",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L8",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "fuzz",
-      "id": "package_scripts_fuzz"
-    },
-    {
-      "label": "test",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L6",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "test",
-      "id": "package_scripts_test"
-    },
-    {
-      "label": "test:watch",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L7",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "test:watch",
-      "id": "package_scripts_test_watch"
-    },
-    {
-      "label": "type",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L4",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "type",
-      "id": "package_type"
-    },
-    {
-      "label": "tsx",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L13",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "tsx",
-      "id": "tsx"
-    },
-    {
-      "label": "typescript",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L11",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "typescript",
-      "id": "typescript"
-    },
-    {
-      "label": "vitest",
-      "file_type": "concept",
-      "source_file": "package.json",
-      "source_location": "L12",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "package.json",
-      "norm_label": "vitest",
-      "id": "vitest"
-    },
-    {
-      "label": "rules.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/rules.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "rules.ts",
-      "id": "shared_engine_rules"
-    },
-    {
-      "label": "PLAIN_RANK_ORDER",
-      "file_type": "code",
-      "source_file": "shared/engine/rules.ts",
-      "source_location": "L32",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "plain_rank_order",
-      "id": "shared_engine_rules_plain_rank_order"
-    },
-    {
-      "label": "SAME_COLOR",
-      "file_type": "code",
-      "source_file": "shared/engine/rules.ts",
-      "source_location": "L3",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "same_color",
-      "id": "shared_engine_rules_same_color"
-    },
-    {
-      "label": "rules.test.ts",
-      "file_type": "code",
-      "source_file": "tests/rules.test.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "rules.test.ts",
-      "id": "tests_rules_test"
-    },
-    {
-      "label": "deck.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "deck.ts",
-      "id": "shared_engine_deck"
-    },
-    {
-      "label": "RANKS",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L4",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "ranks",
-      "id": "shared_engine_deck_ranks"
+      "id": "shared_engine_reducer",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "reducer.ts"
     },
     {
       "label": "types.ts",
@@ -1318,10 +799,505 @@
       "source_file": "shared/engine/types.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "shared_engine_types",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "types.ts"
+    },
+    {
+      "label": "view.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/view.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "shared_engine_view",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "view.ts"
+    },
+    {
+      "label": "DEAL_OVER_PHASES",
+      "file_type": "code",
+      "source_file": "shared/engine/view.ts",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "shared_engine_view_deal_over_phases",
+      "community": 0,
+      "community_name": "Core State Machine & Fuzzing",
+      "norm_label": "deal_over_phases"
+    },
+    {
+      "label": "config.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/config.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "shared_engine_config",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "config.ts"
+    },
+    {
+      "label": "DEFAULT_CONFIG",
+      "file_type": "code",
+      "source_file": "shared/engine/config.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "shared_engine_config_default_config",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "default_config"
+    },
+    {
+      "label": "helpers.ts",
+      "file_type": "code",
+      "source_file": "tests/helpers.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_helpers",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "helpers.ts"
+    },
+    {
+      "label": "reducer.test.ts",
+      "file_type": "code",
+      "source_file": "tests/reducer.test.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_reducer_test",
+      "community": 2,
+      "community_name": "Deal Lifecycle & Testing",
+      "norm_label": "reducer.test.ts"
+    },
+    {
+      "label": "tsconfig.json",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tsconfig",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "tsconfig.json"
+    },
+    {
+      "label": "compilerOptions",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "compileroptions"
+    },
+    {
+      "label": "allowImportingTsExtensions",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_allowimportingtsextensions",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "allowimportingtsextensions"
+    },
+    {
+      "label": "esModuleInterop",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_esmoduleinterop",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "esmoduleinterop"
+    },
+    {
+      "label": "forceConsistentCasingInFileNames",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_forceconsistentcasinginfilenames",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "forceconsistentcasinginfilenames"
+    },
+    {
+      "label": "module",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_module",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "module"
+    },
+    {
+      "label": "moduleResolution",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_moduleresolution",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "moduleresolution"
+    },
+    {
+      "label": "noEmit",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_noemit",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "noemit"
+    },
+    {
+      "label": "noUncheckedIndexedAccess",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_nouncheckedindexedaccess",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "nouncheckedindexedaccess"
+    },
+    {
+      "label": "skipLibCheck",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_skiplibcheck",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "skiplibcheck"
+    },
+    {
+      "label": "strict",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_strict",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "strict"
+    },
+    {
+      "label": "target",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "tsconfig_compileroptions_target",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "target"
+    },
+    {
+      "label": "include",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "tsconfig_include",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "include"
+    },
+    {
+      "label": "scripts",
+      "file_type": "concept",
+      "source_file": "tsconfig.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "ref_scripts",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "scripts"
+    },
+    {
+      "label": "shared",
+      "file_type": "concept",
+      "source_file": "tsconfig.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "ref_shared",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "shared"
+    },
+    {
+      "label": "src",
+      "file_type": "concept",
+      "source_file": "tsconfig.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "ref_src",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "src"
+    },
+    {
+      "label": "tests",
+      "file_type": "concept",
+      "source_file": "tsconfig.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "ref_tests",
+      "community": 3,
+      "community_name": "TypeScript Build Config",
+      "norm_label": "tests"
+    },
+    {
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "package",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "package.json"
+    },
+    {
+      "label": "devDependencies",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "package_devdependencies",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "devdependencies"
+    },
+    {
+      "label": "tsx",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "package_devdependencies_tsx",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "tsx"
+    },
+    {
+      "label": "typescript",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "package_devdependencies_typescript",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "typescript"
+    },
+    {
+      "label": "vitest",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "package_devdependencies_vitest",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "vitest"
+    },
+    {
+      "label": "name",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "package_name",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "name"
+    },
+    {
+      "label": "private",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "package_private",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "private"
+    },
+    {
+      "label": "scripts",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "package_scripts",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "scripts"
+    },
+    {
+      "label": "fuzz",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "package_scripts_fuzz",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "fuzz"
+    },
+    {
+      "label": "test",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "package_scripts_test",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "test"
+    },
+    {
+      "label": "test:watch",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "package_scripts_test_watch",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "test:watch"
+    },
+    {
+      "label": "type",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "package_type",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "type"
+    },
+    {
+      "label": "tsx",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "tsx",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "tsx"
+    },
+    {
+      "label": "typescript",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "typescript",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "typescript"
+    },
+    {
+      "label": "vitest",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "vitest",
+      "community": 4,
+      "community_name": "NPM Package & Tooling",
+      "norm_label": "vitest"
+    },
+    {
+      "label": "rules.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/rules.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "shared_engine_rules",
+      "community": 5,
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "rules.ts"
+    },
+    {
+      "label": "PLAIN_RANK_ORDER",
+      "file_type": "code",
+      "source_file": "shared/engine/rules.ts",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "shared_engine_rules_plain_rank_order",
+      "community": 5,
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "plain_rank_order"
+    },
+    {
+      "label": "SAME_COLOR",
+      "file_type": "code",
+      "source_file": "shared/engine/rules.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "shared_engine_rules_same_color",
+      "community": 5,
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "same_color"
+    },
+    {
+      "label": "rules.test.ts",
+      "file_type": "code",
+      "source_file": "tests/rules.test.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_rules_test",
+      "community": 5,
+      "community_name": "Trump & Trick Rules",
+      "norm_label": "rules.test.ts"
+    },
+    {
+      "label": "deck.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "shared_engine_deck",
       "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "types.ts",
-      "id": "shared_engine_types"
+      "community_name": "Deck & Dealing",
+      "norm_label": "deck.ts"
+    },
+    {
+      "label": "RANKS",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "shared_engine_deck_ranks",
+      "community": 6,
+      "community_name": "Deck & Dealing",
+      "norm_label": "ranks"
+    },
+    {
+      "label": "SUITS",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "shared_engine_deck_suits",
+      "community": 6,
+      "community_name": "Deck & Dealing",
+      "norm_label": "suits"
     },
     {
       "label": "deck.test.ts",
@@ -1329,82 +1305,10 @@
       "source_file": "tests/deck.test.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "tests_deck_test",
       "community": 6,
-      "community_name": "types.ts",
-      "norm_label": "deck.test.ts",
-      "id": "tests_deck_test"
-    },
-    {
-      "label": "README.md",
-      "file_type": "document",
-      "node_kind": "page",
-      "source_file": "README.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "readme",
-      "community": 9,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "readme.md"
-    },
-    {
-      "label": "Knowledge graph",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L39",
-      "_origin": "ast",
-      "id": "readme_knowledge_graph",
-      "community": 9,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "knowledge graph"
-    },
-    {
-      "label": "Repo layout",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L21",
-      "_origin": "ast",
-      "id": "readme_repo_layout",
-      "community": 9,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "repo layout"
-    },
-    {
-      "label": "Running the engine",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L31",
-      "_origin": "ast",
-      "id": "readme_running_the_engine",
-      "community": 9,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "running the engine"
-    },
-    {
-      "label": "Status",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "readme_status",
-      "community": 9,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "status"
-    },
-    {
-      "label": "Two-Handed Euchre",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "readme_two_handed_euchre",
-      "community": 9,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "two-handed euchre"
+      "community_name": "Deck & Dealing",
+      "norm_label": "deck.test.ts"
     },
     {
       "label": "\u00a73 Bidding (standard, on/after the upcard)",
@@ -1415,11 +1319,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_bidding",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "\u00a73 bidding (standard, on/after the upcard)",
-      "_origin": "semantic",
-      "id": "rules_bidding"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "\u00a73 bidding (standard, on/after the upcard)"
     },
     {
       "label": "Blind-Trump Loner (6 points)",
@@ -1430,11 +1333,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_blind_trump_loner",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "blind-trump loner (6 points)",
-      "_origin": "semantic",
-      "id": "rules_blind_trump_loner"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "blind-trump loner (6 points)"
     },
     {
       "label": "Full-Blind Loner (8 points)",
@@ -1445,11 +1347,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_full_blind_loner",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "full-blind loner (8 points)",
-      "_origin": "semantic",
-      "id": "rules_full_blind_loner"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "full-blind loner (8 points)"
     },
     {
       "label": "\u00a75 Going Alone \u2014 Mechanics",
@@ -1460,11 +1361,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_going_alone_mechanics",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "\u00a75 going alone \u2014 mechanics",
-      "_origin": "semantic",
-      "id": "rules_going_alone_mechanics"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "\u00a75 going alone \u2014 mechanics"
     },
     {
       "label": "\u00a72 Loner Declaration Windows",
@@ -1475,11 +1375,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_loner_declaration_windows",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "\u00a72 loner declaration windows",
-      "_origin": "semantic",
-      "id": "rules_loner_declaration_windows"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "\u00a72 loner declaration windows"
     },
     {
       "label": "\u00a78 Misc \u2014 Defaults and Deferred Items",
@@ -1490,11 +1389,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_misc_deferred",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "\u00a78 misc \u2014 defaults and deferred items",
-      "_origin": "semantic",
-      "id": "rules_misc_deferred"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "\u00a78 misc \u2014 defaults and deferred items"
     },
     {
       "label": "\u00a76 Play",
@@ -1505,11 +1403,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_play",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "\u00a76 play",
-      "_origin": "semantic",
-      "id": "rules_play"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "\u00a76 play"
     },
     {
       "label": "\u00a77 Scoring",
@@ -1520,11 +1417,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_scoring",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "\u00a77 scoring",
-      "_origin": "semantic",
-      "id": "rules_scoring"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "\u00a77 scoring"
     },
     {
       "label": "\u00a71 Setup",
@@ -1535,11 +1431,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_setup",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "\u00a71 setup",
-      "_origin": "semantic",
-      "id": "rules_setup"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "\u00a71 setup"
     },
     {
       "label": "Standard Loner (4 points)",
@@ -1550,11 +1445,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_standard_loner",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "standard loner (4 points)",
-      "_origin": "semantic",
-      "id": "rules_standard_loner"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "standard loner (4 points)"
     },
     {
       "label": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
@@ -1565,11 +1459,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_document",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "rules.md \u2014 two-handed euchre rules spec",
-      "_origin": "semantic",
-      "id": "rules_document"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "rules.md \u2014 two-handed euchre rules spec"
     },
     {
       "label": "Blind Hand Reveal Default",
@@ -1581,11 +1474,10 @@
       "author": null,
       "contributor": null,
       "rationale": "Revealed to both players at the end of each deal, purely for table transparency/curiosity. Cosmetic \u2014 a UI flag, not an engine rule.",
+      "id": "rules_blind_hand_reveal",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "blind hand reveal default",
-      "_origin": "semantic",
-      "id": "rules_blind_hand_reveal"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "blind hand reveal default"
     },
     {
       "label": "config.ts Game-to-10 Constant",
@@ -1597,11 +1489,10 @@
       "author": null,
       "contributor": null,
       "rationale": "Game to 10 points is the default, expressed as a config.ts constant, changeable with no logic change.",
+      "id": "rules_config_ts",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "config.ts game-to-10 constant",
-      "_origin": "semantic",
-      "id": "rules_config_ts"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "config.ts game-to-10 constant"
     },
     {
       "label": "Dealer Alternation Default",
@@ -1613,11 +1504,10 @@
       "author": null,
       "contributor": null,
       "rationale": "Dealer alternates every deal: standard, clockwise from the previous dealer.",
+      "id": "rules_dealer_alternation",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "dealer alternation default",
-      "_origin": "semantic",
-      "id": "rules_dealer_alternation"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "dealer alternation default"
     },
     {
       "label": "Deferred Variant Rules ('few crazy rules')",
@@ -1629,11 +1519,10 @@
       "author": null,
       "contributor": null,
       "rationale": "Not blocking Phase 1 since they're additive/variant rules layered on top of the resolved shell, not changes to it \u2014 they slot in as additional config or additional action types without touching what's above.",
+      "id": "rules_deferred_variant_rules",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "deferred variant rules ('few crazy rules')",
-      "_origin": "semantic",
-      "id": "rules_deferred_variant_rules"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "deferred variant rules ('few crazy rules')"
     },
     {
       "label": "Full-Blind Loner Hand Resolution",
@@ -1645,11 +1534,10 @@
       "author": null,
       "contributor": null,
       "rationale": "Resolved by sequencing, not actually ambiguous \u2014 blind selection (\u00a71) happens for both players before any loner window opens (\u00a72), so a full-blind declaration is always made with a selected hand already fixed; that selected hand is the lone hand. No separate rule needed.",
+      "id": "rules_full_blind_resolution",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "full-blind loner hand resolution",
-      "_origin": "semantic",
-      "id": "rules_full_blind_resolution"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "full-blind loner hand resolution"
     },
     {
       "label": "Loner Sweep Scoring Bonus",
@@ -1661,11 +1549,10 @@
       "author": null,
       "contributor": null,
       "rationale": "A loner who takes 3\u20134 tricks (doesn't sweep) scores the standard 1 point \u2014 the tiered bonus (4/6/8) applies only to a clean sweep. A loner who fails to take 3 is euchred exactly as normal: defenders get 2 points, regardless of tier.",
+      "id": "rules_loner_sweep_bonus",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "loner sweep scoring bonus",
-      "_origin": "semantic",
-      "id": "rules_loner_sweep_bonus"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "loner sweep scoring bonus"
     },
     {
       "label": "Misdeal Conditions Default",
@@ -1677,11 +1564,10 @@
       "author": null,
       "contributor": null,
       "rationale": "None in v1 \u2014 the blind mechanic has no exposed-card-during-deal case, so there's nothing to misdeal on. Revisit only if a real deal produces a dispute.",
+      "id": "rules_misdeal_conditions",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "misdeal conditions default",
-      "_origin": "semantic",
-      "id": "rules_misdeal_conditions"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "misdeal conditions default"
     },
     {
       "label": "Redeal Default (stick-the-dealer off)",
@@ -1693,11 +1579,10 @@
       "author": null,
       "contributor": null,
       "rationale": "If stick-the-dealer is off and both pass round 2, the deal is thrown in and redealt by the same dealer. Config-only; flip the flag, no engine change.",
+      "id": "rules_redeal_default",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "redeal default (stick-the-dealer off)",
-      "_origin": "semantic",
-      "id": "rules_redeal_default"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "redeal default (stick-the-dealer off)"
     },
     {
       "label": "Sequential First-Refusal Default",
@@ -1709,11 +1594,10 @@
       "author": null,
       "contributor": null,
       "rationale": "Non-dealer decides first within each window; if they pass, dealer gets the same window before it closes. Matches every other bidding round in the game (\u00a73), so it's the same legalActions shape reused four times, not a special case.",
+      "id": "rules_sequential_first_refusal",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "sequential first-refusal default",
-      "_origin": "semantic",
-      "id": "rules_sequential_first_refusal"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "sequential first-refusal default"
     },
     {
       "label": "Stick the Dealer (config flag, default on)",
@@ -1725,11 +1609,10 @@
       "author": null,
       "contributor": null,
       "rationale": "If both players pass round 2, the dealer is forced to name a trump suit rather than a misdeal/redeal \u2014 chosen as the default to avoid redeal churn.",
+      "id": "rules_stick_the_dealer",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "stick the dealer (config flag, default on)",
-      "_origin": "semantic",
-      "id": "rules_stick_the_dealer"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "stick the dealer (config flag, default on)"
     },
     {
       "label": "\u00a74 Tiers 2 & 3 Dealer Exchange",
@@ -1741,11 +1624,10 @@
       "author": null,
       "contributor": null,
       "rationale": "If the maker declared blind-trump or full-blind, the dealer still receives the upcard and discards regardless of who is maker or whether the dealer is even involved in the bid \u2014 it's a mechanical consequence of the upcard existing, not a bidding action. Kept private, consistent with every other hand-content rule in the game.",
+      "id": "rules_tier_2_3_dealer_exchange",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "\u00a74 tiers 2 & 3 dealer exchange",
-      "_origin": "semantic",
-      "id": "rules_tier_2_3_dealer_exchange"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "\u00a74 tiers 2 & 3 dealer exchange"
     },
     {
       "label": "Fixed Trick Rotation Ring",
@@ -1757,11 +1639,10 @@
       "author": null,
       "contributor": null,
       "rationale": "Ring set once at the start of the deal (depends on selected/blind status, not dealer role); only the starting point changes trick to trick, set by whichever hand won the previous trick. Standard euchre 'winner leads next' applied at the hand level instead of the player level \u2014 no extra state needed.",
+      "id": "rules_trick_rotation_ring",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "fixed trick rotation ring",
-      "_origin": "semantic",
-      "id": "rules_trick_rotation_ring"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "fixed trick rotation ring"
     },
     {
       "label": "Hand Visibility Rule",
@@ -1773,11 +1654,10 @@
       "author": null,
       "contributor": null,
       "rationale": "Only the hand currently taking its turn is shown to its owner. A player flips between their two hands' views potentially twice within one trick \u2014 once at each hand's turn \u2014 never seeing both simultaneously.",
+      "id": "rules_visibility",
       "community": 1,
-      "community_name": "RULES.md \u2014 Two-Handed Euchre Rules Spec",
-      "norm_label": "hand visibility rule",
-      "_origin": "semantic",
-      "id": "rules_visibility"
+      "community_name": "Rules Spec Sections",
+      "norm_label": "hand visibility rule"
     },
     {
       "label": "Hand A1 (Player A, selected/blind)",
@@ -1788,11 +1668,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_hand_a1",
       "community": 7,
-      "community_name": "Hand A1 (Player A, selected/blind)",
-      "norm_label": "hand a1 (player a, selected/blind)",
-      "_origin": "semantic",
-      "id": "rules_hand_a1"
+      "community_name": "Player A's Hands",
+      "norm_label": "hand a1 (player a, selected/blind)"
     },
     {
       "label": "Hand A2 (Player A, selected/blind)",
@@ -1803,11 +1682,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_hand_a2",
       "community": 7,
-      "community_name": "Hand A1 (Player A, selected/blind)",
-      "norm_label": "hand a2 (player a, selected/blind)",
-      "_origin": "semantic",
-      "id": "rules_hand_a2"
+      "community_name": "Player A's Hands",
+      "norm_label": "hand a2 (player a, selected/blind)"
     },
     {
       "label": "Player A",
@@ -1818,11 +1696,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_player_a",
       "community": 7,
-      "community_name": "Hand A1 (Player A, selected/blind)",
-      "norm_label": "player a",
-      "_origin": "semantic",
-      "id": "rules_player_a"
+      "community_name": "Player A's Hands",
+      "norm_label": "player a"
     },
     {
       "label": "Hand B1 (Player B, selected/blind)",
@@ -1833,11 +1710,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_hand_b1",
       "community": 8,
-      "community_name": "Hand B1 (Player B, selected/blind)",
-      "norm_label": "hand b1 (player b, selected/blind)",
-      "_origin": "semantic",
-      "id": "rules_hand_b1"
+      "community_name": "Player B's Hands",
+      "norm_label": "hand b1 (player b, selected/blind)"
     },
     {
       "label": "Hand B2 (Player B, selected/blind)",
@@ -1848,11 +1724,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_hand_b2",
       "community": 8,
-      "community_name": "Hand B1 (Player B, selected/blind)",
-      "norm_label": "hand b2 (player b, selected/blind)",
-      "_origin": "semantic",
-      "id": "rules_hand_b2"
+      "community_name": "Player B's Hands",
+      "norm_label": "hand b2 (player b, selected/blind)"
     },
     {
       "label": "Player B",
@@ -1863,11 +1738,10 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
+      "id": "rules_player_b",
       "community": 8,
-      "community_name": "Hand B1 (Player B, selected/blind)",
-      "norm_label": "player b",
-      "_origin": "semantic",
-      "id": "rules_player_b"
+      "community_name": "Player B's Hands",
+      "norm_label": "player b"
     }
   ],
   "links": [
@@ -1879,9 +1753,9 @@
       "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz_playrandomdeal",
-      "target": "scripts_fuzz_seededrng"
+      "target": "scripts_fuzz_seededrng",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -1891,9 +1765,9 @@
       "source_location": "L40",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz_playrandomdeal",
-      "target": "shared_engine_reducer_newgame"
+      "target": "shared_engine_reducer_newgame",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -1903,9 +1777,9 @@
       "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz_playrandomdeal",
-      "target": "shared_engine_legal_legalactions"
+      "target": "shared_engine_legal_legalactions",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -1915,9 +1789,9 @@
       "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz_playrandomdeal",
-      "target": "scripts_fuzz_pick"
+      "target": "scripts_fuzz_pick",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -1927,9 +1801,9 @@
       "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz_playrandomdeal",
-      "target": "shared_engine_reducer_reduce"
+      "target": "shared_engine_reducer_reduce",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -1939,9 +1813,9 @@
       "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck_deal",
-      "target": "shared_engine_deck_shuffleddeck"
+      "target": "shared_engine_deck_shuffleddeck",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -1951,9 +1825,9 @@
       "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck_shuffleddeck",
-      "target": "shared_engine_deck_fulldeck"
+      "target": "shared_engine_deck_fulldeck",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -1963,9 +1837,9 @@
       "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck_shuffleddeck",
-      "target": "shared_engine_deck_seededrng"
+      "target": "shared_engine_deck_seededrng",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -1999,9 +1873,9 @@
       "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal_legalactions",
-      "target": "shared_engine_legal_otherplayer"
+      "target": "shared_engine_legal_otherplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2011,9 +1885,9 @@
       "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal_legalactions",
-      "target": "shared_engine_legal_turnplayer"
+      "target": "shared_engine_legal_turnplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2023,9 +1897,9 @@
       "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal_legalactions",
-      "target": "shared_engine_legal_actinghand"
+      "target": "shared_engine_legal_actinghand",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2035,9 +1909,9 @@
       "source_location": "L96",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal_legalactions",
-      "target": "shared_engine_legal_handcards"
+      "target": "shared_engine_legal_handcards",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2047,9 +1921,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal_turnplayer",
-      "target": "shared_engine_legal_otherplayer"
+      "target": "shared_engine_legal_otherplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2059,9 +1933,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_assertlegal",
-      "target": "shared_engine_legal_actinghand"
+      "target": "shared_engine_legal_actinghand",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2071,9 +1945,9 @@
       "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_assertlegal",
-      "target": "shared_engine_legal_legalactions"
+      "target": "shared_engine_legal_legalactions",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2083,9 +1957,9 @@
       "source_location": "L66",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_buildring",
-      "target": "shared_engine_legal_otherplayer"
+      "target": "shared_engine_legal_otherplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2095,9 +1969,9 @@
       "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_enterplay",
-      "target": "shared_engine_legal_otherplayer"
+      "target": "shared_engine_legal_otherplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2107,9 +1981,9 @@
       "source_location": "L81",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_enterplay",
-      "target": "shared_engine_reducer_buildring"
+      "target": "shared_engine_reducer_buildring",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2143,9 +2017,9 @@
       "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_nextdeal",
-      "target": "shared_engine_reducer_newgame"
+      "target": "shared_engine_reducer_newgame",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2155,9 +2029,9 @@
       "source_location": "L141",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_reduce",
-      "target": "shared_engine_reducer_assertlegal"
+      "target": "shared_engine_reducer_assertlegal",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2167,9 +2041,9 @@
       "source_location": "L172",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_reduce",
-      "target": "shared_engine_reducer_enterdealerexchange"
+      "target": "shared_engine_reducer_enterdealerexchange",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2179,9 +2053,9 @@
       "source_location": "L205",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_reduce",
-      "target": "shared_engine_reducer_enterplay"
+      "target": "shared_engine_reducer_enterplay",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2191,9 +2065,9 @@
       "source_location": "L233",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_reduce",
-      "target": "shared_engine_reducer_removecard"
+      "target": "shared_engine_reducer_removecard",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2215,9 +2089,9 @@
       "source_location": "L267",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_reduce",
-      "target": "shared_engine_reducer_settlescore"
+      "target": "shared_engine_reducer_settlescore",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2227,9 +2101,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_removecard",
-      "target": "shared_engine_reducer_cardsequal"
+      "target": "shared_engine_reducer_cardsequal",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2239,9 +2113,9 @@
       "source_location": "L111",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer_settlescore",
-      "target": "shared_engine_legal_otherplayer"
+      "target": "shared_engine_legal_otherplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2251,9 +2125,9 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_effectivesuit",
-      "target": "shared_engine_rules_isleftbower"
+      "target": "shared_engine_rules_isleftbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2263,9 +2137,9 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_effectivesuit",
-      "target": "shared_engine_rules_isrightbower"
+      "target": "shared_engine_rules_isrightbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2275,9 +2149,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_isleftbower",
-      "target": "shared_engine_rules_leftbowersuit"
+      "target": "shared_engine_rules_leftbowersuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2287,9 +2161,9 @@
       "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_istrump",
-      "target": "shared_engine_rules_effectivesuit"
+      "target": "shared_engine_rules_effectivesuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2299,9 +2173,9 @@
       "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_legalplays",
-      "target": "shared_engine_rules_effectivesuit"
+      "target": "shared_engine_rules_effectivesuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2311,9 +2185,9 @@
       "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_trickwinnerindex",
-      "target": "shared_engine_rules_effectivesuit"
+      "target": "shared_engine_rules_effectivesuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2323,9 +2197,9 @@
       "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_trickwinnerindex",
-      "target": "shared_engine_rules_istrump"
+      "target": "shared_engine_rules_istrump",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2335,9 +2209,9 @@
       "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_trickwinnerindex",
-      "target": "shared_engine_rules_trumprank"
+      "target": "shared_engine_rules_trumprank",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2347,9 +2221,9 @@
       "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_trumprank",
-      "target": "shared_engine_rules_isrightbower"
+      "target": "shared_engine_rules_isrightbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2359,9 +2233,9 @@
       "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules_trumprank",
-      "target": "shared_engine_rules_isleftbower"
+      "target": "shared_engine_rules_isleftbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2383,9 +2257,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view_redact",
-      "target": "shared_engine_view_visible"
+      "target": "shared_engine_view_visible",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2407,9 +2281,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view_visible",
-      "target": "shared_engine_legal_actinghand"
+      "target": "shared_engine_legal_actinghand",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2419,9 +2293,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view_visible",
-      "target": "shared_engine_view_handsequal"
+      "target": "shared_engine_view_handsequal",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2467,9 +2341,9 @@
       "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers_orderupround1",
-      "target": "tests_helpers_selecthands"
+      "target": "tests_helpers_selecthands",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2479,9 +2353,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers_orderupround1",
-      "target": "tests_helpers_passlonerwindows"
+      "target": "tests_helpers_passlonerwindows",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -2587,9 +2461,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_index",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "re_exports",
@@ -2599,9 +2473,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_index",
-      "target": "shared_engine_deck"
+      "target": "shared_engine_deck",
+      "confidence_score": 1.0
     },
     {
       "relation": "re_exports",
@@ -2611,9 +2485,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_index",
-      "target": "shared_engine_config"
+      "target": "shared_engine_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "re_exports",
@@ -2623,9 +2497,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_index",
-      "target": "shared_engine_rules"
+      "target": "shared_engine_rules",
+      "confidence_score": 1.0
     },
     {
       "relation": "re_exports",
@@ -2635,9 +2509,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_index",
-      "target": "shared_engine_legal"
+      "target": "shared_engine_legal",
+      "confidence_score": 1.0
     },
     {
       "relation": "re_exports",
@@ -2647,9 +2521,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_index",
-      "target": "shared_engine_reducer"
+      "target": "shared_engine_reducer",
+      "confidence_score": 1.0
     },
     {
       "relation": "re_exports",
@@ -2659,9 +2533,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_index",
-      "target": "shared_engine_view"
+      "target": "shared_engine_view",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -2671,9 +2545,9 @@
       "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck_deal",
-      "target": "shared_engine_types_card"
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -2683,9 +2557,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers_playstateoptions",
-      "target": "shared_engine_types_player"
+      "target": "shared_engine_types_player",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -2695,9 +2569,9 @@
       "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers_playstateoptions",
-      "target": "shared_engine_types_suit"
+      "target": "shared_engine_types_suit",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -2707,9 +2581,9 @@
       "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers_playstateoptions",
-      "target": "shared_engine_types_lonertier"
+      "target": "shared_engine_types_lonertier",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -2719,9 +2593,9 @@
       "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers_playstateoptions",
-      "target": "shared_engine_types_config"
+      "target": "shared_engine_types_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -2731,9 +2605,9 @@
       "source_location": "L47",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers_playstateoptions",
-      "target": "shared_engine_types_card"
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -2743,9 +2617,9 @@
       "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck_deal",
-      "target": "shared_engine_types_player"
+      "target": "shared_engine_types_player",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -2755,9 +2629,9 @@
       "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck_deal",
-      "target": "shared_engine_types_playerhands"
+      "target": "shared_engine_types_playerhands",
+      "confidence_score": 1.0
     },
     {
       "relation": "extends",
@@ -2767,9 +2641,9 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_include",
-      "target": "ref_scripts"
+      "target": "ref_scripts",
+      "confidence_score": 1.0
     },
     {
       "relation": "extends",
@@ -2779,9 +2653,9 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_include",
-      "target": "ref_shared"
+      "target": "ref_shared",
+      "confidence_score": 1.0
     },
     {
       "relation": "extends",
@@ -2791,9 +2665,9 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_include",
-      "target": "ref_src"
+      "target": "ref_src",
+      "confidence_score": 1.0
     },
     {
       "relation": "extends",
@@ -2803,9 +2677,9 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_include",
-      "target": "ref_tests"
+      "target": "ref_tests",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2815,9 +2689,9 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies_tsx",
-      "target": "tsx"
+      "target": "tsx",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2827,9 +2701,9 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies_typescript",
-      "target": "typescript"
+      "target": "typescript",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2839,9 +2713,9 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies_vitest",
-      "target": "vitest"
+      "target": "vitest",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2851,9 +2725,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "shared_engine_reducer_newgame"
+      "target": "shared_engine_reducer_newgame",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2863,9 +2737,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "shared_engine_reducer_reduce"
+      "target": "shared_engine_reducer_reduce",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2875,9 +2749,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "shared_engine_legal_legalactions"
+      "target": "shared_engine_legal_legalactions",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2887,9 +2761,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "shared_engine_types_config"
+      "target": "shared_engine_types_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2899,9 +2773,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "shared_engine_types_gamestate"
+      "target": "shared_engine_types_gamestate",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2911,9 +2785,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "shared_engine_types_player"
+      "target": "shared_engine_types_player",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2923,9 +2797,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_config",
-      "target": "shared_engine_types_config"
+      "target": "shared_engine_types_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2935,9 +2809,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_types_card"
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2947,9 +2821,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_types_player"
+      "target": "shared_engine_types_player",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2959,9 +2833,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_types_playerhands"
+      "target": "shared_engine_types_playerhands",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2971,9 +2845,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_types_rank"
+      "target": "shared_engine_types_rank",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2983,9 +2857,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_types_suit"
+      "target": "shared_engine_types_suit",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2995,9 +2869,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_types_action"
+      "target": "shared_engine_types_action",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3007,9 +2881,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_types_card"
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3019,9 +2893,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_types_gamestate"
+      "target": "shared_engine_types_gamestate",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3031,9 +2905,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_types_handid"
+      "target": "shared_engine_types_handid",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3043,9 +2917,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_types_player"
+      "target": "shared_engine_types_player",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3055,9 +2929,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_types_suit"
+      "target": "shared_engine_types_suit",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3067,9 +2941,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_rules_effectivesuit"
+      "target": "shared_engine_rules_effectivesuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3079,9 +2953,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_rules_legalplays"
+      "target": "shared_engine_rules_legalplays",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3091,9 +2965,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_deck_suits"
+      "target": "shared_engine_deck_suits",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3103,9 +2977,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_types_action"
+      "target": "shared_engine_types_action",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3115,9 +2989,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_types_card"
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3127,9 +3001,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_types_config"
+      "target": "shared_engine_types_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3139,9 +3013,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_types_gamestate"
+      "target": "shared_engine_types_gamestate",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3151,9 +3025,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_types_handid"
+      "target": "shared_engine_types_handid",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3163,9 +3037,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_types_player"
+      "target": "shared_engine_types_player",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3175,9 +3049,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_deck_deal"
+      "target": "shared_engine_deck_deal",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3187,9 +3061,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_legal_actinghand"
+      "target": "shared_engine_legal_actinghand",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3199,9 +3073,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_legal_legalactions"
+      "target": "shared_engine_legal_legalactions",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3211,9 +3085,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_legal_otherplayer"
+      "target": "shared_engine_legal_otherplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3223,9 +3097,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_rules_trickwinnerindex"
+      "target": "shared_engine_rules_trickwinnerindex",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3235,9 +3109,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_types_card"
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3247,9 +3121,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_types_rank"
+      "target": "shared_engine_types_rank",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3259,9 +3133,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_types_suit"
+      "target": "shared_engine_types_suit",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3271,9 +3145,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_types_trickcard"
+      "target": "shared_engine_types_trickcard",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3283,9 +3157,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_types_gamestate"
+      "target": "shared_engine_types_gamestate",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3295,9 +3169,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_types_handid"
+      "target": "shared_engine_types_handid",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3307,9 +3181,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_types_player"
+      "target": "shared_engine_types_player",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3319,9 +3193,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_types_playerview"
+      "target": "shared_engine_types_playerview",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3331,9 +3205,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_legal_actinghand"
+      "target": "shared_engine_legal_actinghand",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3343,9 +3217,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_legal_otherplayer"
+      "target": "shared_engine_legal_otherplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3355,9 +3229,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_deck_test",
-      "target": "shared_engine_deck_deal"
+      "target": "shared_engine_deck_deal",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3367,9 +3241,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_deck_test",
-      "target": "shared_engine_deck_fulldeck"
+      "target": "shared_engine_deck_fulldeck",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3379,9 +3253,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_deck_test",
-      "target": "shared_engine_deck_shuffleddeck"
+      "target": "shared_engine_deck_shuffleddeck",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3391,9 +3265,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_types_card"
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3403,9 +3277,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_types_config"
+      "target": "shared_engine_types_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3415,9 +3289,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_types_gamestate"
+      "target": "shared_engine_types_gamestate",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3427,9 +3301,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_types_handid"
+      "target": "shared_engine_types_handid",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3439,9 +3313,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_types_lonertier"
+      "target": "shared_engine_types_lonertier",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3451,9 +3325,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_types_player"
+      "target": "shared_engine_types_player",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3463,9 +3337,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_types_suit"
+      "target": "shared_engine_types_suit",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3475,9 +3349,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_config_default_config"
+      "target": "shared_engine_config_default_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3487,9 +3361,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_reducer_newgame"
+      "target": "shared_engine_reducer_newgame",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3499,9 +3373,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_reducer_reduce"
+      "target": "shared_engine_reducer_reduce",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3511,9 +3385,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_legal_legalactions"
+      "target": "shared_engine_legal_legalactions",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3523,9 +3397,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_legal_otherplayer"
+      "target": "shared_engine_legal_otherplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3535,9 +3409,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "shared_engine_config_default_config"
+      "target": "shared_engine_config_default_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3547,9 +3421,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "shared_engine_reducer_newgame"
+      "target": "shared_engine_reducer_newgame",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3559,9 +3433,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "shared_engine_reducer_nextdeal"
+      "target": "shared_engine_reducer_nextdeal",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3571,9 +3445,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "shared_engine_reducer_reduce"
+      "target": "shared_engine_reducer_reduce",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3583,9 +3457,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "shared_engine_legal_legalactions"
+      "target": "shared_engine_legal_legalactions",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3595,9 +3469,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "shared_engine_legal_otherplayer"
+      "target": "shared_engine_legal_otherplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3607,9 +3481,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "shared_engine_view_redact"
+      "target": "shared_engine_view_redact",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3619,9 +3493,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "tests_helpers_dealerdiscardfirstlegal"
+      "target": "tests_helpers_dealerdiscardfirstlegal",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3631,9 +3505,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "tests_helpers_makeplaystate"
+      "target": "tests_helpers_makeplaystate",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3643,9 +3517,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "tests_helpers_orderupround1"
+      "target": "tests_helpers_orderupround1",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3655,9 +3529,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "tests_helpers_passlonerwindows"
+      "target": "tests_helpers_passlonerwindows",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3667,9 +3541,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "tests_helpers_playouthand"
+      "target": "tests_helpers_playouthand",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3679,9 +3553,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "tests_helpers_selecthands"
+      "target": "tests_helpers_selecthands",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3691,9 +3565,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_rules_test",
-      "target": "shared_engine_types_card"
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3703,9 +3577,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_rules_test",
-      "target": "shared_engine_types_trickcard"
+      "target": "shared_engine_types_trickcard",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3715,9 +3589,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_rules_test",
-      "target": "shared_engine_rules_effectivesuit"
+      "target": "shared_engine_rules_effectivesuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3727,9 +3601,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_rules_test",
-      "target": "shared_engine_rules_isleftbower"
+      "target": "shared_engine_rules_isleftbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3739,9 +3613,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_rules_test",
-      "target": "shared_engine_rules_isrightbower"
+      "target": "shared_engine_rules_isrightbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3751,9 +3625,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_rules_test",
-      "target": "shared_engine_rules_legalplays"
+      "target": "shared_engine_rules_legalplays",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -3763,9 +3637,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_rules_test",
-      "target": "shared_engine_rules_trickwinnerindex"
+      "target": "shared_engine_rules_trickwinnerindex",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3775,9 +3649,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "shared_engine_reducer"
+      "target": "shared_engine_reducer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3787,9 +3661,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "shared_engine_legal"
+      "target": "shared_engine_legal",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3799,9 +3673,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3811,9 +3685,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_config",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3823,9 +3697,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3835,9 +3709,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3847,9 +3721,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_rules"
+      "target": "shared_engine_rules",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3859,9 +3733,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_deck"
+      "target": "shared_engine_deck",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3871,9 +3745,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3883,9 +3757,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_deck"
+      "target": "shared_engine_deck",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3895,9 +3769,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_legal"
+      "target": "shared_engine_legal",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3907,9 +3781,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_rules"
+      "target": "shared_engine_rules",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3919,9 +3793,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3931,9 +3805,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3943,9 +3817,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_legal"
+      "target": "shared_engine_legal",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3955,9 +3829,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_deck_test",
-      "target": "shared_engine_deck"
+      "target": "shared_engine_deck",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3967,9 +3841,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3979,9 +3853,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_config"
+      "target": "shared_engine_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -3991,9 +3865,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_reducer"
+      "target": "shared_engine_reducer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -4003,9 +3877,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "shared_engine_legal"
+      "target": "shared_engine_legal",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -4015,9 +3889,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "shared_engine_config"
+      "target": "shared_engine_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -4027,9 +3901,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "shared_engine_reducer"
+      "target": "shared_engine_reducer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -4039,9 +3913,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "shared_engine_legal"
+      "target": "shared_engine_legal",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -4051,9 +3925,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "shared_engine_view"
+      "target": "shared_engine_view",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -4063,9 +3937,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_reducer_test",
-      "target": "tests_helpers"
+      "target": "tests_helpers",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -4075,9 +3949,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_rules_test",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -4087,19 +3961,8 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_rules_test",
-      "target": "shared_engine_rules"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "CLAUDE.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "claude",
-      "target": "claude_graphify",
+      "target": "shared_engine_rules",
       "confidence_score": 1.0
     },
     {
@@ -4109,9 +3972,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_devdependencies"
+      "target": "package_devdependencies",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4120,9 +3983,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_name"
+      "target": "package_name",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4131,9 +3994,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_private"
+      "target": "package_private",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4142,9 +4005,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_type"
+      "target": "package_type",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4153,9 +4016,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_scripts"
+      "target": "package_scripts",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4164,9 +4027,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_typescript"
+      "target": "package_devdependencies_typescript",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4175,9 +4038,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_vitest"
+      "target": "package_devdependencies_vitest",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4186,9 +4049,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_tsx"
+      "target": "package_devdependencies_tsx",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4197,9 +4060,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_test"
+      "target": "package_scripts_test",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4208,9 +4071,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_test_watch"
+      "target": "package_scripts_test_watch",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4219,63 +4082,8 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_fuzz"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "README.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "readme",
-      "target": "readme_two_handed_euchre",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "README.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "readme_two_handed_euchre",
-      "target": "readme_status",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "README.md",
-      "source_location": "L21",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "readme_two_handed_euchre",
-      "target": "readme_repo_layout",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "README.md",
-      "source_location": "L31",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "readme_two_handed_euchre",
-      "target": "readme_running_the_engine",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "README.md",
-      "source_location": "L39",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "readme_two_handed_euchre",
-      "target": "readme_knowledge_graph",
+      "target": "package_scripts_fuzz",
       "confidence_score": 1.0
     },
     {
@@ -4285,9 +4093,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "scripts_fuzz_terminal_phases"
+      "target": "scripts_fuzz_terminal_phases",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4296,9 +4104,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "scripts_fuzz_seededrng"
+      "target": "scripts_fuzz_seededrng",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4307,9 +4115,9 @@
       "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "scripts_fuzz_pick"
+      "target": "scripts_fuzz_pick",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4318,9 +4126,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "scripts_fuzz_playrandomdeal"
+      "target": "scripts_fuzz_playrandomdeal",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4329,9 +4137,9 @@
       "source_location": "L71",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "scripts_fuzz",
-      "target": "scripts_fuzz_outcomes"
+      "target": "scripts_fuzz_outcomes",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4340,9 +4148,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_config",
-      "target": "shared_engine_config_default_config"
+      "target": "shared_engine_config_default_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4351,9 +4159,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_deck_seededrng"
+      "target": "shared_engine_deck_seededrng",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4362,9 +4170,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_deck_suits"
+      "target": "shared_engine_deck_suits",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4373,9 +4181,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_deck_shuffleddeck"
+      "target": "shared_engine_deck_shuffleddeck",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4384,9 +4192,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_deck_ranks"
+      "target": "shared_engine_deck_ranks",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4395,9 +4203,9 @@
       "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_deck_deal"
+      "target": "shared_engine_deck_deal",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4406,9 +4214,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_deck",
-      "target": "shared_engine_deck_fulldeck"
+      "target": "shared_engine_deck_fulldeck",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4417,9 +4225,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_legal_turnplayer"
+      "target": "shared_engine_legal_turnplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4428,9 +4236,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_legal_actinghand"
+      "target": "shared_engine_legal_actinghand",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4439,9 +4247,9 @@
       "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_legal_handcards"
+      "target": "shared_engine_legal_handcards",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4450,9 +4258,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_legal_legalactions"
+      "target": "shared_engine_legal_legalactions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4461,9 +4269,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_legal",
-      "target": "shared_engine_legal_otherplayer"
+      "target": "shared_engine_legal_otherplayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4472,9 +4280,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_reducer_removecard"
+      "target": "shared_engine_reducer_removecard",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4483,9 +4291,9 @@
       "source_location": "L109",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_reducer_settlescore"
+      "target": "shared_engine_reducer_settlescore",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4494,9 +4302,9 @@
       "source_location": "L140",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_reducer_reduce"
+      "target": "shared_engine_reducer_reduce",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4505,9 +4313,9 @@
       "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_reducer_newgame"
+      "target": "shared_engine_reducer_newgame",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4516,9 +4324,9 @@
       "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_reducer_nextdeal"
+      "target": "shared_engine_reducer_nextdeal",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4527,9 +4335,9 @@
       "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_reducer_assertlegal"
+      "target": "shared_engine_reducer_assertlegal",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4538,9 +4346,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_reducer_cardsequal"
+      "target": "shared_engine_reducer_cardsequal",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4549,9 +4357,9 @@
       "source_location": "L65",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_reducer_buildring"
+      "target": "shared_engine_reducer_buildring",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4560,9 +4368,9 @@
       "source_location": "L79",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_reducer_enterplay"
+      "target": "shared_engine_reducer_enterplay",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4571,9 +4379,9 @@
       "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_reducer",
-      "target": "shared_engine_reducer_enterdealerexchange"
+      "target": "shared_engine_reducer_enterdealerexchange",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4582,9 +4390,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_leftbowersuit"
+      "target": "shared_engine_rules_leftbowersuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4593,9 +4401,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_isrightbower"
+      "target": "shared_engine_rules_isrightbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4604,9 +4412,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_isleftbower"
+      "target": "shared_engine_rules_isleftbower",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4615,9 +4423,9 @@
       "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_effectivesuit"
+      "target": "shared_engine_rules_effectivesuit",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4626,9 +4434,9 @@
       "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_istrump"
+      "target": "shared_engine_rules_istrump",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4637,9 +4445,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_same_color"
+      "target": "shared_engine_rules_same_color",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4648,9 +4456,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_plain_rank_order"
+      "target": "shared_engine_rules_plain_rank_order",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4659,9 +4467,9 @@
       "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_trumprank"
+      "target": "shared_engine_rules_trumprank",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4670,9 +4478,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_legalplays"
+      "target": "shared_engine_rules_legalplays",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4681,9 +4489,9 @@
       "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_rules",
-      "target": "shared_engine_rules_trickwinnerindex"
+      "target": "shared_engine_rules_trickwinnerindex",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4692,9 +4500,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_suit"
+      "target": "shared_engine_types_suit",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4703,9 +4511,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_handid"
+      "target": "shared_engine_types_handid",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4714,9 +4522,9 @@
       "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_lonertier"
+      "target": "shared_engine_types_lonertier",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4725,9 +4533,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_phase"
+      "target": "shared_engine_types_phase",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4736,9 +4544,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_rank"
+      "target": "shared_engine_types_rank",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4747,9 +4555,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_player"
+      "target": "shared_engine_types_player",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4758,9 +4566,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_playerhands"
+      "target": "shared_engine_types_playerhands",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4769,9 +4577,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_trickcard"
+      "target": "shared_engine_types_trickcard",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4780,9 +4588,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_handrole"
+      "target": "shared_engine_types_handrole",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4791,9 +4599,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_gamestate"
+      "target": "shared_engine_types_gamestate",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4802,9 +4610,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_card"
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4813,9 +4621,9 @@
       "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_action"
+      "target": "shared_engine_types_action",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4824,9 +4632,9 @@
       "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_config"
+      "target": "shared_engine_types_config",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4835,9 +4643,9 @@
       "source_location": "L91",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_types",
-      "target": "shared_engine_types_playerview"
+      "target": "shared_engine_types_playerview",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4846,9 +4654,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_view_visible"
+      "target": "shared_engine_view_visible",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4857,9 +4665,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_view_redact"
+      "target": "shared_engine_view_redact",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4868,9 +4676,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_view_deal_over_phases"
+      "target": "shared_engine_view_deal_over_phases",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4879,9 +4687,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "shared_engine_view",
-      "target": "shared_engine_view_handsequal"
+      "target": "shared_engine_view_handsequal",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4890,9 +4698,9 @@
       "source_location": "L106",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "tests_helpers_playouthand"
+      "target": "tests_helpers_playouthand",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4901,9 +4709,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "tests_helpers_passlonerwindows"
+      "target": "tests_helpers_passlonerwindows",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4912,9 +4720,9 @@
       "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "tests_helpers_orderupround1"
+      "target": "tests_helpers_orderupround1",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4923,9 +4731,9 @@
       "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "tests_helpers_dealerdiscardfirstlegal"
+      "target": "tests_helpers_dealerdiscardfirstlegal",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4934,9 +4742,9 @@
       "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "tests_helpers_playstateoptions"
+      "target": "tests_helpers_playstateoptions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4945,9 +4753,9 @@
       "source_location": "L57",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "tests_helpers_makeplaystate"
+      "target": "tests_helpers_makeplaystate",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4956,9 +4764,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_helpers",
-      "target": "tests_helpers_selecthands"
+      "target": "tests_helpers_selecthands",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4967,9 +4775,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tests_rules_test",
-      "target": "tests_rules_test_c"
+      "target": "tests_rules_test_c",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4978,9 +4786,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig",
-      "target": "tsconfig_include"
+      "target": "tsconfig_include",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4989,9 +4797,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig",
-      "target": "tsconfig_compileroptions"
+      "target": "tsconfig_compileroptions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5000,9 +4808,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_skiplibcheck"
+      "target": "tsconfig_compileroptions_skiplibcheck",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5011,9 +4819,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_esmoduleinterop"
+      "target": "tsconfig_compileroptions_esmoduleinterop",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5022,9 +4830,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_forceconsistentcasinginfilenames"
+      "target": "tsconfig_compileroptions_forceconsistentcasinginfilenames",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5033,9 +4841,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_target"
+      "target": "tsconfig_compileroptions_target",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5044,9 +4852,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_module"
+      "target": "tsconfig_compileroptions_module",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5055,9 +4863,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_moduleresolution"
+      "target": "tsconfig_compileroptions_moduleresolution",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5066,9 +4874,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_strict"
+      "target": "tsconfig_compileroptions_strict",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5077,9 +4885,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_nouncheckedindexedaccess"
+      "target": "tsconfig_compileroptions_nouncheckedindexedaccess",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5088,9 +4896,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_allowimportingtsextensions"
+      "target": "tsconfig_compileroptions_allowimportingtsextensions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5099,19 +4907,8 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_noemit"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "README.md",
-      "source_location": "L9",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "readme",
-      "target": "shared_engine_rules",
+      "target": "tsconfig_compileroptions_noemit",
       "confidence_score": 1.0
     },
     {
@@ -5121,7 +4918,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_blind_trump_loner",
       "target": "rules_loner_declaration_windows"
     },
@@ -5132,7 +4928,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_full_blind_loner",
       "target": "rules_loner_declaration_windows"
     },
@@ -5143,7 +4938,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_full_blind_resolution",
       "target": "rules_full_blind_loner"
     },
@@ -5154,7 +4948,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_hand_a1",
       "target": "rules_hand_a2"
     },
@@ -5165,7 +4958,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_hand_b1",
       "target": "rules_hand_b2"
     },
@@ -5176,7 +4968,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_player_a",
       "target": "rules_hand_a1"
     },
@@ -5187,7 +4978,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_player_a",
       "target": "rules_hand_a2"
     },
@@ -5198,7 +4988,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_player_b",
       "target": "rules_hand_b1"
     },
@@ -5209,7 +4998,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_player_b",
       "target": "rules_hand_b2"
     },
@@ -5220,7 +5008,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_sequential_first_refusal",
       "target": "rules_loner_declaration_windows"
     },
@@ -5231,7 +5018,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_standard_loner",
       "target": "rules_bidding"
     },
@@ -5242,7 +5028,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_stick_the_dealer",
       "target": "rules_redeal_default"
     },
@@ -5253,7 +5038,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_tier_2_3_dealer_exchange",
       "target": "rules_visibility"
     },
@@ -5264,7 +5048,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_trick_rotation_ring",
       "target": "rules_going_alone_mechanics"
     },
@@ -5275,7 +5058,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_bidding",
       "target": "rules_stick_the_dealer"
     },
@@ -5286,7 +5068,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_document",
       "target": "rules_bidding"
     },
@@ -5297,7 +5078,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_document",
       "target": "rules_going_alone_mechanics"
     },
@@ -5308,7 +5088,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_document",
       "target": "rules_loner_declaration_windows"
     },
@@ -5319,7 +5098,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_document",
       "target": "rules_misc_deferred"
     },
@@ -5330,7 +5108,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_document",
       "target": "rules_play"
     },
@@ -5341,7 +5118,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_document",
       "target": "rules_scoring"
     },
@@ -5352,7 +5128,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_document",
       "target": "rules_setup"
     },
@@ -5363,7 +5138,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_document",
       "target": "rules_tier_2_3_dealer_exchange"
     },
@@ -5374,7 +5148,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_going_alone_mechanics",
       "target": "rules_full_blind_resolution"
     },
@@ -5385,7 +5158,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_going_alone_mechanics",
       "target": "rules_loner_declaration_windows"
     },
@@ -5396,7 +5168,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_going_alone_mechanics",
       "target": "rules_setup"
     },
@@ -5407,7 +5178,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_loner_declaration_windows",
       "target": "rules_bidding"
     },
@@ -5418,7 +5188,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_misc_deferred",
       "target": "rules_blind_hand_reveal"
     },
@@ -5429,7 +5198,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_misc_deferred",
       "target": "rules_dealer_alternation"
     },
@@ -5440,7 +5208,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_misc_deferred",
       "target": "rules_deferred_variant_rules"
     },
@@ -5451,7 +5218,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_misc_deferred",
       "target": "rules_misdeal_conditions"
     },
@@ -5462,7 +5228,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_play",
       "target": "rules_trick_rotation_ring"
     },
@@ -5473,7 +5238,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_play",
       "target": "rules_visibility"
     },
@@ -5484,7 +5248,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_scoring",
       "target": "rules_config_ts"
     },
@@ -5495,7 +5258,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_scoring",
       "target": "rules_loner_declaration_windows"
     },
@@ -5506,7 +5268,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_scoring",
       "target": "rules_loner_sweep_bonus"
     },
@@ -5517,7 +5278,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_sequential_first_refusal",
       "target": "rules_bidding"
     },
@@ -5528,7 +5288,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_tier_2_3_dealer_exchange",
       "target": "rules_loner_declaration_windows"
     },
@@ -5539,7 +5298,6 @@
       "source_file": "RULES.md",
       "source_location": null,
       "weight": 1.0,
-      "_origin": "semantic",
       "source": "rules_visibility",
       "target": "rules_blind_hand_reveal"
     }
@@ -5591,5 +5349,5 @@
       "source_file": "RULES.md"
     }
   ],
-  "built_at_commit": "aa271dec6293a799b6f80d551fa8ef4c5b343bbc"
+  "built_at_commit": "d4cfdfce7e1547b81726662259e033886e726d31"
 }
