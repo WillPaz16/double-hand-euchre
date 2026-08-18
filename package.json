@@ -1,0 +1,15 @@
+{
+  "name": "euchre",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "fuzz": "tsx scripts/fuzz.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0",
+    "tsx": "^4.19.0"
+  }
+}
