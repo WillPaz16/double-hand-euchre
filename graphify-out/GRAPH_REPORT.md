@@ -1,16 +1,16 @@
 # Graph Report - euchre  (2026-08-19)
 
 ## Corpus Check
-- 38 files · ~28,003 words
+- 39 files · ~29,575 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 354 nodes · 744 edges · 19 communities (18 shown, 1 thin omitted)
+- 365 nodes · 761 edges · 19 communities (18 shown, 1 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.55)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `65d2de16`
+- Built from commit: `1048c51f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -78,18 +78,18 @@ Nodes (24): §3 Bidding (standard, on/after the upcard), Blind Hand Reveal Defau
 
 ### Community 2 - "types.ts"
 Cohesion: 0.11
-Nodes (49): outcomes, pick(), playRandomDeal(), seededRng(), TERMINAL_PHASES, DEFAULT_CONFIG, deal, fullDeck() (+41 more)
+Nodes (50): outcomes, pick(), playRandomDeal(), seededRng(), TERMINAL_PHASES, DEFAULT_CONFIG, deal, fullDeck() (+42 more)
 
 ### Community 3 - "compilerOptions"
 Cohesion: 0.09
 Nodes (21): DOM, DOM.Iterable, ES2022, scripts, shared, src, tests, compilerOptions (+13 more)
 
 ### Community 4 - "devDependencies"
-Cohesion: 0.06
-Nodes (30): dependencies, react, react-dom, devDependencies, tsx, @types/react, @types/react-dom, typescript (+22 more)
+Cohesion: 0.05
+Nodes (36): jsdom, dependencies, react, react-dom, devDependencies, jsdom, @testing-library/dom, @testing-library/react (+28 more)
 
 ### Community 5 - "rules.ts"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (22): bestSuitByTrumpCount(), byType(), cardsEqual(), chooseMove(), countTrump(), findCardAction(), highest(), lowest() (+14 more)
 
 ### Community 6 - "generate_audio.py"
@@ -105,8 +105,8 @@ Cohesion: 1.00
 Nodes (3): Hand B1 (Player B, selected/blind), Hand B2 (Player B, selected/blind), Player B
 
 ### Community 11 - "useGame.ts"
-Cohesion: 0.08
-Nodes (37): Action, PlayerView, App(), BOT, CompletedTrick, freshSeed(), HUMAN, TRICK_HOLD_MS (+29 more)
+Cohesion: 0.07
+Nodes (40): PlayerView, App(), BOT, CompletedTrick, freshSeed(), HUMAN, TRICK_HOLD_MS, useGame() (+32 more)
 
 ### Community 12 - "Art assets — spec"
 Cohesion: 0.14
@@ -137,7 +137,7 @@ Cohesion: 0.14
 Nodes (9): _assert_art_clear_of_indices(), _clamp(), _index_boxes(), make_sprite_sheet(), Paste equal-sized frames into one horizontal strip for CSS steps() animation.…, The two rectangles paste_corners() reserves — kept in sync with it by deriving…, Guardrail: centred artwork must never intrude into a reserved corner index box.…, Move a colour toward white (amount > 0) or black (amount < 0), with a hue… (+1 more)
 
 ## Knowledge Gaps
-- **74 isolated node(s):** `TRICK_HOLD_MS`, `Expression`, `SoundName`, `HandRole`, `Phase` (+69 more)
+- **77 isolated node(s):** `name`, `private`, `type`, `test`, `test:watch` (+72 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -145,16 +145,16 @@ Nodes (9): _assert_art_clear_of_indices(), _clamp(), _index_boxes(), make_sprite
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Card` connect `types.ts` to `useGame.ts`, `rules.ts`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **Why does `PlayerView` connect `useGame.ts` to `types.ts`, `rules.ts`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **What connects `TRICK_HOLD_MS`, `Expression`, `SoundName` to the rest of the system?**
-  _74 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+- **What connects `name`, `private`, `type` to the rest of the system?**
+  _77 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `main` be split into smaller, more focused modules?**
   _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._
 - **Should `RULES.md — Two-Handed Euchre Rules Spec` be split into smaller, more focused modules?**
   _Cohesion score 0.11956521739130435 - nodes in this community are weakly interconnected._
 - **Should `types.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.10790960451977401 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10601092896174863 - nodes in this community are weakly interconnected._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.09090909090909091 - nodes in this community are weakly interconnected._
+- **Should `devDependencies` be split into smaller, more focused modules?**
+  _Cohesion score 0.05405405405405406 - nodes in this community are weakly interconnected._

@@ -605,10 +605,10 @@
       "source_location": "L4",
       "_callable": true,
       "_origin": "ast",
+      "id": "src_ui_handtray_cardsequal",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "cardsequal()",
-      "id": "src_ui_handtray_cardsequal"
+      "norm_label": "cardsequal()"
     },
     {
       "label": "HandTray()",
@@ -617,10 +617,10 @@
       "source_location": "L12",
       "_callable": true,
       "_origin": "ast",
+      "id": "src_ui_handtray_handtray",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "handtray()",
-      "id": "src_ui_handtray_handtray"
+      "norm_label": "handtray()"
     },
     {
       "label": "SceneLayer()",
@@ -677,10 +677,10 @@
       "source_location": "L32",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_remaininginhand",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "remaininginhand()"
+      "norm_label": "remaininginhand()",
+      "id": "src_ui_table_remaininginhand"
     },
     {
       "label": "sameHand()",
@@ -689,10 +689,10 @@
       "source_location": "L25",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_samehand",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "samehand()"
+      "norm_label": "samehand()",
+      "id": "src_ui_table_samehand"
     },
     {
       "label": "seatLabel()",
@@ -701,10 +701,10 @@
       "source_location": "L37",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_seatlabel",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "seatlabel()"
+      "norm_label": "seatlabel()",
+      "id": "src_ui_table_seatlabel"
     },
     {
       "label": "Table()",
@@ -713,10 +713,10 @@
       "source_location": "L43",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_table",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "table()"
+      "norm_label": "table()",
+      "id": "src_ui_table_table"
     },
     {
       "label": "_arm()",
@@ -2306,10 +2306,10 @@
       "source_file": "src/ui/HandTray.tsx",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_ui_handtray",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "handtray.tsx",
-      "id": "src_ui_handtray"
+      "norm_label": "handtray.tsx"
     },
     {
       "label": "SceneLayer.tsx",
@@ -2372,10 +2372,10 @@
       "source_file": "src/ui/Table.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_table",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "table.tsx"
+      "norm_label": "table.tsx",
+      "id": "src_ui_table"
     },
     {
       "label": "SEATS",
@@ -2383,10 +2383,10 @@
       "source_file": "src/ui/Table.tsx",
       "source_location": "L18",
       "_origin": "ast",
-      "id": "src_ui_table_seats",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "seats"
+      "norm_label": "seats",
+      "id": "src_ui_table_seats"
     },
     {
       "label": "ASSETS.md",
@@ -6482,12 +6482,12 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/HandTray.tsx",
-      "source_location": "L44",
+      "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_handtray_handtray",
-      "target": "src_ui_handtray_cardsequal"
+      "target": "src_ui_handtray_cardsequal",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6509,9 +6509,9 @@
       "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_remaininginhand",
-      "target": "src_ui_table_samehand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_samehand"
     },
     {
       "relation": "calls",
@@ -6521,9 +6521,9 @@
       "source_location": "L53",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_samehand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_samehand"
     },
     {
       "relation": "calls",
@@ -6533,9 +6533,9 @@
       "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_remaininginhand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_remaininginhand"
     },
     {
       "relation": "calls",
@@ -6545,9 +6545,9 @@
       "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_seatlabel",
-      "confidence_score": 1.0
+      "target": "src_ui_table_seatlabel"
     },
     {
       "relation": "calls",
@@ -7949,9 +7949,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types_action"
+      "target": "shared_engine_types_action",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7961,9 +7961,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types_card"
+      "target": "shared_engine_types_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7973,9 +7973,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types_playerview"
+      "target": "shared_engine_types_playerview",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7985,9 +7985,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_card_card"
+      "target": "src_ui_card_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8129,9 +8129,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types_handid",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_handid"
     },
     {
       "relation": "imports",
@@ -8141,9 +8141,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types_playerview",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_playerview"
     },
     {
       "relation": "imports",
@@ -8153,9 +8153,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame_bot",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_bot"
     },
     {
       "relation": "imports",
@@ -8165,9 +8165,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame_human",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_human"
     },
     {
       "relation": "imports",
@@ -8177,9 +8177,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame_completedtrick",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_completedtrick"
     },
     {
       "relation": "imports",
@@ -8189,9 +8189,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card_card"
     },
     {
       "relation": "imports",
@@ -8201,9 +8201,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card_cardback",
-      "confidence_score": 1.0
+      "target": "src_ui_card_cardback"
     },
     {
       "relation": "imports",
@@ -9053,9 +9053,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9065,9 +9065,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_card"
+      "target": "src_ui_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9149,9 +9149,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -9161,9 +9161,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame",
-      "confidence_score": 1.0
+      "target": "src_game_usegame"
     },
     {
       "relation": "imports_from",
@@ -9173,9 +9173,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card"
     },
     {
       "relation": "imports_from",
@@ -11630,9 +11630,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_handtray_handtray"
+      "target": "src_ui_handtray_handtray",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11641,9 +11641,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_handtray_cardsequal"
+      "target": "src_ui_handtray_cardsequal",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11718,9 +11718,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_seats",
-      "confidence_score": 1.0
+      "target": "src_ui_table_seats"
     },
     {
       "relation": "contains",
@@ -11729,9 +11729,9 @@
       "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_samehand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_samehand"
     },
     {
       "relation": "contains",
@@ -11740,9 +11740,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_remaininginhand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_remaininginhand"
     },
     {
       "relation": "contains",
@@ -11751,9 +11751,9 @@
       "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_seatlabel",
-      "confidence_score": 1.0
+      "target": "src_ui_table_seatlabel"
     },
     {
       "relation": "contains",
@@ -11762,9 +11762,9 @@
       "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_table",
-      "confidence_score": 1.0
+      "target": "src_ui_table_table"
     },
     {
       "relation": "contains",
@@ -12951,5 +12951,5 @@
       "source_file": "RULES.md"
     }
   ],
-  "built_at_commit": "cdc120910f397cb945140929a08c89732d40ea27"
+  "built_at_commit": "65d2de16149631349c7f54dfdf6e8281b8a1f9c4"
 }
