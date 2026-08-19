@@ -60,7 +60,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "action",
       "id": "shared_engine_types_action"
     },
@@ -73,48 +73,9 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "handid",
       "id": "shared_engine_types_handid"
-    },
-    {
-      "label": "HandRole",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L4",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "handrole",
-      "id": "shared_engine_types_handrole"
-    },
-    {
-      "label": "LonerTier",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L16",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "lonertier",
-      "id": "shared_engine_types_lonertier"
-    },
-    {
-      "label": "Phase",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L18",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "phase",
-      "id": "shared_engine_types_phase"
     },
     {
       "label": "PlayerView",
@@ -125,35 +86,9 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "playerview",
       "id": "shared_engine_types_playerview"
-    },
-    {
-      "label": "Rank",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L2",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "rank",
-      "id": "shared_engine_types_rank"
-    },
-    {
-      "label": "Config",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L85",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "reducer.ts",
-      "norm_label": "config",
-      "id": "shared_engine_types_config"
     },
     {
       "label": "GameState",
@@ -190,7 +125,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "deal",
       "id": "shared_engine_deck_deal"
     },
@@ -203,9 +138,61 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "card",
       "id": "shared_engine_types_card"
+    },
+    {
+      "label": "Config",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L85",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "types.ts",
+      "norm_label": "config",
+      "id": "shared_engine_types_config"
+    },
+    {
+      "label": "HandRole",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L4",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "types.ts",
+      "norm_label": "handrole",
+      "id": "shared_engine_types_handrole"
+    },
+    {
+      "label": "LonerTier",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L16",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "types.ts",
+      "norm_label": "lonertier",
+      "id": "shared_engine_types_lonertier"
+    },
+    {
+      "label": "Phase",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L18",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "types.ts",
+      "norm_label": "phase",
+      "id": "shared_engine_types_phase"
     },
     {
       "label": "Player",
@@ -216,7 +203,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "player",
       "id": "shared_engine_types_player"
     },
@@ -229,9 +216,22 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "playerhands",
       "id": "shared_engine_types_playerhands"
+    },
+    {
+      "label": "Rank",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L2",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "types.ts",
+      "norm_label": "rank",
+      "id": "shared_engine_types_rank"
     },
     {
       "label": "Suit",
@@ -242,7 +242,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "suit",
       "id": "shared_engine_types_suit"
     },
@@ -255,21 +255,9 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "playstateoptions",
       "id": "tests_helpers_playstateoptions"
-    },
-    {
-      "label": "bitmap_size()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L167",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_bitmap_size",
-      "community": 0,
-      "community_name": "generate_art.py",
-      "norm_label": "bitmap_size()"
     },
     {
       "label": "corner_marker()",
@@ -287,13 +275,25 @@
       "label": "draw_bitmap()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L160",
+      "source_location": "L164",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_draw_bitmap",
       "community": 0,
       "community_name": "generate_art.py",
       "norm_label": "draw_bitmap()"
+    },
+    {
+      "label": "draw_bust()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L222",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_draw_bust",
+      "community": 0,
+      "community_name": "generate_art.py",
+      "norm_label": "draw_bust()"
     },
     {
       "label": "draw_card_frame()",
@@ -308,10 +308,70 @@
       "norm_label": "draw_card_frame()"
     },
     {
+      "label": "draw_club_pip()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L134",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_draw_club_pip",
+      "community": 0,
+      "community_name": "generate_art.py",
+      "norm_label": "draw_club_pip()"
+    },
+    {
+      "label": "draw_diamond_pip()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L101",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_draw_diamond_pip",
+      "community": 0,
+      "community_name": "generate_art.py",
+      "norm_label": "draw_diamond_pip()"
+    },
+    {
+      "label": "draw_heart_pip()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L107",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_draw_heart_pip",
+      "community": 0,
+      "community_name": "generate_art.py",
+      "norm_label": "draw_heart_pip()"
+    },
+    {
+      "label": "draw_pip()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L156",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_draw_pip",
+      "community": 0,
+      "community_name": "generate_art.py",
+      "norm_label": "draw_pip()"
+    },
+    {
+      "label": "draw_spade_pip()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L118",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_draw_spade_pip",
+      "community": 0,
+      "community_name": "generate_art.py",
+      "norm_label": "draw_spade_pip()"
+    },
+    {
       "label": "main()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L306",
+      "source_location": "L340",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_main",
@@ -323,7 +383,7 @@
       "label": "make_card_back()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L258",
+      "source_location": "L292",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_card_back",
@@ -335,7 +395,7 @@
       "label": "make_face_card()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L232",
+      "source_location": "L244",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_face_card",
@@ -359,7 +419,7 @@
       "label": "make_table_felt()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L279",
+      "source_location": "L313",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_table_felt",
@@ -383,7 +443,7 @@
       "label": "suit_color()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L156",
+      "source_location": "L160",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_suit_color",
@@ -399,7 +459,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "app()",
       "id": "src_app_app"
     },
@@ -411,7 +471,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "freshseed()",
       "id": "src_game_usegame_freshseed"
     },
@@ -423,7 +483,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "usegame()",
       "id": "src_game_usegame_usegame"
     },
@@ -435,7 +495,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "bidpanel()",
       "id": "src_ui_bidpanel_bidpanel"
     },
@@ -447,7 +507,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "label()",
       "id": "src_ui_bidpanel_label"
     },
@@ -458,10 +518,10 @@
       "source_location": "L7",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_card_card",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "card()"
+      "community_name": "useGame.ts",
+      "norm_label": "card()",
+      "id": "src_ui_card_card"
     },
     {
       "label": "cardAsset()",
@@ -470,10 +530,10 @@
       "source_location": "L3",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_card_cardasset",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "cardasset()"
+      "community_name": "useGame.ts",
+      "norm_label": "cardasset()",
+      "id": "src_ui_card_cardasset"
     },
     {
       "label": "CardBack()",
@@ -482,10 +542,10 @@
       "source_location": "L29",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_card_cardback",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "cardback()"
+      "community_name": "useGame.ts",
+      "norm_label": "cardback()",
+      "id": "src_ui_card_cardback"
     },
     {
       "label": "Game()",
@@ -495,7 +555,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "game()",
       "id": "src_ui_game_game"
     },
@@ -506,10 +566,10 @@
       "source_location": "L4",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_handtray_cardsequal",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "cardsequal()"
+      "community_name": "useGame.ts",
+      "norm_label": "cardsequal()",
+      "id": "src_ui_handtray_cardsequal"
     },
     {
       "label": "HandTray()",
@@ -518,10 +578,10 @@
       "source_location": "L12",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_handtray_handtray",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "handtray()"
+      "community_name": "useGame.ts",
+      "norm_label": "handtray()",
+      "id": "src_ui_handtray_handtray"
     },
     {
       "label": "Scoreboard()",
@@ -531,7 +591,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "scoreboard()",
       "id": "src_ui_scoreboard_scoreboard"
     },
@@ -543,7 +603,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "statusbanner()",
       "id": "src_ui_statusbanner_statusbanner"
     },
@@ -554,10 +614,10 @@
       "source_location": "L19",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_remaininginhand",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "remaininginhand()"
+      "community_name": "useGame.ts",
+      "norm_label": "remaininginhand()",
+      "id": "src_ui_table_remaininginhand"
     },
     {
       "label": "sameHand()",
@@ -566,10 +626,10 @@
       "source_location": "L12",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_samehand",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "samehand()"
+      "community_name": "useGame.ts",
+      "norm_label": "samehand()",
+      "id": "src_ui_table_samehand"
     },
     {
       "label": "seatLabel()",
@@ -578,10 +638,10 @@
       "source_location": "L24",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_seatlabel",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "seatlabel()"
+      "community_name": "useGame.ts",
+      "norm_label": "seatlabel()",
+      "id": "src_ui_table_seatlabel"
     },
     {
       "label": "Table()",
@@ -590,10 +650,10 @@
       "source_location": "L30",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_table",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "table()"
+      "community_name": "useGame.ts",
+      "norm_label": "table()",
+      "id": "src_ui_table_table"
     },
     {
       "label": "pick()",
@@ -1155,7 +1215,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "fulldeck()",
       "id": "shared_engine_deck_fulldeck"
     },
@@ -1167,7 +1227,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "seededrng()",
       "id": "shared_engine_deck_seededrng"
     },
@@ -1179,7 +1239,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "shuffleddeck()",
       "id": "shared_engine_deck_shuffleddeck"
     },
@@ -1217,6 +1277,17 @@
       "norm_label": "imagedraw"
     },
     {
+      "label": "A heart flipped point-up, plus a stem \u2014 the classic spade/heart relationship.",
+      "file_type": "rationale",
+      "source_file": "art/generate_art.py",
+      "source_location": "L119",
+      "_origin": "ast",
+      "id": "art_generate_art_rationale_119",
+      "community": 0,
+      "community_name": "generate_art.py",
+      "norm_label": "a heart flipped point-up, plus a stem \u2014 the classic spade/heart relationship."
+    },
+    {
       "label": "Rank glyph stacked over a mini suit pip \u2014 the top-left corner mark. Mirrored\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
@@ -1226,6 +1297,28 @@
       "community": 0,
       "community_name": "generate_art.py",
       "norm_label": "rank glyph stacked over a mini suit pip \u2014 the top-left corner mark. mirrored..."
+    },
+    {
+      "label": "Shoulders (drawn first, behind the head) + a skin-toned head with two eyes.\u2026",
+      "file_type": "rationale",
+      "source_file": "art/generate_art.py",
+      "source_location": "L223",
+      "_origin": "ast",
+      "id": "art_generate_art_rationale_223",
+      "community": 0,
+      "community_name": "generate_art.py",
+      "norm_label": "shoulders (drawn first, behind the head) + a skin-toned head with two eyes...."
+    },
+    {
+      "label": "Each rank gets an actual small bust portrait rather than a letter in a box: the\u2026",
+      "file_type": "rationale",
+      "source_file": "art/generate_art.py",
+      "source_location": "L245",
+      "_origin": "ast",
+      "id": "art_generate_art_rationale_245",
+      "community": 0,
+      "community_name": "generate_art.py",
+      "norm_label": "each rank gets an actual small bust portrait rather than a letter in a box: the..."
     },
     {
       "label": "CLAUDE.md",
@@ -1258,31 +1351,9 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "bot/index.ts",
       "id": "shared_bot_index"
-    },
-    {
-      "label": "engine/index.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "engine/index.ts",
-      "id": "shared_engine_index"
-    },
-    {
-      "label": "types.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "types.ts",
-      "id": "shared_engine_types"
     },
     {
       "label": "App.tsx",
@@ -1291,7 +1362,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "app.tsx",
       "id": "src_app"
     },
@@ -1302,7 +1373,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "usegame.ts",
       "id": "src_game_usegame"
     },
@@ -1313,7 +1384,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "bot",
       "id": "src_game_usegame_bot"
     },
@@ -1324,7 +1395,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "human",
       "id": "src_game_usegame_human"
     },
@@ -1335,7 +1406,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "main.tsx",
       "id": "src_main"
     },
@@ -1346,7 +1417,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "root",
       "id": "src_main_root"
     },
@@ -1357,7 +1428,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "bidpanel.tsx",
       "id": "src_ui_bidpanel"
     },
@@ -1368,7 +1439,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "bid_phases",
       "id": "src_ui_bidpanel_bid_phases"
     },
@@ -1379,7 +1450,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "suit_label",
       "id": "src_ui_bidpanel_suit_label"
     },
@@ -1389,10 +1460,10 @@
       "source_file": "src/ui/Card.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_card",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "card.tsx"
+      "community_name": "useGame.ts",
+      "norm_label": "card.tsx",
+      "id": "src_ui_card"
     },
     {
       "label": "Game.tsx",
@@ -1401,7 +1472,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "game.tsx",
       "id": "src_ui_game"
     },
@@ -1411,10 +1482,10 @@
       "source_file": "src/ui/HandTray.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_handtray",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "handtray.tsx"
+      "community_name": "useGame.ts",
+      "norm_label": "handtray.tsx",
+      "id": "src_ui_handtray"
     },
     {
       "label": "Scoreboard.tsx",
@@ -1423,7 +1494,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "scoreboard.tsx",
       "id": "src_ui_scoreboard"
     },
@@ -1434,7 +1505,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "statusbanner.tsx",
       "id": "src_ui_statusbanner"
     },
@@ -1445,7 +1516,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "useGame.ts",
       "norm_label": "suit_label",
       "id": "src_ui_statusbanner_suit_label"
     },
@@ -1455,10 +1526,10 @@
       "source_file": "src/ui/Table.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_table",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "table.tsx"
+      "community_name": "useGame.ts",
+      "norm_label": "table.tsx",
+      "id": "src_ui_table"
     },
     {
       "label": "SEATS",
@@ -1466,10 +1537,10 @@
       "source_file": "src/ui/Table.tsx",
       "source_location": "L5",
       "_origin": "ast",
-      "id": "src_ui_table_seats",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "seats"
+      "community_name": "useGame.ts",
+      "norm_label": "seats",
+      "id": "src_ui_table_seats"
     },
     {
       "label": "ASSETS.md",
@@ -1512,7 +1583,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "art/ASSETS.md",
-      "source_location": "L53",
+      "source_location": "L58",
       "_origin": "ast",
       "id": "art_assets_output",
       "community": 12,
@@ -1536,7 +1607,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "art/ASSETS.md",
-      "source_location": "L63",
+      "source_location": "L68",
       "_origin": "ast",
       "id": "art_assets_regenerating",
       "community": 12,
@@ -1548,7 +1619,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "art/ASSETS.md",
-      "source_location": "L47",
+      "source_location": "L52",
       "_origin": "ast",
       "id": "art_assets_table",
       "community": 12,
@@ -1631,6 +1702,17 @@
       "community_name": "reducer.ts",
       "norm_label": "suits",
       "id": "shared_engine_deck_suits"
+    },
+    {
+      "label": "engine/index.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "reducer.ts",
+      "norm_label": "engine/index.ts",
+      "id": "shared_engine_index"
     },
     {
       "label": "legal.ts",
@@ -2354,7 +2436,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "deck.ts",
       "id": "shared_engine_deck"
     },
@@ -2365,9 +2447,20 @@
       "source_location": "L4",
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "ranks",
       "id": "shared_engine_deck_ranks"
+    },
+    {
+      "label": "types.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "types.ts",
+      "norm_label": "types.ts",
+      "id": "shared_engine_types"
     },
     {
       "label": "deck.test.ts",
@@ -2376,7 +2469,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 6,
-      "community_name": "deck.ts",
+      "community_name": "types.ts",
       "norm_label": "deck.test.ts",
       "id": "tests_deck_test"
     },
@@ -2934,19 +3027,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L176",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "art_generate_art_corner_marker",
-      "target": "art_generate_art_bitmap_size",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "art/generate_art.py",
-      "source_location": "L186",
+      "source_location": "L185",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_corner_marker",
@@ -2958,7 +3039,19 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L312",
+      "source_location": "L191",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_corner_marker",
+      "target": "art_generate_art_draw_pip",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L346",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -2970,7 +3063,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L312",
+      "source_location": "L346",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -2982,7 +3075,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L315",
+      "source_location": "L349",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -2994,7 +3087,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L316",
+      "source_location": "L350",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -3006,7 +3099,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L235",
+      "source_location": "L252",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_face_card",
@@ -3018,7 +3111,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L237",
+      "source_location": "L254",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_face_card",
@@ -3030,11 +3123,11 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L245",
+      "source_location": "L258",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_bitmap_size",
+      "target": "art_generate_art_draw_bust",
       "confidence_score": 1.0
     },
     {
@@ -3042,19 +3135,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L247",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_draw_bitmap",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "art/generate_art.py",
-      "source_location": "L254",
+      "source_location": "L288",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_face_card",
@@ -3090,11 +3171,11 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L215",
+      "source_location": "L216",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_number_card",
-      "target": "art_generate_art_bitmap_size",
+      "target": "art_generate_art_draw_pip",
       "confidence_score": 1.0
     },
     {
@@ -3102,7 +3183,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L228",
+      "source_location": "L218",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_number_card",
@@ -3897,9 +3978,9 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card_card",
-      "target": "src_ui_card_cardasset",
-      "confidence_score": 1.0
+      "target": "src_ui_card_cardasset"
     },
     {
       "relation": "calls",
@@ -3921,9 +4002,9 @@
       "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray_handtray",
-      "target": "src_ui_handtray_cardsequal",
-      "confidence_score": 1.0
+      "target": "src_ui_handtray_cardsequal"
     },
     {
       "relation": "calls",
@@ -3933,9 +4014,9 @@
       "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_remaininginhand",
-      "target": "src_ui_table_samehand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_samehand"
     },
     {
       "relation": "calls",
@@ -3945,9 +4026,9 @@
       "source_location": "L35",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_samehand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_samehand"
     },
     {
       "relation": "calls",
@@ -3957,9 +4038,9 @@
       "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_remaininginhand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_remaininginhand"
     },
     {
       "relation": "calls",
@@ -3969,9 +4050,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_seatlabel",
-      "confidence_score": 1.0
+      "target": "src_ui_table_seatlabel"
     },
     {
       "relation": "calls",
@@ -5205,9 +5286,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card",
-      "target": "shared_engine_types_card",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_card"
     },
     {
       "relation": "imports",
@@ -5289,9 +5370,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types_action",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_action"
     },
     {
       "relation": "imports",
@@ -5301,9 +5382,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types_card",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_card"
     },
     {
       "relation": "imports",
@@ -5313,9 +5394,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types_playerview",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_playerview"
     },
     {
       "relation": "imports",
@@ -5325,9 +5406,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_card_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card_card"
     },
     {
       "relation": "imports",
@@ -5433,9 +5514,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types_handid",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_handid"
     },
     {
       "relation": "imports",
@@ -5445,9 +5526,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types_playerview",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_playerview"
     },
     {
       "relation": "imports",
@@ -5457,9 +5538,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame_bot",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_bot"
     },
     {
       "relation": "imports",
@@ -5469,9 +5550,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame_human",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_human"
     },
     {
       "relation": "imports",
@@ -5481,9 +5562,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card_card"
     },
     {
       "relation": "imports",
@@ -5493,9 +5574,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card_cardback",
-      "confidence_score": 1.0
+      "target": "src_ui_card_cardback"
     },
     {
       "relation": "imports",
@@ -6201,9 +6282,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -6285,9 +6366,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -6297,9 +6378,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card"
     },
     {
       "relation": "imports_from",
@@ -6369,9 +6450,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -6381,9 +6462,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame",
-      "confidence_score": 1.0
+      "target": "src_game_usegame"
     },
     {
       "relation": "imports_from",
@@ -6393,9 +6474,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card"
     },
     {
       "relation": "imports_from",
@@ -6546,10 +6627,22 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L160",
+      "source_location": "L164",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_draw_bitmap",
+      "target": "imagedraw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L222",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_draw_bust",
       "target": "imagedraw",
       "confidence_score": 1.0
     },
@@ -6562,6 +6655,66 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_draw_card_frame",
+      "target": "imagedraw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L134",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_draw_club_pip",
+      "target": "imagedraw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L101",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_draw_diamond_pip",
+      "target": "imagedraw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_draw_heart_pip",
+      "target": "imagedraw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L156",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_draw_pip",
+      "target": "imagedraw",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L118",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_draw_spade_pip",
       "target": "imagedraw",
       "confidence_score": 1.0
     },
@@ -6594,7 +6747,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L258",
+      "source_location": "L292",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_card_back",
@@ -6606,7 +6759,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L232",
+      "source_location": "L244",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_face_card",
@@ -6630,7 +6783,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L279",
+      "source_location": "L313",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_table_felt",
@@ -6674,7 +6827,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/ASSETS.md",
-      "source_location": "L47",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_assets_art_assets_spec",
@@ -6685,7 +6838,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/ASSETS.md",
-      "source_location": "L53",
+      "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_assets_art_assets_spec",
@@ -6696,7 +6849,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/ASSETS.md",
-      "source_location": "L63",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_assets_art_assets_spec",
@@ -6711,7 +6864,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
-      "target": "art_generate_art_suit_color",
+      "target": "art_generate_art_draw_pip",
       "confidence_score": 1.0
     },
     {
@@ -6722,18 +6875,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
-      "target": "art_generate_art_draw_bitmap",
+      "target": "art_generate_art_suit_color",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L167",
+      "source_location": "L164",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
-      "target": "art_generate_art_bitmap_size",
+      "target": "art_generate_art_draw_bitmap",
       "confidence_score": 1.0
     },
     {
@@ -6784,7 +6937,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L232",
+      "source_location": "L222",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art",
+      "target": "art_generate_art_draw_bust",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L244",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -6795,7 +6959,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L258",
+      "source_location": "L292",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -6806,7 +6970,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L279",
+      "source_location": "L313",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -6817,7 +6981,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L306",
+      "source_location": "L340",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -7964,9 +8128,9 @@
       "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card",
-      "target": "src_ui_card_cardback",
-      "confidence_score": 1.0
+      "target": "src_ui_card_cardback"
     },
     {
       "relation": "contains",
@@ -7975,9 +8139,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card",
-      "target": "src_ui_card_cardasset",
-      "confidence_score": 1.0
+      "target": "src_ui_card_cardasset"
     },
     {
       "relation": "contains",
@@ -7986,9 +8150,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card",
-      "target": "src_ui_card_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card_card"
     },
     {
       "relation": "contains",
@@ -8008,9 +8172,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_handtray_handtray",
-      "confidence_score": 1.0
+      "target": "src_ui_handtray_handtray"
     },
     {
       "relation": "contains",
@@ -8019,9 +8183,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_handtray_cardsequal",
-      "confidence_score": 1.0
+      "target": "src_ui_handtray_cardsequal"
     },
     {
       "relation": "contains",
@@ -8063,9 +8227,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_samehand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_samehand"
     },
     {
       "relation": "contains",
@@ -8074,9 +8238,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_remaininginhand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_remaininginhand"
     },
     {
       "relation": "contains",
@@ -8085,9 +8249,9 @@
       "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_seatlabel",
-      "confidence_score": 1.0
+      "target": "src_ui_table_seatlabel"
     },
     {
       "relation": "contains",
@@ -8096,9 +8260,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_table",
-      "confidence_score": 1.0
+      "target": "src_ui_table_table"
     },
     {
       "relation": "contains",
@@ -8107,9 +8271,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_seats",
-      "confidence_score": 1.0
+      "target": "src_ui_table_seats"
     },
     {
       "relation": "contains",
@@ -8357,11 +8521,44 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
+      "source_location": "L119",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_rationale_119",
+      "target": "art_generate_art_draw_spade_pip",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
       "source_location": "L172",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_rationale_172",
       "target": "art_generate_art_corner_marker",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L223",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_rationale_223",
+      "target": "art_generate_art_draw_bust",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L245",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_rationale_245",
+      "target": "art_generate_art_make_face_card",
       "confidence_score": 1.0
     },
     {
@@ -8374,6 +8571,54 @@
       "confidence_score": 1.0,
       "source": "readme",
       "target": "shared_engine_rules"
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L149",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "art_generate_art",
+      "target": "art_generate_art_draw_heart_pip",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L150",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "art_generate_art",
+      "target": "art_generate_art_draw_diamond_pip",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L151",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "art_generate_art",
+      "target": "art_generate_art_draw_spade_pip",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "indirect_call",
+      "confidence": "INFERRED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L152",
+      "weight": 1.0,
+      "_origin": "ast",
+      "context": "collection",
+      "source": "art_generate_art",
+      "target": "art_generate_art_draw_club_pip",
+      "confidence_score": 0.5
     },
     {
       "relation": "conceptually_related_to",
@@ -8852,5 +9097,5 @@
       "source_file": "RULES.md"
     }
   ],
-  "built_at_commit": "c0051c637f8e735aff30d3877aed6c72c3dec739"
+  "built_at_commit": "148fb7c704052e864c44616d2777ae9bc6ed0e11"
 }

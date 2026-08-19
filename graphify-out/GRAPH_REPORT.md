@@ -1,16 +1,16 @@
 # Graph Report - euchre  (2026-08-18)
 
 ## Corpus Check
-- 34 files · ~12,245 words
+- 34 files · ~13,064 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 237 nodes · 507 edges · 14 communities (13 shown, 1 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.75)
+- 245 nodes · 520 edges · 14 communities (13 shown, 1 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.55)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c0051c63`
+- Built from commit: `148fb7c7`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -21,12 +21,12 @@
 - compilerOptions
 - devDependencies
 - rules.ts
-- deck.ts
+- types.ts
 - Hand A1 (Player A, selected/blind)
 - Hand B1 (Player B, selected/blind)
 - Two-Handed Euchre
 - CLAUDE.md
-- types.ts
+- useGame.ts
 - Art assets — spec
 
 ## God Nodes (most connected - your core abstractions)
@@ -42,15 +42,15 @@
 10. `make_face_card()` - 8 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `PlayStateOptions` --references--> `Config`  [EXTRACTED]
-  tests/helpers.ts → shared/engine/types.ts
-- `PlayStateOptions` --references--> `LonerTier`  [EXTRACTED]
-  tests/helpers.ts → shared/engine/types.ts
 - `useGame()` --calls--> `chooseMove()`  [EXTRACTED]
   src/game/useGame.ts → shared/bot/heuristic.ts
-- `PlayStateOptions` --references--> `Suit`  [EXTRACTED]
+- `PlayStateOptions` --references--> `LonerTier`  [EXTRACTED]
+  tests/helpers.ts → shared/engine/types.ts
+- `PlayStateOptions` --references--> `Config`  [EXTRACTED]
   tests/helpers.ts → shared/engine/types.ts
 - `PlayStateOptions` --references--> `Card`  [EXTRACTED]
+  tests/helpers.ts → shared/engine/types.ts
+- `PlayStateOptions` --references--> `Player`  [EXTRACTED]
   tests/helpers.ts → shared/engine/types.ts
 
 ## Import Cycles
@@ -64,8 +64,8 @@
 ## Communities (14 total, 1 thin omitted)
 
 ### Community 0 - "generate_art.py"
-Cohesion: 0.35
-Nodes (14): bitmap_size(), corner_marker(), draw_bitmap(), draw_card_frame(), main(), make_card_back(), make_face_card(), make_number_card() (+6 more)
+Cohesion: 0.20
+Nodes (22): corner_marker(), draw_bitmap(), draw_bust(), draw_card_frame(), draw_club_pip(), draw_diamond_pip(), draw_heart_pip(), draw_pip() (+14 more)
 
 ### Community 1 - "RULES.md — Two-Handed Euchre Rules Spec"
 Cohesion: 0.12
@@ -73,7 +73,7 @@ Nodes (24): §3 Bidding (standard, on/after the upcard), Blind Hand Reveal Defau
 
 ### Community 2 - "reducer.ts"
 Cohesion: 0.15
-Nodes (34): outcomes, pick(), playRandomDeal(), seededRng(), TERMINAL_PHASES, DEFAULT_CONFIG, SUITS, actingHand() (+26 more)
+Nodes (33): outcomes, pick(), playRandomDeal(), seededRng(), TERMINAL_PHASES, DEFAULT_CONFIG, SUITS, actingHand() (+25 more)
 
 ### Community 3 - "compilerOptions"
 Cohesion: 0.09
@@ -87,9 +87,9 @@ Nodes (30): dependencies, react, react-dom, devDependencies, tsx, @types/react, 
 Cohesion: 0.18
 Nodes (22): bestSuitByTrumpCount(), byType(), cardsEqual(), chooseMove(), countTrump(), findCardAction(), highest(), lowest() (+14 more)
 
-### Community 6 - "deck.ts"
-Cohesion: 0.33
-Nodes (10): deal, fullDeck(), RANKS, seededRng(), shuffledDeck(), Card, Player, PlayerHands (+2 more)
+### Community 6 - "types.ts"
+Cohesion: 0.23
+Nodes (15): deal, fullDeck(), RANKS, seededRng(), shuffledDeck(), Card, Config, HandRole (+7 more)
 
 ### Community 7 - "Hand A1 (Player A, selected/blind)"
 Cohesion: 1.00
@@ -103,9 +103,9 @@ Nodes (3): Hand B1 (Player B, selected/blind), Hand B2 (Player B, selected/blind
 Cohesion: 0.33
 Nodes (5): Knowledge graph, Repo layout, Running the engine, Status, Two-Handed Euchre
 
-### Community 11 - "types.ts"
-Cohesion: 0.10
-Nodes (31): Action, HandId, HandRole, LonerTier, Phase, PlayerView, Rank, App() (+23 more)
+### Community 11 - "useGame.ts"
+Cohesion: 0.11
+Nodes (27): Action, HandId, PlayerView, App(), BOT, freshSeed(), HUMAN, useGame() (+19 more)
 
 ### Community 12 - "Art assets — spec"
 Cohesion: 0.29
@@ -119,8 +119,8 @@ Nodes (6): Art assets — spec, Cards, Output, Palette — cabin by the fire, Re
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Card` connect `deck.ts` to `reducer.ts`, `types.ts`, `rules.ts`?**
-  _High betweenness centrality (0.015) - this node is a cross-community bridge._
+- **Why does `Card` connect `types.ts` to `reducer.ts`, `useGame.ts`, `rules.ts`?**
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **What connects `Palette — cabin by the fire`, `Cards`, `Table` to the rest of the system?**
   _62 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `RULES.md — Two-Handed Euchre Rules Spec` be split into smaller, more focused modules?**
@@ -131,5 +131,5 @@ _Questions this graph is uniquely positioned to answer:_
   _Cohesion score 0.09090909090909091 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.06451612903225806 - nodes in this community are weakly interconnected._
-- **Should `types.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.09725158562367865 - nodes in this community are weakly interconnected._
+- **Should `useGame.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.10810810810810811 - nodes in this community are weakly interconnected._

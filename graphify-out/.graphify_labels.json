@@ -5,12 +5,12 @@
   "3": "compilerOptions",
   "4": "devDependencies",
   "5": "rules.ts",
-  "6": "deck.ts",
+  "6": "types.ts",
   "7": "Hand A1 (Player A, selected/blind)",
   "8": "Hand B1 (Player B, selected/blind)",
   "9": "Two-Handed Euchre",
   "10": "CLAUDE.md",
-  "11": "types.ts",
+  "11": "useGame.ts",
   "12": "Art assets — spec",
   "14": "vite.config.ts"
 }

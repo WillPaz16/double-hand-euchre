@@ -1,5 +1,5 @@
 {
-  "0": "legal.ts",
+  "0": "generate_art.py",
   "1": "RULES.md — Two-Handed Euchre Rules Spec",
   "2": "reducer.ts",
   "3": "compilerOptions",
@@ -10,8 +10,7 @@
   "8": "Hand B1 (Player B, selected/blind)",
   "9": "Two-Handed Euchre",
   "10": "CLAUDE.md",
-  "11": "useGame.ts",
-  "12": "types.ts",
-  "13": "view.ts",
+  "11": "types.ts",
+  "12": "Art assets — spec",
   "14": "vite.config.ts"
 }
