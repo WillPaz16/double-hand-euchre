@@ -1,7 +1,7 @@
 # Graph Report - euchre  (2026-08-19)
 
 ## Corpus Check
-- 38 files · ~27,678 words
+- 38 files · ~28,003 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `cdc12091`
+- Built from commit: `65d2de16`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -137,7 +137,7 @@ Cohesion: 0.14
 Nodes (9): _assert_art_clear_of_indices(), _clamp(), _index_boxes(), make_sprite_sheet(), Paste equal-sized frames into one horizontal strip for CSS steps() animation.…, The two rectangles paste_corners() reserves — kept in sync with it by deriving…, Guardrail: centred artwork must never intrude into a reserved corner index box.…, Move a colour toward white (amount > 0) or black (amount < 0), with a hue… (+1 more)
 
 ## Knowledge Gaps
-- **74 isolated node(s):** `TRICK_HOLD_MS`, `SEATS`, `Expression`, `SoundName`, `HandRole` (+69 more)
+- **74 isolated node(s):** `TRICK_HOLD_MS`, `Expression`, `SoundName`, `HandRole`, `Phase` (+69 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -148,7 +148,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Why does `PlayerView` connect `useGame.ts` to `types.ts`, `rules.ts`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **What connects `TRICK_HOLD_MS`, `SEATS`, `Expression` to the rest of the system?**
+- **What connects `TRICK_HOLD_MS`, `Expression`, `SoundName` to the rest of the system?**
   _74 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `main` be split into smaller, more focused modules?**
   _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._

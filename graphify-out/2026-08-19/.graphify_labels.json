@@ -9,7 +9,7 @@
   "7": "Hand A1 (Player A, selected/blind)",
   "8": "Hand B1 (Player B, selected/blind)",
   "10": "CLAUDE.md",
-  "11": "Game.tsx",
+  "11": "useGame.ts",
   "12": "Art assets — spec",
   "13": "Two-Handed Euchre",
   "14": "vite.config.ts",

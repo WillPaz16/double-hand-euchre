@@ -52,6 +52,19 @@
   },
   "nodes": [
     {
+      "label": "Action",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L75",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "action",
+      "id": "shared_engine_types_action"
+    },
+    {
       "label": "PlayerView",
       "file_type": "code",
       "source_file": "shared/engine/types.ts",
@@ -60,9 +73,22 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "playerview",
       "id": "shared_engine_types_playerview"
+    },
+    {
+      "label": "CompletedTrick",
+      "file_type": "code",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L29",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_game_usegame_completedtrick",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "completedtrick"
     },
     {
       "label": "Expression",
@@ -73,7 +99,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "expression",
       "id": "src_game_useopponentexpression_expression"
     },
@@ -86,7 +112,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "soundname",
       "id": "src_game_usesfx_soundname"
     },
@@ -102,19 +128,6 @@
       "community_name": "types.ts",
       "norm_label": "deal",
       "id": "shared_engine_deck_deal"
-    },
-    {
-      "label": "Action",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L75",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "action",
-      "id": "shared_engine_types_action"
     },
     {
       "label": "Card",
@@ -292,10 +305,10 @@
       "source_location": "L1355",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_main",
       "community": 0,
       "community_name": "main",
-      "norm_label": "main()"
+      "norm_label": "main()",
+      "id": "art_generate_art_main"
     },
     {
       "label": "make_card_back()",
@@ -304,10 +317,10 @@
       "source_location": "L797",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_card_back",
       "community": 0,
       "community_name": "main",
-      "norm_label": "make_card_back()"
+      "norm_label": "make_card_back()",
+      "id": "art_generate_art_make_card_back"
     },
     {
       "label": "make_fireplace()",
@@ -316,10 +329,10 @@
       "source_location": "L971",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_fireplace",
       "community": 0,
       "community_name": "main",
-      "norm_label": "make_fireplace()"
+      "norm_label": "make_fireplace()",
+      "id": "art_generate_art_make_fireplace"
     },
     {
       "label": "make_floorboards()",
@@ -328,10 +341,10 @@
       "source_location": "L1135",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_floorboards",
       "community": 0,
       "community_name": "main",
-      "norm_label": "make_floorboards()"
+      "norm_label": "make_floorboards()",
+      "id": "art_generate_art_make_floorboards"
     },
     {
       "label": "make_shelf()",
@@ -340,10 +353,10 @@
       "source_location": "L1321",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_shelf",
       "community": 0,
       "community_name": "main",
-      "norm_label": "make_shelf()"
+      "norm_label": "make_shelf()",
+      "id": "art_generate_art_make_shelf"
     },
     {
       "label": "make_snowfall()",
@@ -352,10 +365,10 @@
       "source_location": "L1110",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_snowfall",
       "community": 0,
       "community_name": "main",
-      "norm_label": "make_snowfall()"
+      "norm_label": "make_snowfall()",
+      "id": "art_generate_art_make_snowfall"
     },
     {
       "label": "make_table_felt()",
@@ -364,10 +377,10 @@
       "source_location": "L820",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_table_felt",
       "community": 0,
       "community_name": "main",
-      "norm_label": "make_table_felt()"
+      "norm_label": "make_table_felt()",
+      "id": "art_generate_art_make_table_felt"
     },
     {
       "label": "make_wall_texture()",
@@ -376,10 +389,10 @@
       "source_location": "L858",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_wall_texture",
       "community": 0,
       "community_name": "main",
-      "norm_label": "make_wall_texture()"
+      "norm_label": "make_wall_texture()",
+      "id": "art_generate_art_make_wall_texture"
     },
     {
       "label": "make_window_frame()",
@@ -388,10 +401,10 @@
       "source_location": "L1083",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_window_frame",
       "community": 0,
       "community_name": "main",
-      "norm_label": "make_window_frame()"
+      "norm_label": "make_window_frame()",
+      "id": "art_generate_art_make_window_frame"
     },
     {
       "label": "make_window_glass()",
@@ -400,10 +413,10 @@
       "source_location": "L1052",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_window_glass",
       "community": 0,
       "community_name": "main",
-      "norm_label": "make_window_glass()"
+      "norm_label": "make_window_glass()",
+      "id": "art_generate_art_make_window_glass"
     },
     {
       "label": "_mix()",
@@ -412,10 +425,10 @@
       "source_location": "L115",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_mix",
       "community": 0,
       "community_name": "main",
-      "norm_label": "_mix()"
+      "norm_label": "_mix()",
+      "id": "art_generate_art_mix"
     },
     {
       "label": "ramp()",
@@ -424,10 +437,10 @@
       "source_location": "L127",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_ramp",
       "community": 0,
       "community_name": "main",
-      "norm_label": "ramp()"
+      "norm_label": "ramp()",
+      "id": "art_generate_art_ramp"
     },
     {
       "label": "App()",
@@ -437,7 +450,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "app()",
       "id": "src_app_app"
     },
@@ -445,25 +458,25 @@
       "label": "freshSeed()",
       "file_type": "code",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L19",
+      "source_location": "L35",
       "_callable": true,
       "_origin": "ast",
+      "id": "src_game_usegame_freshseed",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "freshseed()",
-      "id": "src_game_usegame_freshseed"
+      "community_name": "useGame.ts",
+      "norm_label": "freshseed()"
     },
     {
       "label": "useGame()",
       "file_type": "code",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L27",
+      "source_location": "L43",
       "_callable": true,
       "_origin": "ast",
+      "id": "src_game_usegame_usegame",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "usegame()",
-      "id": "src_game_usegame_usegame"
+      "community_name": "useGame.ts",
+      "norm_label": "usegame()"
     },
     {
       "label": "useOpponentExpression()",
@@ -473,7 +486,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "useopponentexpression()",
       "id": "src_game_useopponentexpression_useopponentexpression"
     },
@@ -485,7 +498,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "play()",
       "id": "src_game_usesfx_play"
     },
@@ -497,7 +510,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "usesfx()",
       "id": "src_game_usesfx_usesfx"
     },
@@ -509,7 +522,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "usesoundbank()",
       "id": "src_game_usesfx_usesoundbank"
     },
@@ -521,7 +534,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "bidpanel()",
       "id": "src_ui_bidpanel_bidpanel"
     },
@@ -533,7 +546,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "label()",
       "id": "src_ui_bidpanel_label"
     },
@@ -545,7 +558,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "card()",
       "id": "src_ui_card_card"
     },
@@ -557,7 +570,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "cardasset()",
       "id": "src_ui_card_cardasset"
     },
@@ -569,7 +582,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "cardback()",
       "id": "src_ui_card_cardback"
     },
@@ -580,10 +593,34 @@
       "source_location": "L10",
       "_callable": true,
       "_origin": "ast",
+      "id": "src_ui_game_game",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "game()",
-      "id": "src_ui_game_game"
+      "community_name": "useGame.ts",
+      "norm_label": "game()"
+    },
+    {
+      "label": "cardsEqual()",
+      "file_type": "code",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L4",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "cardsequal()",
+      "id": "src_ui_handtray_cardsequal"
+    },
+    {
+      "label": "HandTray()",
+      "file_type": "code",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L12",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "handtray()",
+      "id": "src_ui_handtray_handtray"
     },
     {
       "label": "SceneLayer()",
@@ -593,7 +630,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "scenelayer()",
       "id": "src_ui_scenelayer_scenelayer"
     },
@@ -605,7 +642,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "scoreboard()",
       "id": "src_ui_scoreboard_scoreboard"
     },
@@ -617,7 +654,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "scorepair()",
       "id": "src_ui_scoreboard_scorepair"
     },
@@ -629,7 +666,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "statusbanner()",
       "id": "src_ui_statusbanner_statusbanner"
     },
@@ -637,49 +674,49 @@
       "label": "remainingInHand()",
       "file_type": "code",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L19",
+      "source_location": "L32",
       "_callable": true,
       "_origin": "ast",
+      "id": "src_ui_table_remaininginhand",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "remaininginhand()",
-      "id": "src_ui_table_remaininginhand"
+      "community_name": "useGame.ts",
+      "norm_label": "remaininginhand()"
     },
     {
       "label": "sameHand()",
       "file_type": "code",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L12",
+      "source_location": "L25",
       "_callable": true,
       "_origin": "ast",
+      "id": "src_ui_table_samehand",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "samehand()",
-      "id": "src_ui_table_samehand"
+      "community_name": "useGame.ts",
+      "norm_label": "samehand()"
     },
     {
       "label": "seatLabel()",
       "file_type": "code",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L24",
+      "source_location": "L37",
       "_callable": true,
       "_origin": "ast",
+      "id": "src_ui_table_seatlabel",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "seatlabel()",
-      "id": "src_ui_table_seatlabel"
+      "community_name": "useGame.ts",
+      "norm_label": "seatlabel()"
     },
     {
       "label": "Table()",
       "file_type": "code",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L30",
+      "source_location": "L43",
       "_callable": true,
       "_origin": "ast",
+      "id": "src_ui_table_table",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "table()",
-      "id": "src_ui_table_table"
+      "community_name": "useGame.ts",
+      "norm_label": "table()"
     },
     {
       "label": "_arm()",
@@ -688,10 +725,10 @@
       "source_location": "L458",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_arm",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "_arm()"
+      "norm_label": "_arm()",
+      "id": "art_generate_art_arm"
     },
     {
       "label": "_collar()",
@@ -700,10 +737,10 @@
       "source_location": "L493",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_collar",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "_collar()"
+      "norm_label": "_collar()",
+      "id": "art_generate_art_collar"
     },
     {
       "label": "draw_face()",
@@ -712,10 +749,10 @@
       "source_location": "L497",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_draw_face",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "draw_face()"
+      "norm_label": "draw_face()",
+      "id": "art_generate_art_draw_face"
     },
     {
       "label": "_ellipse()",
@@ -724,10 +761,10 @@
       "source_location": "L410",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_ellipse",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "_ellipse()"
+      "norm_label": "_ellipse()",
+      "id": "art_generate_art_ellipse"
     },
     {
       "label": "_fringe()",
@@ -736,10 +773,10 @@
       "source_location": "L439",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_fringe",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "_fringe()"
+      "norm_label": "_fringe()",
+      "id": "art_generate_art_fringe"
     },
     {
       "label": "_hand()",
@@ -748,10 +785,10 @@
       "source_location": "L450",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_hand",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "_hand()"
+      "norm_label": "_hand()",
+      "id": "art_generate_art_hand"
     },
     {
       "label": "_head()",
@@ -760,10 +797,10 @@
       "source_location": "L435",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_head",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "_head()"
+      "norm_label": "_head()",
+      "id": "art_generate_art_head"
     },
     {
       "label": "_hem_trim()",
@@ -772,10 +809,10 @@
       "source_location": "L487",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_hem_trim",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "_hem_trim()"
+      "norm_label": "_hem_trim()",
+      "id": "art_generate_art_hem_trim"
     },
     {
       "label": "make_face_card()",
@@ -784,10 +821,10 @@
       "source_location": "L560",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_face_card",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "make_face_card()"
+      "norm_label": "make_face_card()",
+      "id": "art_generate_art_make_face_card"
     },
     {
       "label": "_old_timer_parts()",
@@ -796,10 +833,10 @@
       "source_location": "L684",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_old_timer_parts",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "_old_timer_parts()"
+      "norm_label": "_old_timer_parts()",
+      "id": "art_generate_art_old_timer_parts"
     },
     {
       "label": "_poly()",
@@ -808,10 +845,10 @@
       "source_location": "L417",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_poly",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "_poly()"
+      "norm_label": "_poly()",
+      "id": "art_generate_art_poly"
     },
     {
       "label": "_robe()",
@@ -820,10 +857,10 @@
       "source_location": "L424",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_robe",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "_robe()"
+      "norm_label": "_robe()",
+      "id": "art_generate_art_robe"
     },
     {
       "label": "_sculpted_hair()",
@@ -832,10 +869,10 @@
       "source_location": "L472",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_sculpted_hair",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "_sculpted_hair()"
+      "norm_label": "_sculpted_hair()",
+      "id": "art_generate_art_sculpted_hair"
     },
     {
       "label": "body_color()",
@@ -844,10 +881,10 @@
       "source_location": "L179",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_body_color",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "body_color()"
+      "norm_label": "body_color()",
+      "id": "art_generate_art_body_color"
     },
     {
       "label": "draw_card_frame()",
@@ -856,10 +893,10 @@
       "source_location": "L360",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_draw_card_frame",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "draw_card_frame()"
+      "norm_label": "draw_card_frame()",
+      "id": "art_generate_art_draw_card_frame"
     },
     {
       "label": "draw_glyph()",
@@ -868,10 +905,10 @@
       "source_location": "L263",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_draw_glyph",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "draw_glyph()"
+      "norm_label": "draw_glyph()",
+      "id": "art_generate_art_draw_glyph"
     },
     {
       "label": "draw_old_timer_face()",
@@ -880,10 +917,10 @@
       "source_location": "L717",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_draw_old_timer_face",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "draw_old_timer_face()"
+      "norm_label": "draw_old_timer_face()",
+      "id": "art_generate_art_draw_old_timer_face"
     },
     {
       "label": "make_number_card()",
@@ -892,10 +929,10 @@
       "source_location": "L390",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_number_card",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "make_number_card()"
+      "norm_label": "make_number_card()",
+      "id": "art_generate_art_make_number_card"
     },
     {
       "label": "make_old_timer_portrait()",
@@ -904,10 +941,10 @@
       "source_location": "L747",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_old_timer_portrait",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "make_old_timer_portrait()"
+      "norm_label": "make_old_timer_portrait()",
+      "id": "art_generate_art_make_old_timer_portrait"
     },
     {
       "label": "make_scoreboard_card()",
@@ -916,10 +953,10 @@
       "source_location": "L770",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_scoreboard_card",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "make_scoreboard_card()"
+      "norm_label": "make_scoreboard_card()",
+      "id": "art_generate_art_make_scoreboard_card"
     },
     {
       "label": "paste()",
@@ -928,10 +965,10 @@
       "source_location": "L243",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_paste",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "paste()"
+      "norm_label": "paste()",
+      "id": "art_generate_art_paste"
     },
     {
       "label": "paste_corners()",
@@ -940,10 +977,10 @@
       "source_location": "L366",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_paste_corners",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "paste_corners()"
+      "norm_label": "paste_corners()",
+      "id": "art_generate_art_paste_corners"
     },
     {
       "label": "pip_sprite()",
@@ -952,10 +989,10 @@
       "source_location": "L349",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_pip_sprite",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "pip_sprite()"
+      "norm_label": "pip_sprite()",
+      "id": "art_generate_art_pip_sprite"
     },
     {
       "label": "_score_card_frame()",
@@ -964,10 +1001,10 @@
       "source_location": "L764",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_score_card_frame",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "_score_card_frame()"
+      "norm_label": "_score_card_frame()",
+      "id": "art_generate_art_score_card_frame"
     },
     {
       "label": "text_color()",
@@ -976,10 +1013,10 @@
       "source_location": "L174",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_text_color",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "text_color()"
+      "norm_label": "text_color()",
+      "id": "art_generate_art_text_color"
     },
     {
       "label": "composite_sprite()",
@@ -988,10 +1025,10 @@
       "source_location": "L219",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_composite_sprite",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "composite_sprite()"
+      "norm_label": "composite_sprite()",
+      "id": "art_generate_art_composite_sprite"
     },
     {
       "label": "darken()",
@@ -1000,10 +1037,10 @@
       "source_location": "L70",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_darken",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "darken()"
+      "norm_label": "darken()",
+      "id": "art_generate_art_darken"
     },
     {
       "label": "_flame()",
@@ -1012,10 +1049,10 @@
       "source_location": "L917",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_flame",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "_flame()"
+      "norm_label": "_flame()",
+      "id": "art_generate_art_flame"
     },
     {
       "label": "make_fire_frames()",
@@ -1024,10 +1061,10 @@
       "source_location": "L937",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_fire_frames",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "make_fire_frames()"
+      "norm_label": "make_fire_frames()",
+      "id": "art_generate_art_make_fire_frames"
     },
     {
       "label": "make_seated_old_timer()",
@@ -1036,10 +1073,10 @@
       "source_location": "L1198",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_seated_old_timer",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "make_seated_old_timer()"
+      "norm_label": "make_seated_old_timer()",
+      "id": "art_generate_art_make_seated_old_timer"
     },
     {
       "label": "_mini_card_back()",
@@ -1048,10 +1085,10 @@
       "source_location": "L1184",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_mini_card_back",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "_mini_card_back()"
+      "norm_label": "_mini_card_back()",
+      "id": "art_generate_art_mini_card_back"
     },
     {
       "label": "_shadow_band()",
@@ -1060,10 +1097,10 @@
       "source_location": "L215",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_shadow_band",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "_shadow_band()"
+      "norm_label": "_shadow_band()",
+      "id": "art_generate_art_shadow_band"
     },
     {
       "label": "contact_shadow()",
@@ -1072,10 +1109,10 @@
       "source_location": "L160",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_contact_shadow",
       "community": 18,
       "community_name": "make_cat_frames",
-      "norm_label": "contact_shadow()"
+      "norm_label": "contact_shadow()",
+      "id": "art_generate_art_contact_shadow"
     },
     {
       "label": "make_cat_frames()",
@@ -1084,10 +1121,10 @@
       "source_location": "L1290",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_cat_frames",
       "community": 18,
       "community_name": "make_cat_frames",
-      "norm_label": "make_cat_frames()"
+      "norm_label": "make_cat_frames()",
+      "id": "art_generate_art_make_cat_frames"
     },
     {
       "label": "_assert_art_clear_of_indices()",
@@ -1096,10 +1133,10 @@
       "source_location": "L546",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_assert_art_clear_of_indices",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "_assert_art_clear_of_indices()"
+      "norm_label": "_assert_art_clear_of_indices()",
+      "id": "art_generate_art_assert_art_clear_of_indices"
     },
     {
       "label": "_clamp()",
@@ -1108,10 +1145,10 @@
       "source_location": "L82",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_clamp",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "_clamp()"
+      "norm_label": "_clamp()",
+      "id": "art_generate_art_clamp"
     },
     {
       "label": "_club_mask()",
@@ -1120,10 +1157,10 @@
       "source_location": "L335",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_club_mask",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "_club_mask()"
+      "norm_label": "_club_mask()",
+      "id": "art_generate_art_club_mask"
     },
     {
       "label": "_diamond_mask()",
@@ -1132,10 +1169,10 @@
       "source_location": "L325",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_diamond_mask",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "_diamond_mask()"
+      "norm_label": "_diamond_mask()",
+      "id": "art_generate_art_diamond_mask"
     },
     {
       "label": "_heart_curve_points()",
@@ -1144,10 +1181,10 @@
       "source_location": "L278",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_heart_curve_points",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "_heart_curve_points()"
+      "norm_label": "_heart_curve_points()",
+      "id": "art_generate_art_heart_curve_points"
     },
     {
       "label": "_heart_mask()",
@@ -1156,10 +1193,10 @@
       "source_location": "L310",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_heart_mask",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "_heart_mask()"
+      "norm_label": "_heart_mask()",
+      "id": "art_generate_art_heart_mask"
     },
     {
       "label": "_index_boxes()",
@@ -1168,10 +1205,10 @@
       "source_location": "L533",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_index_boxes",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "_index_boxes()"
+      "norm_label": "_index_boxes()",
+      "id": "art_generate_art_index_boxes"
     },
     {
       "label": "make_sprite_sheet()",
@@ -1180,10 +1217,10 @@
       "source_location": "L149",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_make_sprite_sheet",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "make_sprite_sheet()"
+      "norm_label": "make_sprite_sheet()",
+      "id": "art_generate_art_make_sprite_sheet"
     },
     {
       "label": "_shift()",
@@ -1192,10 +1229,10 @@
       "source_location": "L86",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_shift",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "_shift()"
+      "norm_label": "_shift()",
+      "id": "art_generate_art_shift"
     },
     {
       "label": "_spade_mask()",
@@ -1204,10 +1241,10 @@
       "source_location": "L317",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_spade_mask",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "_spade_mask()"
+      "norm_label": "_spade_mask()",
+      "id": "art_generate_art_spade_mask"
     },
     {
       "label": "_stem()",
@@ -1216,10 +1253,10 @@
       "source_location": "L296",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_stem",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "_stem()"
+      "norm_label": "_stem()",
+      "id": "art_generate_art_stem"
     },
     {
       "label": "pick()",
@@ -1508,30 +1545,6 @@
       "community_name": "types.ts",
       "norm_label": "visible()",
       "id": "shared_engine_view_visible"
-    },
-    {
-      "label": "cardsEqual()",
-      "file_type": "code",
-      "source_file": "src/ui/HandTray.tsx",
-      "source_location": "L4",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "cardsequal()",
-      "id": "src_ui_handtray_cardsequal"
-    },
-    {
-      "label": "HandTray()",
-      "file_type": "code",
-      "source_file": "src/ui/HandTray.tsx",
-      "source_location": "L12",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "handtray()",
-      "id": "src_ui_handtray_handtray"
     },
     {
       "label": "dealerDiscardFirstLegal()",
@@ -1983,10 +1996,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L1053",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1053",
       "community": 0,
       "community_name": "main",
-      "norm_label": "the view through the window \u2014 the room's cool reference. everything else in..."
+      "norm_label": "the view through the window \u2014 the room's cool reference. everything else in...",
+      "id": "art_generate_art_rationale_1053"
     },
     {
       "label": "Sash and glazing bars only \u2014 transparent wherever glass shows, so it can be\u2026",
@@ -1994,10 +2007,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L1084",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1084",
       "community": 0,
       "community_name": "main",
-      "norm_label": "sash and glazing bars only \u2014 transparent wherever glass shows, so it can be..."
+      "norm_label": "sash and glazing bars only \u2014 transparent wherever glass shows, so it can be...",
+      "id": "art_generate_art_rationale_1084"
     },
     {
       "label": "A vertically tileable field of snowflakes. Deliberately NOT a stepped sprite\u2026",
@@ -2005,10 +2018,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L1111",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1111",
       "community": 0,
       "community_name": "main",
-      "norm_label": "a vertically tileable field of snowflakes. deliberately not a stepped sprite..."
+      "norm_label": "a vertically tileable field of snowflakes. deliberately not a stepped sprite...",
+      "id": "art_generate_art_rationale_1111"
     },
     {
       "label": "Tileable floor. The room had a wall and a table but no ground, which is the\u2026",
@@ -2016,10 +2029,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L1136",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1136",
       "community": 0,
       "community_name": "main",
-      "norm_label": "tileable floor. the room had a wall and a table but no ground, which is the..."
+      "norm_label": "tileable floor. the room had a wall and a table but no ground, which is the...",
+      "id": "art_generate_art_rationale_1136"
     },
     {
       "label": "Blend two colours. Used to compress a ramp toward its base tone \u2014 a backdrop\u2026",
@@ -2027,10 +2040,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L116",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_116",
       "community": 0,
       "community_name": "main",
-      "norm_label": "blend two colours. used to compress a ramp toward its base tone \u2014 a backdrop..."
+      "norm_label": "blend two colours. used to compress a ramp toward its base tone \u2014 a backdrop...",
+      "id": "art_generate_art_rationale_116"
     },
     {
       "label": "Four tones \u2014 (highlight, base, shadow, deep) \u2014 with a temperature split, not a\u2026",
@@ -2038,10 +2051,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L128",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_128",
       "community": 0,
       "community_name": "main",
-      "norm_label": "four tones \u2014 (highlight, base, shadow, deep) \u2014 with a temperature split, not a..."
+      "norm_label": "four tones \u2014 (highlight, base, shadow, deep) \u2014 with a temperature split, not a...",
+      "id": "art_generate_art_rationale_128"
     },
     {
       "label": "A wall shelf with clutter \u2014 jars, books, a lantern. Placed once, never tiled,\u2026",
@@ -2049,10 +2062,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L1322",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1322",
       "community": 0,
       "community_name": "main",
-      "norm_label": "a wall shelf with clutter \u2014 jars, books, a lantern. placed once, never tiled,..."
+      "norm_label": "a wall shelf with clutter \u2014 jars, books, a lantern. placed once, never tiled,...",
+      "id": "art_generate_art_rationale_1322"
     },
     {
       "label": "Table surface \u2014 horizontal planks, grain running ALONG them, seams lit from\u2026",
@@ -2060,10 +2073,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L821",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_821",
       "community": 0,
       "community_name": "main",
-      "norm_label": "table surface \u2014 horizontal planks, grain running along them, seams lit from..."
+      "norm_label": "table surface \u2014 horizontal planks, grain running along them, seams lit from...",
+      "id": "art_generate_art_rationale_821"
     },
     {
       "label": "Log-cabin wall \u2014 horizontally stacked logs with mortar chinking between\u2026",
@@ -2071,10 +2084,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L859",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_859",
       "community": 0,
       "community_name": "main",
-      "norm_label": "log-cabin wall \u2014 horizontally stacked logs with mortar chinking between..."
+      "norm_label": "log-cabin wall \u2014 horizontally stacked logs with mortar chinking between...",
+      "id": "art_generate_art_rationale_859"
     },
     {
       "label": "Stone hearth surround with a firebox opening and a timber mantel. Two things\u2026",
@@ -2082,10 +2095,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L972",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_972",
       "community": 0,
       "community_name": "main",
-      "norm_label": "stone hearth surround with a firebox opening and a timber mantel. two things..."
+      "norm_label": "stone hearth surround with a firebox opening and a timber mantel. two things...",
+      "id": "art_generate_art_rationale_972"
     },
     {
       "label": "CLAUDE.md",
@@ -2112,13 +2125,24 @@
       "id": "claude_graphify"
     },
     {
+      "label": "bot/index.ts",
+      "file_type": "code",
+      "source_file": "shared/bot/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "bot/index.ts",
+      "id": "shared_bot_index"
+    },
+    {
       "label": "App.tsx",
       "file_type": "code",
       "source_file": "src/App.tsx",
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "app.tsx",
       "id": "src_app"
     },
@@ -2128,32 +2152,43 @@
       "source_file": "src/game/useGame.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_game_usegame",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "usegame.ts",
-      "id": "src_game_usegame"
+      "community_name": "useGame.ts",
+      "norm_label": "usegame.ts"
     },
     {
       "label": "BOT",
       "file_type": "code",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L14",
+      "source_location": "L16",
       "_origin": "ast",
+      "id": "src_game_usegame_bot",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "bot",
-      "id": "src_game_usegame_bot"
+      "community_name": "useGame.ts",
+      "norm_label": "bot"
     },
     {
       "label": "HUMAN",
       "file_type": "code",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L13",
+      "source_location": "L15",
       "_origin": "ast",
+      "id": "src_game_usegame_human",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "human",
-      "id": "src_game_usegame_human"
+      "community_name": "useGame.ts",
+      "norm_label": "human"
+    },
+    {
+      "label": "TRICK_HOLD_MS",
+      "file_type": "code",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L26",
+      "_origin": "ast",
+      "id": "src_game_usegame_trick_hold_ms",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "trick_hold_ms"
     },
     {
       "label": "useOpponentExpression.ts",
@@ -2162,7 +2197,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "useopponentexpression.ts",
       "id": "src_game_useopponentexpression"
     },
@@ -2173,7 +2208,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "usesfx.ts",
       "id": "src_game_usesfx"
     },
@@ -2184,7 +2219,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "sound_files",
       "id": "src_game_usesfx_sound_files"
     },
@@ -2195,7 +2230,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "main.tsx",
       "id": "src_main"
     },
@@ -2206,7 +2241,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "root",
       "id": "src_main_root"
     },
@@ -2217,7 +2252,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "bidpanel.tsx",
       "id": "src_ui_bidpanel"
     },
@@ -2228,7 +2263,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "bid_phases",
       "id": "src_ui_bidpanel_bid_phases"
     },
@@ -2239,7 +2274,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "suit_label",
       "id": "src_ui_bidpanel_suit_label"
     },
@@ -2250,7 +2285,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "card.tsx",
       "id": "src_ui_card"
     },
@@ -2260,10 +2295,21 @@
       "source_file": "src/ui/Game.tsx",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_ui_game",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "game.tsx",
-      "id": "src_ui_game"
+      "community_name": "useGame.ts",
+      "norm_label": "game.tsx"
+    },
+    {
+      "label": "HandTray.tsx",
+      "file_type": "code",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "handtray.tsx",
+      "id": "src_ui_handtray"
     },
     {
       "label": "SceneLayer.tsx",
@@ -2272,7 +2318,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "scenelayer.tsx",
       "id": "src_ui_scenelayer"
     },
@@ -2283,7 +2329,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "scoreboard.tsx",
       "id": "src_ui_scoreboard"
     },
@@ -2294,7 +2340,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "score_suit",
       "id": "src_ui_scoreboard_score_suit"
     },
@@ -2305,7 +2351,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "statusbanner.tsx",
       "id": "src_ui_statusbanner"
     },
@@ -2316,7 +2362,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "community": 11,
-      "community_name": "Game.tsx",
+      "community_name": "useGame.ts",
       "norm_label": "suit_label",
       "id": "src_ui_statusbanner_suit_label"
     },
@@ -2326,21 +2372,21 @@
       "source_file": "src/ui/Table.tsx",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_ui_table",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "table.tsx",
-      "id": "src_ui_table"
+      "community_name": "useGame.ts",
+      "norm_label": "table.tsx"
     },
     {
       "label": "SEATS",
       "file_type": "code",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L5",
+      "source_location": "L18",
       "_origin": "ast",
+      "id": "src_ui_table_seats",
       "community": 11,
-      "community_name": "Game.tsx",
-      "norm_label": "seats",
-      "id": "src_ui_table_seats"
+      "community_name": "useGame.ts",
+      "norm_label": "seats"
     },
     {
       "label": "ASSETS.md",
@@ -2349,10 +2395,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "art_assets",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "assets.md"
+      "norm_label": "assets.md",
+      "id": "art_assets"
     },
     {
       "label": "Animation convention",
@@ -2361,10 +2407,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L245",
       "_origin": "ast",
-      "id": "art_assets_animation_convention",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "animation convention"
+      "norm_label": "animation convention",
+      "id": "art_assets_animation_convention"
     },
     {
       "label": "Art assets \u2014 spec",
@@ -2373,10 +2419,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "art_assets_art_assets_spec",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "art assets \u2014 spec"
+      "norm_label": "art assets \u2014 spec",
+      "id": "art_assets_art_assets_spec"
     },
     {
       "label": "Audio (Phase 2c)",
@@ -2385,10 +2431,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L287",
       "_origin": "ast",
-      "id": "art_assets_audio_phase_2c",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "audio (phase 2c)"
+      "norm_label": "audio (phase 2c)",
+      "id": "art_assets_audio_phase_2c"
     },
     {
       "label": "Cards",
@@ -2397,10 +2443,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L55",
       "_origin": "ast",
-      "id": "art_assets_cards",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "cards"
+      "norm_label": "cards",
+      "id": "art_assets_cards"
     },
     {
       "label": "Environment palette",
@@ -2409,10 +2455,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L136",
       "_origin": "ast",
-      "id": "art_assets_environment_palette",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "environment palette"
+      "norm_label": "environment palette",
+      "id": "art_assets_environment_palette"
     },
     {
       "label": "Environment shading \u2014 `ramp()` (Phase 2d)",
@@ -2421,10 +2467,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L107",
       "_origin": "ast",
-      "id": "art_assets_environment_shading_ramp_phase_2d",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "environment shading \u2014 `ramp()` (phase 2d)"
+      "norm_label": "environment shading \u2014 `ramp()` (phase 2d)",
+      "id": "art_assets_environment_shading_ramp_phase_2d"
     },
     {
       "label": "Layout budget \u2014 asserted, not eyeballed",
@@ -2433,10 +2479,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L94",
       "_origin": "ast",
-      "id": "art_assets_layout_budget_asserted_not_eyeballed",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "layout budget \u2014 asserted, not eyeballed"
+      "norm_label": "layout budget \u2014 asserted, not eyeballed",
+      "id": "art_assets_layout_budget_asserted_not_eyeballed"
     },
     {
       "label": "Living things (Phase 2d.3)",
@@ -2445,10 +2491,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L205",
       "_origin": "ast",
-      "id": "art_assets_living_things_phase_2d_3",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "living things (phase 2d.3)"
+      "norm_label": "living things (phase 2d.3)",
+      "id": "art_assets_living_things_phase_2d_3"
     },
     {
       "label": "Output",
@@ -2457,10 +2503,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L265",
       "_origin": "ast",
-      "id": "art_assets_output",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "output"
+      "norm_label": "output",
+      "id": "art_assets_output"
     },
     {
       "label": "Palette \u2014 cabin by the fire",
@@ -2469,10 +2515,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L21",
       "_origin": "ast",
-      "id": "art_assets_palette_cabin_by_the_fire",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "palette \u2014 cabin by the fire"
+      "norm_label": "palette \u2014 cabin by the fire",
+      "id": "art_assets_palette_cabin_by_the_fire"
     },
     {
       "label": "Regenerating",
@@ -2481,10 +2527,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L310",
       "_origin": "ast",
-      "id": "art_assets_regenerating",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "regenerating"
+      "norm_label": "regenerating",
+      "id": "art_assets_regenerating"
     },
     {
       "label": "Scene objects (Phase 2d.2)",
@@ -2493,10 +2539,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L166",
       "_origin": "ast",
-      "id": "art_assets_scene_objects_phase_2d_2",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "scene objects (phase 2d.2)"
+      "norm_label": "scene objects (phase 2d.2)",
+      "id": "art_assets_scene_objects_phase_2d_2"
     },
     {
       "label": "Tiles vs. placed objects \u2014 different rules",
@@ -2505,10 +2551,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L144",
       "_origin": "ast",
-      "id": "art_assets_tiles_vs_placed_objects_different_rules",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "tiles vs. placed objects \u2014 different rules"
+      "norm_label": "tiles vs. placed objects \u2014 different rules",
+      "id": "art_assets_tiles_vs_placed_objects_different_rules"
     },
     {
       "label": "README.md",
@@ -2599,10 +2645,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L440",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_440",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "hair falling over the brow with a jagged 'bangs' edge \u2014 the single most..."
+      "norm_label": "hair falling over the brow with a jagged 'bangs' edge \u2014 the single most...",
+      "id": "art_generate_art_rationale_440"
     },
     {
       "label": "A sleeved arm angling out from the shoulder. Lives in the free middle band of\u2026",
@@ -2610,10 +2656,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L459",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_459",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "a sleeved arm angling out from the shoulder. lives in the free middle band of..."
+      "norm_label": "a sleeved arm angling out from the shoulder. lives in the free middle band of...",
+      "id": "art_generate_art_rationale_459"
     },
     {
       "label": "Hair as a shaped mass \u2014 hugging the skull, flaring at the jaw/shoulder, then\u2026",
@@ -2621,10 +2667,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L473",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_473",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "hair as a shaped mass \u2014 hugging the skull, flaring at the jaw/shoulder, then..."
+      "norm_label": "hair as a shaped mass \u2014 hugging the skull, flaring at the jaw/shoulder, then...",
+      "id": "art_generate_art_rationale_473"
     },
     {
       "label": "Big round eyes with a sparkle, brows, blush. Drawn after the silhouette outline\u2026",
@@ -2632,10 +2678,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L499",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_499",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "big round eyes with a sparkle, brows, blush. drawn after the silhouette outline..."
+      "norm_label": "big round eyes with a sparkle, brows, blush. drawn after the silhouette outline...",
+      "id": "art_generate_art_rationale_499"
     },
     {
       "label": "Full-body avatars in the spirit of Gen 4/5 Pokemon overworld trainer sprites: a\u2026",
@@ -2643,10 +2689,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L561",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_561",
       "community": 15,
       "community_name": "make_face_card",
-      "norm_label": "full-body avatars in the spirit of gen 4/5 pokemon overworld trainer sprites: a..."
+      "norm_label": "full-body avatars in the spirit of gen 4/5 pokemon overworld trainer sprites: a...",
+      "id": "art_generate_art_rationale_561"
     },
     {
       "label": "Image",
@@ -2654,10 +2700,10 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "id": "image",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "image"
+      "norm_label": "image",
+      "id": "image"
     },
     {
       "label": "ImageDraw",
@@ -2665,10 +2711,10 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "id": "imagedraw",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "imagedraw"
+      "norm_label": "imagedraw",
+      "id": "imagedraw"
     },
     {
       "label": "For the un-outlined corner rank glyph \u2014 wants maximum contrast against\u2026",
@@ -2676,10 +2722,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L175",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_175",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "for the un-outlined corner rank glyph \u2014 wants maximum contrast against..."
+      "norm_label": "for the un-outlined corner rank glyph \u2014 wants maximum contrast against...",
+      "id": "art_generate_art_rationale_175"
     },
     {
       "label": "For anything outlined (pips, garments) \u2014 needs to differ from the INK outline\u2026",
@@ -2687,10 +2733,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L180",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_180",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "for anything outlined (pips, garments) \u2014 needs to differ from the ink outline..."
+      "norm_label": "for anything outlined (pips, garments) \u2014 needs to differ from the ink outline...",
+      "id": "art_generate_art_rationale_180"
     },
     {
       "label": "`expression`: \"idle\" (neutral), \"happy\" (won a trick/euchre), \"rueful\" (lost\u2026",
@@ -2698,10 +2744,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L718",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_718",
       "community": 16,
       "community_name": "Image",
-      "norm_label": "`expression`: \"idle\" (neutral), \"happy\" (won a trick/euchre), \"rueful\" (lost..."
+      "norm_label": "`expression`: \"idle\" (neutral), \"happy\" (won a trick/euchre), \"rueful\" (lost...",
+      "id": "art_generate_art_rationale_718"
     },
     {
       "label": "A small card back for the seated figure's hand. Uses the real card-back palette\u2026",
@@ -2709,10 +2755,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L1185",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1185",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "a small card back for the seated figure's hand. uses the real card-back palette..."
+      "norm_label": "a small card back for the seated figure's hand. uses the real card-back palette...",
+      "id": "art_generate_art_rationale_1185"
     },
     {
       "label": "The opponent, seated in the room \u2014 same character as the scoreboard portrait\u2026",
@@ -2720,10 +2766,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L1199",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1199",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "the opponent, seated in the room \u2014 same character as the scoreboard portrait..."
+      "norm_label": "the opponent, seated in the room \u2014 same character as the scoreboard portrait...",
+      "id": "art_generate_art_rationale_1199"
     },
     {
       "label": "`parts` is a list of (draw_fn, color) painted in order \u2014 later parts cover\u2026",
@@ -2731,10 +2777,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L220",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_220",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "`parts` is a list of (draw_fn, color) painted in order \u2014 later parts cover..."
+      "norm_label": "`parts` is a list of (draw_fn, color) painted in order \u2014 later parts cover...",
+      "id": "art_generate_art_rationale_220"
     },
     {
       "label": "One derived shadow tone per material \u2014 keeps the palette from exploding while\u2026",
@@ -2742,10 +2788,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L71",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_71",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "one derived shadow tone per material \u2014 keeps the palette from exploding while..."
+      "norm_label": "one derived shadow tone per material \u2014 keeps the palette from exploding while...",
+      "id": "art_generate_art_rationale_71"
     },
     {
       "label": "One flame tongue as a polygon, with a slight lateral wobble. The width profile\u2026",
@@ -2753,10 +2799,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L918",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_918",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "one flame tongue as a polygon, with a slight lateral wobble. the width profile..."
+      "norm_label": "one flame tongue as a polygon, with a slight lateral wobble. the width profile...",
+      "id": "art_generate_art_rationale_918"
     },
     {
       "label": "Animation frames for the hearth fire. Deterministic: each frame is a pure\u2026",
@@ -2764,10 +2810,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L938",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_938",
       "community": 17,
       "community_name": "make_seated_old_timer",
-      "norm_label": "animation frames for the hearth fire. deterministic: each frame is a pure..."
+      "norm_label": "animation frames for the hearth fire. deterministic: each frame is a pure...",
+      "id": "art_generate_art_rationale_938"
     },
     {
       "label": "A cat asleep by the fire, two frames of slow breathing. Two frames is enough\u2026",
@@ -2775,10 +2821,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L1291",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1291",
       "community": 18,
       "community_name": "make_cat_frames",
-      "norm_label": "a cat asleep by the fire, two frames of slow breathing. two frames is enough..."
+      "norm_label": "a cat asleep by the fire, two frames of slow breathing. two frames is enough...",
+      "id": "art_generate_art_rationale_1291"
     },
     {
       "label": "A stepped dark ellipse to sit under an object so it reads as resting on a\u2026",
@@ -2786,10 +2832,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L161",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_161",
       "community": 18,
       "community_name": "make_cat_frames",
-      "norm_label": "a stepped dark ellipse to sit under an object so it reads as resting on a..."
+      "norm_label": "a stepped dark ellipse to sit under an object so it reads as resting on a...",
+      "id": "art_generate_art_rationale_161"
     },
     {
       "label": "generate_art.py",
@@ -2797,10 +2843,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "art_generate_art",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "generate_art.py"
+      "norm_label": "generate_art.py",
+      "id": "art_generate_art"
     },
     {
       "label": "Paste equal-sized frames into one horizontal strip for CSS steps() animation.\u2026",
@@ -2808,10 +2854,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L150",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_150",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "paste equal-sized frames into one horizontal strip for css steps() animation...."
+      "norm_label": "paste equal-sized frames into one horizontal strip for css steps() animation....",
+      "id": "art_generate_art_rationale_150"
     },
     {
       "label": "The two rectangles paste_corners() reserves \u2014 kept in sync with it by deriving\u2026",
@@ -2819,10 +2865,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L534",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_534",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "the two rectangles paste_corners() reserves \u2014 kept in sync with it by deriving..."
+      "norm_label": "the two rectangles paste_corners() reserves \u2014 kept in sync with it by deriving...",
+      "id": "art_generate_art_rationale_534"
     },
     {
       "label": "Guardrail: centred artwork must never intrude into a reserved corner index box.\u2026",
@@ -2830,10 +2876,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L547",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_547",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "guardrail: centred artwork must never intrude into a reserved corner index box...."
+      "norm_label": "guardrail: centred artwork must never intrude into a reserved corner index box....",
+      "id": "art_generate_art_rationale_547"
     },
     {
       "label": "Move a colour toward white (amount > 0) or black (amount < 0), with a hue\u2026",
@@ -2841,10 +2887,10 @@
       "source_file": "art/generate_art.py",
       "source_location": "L87",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_87",
       "community": 19,
       "community_name": "generate_art.py",
-      "norm_label": "move a colour toward white (amount > 0) or black (amount < 0), with a hue..."
+      "norm_label": "move a colour toward white (amount > 0) or black (amount < 0), with a hue...",
+      "id": "art_generate_art_rationale_87"
     },
     {
       "label": "fuzz.ts",
@@ -2999,17 +3045,6 @@
       "community_name": "types.ts",
       "norm_label": "deal_over_phases",
       "id": "shared_engine_view_deal_over_phases"
-    },
-    {
-      "label": "HandTray.tsx",
-      "file_type": "code",
-      "source_file": "src/ui/HandTray.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "handtray.tsx",
-      "id": "src_ui_handtray"
     },
     {
       "label": "deck.test.ts",
@@ -3650,17 +3685,6 @@
       "id": "shared_bot_heuristic_suits"
     },
     {
-      "label": "bot/index.ts",
-      "file_type": "code",
-      "source_file": "shared/bot/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "bot/index.ts",
-      "id": "shared_bot_index"
-    },
-    {
       "label": "rules.ts",
       "file_type": "code",
       "source_file": "shared/engine/rules.ts",
@@ -4265,9 +4289,9 @@
       "source_location": "L462",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_arm",
-      "target": "art_generate_art_poly",
-      "confidence_score": 1.0
+      "target": "art_generate_art_poly"
     },
     {
       "relation": "calls",
@@ -4277,9 +4301,9 @@
       "source_location": "L551",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_assert_art_clear_of_indices",
-      "target": "art_generate_art_index_boxes",
-      "confidence_score": 1.0
+      "target": "art_generate_art_index_boxes"
     },
     {
       "relation": "calls",
@@ -4289,9 +4313,9 @@
       "source_location": "L494",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_collar",
-      "target": "art_generate_art_poly",
-      "confidence_score": 1.0
+      "target": "art_generate_art_poly"
     },
     {
       "relation": "calls",
@@ -4301,9 +4325,9 @@
       "source_location": "L232",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_composite_sprite",
-      "target": "art_generate_art_darken",
-      "confidence_score": 1.0
+      "target": "art_generate_art_darken"
     },
     {
       "relation": "calls",
@@ -4313,9 +4337,9 @@
       "source_location": "L232",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_composite_sprite",
-      "target": "art_generate_art_shadow_band",
-      "confidence_score": 1.0
+      "target": "art_generate_art_shadow_band"
     },
     {
       "relation": "calls",
@@ -4325,9 +4349,9 @@
       "source_location": "L447",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_fringe",
-      "target": "art_generate_art_poly",
-      "confidence_score": 1.0
+      "target": "art_generate_art_poly"
     },
     {
       "relation": "calls",
@@ -4337,9 +4361,9 @@
       "source_location": "L436",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_head",
-      "target": "art_generate_art_ellipse",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ellipse"
     },
     {
       "relation": "calls",
@@ -4349,9 +4373,9 @@
       "source_location": "L488",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_hem_trim",
-      "target": "art_generate_art_poly",
-      "confidence_score": 1.0
+      "target": "art_generate_art_poly"
     },
     {
       "relation": "calls",
@@ -4361,9 +4385,9 @@
       "source_location": "L1361",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_face_card",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_face_card"
     },
     {
       "relation": "calls",
@@ -4373,9 +4397,9 @@
       "source_location": "L1361",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_number_card",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_number_card"
     },
     {
       "relation": "calls",
@@ -4385,9 +4409,9 @@
       "source_location": "L1364",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_card_back",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_card_back"
     },
     {
       "relation": "calls",
@@ -4397,9 +4421,9 @@
       "source_location": "L1365",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_table_felt",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_table_felt"
     },
     {
       "relation": "calls",
@@ -4409,9 +4433,9 @@
       "source_location": "L1366",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_wall_texture",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_wall_texture"
     },
     {
       "relation": "calls",
@@ -4421,9 +4445,9 @@
       "source_location": "L1370",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_fireplace",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_fireplace"
     },
     {
       "relation": "calls",
@@ -4433,9 +4457,9 @@
       "source_location": "L1371",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_fire_frames",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_fire_frames"
     },
     {
       "relation": "calls",
@@ -4445,9 +4469,9 @@
       "source_location": "L1371",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_sprite_sheet",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_sprite_sheet"
     },
     {
       "relation": "calls",
@@ -4457,9 +4481,9 @@
       "source_location": "L1372",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_window_glass",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_window_glass"
     },
     {
       "relation": "calls",
@@ -4469,9 +4493,9 @@
       "source_location": "L1373",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_window_frame",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_window_frame"
     },
     {
       "relation": "calls",
@@ -4481,9 +4505,9 @@
       "source_location": "L1374",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_snowfall",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_snowfall"
     },
     {
       "relation": "calls",
@@ -4493,9 +4517,9 @@
       "source_location": "L1375",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_floorboards",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_floorboards"
     },
     {
       "relation": "calls",
@@ -4505,9 +4529,9 @@
       "source_location": "L1376",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_seated_old_timer",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_seated_old_timer"
     },
     {
       "relation": "calls",
@@ -4517,9 +4541,9 @@
       "source_location": "L1377",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_cat_frames",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_cat_frames"
     },
     {
       "relation": "calls",
@@ -4529,9 +4553,9 @@
       "source_location": "L1378",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_shelf",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_shelf"
     },
     {
       "relation": "calls",
@@ -4541,9 +4565,9 @@
       "source_location": "L1383",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_old_timer_portrait",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_old_timer_portrait"
     },
     {
       "relation": "calls",
@@ -4553,9 +4577,9 @@
       "source_location": "L1396",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_main",
-      "target": "art_generate_art_make_scoreboard_card",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_scoreboard_card"
     },
     {
       "relation": "calls",
@@ -4565,9 +4589,9 @@
       "source_location": "L1300",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_cat_frames",
-      "target": "art_generate_art_contact_shadow",
-      "confidence_score": 1.0
+      "target": "art_generate_art_contact_shadow"
     },
     {
       "relation": "calls",
@@ -4577,9 +4601,9 @@
       "source_location": "L1307",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_cat_frames",
-      "target": "art_generate_art_ellipse",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ellipse"
     },
     {
       "relation": "calls",
@@ -4589,9 +4613,9 @@
       "source_location": "L1309",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_cat_frames",
-      "target": "art_generate_art_poly",
-      "confidence_score": 1.0
+      "target": "art_generate_art_poly"
     },
     {
       "relation": "calls",
@@ -4601,9 +4625,9 @@
       "source_location": "L1313",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_cat_frames",
-      "target": "art_generate_art_composite_sprite",
-      "confidence_score": 1.0
+      "target": "art_generate_art_composite_sprite"
     },
     {
       "relation": "calls",
@@ -4613,9 +4637,9 @@
       "source_location": "L1313",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_cat_frames",
-      "target": "art_generate_art_paste",
-      "confidence_score": 1.0
+      "target": "art_generate_art_paste"
     },
     {
       "relation": "calls",
@@ -4625,9 +4649,9 @@
       "source_location": "L566",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_draw_card_frame",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_card_frame"
     },
     {
       "relation": "calls",
@@ -4637,9 +4661,9 @@
       "source_location": "L567",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_body_color",
-      "confidence_score": 1.0
+      "target": "art_generate_art_body_color"
     },
     {
       "relation": "calls",
@@ -4649,9 +4673,9 @@
       "source_location": "L571",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_sculpted_hair",
-      "confidence_score": 1.0
+      "target": "art_generate_art_sculpted_hair"
     },
     {
       "relation": "calls",
@@ -4661,9 +4685,9 @@
       "source_location": "L572",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_arm",
-      "confidence_score": 1.0
+      "target": "art_generate_art_arm"
     },
     {
       "relation": "calls",
@@ -4673,9 +4697,9 @@
       "source_location": "L574",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_robe",
-      "confidence_score": 1.0
+      "target": "art_generate_art_robe"
     },
     {
       "relation": "calls",
@@ -4685,9 +4709,9 @@
       "source_location": "L575",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_hem_trim",
-      "confidence_score": 1.0
+      "target": "art_generate_art_hem_trim"
     },
     {
       "relation": "calls",
@@ -4697,9 +4721,9 @@
       "source_location": "L578",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_poly",
-      "confidence_score": 1.0
+      "target": "art_generate_art_poly"
     },
     {
       "relation": "calls",
@@ -4709,9 +4733,9 @@
       "source_location": "L579",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_ellipse",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ellipse"
     },
     {
       "relation": "calls",
@@ -4721,9 +4745,9 @@
       "source_location": "L580",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_hand",
-      "confidence_score": 1.0
+      "target": "art_generate_art_hand"
     },
     {
       "relation": "calls",
@@ -4733,9 +4757,9 @@
       "source_location": "L582",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_collar",
-      "confidence_score": 1.0
+      "target": "art_generate_art_collar"
     },
     {
       "relation": "calls",
@@ -4745,9 +4769,9 @@
       "source_location": "L583",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_head",
-      "confidence_score": 1.0
+      "target": "art_generate_art_head"
     },
     {
       "relation": "calls",
@@ -4757,9 +4781,9 @@
       "source_location": "L584",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_fringe",
-      "confidence_score": 1.0
+      "target": "art_generate_art_fringe"
     },
     {
       "relation": "calls",
@@ -4769,9 +4793,9 @@
       "source_location": "L597",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_composite_sprite",
-      "confidence_score": 1.0
+      "target": "art_generate_art_composite_sprite"
     },
     {
       "relation": "calls",
@@ -4781,9 +4805,9 @@
       "source_location": "L598",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_assert_art_clear_of_indices",
-      "confidence_score": 1.0
+      "target": "art_generate_art_assert_art_clear_of_indices"
     },
     {
       "relation": "calls",
@@ -4793,9 +4817,9 @@
       "source_location": "L599",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_paste",
-      "confidence_score": 1.0
+      "target": "art_generate_art_paste"
     },
     {
       "relation": "calls",
@@ -4805,9 +4829,9 @@
       "source_location": "L600",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_draw_face",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_face"
     },
     {
       "relation": "calls",
@@ -4817,9 +4841,9 @@
       "source_location": "L664",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "art_generate_art_paste_corners",
-      "confidence_score": 1.0
+      "target": "art_generate_art_paste_corners"
     },
     {
       "relation": "calls",
@@ -4829,9 +4853,9 @@
       "source_location": "L957",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_fire_frames",
-      "target": "art_generate_art_darken",
-      "confidence_score": 1.0
+      "target": "art_generate_art_darken"
     },
     {
       "relation": "calls",
@@ -4841,9 +4865,9 @@
       "source_location": "L960",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_fire_frames",
-      "target": "art_generate_art_flame",
-      "confidence_score": 1.0
+      "target": "art_generate_art_flame"
     },
     {
       "relation": "calls",
@@ -4853,9 +4877,9 @@
       "source_location": "L988",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_fireplace",
-      "target": "art_generate_art_ramp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ramp"
     },
     {
       "relation": "calls",
@@ -4865,9 +4889,9 @@
       "source_location": "L990",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_fireplace",
-      "target": "art_generate_art_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mix"
     },
     {
       "relation": "calls",
@@ -4877,9 +4901,9 @@
       "source_location": "L1145",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_floorboards",
-      "target": "art_generate_art_ramp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ramp"
     },
     {
       "relation": "calls",
@@ -4889,9 +4913,9 @@
       "source_location": "L1146",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_floorboards",
-      "target": "art_generate_art_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mix"
     },
     {
       "relation": "calls",
@@ -4901,9 +4925,9 @@
       "source_location": "L392",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_number_card",
-      "target": "art_generate_art_draw_card_frame",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_card_frame"
     },
     {
       "relation": "calls",
@@ -4913,9 +4937,9 @@
       "source_location": "L394",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_number_card",
-      "target": "art_generate_art_body_color",
-      "confidence_score": 1.0
+      "target": "art_generate_art_body_color"
     },
     {
       "relation": "calls",
@@ -4925,9 +4949,9 @@
       "source_location": "L394",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_number_card",
-      "target": "art_generate_art_paste",
-      "confidence_score": 1.0
+      "target": "art_generate_art_paste"
     },
     {
       "relation": "calls",
@@ -4937,9 +4961,9 @@
       "source_location": "L394",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_number_card",
-      "target": "art_generate_art_pip_sprite",
-      "confidence_score": 1.0
+      "target": "art_generate_art_pip_sprite"
     },
     {
       "relation": "calls",
@@ -4949,9 +4973,9 @@
       "source_location": "L395",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_number_card",
-      "target": "art_generate_art_paste_corners",
-      "confidence_score": 1.0
+      "target": "art_generate_art_paste_corners"
     },
     {
       "relation": "calls",
@@ -4961,9 +4985,9 @@
       "source_location": "L749",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_old_timer_portrait",
-      "target": "art_generate_art_composite_sprite",
-      "confidence_score": 1.0
+      "target": "art_generate_art_composite_sprite"
     },
     {
       "relation": "calls",
@@ -4973,9 +4997,9 @@
       "source_location": "L749",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_old_timer_portrait",
-      "target": "art_generate_art_old_timer_parts",
-      "confidence_score": 1.0
+      "target": "art_generate_art_old_timer_parts"
     },
     {
       "relation": "calls",
@@ -4985,9 +5009,9 @@
       "source_location": "L749",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_old_timer_portrait",
-      "target": "art_generate_art_paste",
-      "confidence_score": 1.0
+      "target": "art_generate_art_paste"
     },
     {
       "relation": "calls",
@@ -4997,9 +5021,9 @@
       "source_location": "L750",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_old_timer_portrait",
-      "target": "art_generate_art_draw_old_timer_face",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_old_timer_face"
     },
     {
       "relation": "calls",
@@ -5009,9 +5033,9 @@
       "source_location": "L774",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_scoreboard_card",
-      "target": "art_generate_art_score_card_frame",
-      "confidence_score": 1.0
+      "target": "art_generate_art_score_card_frame"
     },
     {
       "relation": "calls",
@@ -5021,9 +5045,9 @@
       "source_location": "L776",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_scoreboard_card",
-      "target": "art_generate_art_body_color",
-      "confidence_score": 1.0
+      "target": "art_generate_art_body_color"
     },
     {
       "relation": "calls",
@@ -5033,9 +5057,9 @@
       "source_location": "L786",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_scoreboard_card",
-      "target": "art_generate_art_pip_sprite",
-      "confidence_score": 1.0
+      "target": "art_generate_art_pip_sprite"
     },
     {
       "relation": "calls",
@@ -5045,9 +5069,9 @@
       "source_location": "L787",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_scoreboard_card",
-      "target": "art_generate_art_paste",
-      "confidence_score": 1.0
+      "target": "art_generate_art_paste"
     },
     {
       "relation": "calls",
@@ -5057,9 +5081,9 @@
       "source_location": "L789",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_scoreboard_card",
-      "target": "art_generate_art_text_color",
-      "confidence_score": 1.0
+      "target": "art_generate_art_text_color"
     },
     {
       "relation": "calls",
@@ -5069,9 +5093,9 @@
       "source_location": "L792",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_scoreboard_card",
-      "target": "art_generate_art_draw_glyph",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_glyph"
     },
     {
       "relation": "calls",
@@ -5081,9 +5105,9 @@
       "source_location": "L1223",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_seated_old_timer",
-      "target": "art_generate_art_ramp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ramp"
     },
     {
       "relation": "calls",
@@ -5093,9 +5117,9 @@
       "source_location": "L1224",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_seated_old_timer",
-      "target": "art_generate_art_darken",
-      "confidence_score": 1.0
+      "target": "art_generate_art_darken"
     },
     {
       "relation": "calls",
@@ -5105,9 +5129,9 @@
       "source_location": "L1230",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_seated_old_timer",
-      "target": "art_generate_art_poly",
-      "confidence_score": 1.0
+      "target": "art_generate_art_poly"
     },
     {
       "relation": "calls",
@@ -5117,9 +5141,9 @@
       "source_location": "L1242",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_seated_old_timer",
-      "target": "art_generate_art_ellipse",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ellipse"
     },
     {
       "relation": "calls",
@@ -5129,9 +5153,9 @@
       "source_location": "L1268",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_seated_old_timer",
-      "target": "art_generate_art_composite_sprite",
-      "confidence_score": 1.0
+      "target": "art_generate_art_composite_sprite"
     },
     {
       "relation": "calls",
@@ -5141,9 +5165,9 @@
       "source_location": "L1268",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_seated_old_timer",
-      "target": "art_generate_art_paste",
-      "confidence_score": 1.0
+      "target": "art_generate_art_paste"
     },
     {
       "relation": "calls",
@@ -5153,9 +5177,9 @@
       "source_location": "L1273",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_seated_old_timer",
-      "target": "art_generate_art_mini_card_back",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mini_card_back"
     },
     {
       "relation": "calls",
@@ -5165,9 +5189,9 @@
       "source_location": "L1326",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_shelf",
-      "target": "art_generate_art_ramp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ramp"
     },
     {
       "relation": "calls",
@@ -5177,9 +5201,9 @@
       "source_location": "L1338",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_shelf",
-      "target": "art_generate_art_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mix"
     },
     {
       "relation": "calls",
@@ -5189,9 +5213,9 @@
       "source_location": "L1127",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_snowfall",
-      "target": "art_generate_art_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mix"
     },
     {
       "relation": "calls",
@@ -5201,9 +5225,9 @@
       "source_location": "L832",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_table_felt",
-      "target": "art_generate_art_ramp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ramp"
     },
     {
       "relation": "calls",
@@ -5213,9 +5237,9 @@
       "source_location": "L880",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_wall_texture",
-      "target": "art_generate_art_ramp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ramp"
     },
     {
       "relation": "calls",
@@ -5225,9 +5249,9 @@
       "source_location": "L881",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_wall_texture",
-      "target": "art_generate_art_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mix"
     },
     {
       "relation": "calls",
@@ -5237,9 +5261,9 @@
       "source_location": "L1089",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_window_frame",
-      "target": "art_generate_art_ramp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ramp"
     },
     {
       "relation": "calls",
@@ -5249,9 +5273,9 @@
       "source_location": "L1096",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_window_frame",
-      "target": "art_generate_art_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mix"
     },
     {
       "relation": "calls",
@@ -5261,9 +5285,9 @@
       "source_location": "L1066",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_window_glass",
-      "target": "art_generate_art_ramp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ramp"
     },
     {
       "relation": "calls",
@@ -5273,9 +5297,9 @@
       "source_location": "L1071",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_window_glass",
-      "target": "art_generate_art_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mix"
     },
     {
       "relation": "calls",
@@ -5285,9 +5309,9 @@
       "source_location": "L118",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_mix",
-      "target": "art_generate_art_clamp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_clamp"
     },
     {
       "relation": "calls",
@@ -5297,9 +5321,9 @@
       "source_location": "L686",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_old_timer_parts",
-      "target": "art_generate_art_poly",
-      "confidence_score": 1.0
+      "target": "art_generate_art_poly"
     },
     {
       "relation": "calls",
@@ -5309,9 +5333,9 @@
       "source_location": "L691",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_old_timer_parts",
-      "target": "art_generate_art_ellipse",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ellipse"
     },
     {
       "relation": "calls",
@@ -5321,9 +5345,9 @@
       "source_location": "L367",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_paste_corners",
-      "target": "art_generate_art_body_color",
-      "confidence_score": 1.0
+      "target": "art_generate_art_body_color"
     },
     {
       "relation": "calls",
@@ -5333,9 +5357,9 @@
       "source_location": "L367",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_paste_corners",
-      "target": "art_generate_art_text_color",
-      "confidence_score": 1.0
+      "target": "art_generate_art_text_color"
     },
     {
       "relation": "calls",
@@ -5345,9 +5369,9 @@
       "source_location": "L368",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_paste_corners",
-      "target": "art_generate_art_pip_sprite",
-      "confidence_score": 1.0
+      "target": "art_generate_art_pip_sprite"
     },
     {
       "relation": "calls",
@@ -5357,9 +5381,9 @@
       "source_location": "L379",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_paste_corners",
-      "target": "art_generate_art_draw_glyph",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_glyph"
     },
     {
       "relation": "calls",
@@ -5369,9 +5393,9 @@
       "source_location": "L350",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_pip_sprite",
-      "target": "art_generate_art_composite_sprite",
-      "confidence_score": 1.0
+      "target": "art_generate_art_composite_sprite"
     },
     {
       "relation": "calls",
@@ -5381,9 +5405,9 @@
       "source_location": "L142",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_ramp",
-      "target": "art_generate_art_shift",
-      "confidence_score": 1.0
+      "target": "art_generate_art_shift"
     },
     {
       "relation": "calls",
@@ -5393,9 +5417,9 @@
       "source_location": "L425",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_robe",
-      "target": "art_generate_art_poly",
-      "confidence_score": 1.0
+      "target": "art_generate_art_poly"
     },
     {
       "relation": "calls",
@@ -5405,9 +5429,9 @@
       "source_location": "L475",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_sculpted_hair",
-      "target": "art_generate_art_poly",
-      "confidence_score": 1.0
+      "target": "art_generate_art_poly"
     },
     {
       "relation": "calls",
@@ -5417,9 +5441,9 @@
       "source_location": "L111",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_shift",
-      "target": "art_generate_art_clamp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_clamp"
     },
     {
       "relation": "calls",
@@ -6374,24 +6398,12 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L29",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_game_usegame_usegame",
-      "target": "src_game_usegame_freshseed"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/game/useGame.ts",
-      "source_location": "L55",
+      "source_location": "L45",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_game_usegame_usegame",
-      "target": "shared_bot_heuristic_choosemove"
+      "target": "src_game_usegame_freshseed",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6494,48 +6506,48 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L20",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table_remaininginhand",
-      "target": "src_ui_table_samehand"
+      "target": "src_ui_table_samehand",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L35",
+      "source_location": "L53",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_samehand"
+      "target": "src_ui_table_samehand",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L36",
+      "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_remaininginhand"
+      "target": "src_ui_table_remaininginhand",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L42",
+      "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_seatlabel"
+      "target": "src_ui_table_seatlabel",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -7682,48 +7694,48 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L10",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_game_usegame",
-      "target": "shared_engine_types_action"
+      "target": "shared_engine_types_action",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L10",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_game_usegame",
-      "target": "shared_engine_types_gamestate"
+      "target": "shared_engine_types_gamestate",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L10",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_game_usegame",
-      "target": "shared_engine_types_player"
+      "target": "shared_engine_types_player",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_game_usegame",
-      "target": "shared_bot_heuristic_choosemove"
+      "target": "shared_engine_types_trickcard",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7841,9 +7853,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usegame_usegame"
+      "target": "src_game_usegame_usegame",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7853,9 +7865,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usesfx_usesfx"
+      "target": "src_game_usesfx_usesfx",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7865,9 +7877,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scenelayer_scenelayer"
+      "target": "src_ui_scenelayer_scenelayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7877,9 +7889,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scoreboard_scoreboard"
+      "target": "src_ui_scoreboard_scoreboard",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7889,9 +7901,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_statusbanner_statusbanner"
+      "target": "src_ui_statusbanner_statusbanner",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7901,9 +7913,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_table_table"
+      "target": "src_ui_table_table",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7913,9 +7925,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_bidpanel_bidpanel"
+      "target": "src_ui_bidpanel_bidpanel",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7925,9 +7937,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_handtray_handtray"
+      "target": "src_ui_handtray_handtray",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8117,9 +8129,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types_handid"
+      "target": "shared_engine_types_handid",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8129,9 +8141,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types_playerview"
+      "target": "shared_engine_types_playerview",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8141,9 +8153,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame_bot"
+      "target": "src_game_usegame_bot",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8153,9 +8165,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame_human"
+      "target": "src_game_usegame_human",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8165,21 +8177,33 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card_card"
+      "target": "src_game_usegame_completedtrick",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L3",
+      "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card_cardback"
+      "target": "src_ui_card_card",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_ui_card_cardback",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8822,24 +8846,24 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L10",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_game_usegame",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L11",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_game_usegame",
-      "target": "shared_bot_index"
+      "target": "shared_bot_index",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -8849,9 +8873,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_game_usegame",
-      "target": "shared_engine_index"
+      "target": "shared_engine_index",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -8933,9 +8957,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usegame"
+      "target": "src_game_usegame",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -8945,9 +8969,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usesfx"
+      "target": "src_game_usesfx",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -8957,9 +8981,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scenelayer"
+      "target": "src_ui_scenelayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -8969,9 +8993,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scoreboard"
+      "target": "src_ui_scoreboard",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -8981,9 +9005,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_statusbanner"
+      "target": "src_ui_statusbanner",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -8993,9 +9017,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_table"
+      "target": "src_ui_table",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9005,9 +9029,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_bidpanel"
+      "target": "src_ui_bidpanel",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9017,9 +9041,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_handtray"
+      "target": "src_ui_handtray",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9125,21 +9149,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "src_ui_table",
-      "target": "src_game_usegame"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9149,9 +9161,21 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card"
+      "target": "src_game_usegame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/Table.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_ui_table",
+      "target": "src_ui_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9305,9 +9329,9 @@
       "source_location": "L360",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_draw_card_frame",
-      "target": "imagedraw",
-      "confidence_score": 1.0
+      "target": "imagedraw"
     },
     {
       "relation": "references",
@@ -9317,9 +9341,9 @@
       "source_location": "L497",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_draw_face",
-      "target": "image",
-      "confidence_score": 1.0
+      "target": "image"
     },
     {
       "relation": "references",
@@ -9329,9 +9353,9 @@
       "source_location": "L263",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_draw_glyph",
-      "target": "imagedraw",
-      "confidence_score": 1.0
+      "target": "imagedraw"
     },
     {
       "relation": "references",
@@ -9341,9 +9365,9 @@
       "source_location": "L717",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_draw_old_timer_face",
-      "target": "image",
-      "confidence_score": 1.0
+      "target": "image"
     },
     {
       "relation": "references",
@@ -9353,9 +9377,9 @@
       "source_location": "L243",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_paste",
-      "target": "image",
-      "confidence_score": 1.0
+      "target": "image"
     },
     {
       "relation": "references",
@@ -9365,9 +9389,9 @@
       "source_location": "L366",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_paste_corners",
-      "target": "image",
-      "confidence_score": 1.0
+      "target": "image"
     },
     {
       "relation": "references",
@@ -9377,9 +9401,9 @@
       "source_location": "L764",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_score_card_frame",
-      "target": "imagedraw",
-      "confidence_score": 1.0
+      "target": "imagedraw"
     },
     {
       "relation": "references",
@@ -9389,9 +9413,9 @@
       "source_location": "L797",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_card_back",
-      "target": "image",
-      "confidence_score": 1.0
+      "target": "image"
     },
     {
       "relation": "references",
@@ -9401,9 +9425,9 @@
       "source_location": "L560",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_face_card",
-      "target": "image",
-      "confidence_score": 1.0
+      "target": "image"
     },
     {
       "relation": "references",
@@ -9413,9 +9437,9 @@
       "source_location": "L390",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_number_card",
-      "target": "image",
-      "confidence_score": 1.0
+      "target": "image"
     },
     {
       "relation": "references",
@@ -9425,9 +9449,9 @@
       "source_location": "L747",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_old_timer_portrait",
-      "target": "image",
-      "confidence_score": 1.0
+      "target": "image"
     },
     {
       "relation": "references",
@@ -9437,9 +9461,9 @@
       "source_location": "L770",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_scoreboard_card",
-      "target": "image",
-      "confidence_score": 1.0
+      "target": "image"
     },
     {
       "relation": "references",
@@ -9449,9 +9473,9 @@
       "source_location": "L820",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_table_felt",
-      "target": "image",
-      "confidence_score": 1.0
+      "target": "image"
     },
     {
       "relation": "references",
@@ -9461,9 +9485,9 @@
       "source_location": "L858",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_make_wall_texture",
-      "target": "image",
-      "confidence_score": 1.0
+      "target": "image"
     },
     {
       "relation": "contains",
@@ -9472,9 +9496,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets",
-      "target": "art_assets_art_assets_spec",
-      "confidence_score": 1.0
+      "target": "art_assets_art_assets_spec"
     },
     {
       "relation": "contains",
@@ -9483,9 +9507,9 @@
       "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_environment_shading_ramp_phase_2d",
-      "confidence_score": 1.0
+      "target": "art_assets_environment_shading_ramp_phase_2d"
     },
     {
       "relation": "contains",
@@ -9494,9 +9518,9 @@
       "source_location": "L136",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_environment_palette",
-      "confidence_score": 1.0
+      "target": "art_assets_environment_palette"
     },
     {
       "relation": "contains",
@@ -9505,9 +9529,9 @@
       "source_location": "L144",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_tiles_vs_placed_objects_different_rules",
-      "confidence_score": 1.0
+      "target": "art_assets_tiles_vs_placed_objects_different_rules"
     },
     {
       "relation": "contains",
@@ -9516,9 +9540,9 @@
       "source_location": "L166",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_scene_objects_phase_2d_2",
-      "confidence_score": 1.0
+      "target": "art_assets_scene_objects_phase_2d_2"
     },
     {
       "relation": "contains",
@@ -9527,9 +9551,9 @@
       "source_location": "L205",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_living_things_phase_2d_3",
-      "confidence_score": 1.0
+      "target": "art_assets_living_things_phase_2d_3"
     },
     {
       "relation": "contains",
@@ -9538,9 +9562,9 @@
       "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_palette_cabin_by_the_fire",
-      "confidence_score": 1.0
+      "target": "art_assets_palette_cabin_by_the_fire"
     },
     {
       "relation": "contains",
@@ -9549,9 +9573,9 @@
       "source_location": "L245",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_animation_convention",
-      "confidence_score": 1.0
+      "target": "art_assets_animation_convention"
     },
     {
       "relation": "contains",
@@ -9560,9 +9584,9 @@
       "source_location": "L265",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_output",
-      "confidence_score": 1.0
+      "target": "art_assets_output"
     },
     {
       "relation": "contains",
@@ -9571,9 +9595,9 @@
       "source_location": "L287",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_audio_phase_2c",
-      "confidence_score": 1.0
+      "target": "art_assets_audio_phase_2c"
     },
     {
       "relation": "contains",
@@ -9582,9 +9606,9 @@
       "source_location": "L310",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_regenerating",
-      "confidence_score": 1.0
+      "target": "art_assets_regenerating"
     },
     {
       "relation": "contains",
@@ -9593,9 +9617,9 @@
       "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_cards",
-      "confidence_score": 1.0
+      "target": "art_assets_cards"
     },
     {
       "relation": "contains",
@@ -9604,9 +9628,9 @@
       "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_layout_budget_asserted_not_eyeballed",
-      "confidence_score": 1.0
+      "target": "art_assets_layout_budget_asserted_not_eyeballed"
     },
     {
       "relation": "contains",
@@ -9615,9 +9639,9 @@
       "source_location": "L1052",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_window_glass",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_window_glass"
     },
     {
       "relation": "contains",
@@ -9626,9 +9650,9 @@
       "source_location": "L1083",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_window_frame",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_window_frame"
     },
     {
       "relation": "contains",
@@ -9637,9 +9661,9 @@
       "source_location": "L1110",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_snowfall",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_snowfall"
     },
     {
       "relation": "contains",
@@ -9648,9 +9672,9 @@
       "source_location": "L1135",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_floorboards",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_floorboards"
     },
     {
       "relation": "contains",
@@ -9659,9 +9683,9 @@
       "source_location": "L115",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mix"
     },
     {
       "relation": "contains",
@@ -9670,9 +9694,9 @@
       "source_location": "L1184",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_mini_card_back",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mini_card_back"
     },
     {
       "relation": "contains",
@@ -9681,9 +9705,9 @@
       "source_location": "L1198",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_seated_old_timer",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_seated_old_timer"
     },
     {
       "relation": "contains",
@@ -9692,9 +9716,9 @@
       "source_location": "L127",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_ramp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ramp"
     },
     {
       "relation": "contains",
@@ -9703,9 +9727,9 @@
       "source_location": "L1290",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_cat_frames",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_cat_frames"
     },
     {
       "relation": "contains",
@@ -9714,9 +9738,9 @@
       "source_location": "L1321",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_shelf",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_shelf"
     },
     {
       "relation": "contains",
@@ -9725,9 +9749,9 @@
       "source_location": "L1355",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_main",
-      "confidence_score": 1.0
+      "target": "art_generate_art_main"
     },
     {
       "relation": "contains",
@@ -9736,9 +9760,9 @@
       "source_location": "L149",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_sprite_sheet",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_sprite_sheet"
     },
     {
       "relation": "contains",
@@ -9747,9 +9771,9 @@
       "source_location": "L160",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_contact_shadow",
-      "confidence_score": 1.0
+      "target": "art_generate_art_contact_shadow"
     },
     {
       "relation": "contains",
@@ -9758,9 +9782,9 @@
       "source_location": "L174",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_text_color",
-      "confidence_score": 1.0
+      "target": "art_generate_art_text_color"
     },
     {
       "relation": "contains",
@@ -9769,9 +9793,9 @@
       "source_location": "L179",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_body_color",
-      "confidence_score": 1.0
+      "target": "art_generate_art_body_color"
     },
     {
       "relation": "contains",
@@ -9780,9 +9804,9 @@
       "source_location": "L215",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_shadow_band",
-      "confidence_score": 1.0
+      "target": "art_generate_art_shadow_band"
     },
     {
       "relation": "contains",
@@ -9791,9 +9815,9 @@
       "source_location": "L219",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_composite_sprite",
-      "confidence_score": 1.0
+      "target": "art_generate_art_composite_sprite"
     },
     {
       "relation": "contains",
@@ -9802,9 +9826,9 @@
       "source_location": "L243",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_paste",
-      "confidence_score": 1.0
+      "target": "art_generate_art_paste"
     },
     {
       "relation": "contains",
@@ -9813,9 +9837,9 @@
       "source_location": "L263",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_draw_glyph",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_glyph"
     },
     {
       "relation": "contains",
@@ -9824,9 +9848,9 @@
       "source_location": "L278",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_heart_curve_points",
-      "confidence_score": 1.0
+      "target": "art_generate_art_heart_curve_points"
     },
     {
       "relation": "contains",
@@ -9835,9 +9859,9 @@
       "source_location": "L296",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_stem",
-      "confidence_score": 1.0
+      "target": "art_generate_art_stem"
     },
     {
       "relation": "contains",
@@ -9846,9 +9870,9 @@
       "source_location": "L349",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_pip_sprite",
-      "confidence_score": 1.0
+      "target": "art_generate_art_pip_sprite"
     },
     {
       "relation": "contains",
@@ -9857,9 +9881,9 @@
       "source_location": "L360",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_draw_card_frame",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_card_frame"
     },
     {
       "relation": "contains",
@@ -9868,9 +9892,9 @@
       "source_location": "L366",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_paste_corners",
-      "confidence_score": 1.0
+      "target": "art_generate_art_paste_corners"
     },
     {
       "relation": "contains",
@@ -9879,9 +9903,9 @@
       "source_location": "L390",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_number_card",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_number_card"
     },
     {
       "relation": "contains",
@@ -9890,9 +9914,9 @@
       "source_location": "L410",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_ellipse",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ellipse"
     },
     {
       "relation": "contains",
@@ -9901,9 +9925,9 @@
       "source_location": "L417",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_poly",
-      "confidence_score": 1.0
+      "target": "art_generate_art_poly"
     },
     {
       "relation": "contains",
@@ -9912,9 +9936,9 @@
       "source_location": "L424",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_robe",
-      "confidence_score": 1.0
+      "target": "art_generate_art_robe"
     },
     {
       "relation": "contains",
@@ -9923,9 +9947,9 @@
       "source_location": "L435",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_head",
-      "confidence_score": 1.0
+      "target": "art_generate_art_head"
     },
     {
       "relation": "contains",
@@ -9934,9 +9958,9 @@
       "source_location": "L439",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_fringe",
-      "confidence_score": 1.0
+      "target": "art_generate_art_fringe"
     },
     {
       "relation": "contains",
@@ -9945,9 +9969,9 @@
       "source_location": "L450",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_hand",
-      "confidence_score": 1.0
+      "target": "art_generate_art_hand"
     },
     {
       "relation": "contains",
@@ -9956,9 +9980,9 @@
       "source_location": "L458",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_arm",
-      "confidence_score": 1.0
+      "target": "art_generate_art_arm"
     },
     {
       "relation": "contains",
@@ -9967,9 +9991,9 @@
       "source_location": "L472",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_sculpted_hair",
-      "confidence_score": 1.0
+      "target": "art_generate_art_sculpted_hair"
     },
     {
       "relation": "contains",
@@ -9978,9 +10002,9 @@
       "source_location": "L487",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_hem_trim",
-      "confidence_score": 1.0
+      "target": "art_generate_art_hem_trim"
     },
     {
       "relation": "contains",
@@ -9989,9 +10013,9 @@
       "source_location": "L493",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_collar",
-      "confidence_score": 1.0
+      "target": "art_generate_art_collar"
     },
     {
       "relation": "contains",
@@ -10000,9 +10024,9 @@
       "source_location": "L497",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_draw_face",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_face"
     },
     {
       "relation": "contains",
@@ -10011,9 +10035,9 @@
       "source_location": "L533",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_index_boxes",
-      "confidence_score": 1.0
+      "target": "art_generate_art_index_boxes"
     },
     {
       "relation": "contains",
@@ -10022,9 +10046,9 @@
       "source_location": "L546",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_assert_art_clear_of_indices",
-      "confidence_score": 1.0
+      "target": "art_generate_art_assert_art_clear_of_indices"
     },
     {
       "relation": "contains",
@@ -10033,9 +10057,9 @@
       "source_location": "L560",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_face_card",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_face_card"
     },
     {
       "relation": "contains",
@@ -10044,9 +10068,9 @@
       "source_location": "L684",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_old_timer_parts",
-      "confidence_score": 1.0
+      "target": "art_generate_art_old_timer_parts"
     },
     {
       "relation": "contains",
@@ -10055,9 +10079,9 @@
       "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_darken",
-      "confidence_score": 1.0
+      "target": "art_generate_art_darken"
     },
     {
       "relation": "contains",
@@ -10066,9 +10090,9 @@
       "source_location": "L717",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_draw_old_timer_face",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_old_timer_face"
     },
     {
       "relation": "contains",
@@ -10077,9 +10101,9 @@
       "source_location": "L747",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_old_timer_portrait",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_old_timer_portrait"
     },
     {
       "relation": "contains",
@@ -10088,9 +10112,9 @@
       "source_location": "L764",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_score_card_frame",
-      "confidence_score": 1.0
+      "target": "art_generate_art_score_card_frame"
     },
     {
       "relation": "contains",
@@ -10099,9 +10123,9 @@
       "source_location": "L770",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_scoreboard_card",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_scoreboard_card"
     },
     {
       "relation": "contains",
@@ -10110,9 +10134,9 @@
       "source_location": "L797",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_card_back",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_card_back"
     },
     {
       "relation": "contains",
@@ -10121,9 +10145,9 @@
       "source_location": "L82",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_clamp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_clamp"
     },
     {
       "relation": "contains",
@@ -10132,9 +10156,9 @@
       "source_location": "L820",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_table_felt",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_table_felt"
     },
     {
       "relation": "contains",
@@ -10143,9 +10167,9 @@
       "source_location": "L858",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_wall_texture",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_wall_texture"
     },
     {
       "relation": "contains",
@@ -10154,9 +10178,9 @@
       "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_shift",
-      "confidence_score": 1.0
+      "target": "art_generate_art_shift"
     },
     {
       "relation": "contains",
@@ -10165,9 +10189,9 @@
       "source_location": "L917",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_flame",
-      "confidence_score": 1.0
+      "target": "art_generate_art_flame"
     },
     {
       "relation": "contains",
@@ -10176,9 +10200,9 @@
       "source_location": "L937",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_fire_frames",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_fire_frames"
     },
     {
       "relation": "contains",
@@ -10187,9 +10211,9 @@
       "source_location": "L971",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art",
-      "target": "art_generate_art_make_fireplace",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_fireplace"
     },
     {
       "relation": "contains",
@@ -11361,45 +11385,67 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L13",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_game_usegame",
-      "target": "src_game_usegame_human"
+      "target": "src_game_usegame_human",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L14",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_game_usegame",
-      "target": "src_game_usegame_bot"
+      "target": "src_game_usegame_bot",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L19",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_game_usegame",
-      "target": "src_game_usegame_freshseed"
+      "target": "src_game_usegame_trick_hold_ms",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L27",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_game_usegame",
-      "target": "src_game_usegame_usegame"
+      "target": "src_game_usegame_completedtrick",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "src_game_usegame_freshseed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "src_game_usegame",
+      "target": "src_game_usegame_usegame",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11573,9 +11619,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_game_game"
+      "target": "src_ui_game_game",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11669,56 +11715,56 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L12",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_samehand"
+      "target": "src_ui_table_seats",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L19",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_remaininginhand"
+      "target": "src_ui_table_samehand",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L24",
+      "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_seatlabel"
+      "target": "src_ui_table_remaininginhand",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L30",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_table"
+      "target": "src_ui_table_seatlabel",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L5",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_seats"
+      "target": "src_ui_table_table",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11969,9 +12015,9 @@
       "source_location": "L1053",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_1053",
-      "target": "art_generate_art_make_window_glass",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_window_glass"
     },
     {
       "relation": "rationale_for",
@@ -11980,9 +12026,9 @@
       "source_location": "L1084",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_1084",
-      "target": "art_generate_art_make_window_frame",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_window_frame"
     },
     {
       "relation": "rationale_for",
@@ -11991,9 +12037,9 @@
       "source_location": "L1111",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_1111",
-      "target": "art_generate_art_make_snowfall",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_snowfall"
     },
     {
       "relation": "rationale_for",
@@ -12002,9 +12048,9 @@
       "source_location": "L1136",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_1136",
-      "target": "art_generate_art_make_floorboards",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_floorboards"
     },
     {
       "relation": "rationale_for",
@@ -12013,9 +12059,9 @@
       "source_location": "L116",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_116",
-      "target": "art_generate_art_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mix"
     },
     {
       "relation": "rationale_for",
@@ -12024,9 +12070,9 @@
       "source_location": "L1185",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_1185",
-      "target": "art_generate_art_mini_card_back",
-      "confidence_score": 1.0
+      "target": "art_generate_art_mini_card_back"
     },
     {
       "relation": "rationale_for",
@@ -12035,9 +12081,9 @@
       "source_location": "L1199",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_1199",
-      "target": "art_generate_art_make_seated_old_timer",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_seated_old_timer"
     },
     {
       "relation": "rationale_for",
@@ -12046,9 +12092,9 @@
       "source_location": "L128",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_128",
-      "target": "art_generate_art_ramp",
-      "confidence_score": 1.0
+      "target": "art_generate_art_ramp"
     },
     {
       "relation": "rationale_for",
@@ -12057,9 +12103,9 @@
       "source_location": "L1291",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_1291",
-      "target": "art_generate_art_make_cat_frames",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_cat_frames"
     },
     {
       "relation": "rationale_for",
@@ -12068,9 +12114,9 @@
       "source_location": "L1322",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_1322",
-      "target": "art_generate_art_make_shelf",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_shelf"
     },
     {
       "relation": "rationale_for",
@@ -12079,9 +12125,9 @@
       "source_location": "L150",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_150",
-      "target": "art_generate_art_make_sprite_sheet",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_sprite_sheet"
     },
     {
       "relation": "rationale_for",
@@ -12090,9 +12136,9 @@
       "source_location": "L161",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_161",
-      "target": "art_generate_art_contact_shadow",
-      "confidence_score": 1.0
+      "target": "art_generate_art_contact_shadow"
     },
     {
       "relation": "rationale_for",
@@ -12101,9 +12147,9 @@
       "source_location": "L175",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_175",
-      "target": "art_generate_art_text_color",
-      "confidence_score": 1.0
+      "target": "art_generate_art_text_color"
     },
     {
       "relation": "rationale_for",
@@ -12112,9 +12158,9 @@
       "source_location": "L180",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_180",
-      "target": "art_generate_art_body_color",
-      "confidence_score": 1.0
+      "target": "art_generate_art_body_color"
     },
     {
       "relation": "rationale_for",
@@ -12123,9 +12169,9 @@
       "source_location": "L220",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_220",
-      "target": "art_generate_art_composite_sprite",
-      "confidence_score": 1.0
+      "target": "art_generate_art_composite_sprite"
     },
     {
       "relation": "rationale_for",
@@ -12134,9 +12180,9 @@
       "source_location": "L440",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_440",
-      "target": "art_generate_art_fringe",
-      "confidence_score": 1.0
+      "target": "art_generate_art_fringe"
     },
     {
       "relation": "rationale_for",
@@ -12145,9 +12191,9 @@
       "source_location": "L459",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_459",
-      "target": "art_generate_art_arm",
-      "confidence_score": 1.0
+      "target": "art_generate_art_arm"
     },
     {
       "relation": "rationale_for",
@@ -12156,9 +12202,9 @@
       "source_location": "L473",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_473",
-      "target": "art_generate_art_sculpted_hair",
-      "confidence_score": 1.0
+      "target": "art_generate_art_sculpted_hair"
     },
     {
       "relation": "rationale_for",
@@ -12167,9 +12213,9 @@
       "source_location": "L499",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_499",
-      "target": "art_generate_art_draw_face",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_face"
     },
     {
       "relation": "rationale_for",
@@ -12178,9 +12224,9 @@
       "source_location": "L534",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_534",
-      "target": "art_generate_art_index_boxes",
-      "confidence_score": 1.0
+      "target": "art_generate_art_index_boxes"
     },
     {
       "relation": "rationale_for",
@@ -12189,9 +12235,9 @@
       "source_location": "L547",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_547",
-      "target": "art_generate_art_assert_art_clear_of_indices",
-      "confidence_score": 1.0
+      "target": "art_generate_art_assert_art_clear_of_indices"
     },
     {
       "relation": "rationale_for",
@@ -12200,9 +12246,9 @@
       "source_location": "L561",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_561",
-      "target": "art_generate_art_make_face_card",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_face_card"
     },
     {
       "relation": "rationale_for",
@@ -12211,9 +12257,9 @@
       "source_location": "L71",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_71",
-      "target": "art_generate_art_darken",
-      "confidence_score": 1.0
+      "target": "art_generate_art_darken"
     },
     {
       "relation": "rationale_for",
@@ -12222,9 +12268,9 @@
       "source_location": "L718",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_718",
-      "target": "art_generate_art_draw_old_timer_face",
-      "confidence_score": 1.0
+      "target": "art_generate_art_draw_old_timer_face"
     },
     {
       "relation": "rationale_for",
@@ -12233,9 +12279,9 @@
       "source_location": "L821",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_821",
-      "target": "art_generate_art_make_table_felt",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_table_felt"
     },
     {
       "relation": "rationale_for",
@@ -12244,9 +12290,9 @@
       "source_location": "L859",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_859",
-      "target": "art_generate_art_make_wall_texture",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_wall_texture"
     },
     {
       "relation": "rationale_for",
@@ -12255,9 +12301,9 @@
       "source_location": "L87",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_87",
-      "target": "art_generate_art_shift",
-      "confidence_score": 1.0
+      "target": "art_generate_art_shift"
     },
     {
       "relation": "rationale_for",
@@ -12266,9 +12312,9 @@
       "source_location": "L918",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_918",
-      "target": "art_generate_art_flame",
-      "confidence_score": 1.0
+      "target": "art_generate_art_flame"
     },
     {
       "relation": "rationale_for",
@@ -12277,9 +12323,9 @@
       "source_location": "L938",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_938",
-      "target": "art_generate_art_make_fire_frames",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_fire_frames"
     },
     {
       "relation": "rationale_for",
@@ -12288,9 +12334,9 @@
       "source_location": "L972",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_art_rationale_972",
-      "target": "art_generate_art_make_fireplace",
-      "confidence_score": 1.0
+      "target": "art_generate_art_make_fireplace"
     },
     {
       "relation": "rationale_for",
@@ -12388,9 +12434,9 @@
       "weight": 1.0,
       "_origin": "ast",
       "context": "collection",
+      "confidence_score": 0.5,
       "source": "art_generate_art",
-      "target": "art_generate_art_club_mask",
-      "confidence_score": 0.5
+      "target": "art_generate_art_club_mask"
     },
     {
       "relation": "indirect_call",
@@ -12400,9 +12446,9 @@
       "weight": 1.0,
       "_origin": "ast",
       "context": "collection",
+      "confidence_score": 0.5,
       "source": "art_generate_art",
-      "target": "art_generate_art_diamond_mask",
-      "confidence_score": 0.5
+      "target": "art_generate_art_diamond_mask"
     },
     {
       "relation": "indirect_call",
@@ -12412,9 +12458,9 @@
       "weight": 1.0,
       "_origin": "ast",
       "context": "collection",
+      "confidence_score": 0.5,
       "source": "art_generate_art",
-      "target": "art_generate_art_heart_mask",
-      "confidence_score": 0.5
+      "target": "art_generate_art_heart_mask"
     },
     {
       "relation": "indirect_call",
@@ -12424,9 +12470,9 @@
       "weight": 1.0,
       "_origin": "ast",
       "context": "collection",
+      "confidence_score": 0.5,
       "source": "art_generate_art",
-      "target": "art_generate_art_spade_mask",
-      "confidence_score": 0.5
+      "target": "art_generate_art_spade_mask"
     },
     {
       "relation": "conceptually_related_to",
@@ -12905,5 +12951,5 @@
       "source_file": "RULES.md"
     }
   ],
-  "built_at_commit": "56365fe9caf622f884659a71893979d9397d0d84"
+  "built_at_commit": "cdc120910f397cb945140929a08c89732d40ea27"
 }
