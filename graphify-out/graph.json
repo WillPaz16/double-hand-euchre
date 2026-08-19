@@ -98,10 +98,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "src_game_useopponentexpression_expression",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "expression"
+      "norm_label": "expression",
+      "id": "src_game_useopponentexpression_expression"
     },
     {
       "label": "SoundName",
@@ -111,10 +111,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "src_game_usesfx_soundname",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "soundname"
+      "norm_label": "soundname",
+      "id": "src_game_usesfx_soundname"
     },
     {
       "label": "Config",
@@ -421,7 +421,7 @@
       "label": "draw_old_timer_face()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L593",
+      "source_location": "L598",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_draw_old_timer_face",
@@ -529,7 +529,7 @@
       "label": "main()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L740",
+      "source_location": "L745",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_main",
@@ -541,7 +541,7 @@
       "label": "make_card_back()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L673",
+      "source_location": "L678",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_card_back",
@@ -577,7 +577,7 @@
       "label": "make_old_timer_portrait()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L623",
+      "source_location": "L628",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_old_timer_portrait",
@@ -589,7 +589,7 @@
       "label": "make_scoreboard_card()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L646",
+      "source_location": "L651",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_scoreboard_card",
@@ -601,7 +601,7 @@
       "label": "make_table_felt()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L696",
+      "source_location": "L701",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_table_felt",
@@ -613,7 +613,7 @@
       "label": "make_wall_texture()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L719",
+      "source_location": "L724",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_wall_texture",
@@ -697,7 +697,7 @@
       "label": "_score_card_frame()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L640",
+      "source_location": "L645",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_score_card_frame",
@@ -808,10 +808,10 @@
       "source_location": "L12",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_game_useopponentexpression_useopponentexpression",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "useopponentexpression()"
+      "norm_label": "useopponentexpression()",
+      "id": "src_game_useopponentexpression_useopponentexpression"
     },
     {
       "label": "play()",
@@ -820,10 +820,10 @@
       "source_location": "L30",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_game_usesfx_play",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "play()"
+      "norm_label": "play()",
+      "id": "src_game_usesfx_play"
     },
     {
       "label": "useSfx()",
@@ -832,10 +832,10 @@
       "source_location": "L41",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_game_usesfx_usesfx",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "usesfx()"
+      "norm_label": "usesfx()",
+      "id": "src_game_usesfx_usesfx"
     },
     {
       "label": "useSoundBank()",
@@ -844,10 +844,10 @@
       "source_location": "L16",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_game_usesfx_usesoundbank",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "usesoundbank()"
+      "norm_label": "usesoundbank()",
+      "id": "src_game_usesfx_usesoundbank"
     },
     {
       "label": "BidPanel()",
@@ -916,10 +916,10 @@
       "source_location": "L9",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_game_game",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "game()"
+      "norm_label": "game()",
+      "id": "src_ui_game_game"
     },
     {
       "label": "cardsEqual()",
@@ -1588,10 +1588,10 @@
       "source_location": "L67",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_concat",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "_concat()"
+      "norm_label": "_concat()",
+      "id": "art_generate_audio_concat"
     },
     {
       "label": "_envelope()",
@@ -1600,10 +1600,10 @@
       "source_location": "L15",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_envelope",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "_envelope()"
+      "norm_label": "_envelope()",
+      "id": "art_generate_audio_envelope"
     },
     {
       "label": "main()",
@@ -1612,10 +1612,10 @@
       "source_location": "L134",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_main",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "main()"
+      "norm_label": "main()",
+      "id": "art_generate_audio_main"
     },
     {
       "label": "make_card_play()",
@@ -1624,10 +1624,10 @@
       "source_location": "L83",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_make_card_play",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "make_card_play()"
+      "norm_label": "make_card_play()",
+      "id": "art_generate_audio_make_card_play"
     },
     {
       "label": "make_euchre_fanfare()",
@@ -1636,10 +1636,10 @@
       "source_location": "L96",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_make_euchre_fanfare",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "make_euchre_fanfare()"
+      "norm_label": "make_euchre_fanfare()",
+      "id": "art_generate_audio_make_euchre_fanfare"
     },
     {
       "label": "make_game_win_fanfare()",
@@ -1648,10 +1648,10 @@
       "source_location": "L103",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_make_game_win_fanfare",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "make_game_win_fanfare()"
+      "norm_label": "make_game_win_fanfare()",
+      "id": "art_generate_audio_make_game_win_fanfare"
     },
     {
       "label": "make_shuffle()",
@@ -1660,10 +1660,10 @@
       "source_location": "L115",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_make_shuffle",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "make_shuffle()"
+      "norm_label": "make_shuffle()",
+      "id": "art_generate_audio_make_shuffle"
     },
     {
       "label": "make_trick_win()",
@@ -1672,10 +1672,10 @@
       "source_location": "L89",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_make_trick_win",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "make_trick_win()"
+      "norm_label": "make_trick_win()",
+      "id": "art_generate_audio_make_trick_win"
     },
     {
       "label": "_mix()",
@@ -1684,10 +1684,10 @@
       "source_location": "L55",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_mix",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "_mix()"
+      "norm_label": "_mix()",
+      "id": "art_generate_audio_mix"
     },
     {
       "label": "_noise_burst()",
@@ -1696,10 +1696,10 @@
       "source_location": "L42",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_noise_burst",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "_noise_burst()"
+      "norm_label": "_noise_burst()",
+      "id": "art_generate_audio_noise_burst"
     },
     {
       "label": "_tone()",
@@ -1708,10 +1708,10 @@
       "source_location": "L26",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_tone",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "_tone()"
+      "norm_label": "_tone()",
+      "id": "art_generate_audio_tone"
     },
     {
       "label": "_write_wav()",
@@ -1720,10 +1720,10 @@
       "source_location": "L74",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_audio_write_wav",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "_write_wav()"
+      "norm_label": "_write_wav()",
+      "id": "art_generate_audio_write_wav"
     },
     {
       "label": "fullDeck()",
@@ -1908,9 +1908,9 @@
       "label": "`expression`: \"idle\" (neutral), \"happy\" (won a trick/euchre), \"rueful\" (lost\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
-      "source_location": "L594",
+      "source_location": "L599",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_594",
+      "id": "art_generate_art_rationale_599",
       "community": 0,
       "community_name": "generate_art.py",
       "norm_label": "`expression`: \"idle\" (neutral), \"happy\" (won a trick/euchre), \"rueful\" (lost..."
@@ -1930,9 +1930,9 @@
       "label": "Log-cabin wall \u2014 vertical rounded logs, distinct from the table felt's\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
-      "source_location": "L720",
+      "source_location": "L725",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_720",
+      "id": "art_generate_art_rationale_725",
       "community": 0,
       "community_name": "generate_art.py",
       "norm_label": "log-cabin wall \u2014 vertical rounded logs, distinct from the table felt's..."
@@ -2011,10 +2011,10 @@
       "source_file": "src/game/useOpponentExpression.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_game_useopponentexpression",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "useopponentexpression.ts"
+      "norm_label": "useopponentexpression.ts",
+      "id": "src_game_useopponentexpression"
     },
     {
       "label": "useSfx.ts",
@@ -2022,10 +2022,10 @@
       "source_file": "src/game/useSfx.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_game_usesfx",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "usesfx.ts"
+      "norm_label": "usesfx.ts",
+      "id": "src_game_usesfx"
     },
     {
       "label": "SOUND_FILES",
@@ -2033,10 +2033,10 @@
       "source_file": "src/game/useSfx.ts",
       "source_location": "L4",
       "_origin": "ast",
-      "id": "src_game_usesfx_sound_files",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "sound_files"
+      "norm_label": "sound_files",
+      "id": "src_game_usesfx_sound_files"
     },
     {
       "label": "main.tsx",
@@ -2110,10 +2110,10 @@
       "source_file": "src/ui/Game.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_game",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "game.tsx"
+      "norm_label": "game.tsx",
+      "id": "src_ui_game"
     },
     {
       "label": "HandTray.tsx",
@@ -2199,10 +2199,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "art_assets",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "assets.md"
+      "norm_label": "assets.md",
+      "id": "art_assets"
     },
     {
       "label": "Art assets \u2014 spec",
@@ -2211,10 +2211,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "art_assets_art_assets_spec",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "art assets \u2014 spec"
+      "norm_label": "art assets \u2014 spec",
+      "id": "art_assets_art_assets_spec"
     },
     {
       "label": "Audio (Phase 2c)",
@@ -2223,10 +2223,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L159",
       "_origin": "ast",
-      "id": "art_assets_audio_phase_2c",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "audio (phase 2c)"
+      "norm_label": "audio (phase 2c)",
+      "id": "art_assets_audio_phase_2c"
     },
     {
       "label": "Cards",
@@ -2235,10 +2235,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L55",
       "_origin": "ast",
-      "id": "art_assets_cards",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "cards"
+      "norm_label": "cards",
+      "id": "art_assets_cards"
     },
     {
       "label": "Layout budget \u2014 asserted, not eyeballed",
@@ -2247,10 +2247,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L94",
       "_origin": "ast",
-      "id": "art_assets_layout_budget_asserted_not_eyeballed",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "layout budget \u2014 asserted, not eyeballed"
+      "norm_label": "layout budget \u2014 asserted, not eyeballed",
+      "id": "art_assets_layout_budget_asserted_not_eyeballed"
     },
     {
       "label": "Old-Timer portrait",
@@ -2259,10 +2259,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L120",
       "_origin": "ast",
-      "id": "art_assets_old_timer_portrait",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "old-timer portrait"
+      "norm_label": "old-timer portrait",
+      "id": "art_assets_old_timer_portrait"
     },
     {
       "label": "Output",
@@ -2271,10 +2271,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L146",
       "_origin": "ast",
-      "id": "art_assets_output",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "output"
+      "norm_label": "output",
+      "id": "art_assets_output"
     },
     {
       "label": "Palette \u2014 cabin by the fire",
@@ -2283,10 +2283,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L21",
       "_origin": "ast",
-      "id": "art_assets_palette_cabin_by_the_fire",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "palette \u2014 cabin by the fire"
+      "norm_label": "palette \u2014 cabin by the fire",
+      "id": "art_assets_palette_cabin_by_the_fire"
     },
     {
       "label": "Regenerating",
@@ -2295,10 +2295,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L182",
       "_origin": "ast",
-      "id": "art_assets_regenerating",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "regenerating"
+      "norm_label": "regenerating",
+      "id": "art_assets_regenerating"
     },
     {
       "label": "Scoreboard cards",
@@ -2307,10 +2307,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L135",
       "_origin": "ast",
-      "id": "art_assets_scoreboard_cards",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "scoreboard cards"
+      "norm_label": "scoreboard cards",
+      "id": "art_assets_scoreboard_cards"
     },
     {
       "label": "Table & room (Phase 2c)",
@@ -2319,10 +2319,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L107",
       "_origin": "ast",
-      "id": "art_assets_table_room_phase_2c",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "table & room (phase 2c)"
+      "norm_label": "table & room (phase 2c)",
+      "id": "art_assets_table_room_phase_2c"
     },
     {
       "label": "README.md",
@@ -3216,10 +3216,10 @@
       "source_file": "art/generate_audio.py",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "art_generate_audio",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "generate_audio.py"
+      "norm_label": "generate_audio.py",
+      "id": "art_generate_audio"
     },
     {
       "label": "The big one \u2014 a longer, richer arpeggio with a held final chord, for winning\u2026",
@@ -3227,10 +3227,10 @@
       "source_file": "art/generate_audio.py",
       "source_location": "L104",
       "_origin": "ast",
-      "id": "art_generate_audio_rationale_104",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "the big one \u2014 a longer, richer arpeggio with a held final chord, for winning..."
+      "norm_label": "the big one \u2014 a longer, richer arpeggio with a held final chord, for winning...",
+      "id": "art_generate_audio_rationale_104"
     },
     {
       "label": "A soft riffle texture for the deal \u2014 several short overlapping noise bursts.",
@@ -3238,10 +3238,10 @@
       "source_file": "art/generate_audio.py",
       "source_location": "L116",
       "_origin": "ast",
-      "id": "art_generate_audio_rationale_116",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "a soft riffle texture for the deal \u2014 several short overlapping noise bursts."
+      "norm_label": "a soft riffle texture for the deal \u2014 several short overlapping noise bursts.",
+      "id": "art_generate_audio_rationale_116"
     },
     {
       "label": "Linear ramp up over `attack` fraction, ramp down over `release` fraction \u2014\u2026",
@@ -3249,10 +3249,10 @@
       "source_file": "art/generate_audio.py",
       "source_location": "L16",
       "_origin": "ast",
-      "id": "art_generate_audio_rationale_16",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "linear ramp up over `attack` fraction, ramp down over `release` fraction \u2014..."
+      "norm_label": "linear ramp up over `attack` fraction, ramp down over `release` fraction \u2014...",
+      "id": "art_generate_audio_rationale_16"
     },
     {
       "label": "Deterministic pseudo-noise (a simple LCG), not random.random() \u2014 every\u2026",
@@ -3260,10 +3260,10 @@
       "source_file": "art/generate_audio.py",
       "source_location": "L43",
       "_origin": "ast",
-      "id": "art_generate_audio_rationale_43",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "deterministic pseudo-noise (a simple lcg), not random.random() \u2014 every..."
+      "norm_label": "deterministic pseudo-noise (a simple lcg), not random.random() \u2014 every...",
+      "id": "art_generate_audio_rationale_43"
     },
     {
       "label": "A quick snap \u2014 a short filtered-sounding noise burst with a fast decay, like a\u2026",
@@ -3271,10 +3271,10 @@
       "source_file": "art/generate_audio.py",
       "source_location": "L84",
       "_origin": "ast",
-      "id": "art_generate_audio_rationale_84",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "a quick snap \u2014 a short filtered-sounding noise burst with a fast decay, like a..."
+      "norm_label": "a quick snap \u2014 a short filtered-sounding noise burst with a fast decay, like a...",
+      "id": "art_generate_audio_rationale_84"
     },
     {
       "label": "A brief two-note upward chime \u2014 pleasant, not showy, since this fires up to 5x\u2026",
@@ -3282,10 +3282,10 @@
       "source_file": "art/generate_audio.py",
       "source_location": "L90",
       "_origin": "ast",
-      "id": "art_generate_audio_rationale_90",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "a brief two-note upward chime \u2014 pleasant, not showy, since this fires up to 5x..."
+      "norm_label": "a brief two-note upward chime \u2014 pleasant, not showy, since this fires up to 5x...",
+      "id": "art_generate_audio_rationale_90"
     },
     {
       "label": "A four-note ascending arpeggio \u2014 the hand-won stinger, bigger than a single\u2026",
@@ -3293,10 +3293,10 @@
       "source_file": "art/generate_audio.py",
       "source_location": "L97",
       "_origin": "ast",
-      "id": "art_generate_audio_rationale_97",
       "community": 6,
       "community_name": "generate_audio.py",
-      "norm_label": "a four-note ascending arpeggio \u2014 the hand-won stinger, bigger than a single..."
+      "norm_label": "a four-note ascending arpeggio \u2014 the hand-won stinger, bigger than a single...",
+      "id": "art_generate_audio_rationale_97"
     },
     {
       "label": "deck.ts",
@@ -3908,7 +3908,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L746",
+      "source_location": "L751",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -3920,7 +3920,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L746",
+      "source_location": "L751",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -3932,7 +3932,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L749",
+      "source_location": "L754",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -3944,7 +3944,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L750",
+      "source_location": "L755",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -3956,7 +3956,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L751",
+      "source_location": "L756",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -3968,7 +3968,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L756",
+      "source_location": "L761",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -3980,7 +3980,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L764",
+      "source_location": "L774",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4256,7 +4256,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L625",
+      "source_location": "L630",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_old_timer_portrait",
@@ -4268,7 +4268,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L625",
+      "source_location": "L630",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_old_timer_portrait",
@@ -4280,7 +4280,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L625",
+      "source_location": "L630",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_old_timer_portrait",
@@ -4292,7 +4292,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L626",
+      "source_location": "L631",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_old_timer_portrait",
@@ -4304,7 +4304,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L650",
+      "source_location": "L655",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_scoreboard_card",
@@ -4316,7 +4316,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L652",
+      "source_location": "L657",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_scoreboard_card",
@@ -4328,7 +4328,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L662",
+      "source_location": "L667",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_scoreboard_card",
@@ -4340,7 +4340,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L663",
+      "source_location": "L668",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_scoreboard_card",
@@ -4352,7 +4352,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L665",
+      "source_location": "L670",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_scoreboard_card",
@@ -4364,7 +4364,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L668",
+      "source_location": "L673",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_scoreboard_card",
@@ -4487,9 +4487,9 @@
       "source_location": "L137",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_main",
-      "target": "art_generate_audio_make_card_play",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_card_play"
     },
     {
       "relation": "calls",
@@ -4499,9 +4499,9 @@
       "source_location": "L138",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_main",
-      "target": "art_generate_audio_make_trick_win",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_trick_win"
     },
     {
       "relation": "calls",
@@ -4511,9 +4511,9 @@
       "source_location": "L139",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_main",
-      "target": "art_generate_audio_make_euchre_fanfare",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_euchre_fanfare"
     },
     {
       "relation": "calls",
@@ -4523,9 +4523,9 @@
       "source_location": "L140",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_main",
-      "target": "art_generate_audio_make_game_win_fanfare",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_game_win_fanfare"
     },
     {
       "relation": "calls",
@@ -4535,9 +4535,9 @@
       "source_location": "L141",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_main",
-      "target": "art_generate_audio_make_shuffle",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_shuffle"
     },
     {
       "relation": "calls",
@@ -4547,9 +4547,9 @@
       "source_location": "L144",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_main",
-      "target": "art_generate_audio_write_wav",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_write_wav"
     },
     {
       "relation": "calls",
@@ -4559,9 +4559,9 @@
       "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_make_card_play",
-      "target": "art_generate_audio_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_mix"
     },
     {
       "relation": "calls",
@@ -4571,9 +4571,9 @@
       "source_location": "L86",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_make_card_play",
-      "target": "art_generate_audio_noise_burst",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_noise_burst"
     },
     {
       "relation": "calls",
@@ -4583,9 +4583,9 @@
       "source_location": "L100",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_make_euchre_fanfare",
-      "target": "art_generate_audio_concat",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_concat"
     },
     {
       "relation": "calls",
@@ -4595,9 +4595,9 @@
       "source_location": "L99",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_make_euchre_fanfare",
-      "target": "art_generate_audio_tone",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_tone"
     },
     {
       "relation": "calls",
@@ -4607,9 +4607,9 @@
       "source_location": "L106",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_make_game_win_fanfare",
-      "target": "art_generate_audio_tone",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_tone"
     },
     {
       "relation": "calls",
@@ -4619,9 +4619,9 @@
       "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_make_game_win_fanfare",
-      "target": "art_generate_audio_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_mix"
     },
     {
       "relation": "calls",
@@ -4631,9 +4631,9 @@
       "source_location": "L112",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_make_game_win_fanfare",
-      "target": "art_generate_audio_concat",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_concat"
     },
     {
       "relation": "calls",
@@ -4643,9 +4643,9 @@
       "source_location": "L119",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_make_shuffle",
-      "target": "art_generate_audio_noise_burst",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_noise_burst"
     },
     {
       "relation": "calls",
@@ -4655,9 +4655,9 @@
       "source_location": "L91",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_make_trick_win",
-      "target": "art_generate_audio_tone",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_tone"
     },
     {
       "relation": "calls",
@@ -4667,9 +4667,9 @@
       "source_location": "L93",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_make_trick_win",
-      "target": "art_generate_audio_concat",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_concat"
     },
     {
       "relation": "calls",
@@ -4679,9 +4679,9 @@
       "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_noise_burst",
-      "target": "art_generate_audio_envelope",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_envelope"
     },
     {
       "relation": "calls",
@@ -4691,9 +4691,9 @@
       "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_tone",
-      "target": "art_generate_audio_envelope",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_envelope"
     },
     {
       "relation": "calls",
@@ -5459,9 +5459,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_usesfx_usesfx",
-      "target": "src_game_usesfx_usesoundbank",
-      "confidence_score": 1.0
+      "target": "src_game_usesfx_usesoundbank"
     },
     {
       "relation": "calls",
@@ -5471,9 +5471,9 @@
       "source_location": "L53",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_usesfx_usesfx",
-      "target": "src_game_usesfx_play",
-      "confidence_score": 1.0
+      "target": "src_game_usesfx_play"
     },
     {
       "relation": "calls",
@@ -6791,9 +6791,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_useopponentexpression",
-      "target": "shared_engine_types_player",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_player"
     },
     {
       "relation": "imports",
@@ -6803,9 +6803,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_useopponentexpression",
-      "target": "shared_engine_types_playerview",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_playerview"
     },
     {
       "relation": "imports",
@@ -6815,9 +6815,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_useopponentexpression",
-      "target": "src_game_usegame_bot",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_bot"
     },
     {
       "relation": "imports",
@@ -6827,9 +6827,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_useopponentexpression",
-      "target": "src_game_usegame_human",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_human"
     },
     {
       "relation": "imports",
@@ -6839,9 +6839,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_usesfx",
-      "target": "shared_engine_types_playerview",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_playerview"
     },
     {
       "relation": "imports",
@@ -6899,9 +6899,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usegame_usegame",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_usegame"
     },
     {
       "relation": "imports",
@@ -6911,9 +6911,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usesfx_usesfx",
-      "confidence_score": 1.0
+      "target": "src_game_usesfx_usesfx"
     },
     {
       "relation": "imports",
@@ -6923,9 +6923,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scoreboard_scoreboard",
-      "confidence_score": 1.0
+      "target": "src_ui_scoreboard_scoreboard"
     },
     {
       "relation": "imports",
@@ -6935,9 +6935,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_statusbanner_statusbanner",
-      "confidence_score": 1.0
+      "target": "src_ui_statusbanner_statusbanner"
     },
     {
       "relation": "imports",
@@ -6947,9 +6947,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_table_table",
-      "confidence_score": 1.0
+      "target": "src_ui_table_table"
     },
     {
       "relation": "imports",
@@ -6959,9 +6959,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_bidpanel_bidpanel",
-      "confidence_score": 1.0
+      "target": "src_ui_bidpanel_bidpanel"
     },
     {
       "relation": "imports",
@@ -6971,9 +6971,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_handtray_handtray",
-      "confidence_score": 1.0
+      "target": "src_ui_handtray_handtray"
     },
     {
       "relation": "imports",
@@ -7907,9 +7907,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_useopponentexpression",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -7919,9 +7919,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_useopponentexpression",
-      "target": "src_game_usegame",
-      "confidence_score": 1.0
+      "target": "src_game_usegame"
     },
     {
       "relation": "imports_from",
@@ -7931,9 +7931,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_usesfx",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -7979,9 +7979,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usegame",
-      "confidence_score": 1.0
+      "target": "src_game_usegame"
     },
     {
       "relation": "imports_from",
@@ -7991,9 +7991,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usesfx",
-      "confidence_score": 1.0
+      "target": "src_game_usesfx"
     },
     {
       "relation": "imports_from",
@@ -8003,9 +8003,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scoreboard",
-      "confidence_score": 1.0
+      "target": "src_ui_scoreboard"
     },
     {
       "relation": "imports_from",
@@ -8015,9 +8015,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_statusbanner",
-      "confidence_score": 1.0
+      "target": "src_ui_statusbanner"
     },
     {
       "relation": "imports_from",
@@ -8027,9 +8027,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_table",
-      "confidence_score": 1.0
+      "target": "src_ui_table"
     },
     {
       "relation": "imports_from",
@@ -8039,9 +8039,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_bidpanel",
-      "confidence_score": 1.0
+      "target": "src_ui_bidpanel"
     },
     {
       "relation": "imports_from",
@@ -8051,9 +8051,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_handtray",
-      "confidence_score": 1.0
+      "target": "src_ui_handtray"
     },
     {
       "relation": "imports_from",
@@ -8372,7 +8372,7 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L593",
+      "source_location": "L598",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_draw_old_timer_face",
@@ -8408,7 +8408,7 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L640",
+      "source_location": "L645",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_score_card_frame",
@@ -8420,7 +8420,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L673",
+      "source_location": "L678",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_card_back",
@@ -8456,7 +8456,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L623",
+      "source_location": "L628",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_old_timer_portrait",
@@ -8468,7 +8468,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L646",
+      "source_location": "L651",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_scoreboard_card",
@@ -8480,7 +8480,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L696",
+      "source_location": "L701",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_table_felt",
@@ -8492,7 +8492,7 @@
       "context": "return_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L719",
+      "source_location": "L724",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_wall_texture",
@@ -8506,9 +8506,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets",
-      "target": "art_assets_art_assets_spec",
-      "confidence_score": 1.0
+      "target": "art_assets_art_assets_spec"
     },
     {
       "relation": "contains",
@@ -8517,9 +8517,9 @@
       "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_table_room_phase_2c",
-      "confidence_score": 1.0
+      "target": "art_assets_table_room_phase_2c"
     },
     {
       "relation": "contains",
@@ -8528,9 +8528,9 @@
       "source_location": "L120",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_old_timer_portrait",
-      "confidence_score": 1.0
+      "target": "art_assets_old_timer_portrait"
     },
     {
       "relation": "contains",
@@ -8539,9 +8539,9 @@
       "source_location": "L135",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_scoreboard_cards",
-      "confidence_score": 1.0
+      "target": "art_assets_scoreboard_cards"
     },
     {
       "relation": "contains",
@@ -8550,9 +8550,9 @@
       "source_location": "L146",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_output",
-      "confidence_score": 1.0
+      "target": "art_assets_output"
     },
     {
       "relation": "contains",
@@ -8561,9 +8561,9 @@
       "source_location": "L159",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_audio_phase_2c",
-      "confidence_score": 1.0
+      "target": "art_assets_audio_phase_2c"
     },
     {
       "relation": "contains",
@@ -8572,9 +8572,9 @@
       "source_location": "L182",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_regenerating",
-      "confidence_score": 1.0
+      "target": "art_assets_regenerating"
     },
     {
       "relation": "contains",
@@ -8583,9 +8583,9 @@
       "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_palette_cabin_by_the_fire",
-      "confidence_score": 1.0
+      "target": "art_assets_palette_cabin_by_the_fire"
     },
     {
       "relation": "contains",
@@ -8594,9 +8594,9 @@
       "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_cards",
-      "confidence_score": 1.0
+      "target": "art_assets_cards"
     },
     {
       "relation": "contains",
@@ -8605,9 +8605,9 @@
       "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_layout_budget_asserted_not_eyeballed",
-      "confidence_score": 1.0
+      "target": "art_assets_layout_budget_asserted_not_eyeballed"
     },
     {
       "relation": "contains",
@@ -8899,7 +8899,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L593",
+      "source_location": "L598",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -8921,7 +8921,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L623",
+      "source_location": "L628",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -8932,7 +8932,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L640",
+      "source_location": "L645",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -8943,7 +8943,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L646",
+      "source_location": "L651",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -8954,7 +8954,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L673",
+      "source_location": "L678",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -8965,7 +8965,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L696",
+      "source_location": "L701",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -8976,7 +8976,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L719",
+      "source_location": "L724",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -8987,7 +8987,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L740",
+      "source_location": "L745",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -9012,9 +9012,9 @@
       "source_location": "L103",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_make_game_win_fanfare",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_game_win_fanfare"
     },
     {
       "relation": "contains",
@@ -9023,9 +9023,9 @@
       "source_location": "L115",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_make_shuffle",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_shuffle"
     },
     {
       "relation": "contains",
@@ -9034,9 +9034,9 @@
       "source_location": "L134",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_main",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_main"
     },
     {
       "relation": "contains",
@@ -9045,9 +9045,9 @@
       "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_envelope",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_envelope"
     },
     {
       "relation": "contains",
@@ -9056,9 +9056,9 @@
       "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_tone",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_tone"
     },
     {
       "relation": "contains",
@@ -9067,9 +9067,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_noise_burst",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_noise_burst"
     },
     {
       "relation": "contains",
@@ -9078,9 +9078,9 @@
       "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_mix",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_mix"
     },
     {
       "relation": "contains",
@@ -9089,9 +9089,9 @@
       "source_location": "L67",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_concat",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_concat"
     },
     {
       "relation": "contains",
@@ -9100,9 +9100,9 @@
       "source_location": "L74",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_write_wav",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_write_wav"
     },
     {
       "relation": "contains",
@@ -9111,9 +9111,9 @@
       "source_location": "L83",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_make_card_play",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_card_play"
     },
     {
       "relation": "contains",
@@ -9122,9 +9122,9 @@
       "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_make_trick_win",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_trick_win"
     },
     {
       "relation": "contains",
@@ -9133,9 +9133,9 @@
       "source_location": "L96",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio",
-      "target": "art_generate_audio_make_euchre_fanfare",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_euchre_fanfare"
     },
     {
       "relation": "contains",
@@ -10222,9 +10222,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_useopponentexpression",
-      "target": "src_game_useopponentexpression_useopponentexpression",
-      "confidence_score": 1.0
+      "target": "src_game_useopponentexpression_useopponentexpression"
     },
     {
       "relation": "contains",
@@ -10233,9 +10233,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_useopponentexpression",
-      "target": "src_game_useopponentexpression_expression",
-      "confidence_score": 1.0
+      "target": "src_game_useopponentexpression_expression"
     },
     {
       "relation": "contains",
@@ -10244,9 +10244,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_usesfx",
-      "target": "src_game_usesfx_soundname",
-      "confidence_score": 1.0
+      "target": "src_game_usesfx_soundname"
     },
     {
       "relation": "contains",
@@ -10255,9 +10255,9 @@
       "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_usesfx",
-      "target": "src_game_usesfx_usesoundbank",
-      "confidence_score": 1.0
+      "target": "src_game_usesfx_usesoundbank"
     },
     {
       "relation": "contains",
@@ -10266,9 +10266,9 @@
       "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_usesfx",
-      "target": "src_game_usesfx_play",
-      "confidence_score": 1.0
+      "target": "src_game_usesfx_play"
     },
     {
       "relation": "contains",
@@ -10277,9 +10277,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_usesfx",
-      "target": "src_game_usesfx_sound_files",
-      "confidence_score": 1.0
+      "target": "src_game_usesfx_sound_files"
     },
     {
       "relation": "contains",
@@ -10288,9 +10288,9 @@
       "source_location": "L41",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_game_usesfx",
-      "target": "src_game_usesfx_usesfx",
-      "confidence_score": 1.0
+      "target": "src_game_usesfx_usesfx"
     },
     {
       "relation": "contains",
@@ -10387,9 +10387,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_game_game",
-      "confidence_score": 1.0
+      "target": "src_ui_game_game"
     },
     {
       "relation": "contains",
@@ -10879,10 +10879,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L594",
+      "source_location": "L599",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "art_generate_art_rationale_594",
+      "source": "art_generate_art_rationale_599",
       "target": "art_generate_art_draw_old_timer_face",
       "confidence_score": 1.0
     },
@@ -10901,10 +10901,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L720",
+      "source_location": "L725",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "art_generate_art_rationale_720",
+      "source": "art_generate_art_rationale_725",
       "target": "art_generate_art_make_wall_texture",
       "confidence_score": 1.0
     },
@@ -10915,9 +10915,9 @@
       "source_location": "L104",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_rationale_104",
-      "target": "art_generate_audio_make_game_win_fanfare",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_game_win_fanfare"
     },
     {
       "relation": "rationale_for",
@@ -10926,9 +10926,9 @@
       "source_location": "L116",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_rationale_116",
-      "target": "art_generate_audio_make_shuffle",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_shuffle"
     },
     {
       "relation": "rationale_for",
@@ -10937,9 +10937,9 @@
       "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_rationale_16",
-      "target": "art_generate_audio_envelope",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_envelope"
     },
     {
       "relation": "rationale_for",
@@ -10948,9 +10948,9 @@
       "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_rationale_43",
-      "target": "art_generate_audio_noise_burst",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_noise_burst"
     },
     {
       "relation": "rationale_for",
@@ -10959,9 +10959,9 @@
       "source_location": "L84",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_rationale_84",
-      "target": "art_generate_audio_make_card_play",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_card_play"
     },
     {
       "relation": "rationale_for",
@@ -10970,9 +10970,9 @@
       "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_rationale_90",
-      "target": "art_generate_audio_make_trick_win",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_trick_win"
     },
     {
       "relation": "rationale_for",
@@ -10981,9 +10981,9 @@
       "source_location": "L97",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "art_generate_audio_rationale_97",
-      "target": "art_generate_audio_make_euchre_fanfare",
-      "confidence_score": 1.0
+      "target": "art_generate_audio_make_euchre_fanfare"
     },
     {
       "relation": "references",
@@ -11521,5 +11521,5 @@
       "source_file": "RULES.md"
     }
   ],
-  "built_at_commit": "8362579caf94e6268e66b51b1874a5391e1d5e6f"
+  "built_at_commit": "02ab18d570efcf09563711c4d2dc6132e00fe33e"
 }

@@ -1,7 +1,7 @@
 # Graph Report - euchre  (2026-08-19)
 
 ## Corpus Check
-- 37 files · ~20,065 words
+- 37 files · ~20,109 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8362579c`
+- Built from commit: `02ab18d5`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -36,16 +36,16 @@
 3. `reduce()` - 16 edges
 4. `legalActions()` - 14 edges
 5. `compilerOptions` - 13 edges
-6. `Card` - 12 edges
-7. `Player` - 12 edges
-8. `Art assets — spec` - 10 edges
-9. `PlayerView` - 10 edges
-10. `chooseMove()` - 10 edges
+6. `Player` - 12 edges
+7. `Card` - 12 edges
+8. `PlayerView` - 10 edges
+9. `chooseMove()` - 10 edges
+10. `Art assets — spec` - 10 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `PlayStateOptions` --references--> `Card`  [EXTRACTED]
-  tests/helpers.ts → shared/engine/types.ts
 - `PlayStateOptions` --references--> `Player`  [EXTRACTED]
+  tests/helpers.ts → shared/engine/types.ts
+- `PlayStateOptions` --references--> `Card`  [EXTRACTED]
   tests/helpers.ts → shared/engine/types.ts
 - `useGame()` --calls--> `chooseMove()`  [EXTRACTED]
   src/game/useGame.ts → shared/bot/heuristic.ts
@@ -117,7 +117,7 @@ Cohesion: 0.33
 Nodes (5): Knowledge graph, Repo layout, Running the engine, Status, Two-Handed Euchre
 
 ## Knowledge Gaps
-- **70 isolated node(s):** `Palette — cabin by the fire`, `Cards`, `Layout budget — asserted, not eyeballed`, `Table & room (Phase 2c)`, `Old-Timer portrait` (+65 more)
+- **70 isolated node(s):** `SCORE_SUIT`, `Expression`, `SoundName`, `HandRole`, `Phase` (+65 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -128,7 +128,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Why does `PlayerView` connect `useGame.ts` to `types.ts`, `rules.ts`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **What connects `Palette — cabin by the fire`, `Cards`, `Layout budget — asserted, not eyeballed` to the rest of the system?**
+- **What connects `SCORE_SUIT`, `Expression`, `SoundName` to the rest of the system?**
   _70 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `generate_art.py` be split into smaller, more focused modules?**
   _Cohesion score 0.07987012987012987 - nodes in this community are weakly interconnected._
