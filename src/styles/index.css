@@ -466,6 +466,89 @@ body {
   opacity: 0.85;
 }
 
+/* --- Card motion (2d.4) ---------------------------------------------------------------- */
+/* Cards previously teleported between states. These are entrance/exit animations on elements
+   already in the DOM rather than FLIP/shared-element transitions: the hand tray is always
+   below the trick area, so "arrives from below" is directionally true without measuring a
+   source rect, and it needs no animation library. The architecture doc names Framer Motion
+   for this; it stayed unused because these three effects don't need cross-container tweening
+   and it is ~50KB against an offline-capable PWA. */
+
+/* A played card arcs up into the trick area from the direction of the hand. */
+.trick-card {
+  animation: card-play-in 260ms cubic-bezier(0.22, 0.9, 0.3, 1.1) both;
+}
+@keyframes card-play-in {
+  from { transform: translateY(46px) scale(0.86) rotate(-4deg); opacity: 0; }
+  to   { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* The winner pops and glows while the finished trick is held on the table. */
+.trick-card.is-winner .card-face img {
+  filter: drop-shadow(0 0 5px #ffd54a) drop-shadow(0 0 2px #ffd54a);
+}
+.trick-card.is-winner {
+  animation: card-play-in 260ms cubic-bezier(0.22, 0.9, 0.3, 1.1) both,
+             winner-pop 620ms ease-out;
+}
+@keyframes winner-pop {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+/* Then the whole trick sweeps toward whoever took it — which is also how the player learns
+   who won, with no extra text. animation-delay is set inline so the hold reads before the
+   sweep starts. */
+.trick-card.is-sweeping {
+  animation: card-play-in 260ms cubic-bezier(0.22, 0.9, 0.3, 1.1) both;
+}
+.trick-card.is-sweeping.sweep-down {
+  animation: sweep-down 620ms ease-in both;
+}
+.trick-card.is-sweeping.sweep-up {
+  animation: sweep-up 620ms ease-in both;
+}
+.trick-card.is-sweeping.is-winner.sweep-down {
+  animation: winner-pop 500ms ease-out, sweep-down 620ms ease-in both;
+}
+.trick-card.is-sweeping.is-winner.sweep-up {
+  animation: winner-pop 500ms ease-out, sweep-up 620ms ease-in both;
+}
+@keyframes sweep-down {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to   { transform: translateY(150px) scale(0.7); opacity: 0; }
+}
+@keyframes sweep-up {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to   { transform: translateY(-150px) scale(0.7); opacity: 0; }
+}
+
+/* The deal: idle seat backs fan in with a stagger rather than appearing all at once. */
+.seat-backs .card-back.mini {
+  animation: deal-in 300ms ease-out both;
+}
+.seat-backs .card-back.mini:nth-child(1) { animation-delay: 0ms; }
+.seat-backs .card-back.mini:nth-child(2) { animation-delay: 55ms; }
+.seat-backs .card-back.mini:nth-child(3) { animation-delay: 110ms; }
+.seat-backs .card-back.mini:nth-child(4) { animation-delay: 165ms; }
+.seat-backs .card-back.mini:nth-child(5) { animation-delay: 220ms; }
+@keyframes deal-in {
+  from { transform: translate(-26px, -18px) rotate(-12deg); opacity: 0; }
+  to   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trick-card,
+  .trick-card.is-winner,
+  .trick-card.is-sweeping,
+  .trick-card.is-sweeping.sweep-down,
+  .trick-card.is-sweeping.sweep-up,
+  .trick-card.is-sweeping.is-winner.sweep-down,
+  .trick-card.is-sweeping.is-winner.sweep-up,
+  .seat-backs .card-back.mini { animation: none; }
+}
+
 .bid-panel {
   display: flex;
   flex-wrap: wrap;

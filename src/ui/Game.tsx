@@ -8,7 +8,7 @@ import { BidPanel } from './BidPanel.tsx';
 import { HandTray } from './HandTray.tsx';
 
 export function Game() {
-  const { view, legal, play } = useGame();
+  const { view, legal, play, completedTrick } = useGame();
   useSfx(view);
 
   return (
@@ -17,7 +17,7 @@ export function Game() {
       <div className="game-root">
       <Scoreboard view={view} />
       <StatusBanner view={view} />
-      <Table view={view} />
+      <Table view={view} completedTrick={completedTrick} />
       <BidPanel view={view} legal={legal} play={play} />
       <HandTray view={view} legal={legal} play={play} />
       </div>

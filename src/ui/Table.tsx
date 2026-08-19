@@ -1,6 +1,19 @@
 import type { HandId, PlayerView } from '../../shared/engine/types.ts';
 import { HUMAN, BOT } from '../game/useGame.ts';
+import type { CompletedTrick } from '../game/useGame.ts';
 import { Card, CardBack } from './Card.tsx';
+
+/** The winning card is highlighted for this long before everything sweeps away.
+ *
+ *  COUPLED TO `TRICK_HOLD_MS` in useGame.ts — change one and you must change the other:
+ *      hold/pop   0 .. 620ms      (this constant)
+ *      sweep    620 .. 1240ms     (620ms CSS animation, started by this delay)
+ *      state clears at 1300ms     (TRICK_HOLD_MS)
+ *  If TRICK_HOLD_MS lands before the sweep finishes, cards pop out mid-flight; if it lands
+ *  much later, they sit invisible at the swept-away end state (the sweep ends at opacity 0
+ *  with fill-mode both) while play stays frozen. Both failure modes were observed while
+ *  tuning this. */
+const TRICK_HOLD_BEFORE_SWEEP_MS = 620;
 
 const SEATS: HandId[] = [
   { player: HUMAN, role: 'selected' },
@@ -27,7 +40,12 @@ function seatLabel(hand: HandId): string {
   return `${who} — ${which}`;
 }
 
-export function Table({ view }: { view: PlayerView }) {
+export function Table({ view, completedTrick }: { view: PlayerView; completedTrick: CompletedTrick | null }) {
+  // A finished trick is held by useGame and shown here after the engine has moved on —
+  // otherwise the trick-winning card is never rendered at all. Sweeping toward the winner
+  // also tells the player who took it without any extra text.
+  const trick = completedTrick ? completedTrick.cards : view.currentTrick;
+  const sweeping = completedTrick !== null;
   return (
     <div className="table">
       <div className="seats">
@@ -51,9 +69,19 @@ export function Table({ view }: { view: PlayerView }) {
       </div>
 
       <div className="trick-area">
-        {view.currentTrick.length === 0 && <div className="trick-empty">— trick in progress —</div>}
-        {view.currentTrick.map((played, i) => (
-          <div key={i} className="trick-card">
+        {trick.length === 0 && <div className="trick-empty">— trick in progress —</div>}
+        {trick.map((played, i) => (
+          <div
+            key={i}
+            className={
+              'trick-card' +
+              (sweeping
+                ? ` is-sweeping sweep-${completedTrick.winner === HUMAN ? 'down' : 'up'}` +
+                  (i === completedTrick.winningIndex ? ' is-winner' : '')
+                : '')
+            }
+            style={sweeping ? { animationDelay: `${TRICK_HOLD_BEFORE_SWEEP_MS}ms` } : undefined}
+          >
             <div className="trick-card-label">{seatLabel(played.handId)}</div>
             <Card card={played.card} />
           </div>
