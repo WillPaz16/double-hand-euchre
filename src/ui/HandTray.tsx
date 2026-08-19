@@ -13,10 +13,15 @@ export function HandTray({
   view,
   legal,
   play,
+  frozen = false,
 }: {
   view: PlayerView;
   legal: Action[];
   play: (a: Action) => void;
+  /** True while a finished trick is still on the table. Play is frozen then so the next card
+   *  cannot land on top of one the player is still reading — and the cards are visibly
+   *  disabled rather than silently swallowing a click the player thinks landed. */
+  frozen?: boolean;
 }) {
   const cardActions = legal.filter(
     (a): a is Extract<Action, { type: 'PLAY_CARD' | 'DEALER_DISCARD' }> =>
@@ -41,7 +46,7 @@ export function HandTray({
       <div className="hand-tray-label">{label}</div>
       <div className="hand-tray-cards" key={trayKey}>
         {fullHand.map((card, i) => {
-          const action = cardActions.find((a) => cardsEqual(a.card, card));
+          const action = frozen ? undefined : cardActions.find((a) => cardsEqual(a.card, card));
           return (
             <Card
               key={i}

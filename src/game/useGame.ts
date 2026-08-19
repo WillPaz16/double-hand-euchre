@@ -74,15 +74,32 @@ export function useGame() {
     return next;
   }, []);
 
-  // Promote a captured trick into state, then clear it after the hold. Kept out of the
-  // setState updater (which must stay pure) by staging it in a ref first.
+  // Promote a captured trick into state. Kept out of the setState updater (which must stay
+  // pure) by staging it in a ref first.
   useEffect(() => {
     if (!pendingSweepRef.current) return;
     setCompletedTrick(pendingSweepRef.current);
     pendingSweepRef.current = null;
+  }, [state]);
+
+  /** Clear the held trick after the hold — keyed on `completedTrick`, NOT on `state`.
+   *
+   *  This split fixes a hard deadlock. Both halves used to live in one effect keyed on
+   *  [state], so the cleanup ran on any state change: a human click landing during the hold
+   *  changed `state`, which cleared the very timeout that was going to release the freeze.
+   *  The re-run then hit `if (!pendingSweepRef.current) return` and never set a new timer, so
+   *  `completedTrick` stayed non-null forever, the bot effect early-returned forever, and the
+   *  game was permanently unplayable after ONE mistimed click. Reproduced before this fix:
+   *  after clicking during a hold, `playable=0, stillSweeping=4` with no recovery.
+   *
+   *  Keying the timer on the thing it clears means its lifetime can no longer be cut short by
+   *  an unrelated state change. A timer whose cleanup is driven by different state than the
+   *  value it resets is the general shape of this bug. */
+  useEffect(() => {
+    if (!completedTrick) return;
     const t = setTimeout(() => setCompletedTrick(null), TRICK_HOLD_MS);
     return () => clearTimeout(t);
-  }, [state]);
+  }, [completedTrick]);
 
   useEffect(() => {
     if (timerRef.current) {
@@ -120,8 +137,15 @@ export function useGame() {
     };
   }, [state, completedTrick, applyAction]);
 
+  /** The freeze was previously applied ONLY to the bot's effect, even though the intent was
+   *  "play freezes while a finished trick is on the table". The human path had no guard at
+   *  all, which is what let a click during the hold reach setState and trigger the deadlock
+   *  above. Guarding here is both the correctness fix and the behaviour that was intended;
+   *  `frozen` is also returned so the UI can disable the cards rather than silently swallow
+   *  a click the player thinks landed. */
   const play = useCallback(
     (action: Action) => {
+      if (completedTrick) return;
       setState((s) => {
         const legal = legalActions(s, HUMAN);
         const isLegal = legal.some((a) => JSON.stringify(a) === JSON.stringify(action));
@@ -132,7 +156,7 @@ export function useGame() {
         return applyAction(s, action);
       });
     },
-    [applyAction],
+    [applyAction, completedTrick],
   );
 
   return {
@@ -140,5 +164,6 @@ export function useGame() {
     legal: legalActions(state, HUMAN),
     play,
     completedTrick,
+    frozen: completedTrick !== null,
   };
 }
