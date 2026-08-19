@@ -32,6 +32,28 @@ CLOTH_BLUE = (82, 96, 122, 255)   # sleeves — a cool contrast so the body isn'
 STEEL = (172, 178, 188, 255)
 ROSE_RED = (198, 72, 66, 255)
 LEAF_GREEN = (86, 128, 76, 255)
+# --- Environment palette (Phase 2d) ---------------------------------------------------- #
+# WOOD_DARK/MED/LIGHT above are intentionally NOT reused or modified here: make_card_back()
+# depends on them, and the card art is frozen. These are separate bases, each fed through
+# ramp() at use site, plus the cool/warm accents the night-cabin mood needs.
+TABLE_WOOD = (88, 55, 34, 255)
+WALL_WOOD = (34, 23, 18, 255)   # much darker than the table: value separation is what
+# stops the backdrop and the table surface reading as one continuous slab of wood.
+CHINKING = (122, 108, 90, 255)      # pale mortar packed between the logs
+FLOOR_WOOD = (74, 48, 30, 255)
+NIGHT_BLUE = (38, 48, 74, 255)      # the cool reference that makes firelight read warm
+NIGHT_BLUE_DEEP = (24, 30, 50, 255)
+FROST = (176, 198, 220, 255)
+FIRE_CORE = (255, 226, 140, 255)
+FIRE_MID = (240, 150, 52, 255)
+FIRE_DEEP = (188, 74, 30, 255)
+EMBER = (120, 40, 22, 255)
+STONE_LIGHT = (128, 122, 116, 255)
+STONE_MED = (94, 89, 85, 255)
+STONE_DARK = (60, 57, 55, 255)
+RUG_RED = (128, 52, 46, 255)
+RUG_CREAM = (198, 172, 132, 255)
+
 PIP_FILL_BLACK = (72, 54, 42, 255)  # a "soot brown" — dark like ink, but visibly distinct from
 # the INK outline. Reusing INK as both fill and outline made clubs/spades disappear into their
 # own outline entirely; text (which is never outlined) can stay true black.
@@ -50,6 +72,67 @@ def darken(color, factor=0.68):
     giving every shape the 2-tone look that reads as pixel-art rather than flat vector."""
     r, g, b, a = color
     return (int(r * factor), int(g * factor), int(b * factor), a)
+
+
+# --- Phase 2d foundation: tonal ramps, sprite sheets, contact shadows ------------------- #
+# darken() above is deliberately left untouched: every card sprite runs through it, and the
+# 24 card faces are already approved. These are ADDITIVE and used only by environment art.
+
+
+def _clamp(v):
+    return max(0, min(255, int(v)))
+
+
+def _tone(color, factor, tint):
+    r, g, b, a = color
+    return (_clamp(r * factor + tint[0]), _clamp(g * factor + tint[1]),
+            _clamp(b * factor + tint[2]), a)
+
+
+def _mix(a, b, t):
+    """Blend two colours. Used to compress a ramp toward its base tone — a backdrop
+    wants form without competing for attention."""
+    return tuple(_clamp(a[i] * (1 - t) + b[i] * t) for i in range(3)) + (a[3],)
+
+
+def ramp(color):
+    """Four tones — (highlight, base, shadow, deep) — with a temperature shift, not a plain
+    multiply. Highlights bend warm (toward amber), shadows bend cool (toward blue).
+
+    This is the single highest-impact change of the phase. A pure multiply keeps every tone
+    on one hue line, which is exactly what made the old three-brown environment read muddy:
+    with nothing cool in frame, warm firelight has nothing to be warm *against*."""
+    return (
+        _tone(color, 1.24, (16, 9, -7)),    # highlight — warmer
+        color,                               # base
+        _tone(color, 0.70, (-9, -4, 11)),   # shadow — cooler
+        _tone(color, 0.46, (-13, -7, 17)),  # deep — cooler still
+    )
+
+
+def make_sprite_sheet(frames):
+    """Paste equal-sized frames into one horizontal strip for CSS steps() animation.
+    See ASSETS.md: the CSS animates transform (compositor-only), never background-position
+    (which repaints every frame)."""
+    w, h = frames[0].size
+    sheet = Image.new("RGBA", (w * len(frames), h), (0, 0, 0, 0))
+    for i, frame in enumerate(frames):
+        sheet.paste(frame, (i * w, 0), frame)
+    return sheet
+
+
+def contact_shadow(w, h, layers=3, max_alpha=104):
+    """A stepped dark ellipse to sit under an object so it reads as resting on a surface
+    rather than floating. Deliberately stepped rather than gaussian-blurred — a soft blur
+    would break the hard-edged pixel-art look everything else follows."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    for i in range(layers):
+        t = i / layers
+        ix, iy = w * 0.25 * t, h * 0.25 * t
+        draw.ellipse((ix, iy, w - 1 - ix, h - 1 - iy),
+                     fill=(0, 0, 0, int(max_alpha * (i + 1) / layers)))
+    return img
 
 
 def text_color(suit: str):
@@ -699,46 +782,85 @@ def make_card_back() -> Image.Image:
 
 
 def make_table_felt() -> Image.Image:
+    """Table surface — horizontal planks, grain running ALONG them, seams lit from above.
+
+    Two rules learned the hard way here, both about what may live in a *repeating* tile:
+      1. No point features. An earlier version put knots in this tile and at 4x4 repeats they
+         read as a perfect polka-dot grid, instantly betraying the tiling. Distinctive
+         one-off marks belong in the scene layer as placed decals, never in the tile.
+      2. Keep tone variation between planks subtle. High contrast plank-to-plank reads as
+         stripes rather than as one wooden surface; the ramp's range is better spent on the
+         seam/grain micro-detail than on shouting plank boundaries.
+    """
     size = 64
-    img = Image.new("RGBA", (size, size), WOOD_MED)
+    hi, base, sh, deep = ramp(TABLE_WOOD)
+    img = Image.new("RGBA", (size, size), base)
     draw = ImageDraw.Draw(img)
 
-    for seam_x in (21, 43):
-        draw.line((seam_x, 0, seam_x, size), fill=WOOD_DARK)
-        draw.line((seam_x + 1, 0, seam_x + 1, size), fill=WOOD_LIGHT)
+    plank_h = 16
+    for i, py in enumerate(range(0, size, plank_h)):
+        draw.rectangle((0, py, size, py + plank_h - 1), fill=(base, sh)[i % 2])
 
-    for row in range(0, size, 4):
-        x = 0
-        seed = row * 7
+    for py in range(plank_h - 1, size, plank_h):
+        draw.line((0, py, size, py), fill=deep)
+        if py + 1 < size:
+            draw.line((0, py + 1, size, py + 1), fill=hi)
+
+    # Grain — dashes along the plank direction. Fixed arithmetic, never `random`, so the
+    # generator stays byte-reproducible.
+    seed = 3
+    for row in range(1, size, 3):
+        x = (row * 7) % 9
         while x < size:
-            dash_len = 3 + (seed % 5)
-            gap = 2 + ((seed // 5) % 3)
-            color = WOOD_LIGHT if (seed // 3) % 2 == 0 else WOOD_DARK
-            y = row + ((seed % 3) - 1)
-            draw.line((x, y, min(x + dash_len, size - 1), y), fill=color)
-            x += dash_len + gap
-            seed += 11
+            dash = 5 + (seed % 8)
+            draw.line((x, row, min(x + dash, size), row), fill=sh if (seed // 3) % 2 else hi)
+            x += dash + 4 + (seed % 5)
+            seed += 7
     return img
 
 
 def make_wall_texture() -> Image.Image:
-    """Log-cabin wall — vertical rounded logs, distinct from the table felt's horizontal plank
-    grain, so the room reads as a different surface behind the table rather than more table."""
+    """Log-cabin wall — horizontally stacked logs with pale chinking between courses.
+
+    This is a *backdrop*, and mostly occluded by the table, so it is deliberately
+    low-contrast: the ramp is compressed toward its base tone via _mix() so the wall reads
+    as quiet form rather than competing with the cards. Earlier drafts using the ramp at
+    full range looked like corduroy — high contrast plus a repeating course is exactly the
+    recipe for stripes.
+
+    Two other rules learned here and worth keeping:
+    - *Horizontal*, not vertical. Vertical full-height logs have nothing interrupting them
+      down the tile, so they stripe no matter how they are shaded; horizontal stacking is
+      both the iconic look and self-breaking. Contrast with the table now comes from form
+      and scale (big round stacked logs vs. a fine flat grain), a stronger distinction than
+      axis anyway.
+    - No point features in a repeating tile. Knots here tiled into obvious polka dots and
+      were removed; distinctive one-off marks belong in the scene layer as placed decals.
+    """
     size = 96
-    img = Image.new("RGBA", (size, size), WOOD_DARK)
+    hi_f, base, sh_f, deep_f = ramp(WALL_WOOD)
+    hi = _mix(base, hi_f, 0.5)
+    sh = _mix(base, sh_f, 0.5)
+    deep = _mix(base, deep_f, 0.55)
+    chink = _mix(base, CHINKING, 0.5)
+
+    img = Image.new("RGBA", (size, size), base)
     draw = ImageDraw.Draw(img)
 
-    log_w = 16
-    for lx in range(0, size + log_w, log_w):
-        draw.ellipse((lx - log_w / 2, -8, lx + log_w / 2, size + 8), outline=WOOD_LIGHT, width=2)
-        draw.line((lx, -8, lx, size + 8), fill=WOOD_MED, width=1)
-
-    for row in range(6, size, 17):
-        seed = row * 5
-        for lx in range(0, size, log_w):
-            notch_x = lx + log_w // 2 + (seed % 5) - 2
-            draw.line((notch_x - 3, row, notch_x + 3, row), fill=WOOD_DARK)
-            seed += 13
+    log_h = 24
+    body_h = log_h - 2
+    for ly in range(0, size, log_h):
+        for dy in range(body_h):
+            frac = dy / (body_h - 1)
+            if frac < 0.22:
+                tone = hi
+            elif frac < 0.60:
+                tone = base
+            else:
+                tone = sh
+            draw.line((0, ly + dy, size, ly + dy), fill=tone)
+        draw.line((0, ly + body_h, size, ly + body_h), fill=chink)
+        draw.line((0, ly + body_h + 1, size, ly + body_h + 1), fill=deep)
     return img
 
 
