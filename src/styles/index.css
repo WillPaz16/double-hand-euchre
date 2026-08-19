@@ -75,6 +75,7 @@ body {
   flex-direction: column;
   gap: 0.75rem;
   min-height: 0;
+  overflow: hidden;
 }
 
 .seats {
@@ -103,10 +104,10 @@ body {
   gap: 3px;
   flex-wrap: wrap;
 }
-/* Idle seats show real card-back art at native 1x resolution, fanned with heavy overlap so
+/* Idle seats show real card-back art at half native resolution, fanned with heavy overlap so
    five of them stay compact — they only need to convey a count, not be tap targets. */
 .seat-backs .card-back.mini {
-  margin-left: -28px;
+  margin-left: -35px;
 }
 .seat-backs .card-back.mini:first-child {
   margin-left: 0;
@@ -159,6 +160,7 @@ body {
 }
 
 .hand-tray {
+  flex-shrink: 0;
   border-top: 2px solid #4a3728;
   padding-top: 0.5rem;
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
@@ -201,12 +203,13 @@ body {
   }
 }
 
-/* Generated pixel-art cards — native 40x56, displayed at a whole-number scale so pixels
-   stay crisp (the "hybrid fixed-grid" approach from the Phase 2 design spec). */
+/* Generated pixel-art cards — native 100x140, displayed 1:1 so pixels stay crisp (the
+   "hybrid fixed-grid" approach from the Phase 2 design spec). Every other size below is a
+   whole-number fraction of native, never an arbitrary in-between. */
 .card-face,
 .card-back {
-  width: 80px;
-  height: 112px;
+  width: 100px;
+  height: 140px;
   image-rendering: pixelated;
   flex-shrink: 0;
 }
@@ -231,14 +234,27 @@ body {
   cursor: pointer;
 }
 .card-face.highlighted img {
-  filter: drop-shadow(0 0 6px #ffd54a) drop-shadow(0 0 2px #ffd54a);
+  filter: drop-shadow(0 0 3px #ffd54a) drop-shadow(0 0 1px #ffd54a);
 }
 .card-face.dimmed img {
   opacity: 0.4;
 }
 .card-back.mini {
-  width: 40px;
-  height: 56px;
+  width: 50px;
+  height: 70px;
+}
+
+/* Narrow screens can't fit five 100px cards side by side, so the hand fans with overlap the
+   way a real hand of cards does. The rank index sits in each card's top-left corner, so it
+   stays visible on every card even when overlapped — and the uncovered left strip of each
+   card remains its own tap target. */
+@media (max-width: 560px) {
+  .hand-tray-cards {
+    gap: 0;
+  }
+  .hand-tray-cards .card-face + .card-face {
+    margin-left: -48px;
+  }
 }
 
 /* Landscape: give the table more horizontal room, four seats in a row. */
@@ -248,9 +264,10 @@ body {
   }
 }
 
-/* Short viewports (landscape phone) can't fit 2x-scale (80x112) cards alongside the status
-   text and still leave the tray reachable without scrolling. Step down to native 1x (40x56)
-   rather than an in-between size — it stays a whole-number multiple, so pixels stay crisp. */
+/* Short viewports (landscape phone) can't fit full-size (100x140) cards alongside the status
+   text and still leave the tray reachable without scrolling. Step down to exactly half native
+   (50x70) rather than an in-between size, so pixels stay crisp. Overlap is also cancelled here
+   since a landscape viewport is wide enough for five half-size cards side by side. */
 @media (max-height: 480px) {
   .game-root {
     gap: 0.25rem;
@@ -260,8 +277,11 @@ body {
   }
   .card-face,
   .card-back {
-    width: 40px;
-    height: 56px;
+    width: 50px;
+    height: 70px;
+  }
+  .hand-tray-cards .card-face + .card-face {
+    margin-left: 0;
   }
   .trick-area {
     min-height: 60px;

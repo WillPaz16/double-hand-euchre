@@ -9,11 +9,15 @@ with `image-rendering: pixelated`, per the "hybrid fixed-grid" approach in the P
 spec. Never edit the PNGs in `public/art/` directly; edit this spec / the script and
 regenerate.
 
-**Native resolution is 80×112**, not the original 40×56 — chosen specifically so it equals what
-was previously the *2x on-screen display size*. That means bumping resolution for smoother
-pip curves and more portrait detail required zero CSS/React changes: the "normal" card size in
-`index.css` is now a true 1:1 native render (crisper than before, which was a 2x upscale of a
-smaller source) and the "mini" seat-back size is a clean 2x downscale of the same source.
+**Native resolution is 100×140** (5:7, the real playing-card ratio). Cards display 1:1 at
+native, and every other size is a whole-number fraction of it — the half-size 50×70 is used for
+fanned idle-seat backs and for short (landscape-phone) viewports. Never an arbitrary in-between
+size, which is what would break pixel crispness.
+
+On narrow screens the hand **fans with overlap** rather than shrinking, the way a real hand of
+cards does: each card shows a 52px strip (still above the 44px touch-target minimum), and since
+the rank index lives in the card's top-left corner every card in the fan stays readable. This
+keeps all six cards of the dealer-discard step on one row at 375px.
 
 ## Palette — cabin by the fire
 
@@ -77,23 +81,36 @@ parchment doesn't need the distinction.
     top/bottom markers on a test render to actually prove which one was upside down. Lesson:
     when a shape's correctness depends on orientation, verify it with an unambiguous visual
     reference, don't eyeball two similar blobs against each other.
+
+## Layout budget — and why it's asserted, not eyeballed
+
+The two corner index blocks sit in fixed reserved rectangles. The forbidden region is
+**L-shaped, not a vertical band**: between roughly y=41 and y=99 the card is free almost edge to
+edge, which is where arms and held props live. Treating it as one narrow column is what made
+earlier drafts look cramped.
+
+Artwork intruding into an index box was a repeat bug across several drafts — including one that
+survived visual review because the 2px silhouette outline pushes every shape 2px further out
+than its nominal coordinates. `_assert_art_clear_of_indices()` now raises at generation time if
+any character pixel lands in a reserved box, so the budget is enforced by the generator rather
+than re-checked by eye on every redesign.
 - **Number cards (9, 10, A):** center gets one large outlined suit pip.
-- **Face cards (J, Q, K):** an extreme-chibi bust portrait (`draw_head` / `draw_body` /
-  `draw_face` in the script) — big round head carrying almost the whole character, small simple
-  color-blocked body underneath, directly inspired by Gen 3/4 Pokémon overworld trainer sprites
-  rather than a more evenly-proportioned figure. Headwear is the main silhouette/identity
-  signature, the same way it is on those sprites — not the face. Every rank shares the same
-  face-building blocks (round eyes with a highlight dot, brows, blush, a mouth) and differs in
-  headwear and expression, built from primitive shapes so proportions are single-line tweaks
-  rather than pixel-by-pixel redraws:
-  - **King** — old and grizzled, gray beard, furrowed brows, a big 5-peak gold crown, no smile.
+- **Face cards (J, Q, K):** **full-body avatars**, not busts — directly modelled on Gen 4/5
+  Pokémon overworld trainer sprites. That means: a big round head carrying most of the
+  characterisation (~40% of figure height), headwear as the primary silhouette signature, a
+  small simple body, and **one dark outline around the whole figure** with internal detail
+  carried by colour changes and a shadow tone — *not* a heavy outline around each piece. That
+  single-silhouette rule is the main thing that separates a Pokémon-sprite look from a
+  sticker-collage look, and it's why `composite_sprite()` unions all parts before outlining.
+  - **King** — grizzled, gray beard, furrowed brows, 5-peak gold crown, holds a **scepter**.
     A deliberate nod to the single-player opponent rather than a generic storybook king.
-  - **Queen** — auburn hair falling past the shoulders, a gold circlet with a small gem, level
-    brows, smiling.
-  - **Jack** — a knave, not royalty: no crown, a tilted cap and a long feather, one raised
-    eyebrow for a bit of cheek, smiling.
-  - Body/collar are suit-colored, tying each face card back to its suit the same way the corner
-    pips do.
+  - **Queen** — long auburn hair, gold circlet with a gem, level brows, smiling, holds a **rose**.
+  - **Jack** — a knave, not royalty: no crown, tilted cap with a plume, short tunic with visible
+    legs and boots, holds a **sword**, and **winks**.
+  - Each rank carries a distinct prop and expression. That, more than the headwear alone, is
+    what makes the three read as different *people* rather than one body wearing three hats.
+  - Sleeves are a contrasting blue against the suit-coloured garment, so the body isn't one flat
+    slab; the garment itself stays suit-coloured so red/black still reads at a glance.
 - **Card back:** same 80×112 frame, `wood_dark` base with a `wood_med`/`wood_light` diamond
   lattice, `gold` corner accent.
 
