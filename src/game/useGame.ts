@@ -40,9 +40,15 @@ function freshSeed(): string {
  *  on a short delay, and auto-advances to the next deal once a hand settles. The human's
  *  moves are validated against legalActions() before being applied — the UI cannot submit
  *  an illegal action even if a component bug tries to. */
-export function useGame() {
+export function useGame(initialSeed?: string) {
+  // `initialSeed` exists so tests get a deterministic deal. Without it these tests are flaky
+  // by construction: which player wins a given trick decides whether the human even HAS a
+  // legal move during the sweep hold, and that is precisely the condition the freeze and
+  // deadlock tests depend on. Consistent with the engine's design rather than a test-only
+  // hack — the whole engine is seeded for reproducibility (§4), and a replay/debug view would
+  // need exactly this hook. Note only the FIRST hand is deterministic; nextDeal draws fresh.
   const [state, setState] = useState<GameState>(() =>
-    newGame(freshSeed(), HUMAN, DEFAULT_CONFIG),
+    newGame(initialSeed ?? freshSeed(), HUMAN, DEFAULT_CONFIG),
   );
   const [completedTrick, setCompletedTrick] = useState<CompletedTrick | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
