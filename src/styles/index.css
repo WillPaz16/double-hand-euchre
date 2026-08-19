@@ -78,9 +78,13 @@ body::before {
   align-items: center;
   gap: 0.15rem;
 }
+/* 66x78 is exactly 60% of the source art's native 110x130 — same aspect ratio, so
+   object-fit here is a pure scale with zero actual cropping (verified: 110/130 == 66/78).
+   Sized up from an earlier 55x65 for legibility once the hat/eyebrow overlap bug (see
+   generate_art.py, _old_timer_parts) was fixed and the face was actually worth showing. */
 .opponent-portrait {
-  width: 55px;
-  height: 65px;
+  width: 66px;
+  height: 78px;
   image-rendering: pixelated;
   object-fit: cover;
   object-position: top;
@@ -363,5 +367,36 @@ body::before {
   }
   .hand-tray-cards {
     perspective: 200px;
+  }
+  /* The scoreboard row was the single biggest contributor to the overflow this rule was meant
+     to prevent: portrait + score-pair stack vertically inside .score-slot (a flex column), and
+     at full size that column alone measured ~195px tall — more than half a 375px-tall phone in
+     landscape. The portrait is decorative here (its expression already isn't legible at this
+     size) so it's dropped entirely; the score cards shrink for real rather than via `transform`
+     (which would leave the pre-shrink box still reserving its full flow space and fix nothing).
+     ScorePair's slide offset is a %, not a hardcoded px, specifically so this resize is safe. */
+  .opponent-portrait {
+    display: none;
+  }
+  .scoreboard {
+    gap: 1rem;
+    padding-top: 0;
+  }
+  .score-slot {
+    gap: 0.05rem;
+  }
+  .score-label {
+    font-size: 0.7rem;
+  }
+  .score-number {
+    font-size: 0.8rem;
+  }
+  .score-pair {
+    width: 60px;
+    height: 42px;
+  }
+  .score-card {
+    width: 30px;
+    height: 42px;
   }
 }

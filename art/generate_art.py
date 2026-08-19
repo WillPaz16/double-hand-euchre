@@ -576,16 +576,21 @@ def _old_timer_parts():
             (OT_CX + 4, OT_HEAD_CY + 4), (OT_CX + 20, OT_HEAD_CY + 8),
             (OT_CX + 16, OT_HEAD_CY + 14), (OT_CX, OT_HEAD_CY + 10), (OT_CX - 16, OT_HEAD_CY + 14),
         ]), BEARD_GRAY),
-        # Trapper hat: peaked crown, a fur brim, and two fur ear-flaps.
+        # Trapper hat: peaked crown, a fur brim, and two fur ear-flaps. The crown+brim are
+        # raised well clear of the eyebrow line (drawn at eye_y-7 in draw_old_timer_face) — an
+        # earlier version had the brim sitting almost exactly where the eyebrows are drawn, so
+        # every expression read as one gray "ski-goggle" stripe instead of showing brows at
+        # all. Ear flaps stay low and to the sides (they hang past the ears, not across the
+        # face) so they're not part of that overlap and don't need to move.
         (_poly([
-            (OT_CX - 24, OT_HEAD_CY - 12), (OT_CX - 24, OT_HEAD_CY - 30), (OT_CX, OT_HEAD_CY - 38),
-            (OT_CX + 24, OT_HEAD_CY - 30), (OT_CX + 24, OT_HEAD_CY - 12),
+            (OT_CX - 24, OT_HEAD_CY - 22), (OT_CX - 24, OT_HEAD_CY - 40), (OT_CX, OT_HEAD_CY - 48),
+            (OT_CX + 24, OT_HEAD_CY - 40), (OT_CX + 24, OT_HEAD_CY - 22),
         ]), FLANNEL_RED),
-        (_ellipse(OT_CX - 30, OT_HEAD_CY - 16, OT_CX - 16, OT_HEAD_CY + 2), HAT_FUR),
-        (_ellipse(OT_CX + 16, OT_HEAD_CY - 16, OT_CX + 30, OT_HEAD_CY + 2), HAT_FUR),
+        (_ellipse(OT_CX - 30, OT_HEAD_CY - 20, OT_CX - 16, OT_HEAD_CY - 2), HAT_FUR),
+        (_ellipse(OT_CX + 16, OT_HEAD_CY - 20, OT_CX + 30, OT_HEAD_CY - 2), HAT_FUR),
         (_poly([
-            (OT_CX - 25, OT_HEAD_CY - 14), (OT_CX + 25, OT_HEAD_CY - 14),
-            (OT_CX + 25, OT_HEAD_CY - 8), (OT_CX - 25, OT_HEAD_CY - 8),
+            (OT_CX - 25, OT_HEAD_CY - 24), (OT_CX + 25, OT_HEAD_CY - 24),
+            (OT_CX + 25, OT_HEAD_CY - 18), (OT_CX - 25, OT_HEAD_CY - 18),
         ]), HAT_FUR),
     ]
 
@@ -757,15 +762,20 @@ def main() -> None:
             os.path.join(portraits_dir, f"old_timer_{expression}.png")
         )
 
+    # Only the suits SCORE_SUIT actually assigns (src/ui/Scoreboard.tsx: A -> hearts,
+    # B -> spades) get scoreboard cards — generating all four was dead weight, since each
+    # player's suit is currently fixed, not a real choice yet (see that file's comment). If
+    # per-player suit choice becomes a real setting, add suits here to match.
+    SCOREBOARD_SUITS = ("hearts", "spades")
     score_dir = os.path.join(OUT_ROOT, "scoreboard")
     os.makedirs(score_dir, exist_ok=True)
-    for suit in SUITS:
+    for suit in SCOREBOARD_SUITS:
         for rank in ("4", "6"):
             make_scoreboard_card(rank, suit).save(os.path.join(score_dir, f"{suit}_{rank}.png"))
 
     print(
         f"Generated {len(SUITS) * len(RANKS)} card faces + card back + table felt "
-        f"+ 3 Old-Timer portraits + {len(SUITS) * 2} scoreboard cards -> {OUT_ROOT}"
+        f"+ 3 Old-Timer portraits + {len(SCOREBOARD_SUITS) * 2} scoreboard cards -> {OUT_ROOT}"
     )
 
 

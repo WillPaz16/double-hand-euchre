@@ -14,7 +14,7 @@ function ScorePair({ player, score }: { player: Player; score: number }) {
     <div className="score-pair">
       <img
         className="score-card score-card-six"
-        style={{ left: `${pct * 60}px` }}
+        style={{ left: `${pct * 50}%` }}
         src={`/art/scoreboard/${suit}_6.png`}
         alt=""
       />
