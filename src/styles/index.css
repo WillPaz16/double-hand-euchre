@@ -57,6 +57,138 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .scene-hearth-glow { animation: none; }
 }
+/* --- Scene objects (2d.2) ------------------------------------------------------------- */
+/* Side scenery needs horizontal margin beside the table, which a phone simply does not have.
+   So it is gated on WIDTH, separately from lean mode's HEIGHT gate — two different scarce
+   resources, two different gates. Below this width the room is just glow + vignette. */
+.scene-fireplace {
+  display: none;
+}
+@media (min-width: 1120px) {
+  .game-root {
+    max-width: 900px;
+    margin-inline: auto;
+  }
+  .scene-fireplace {
+    display: block;
+    position: absolute;
+    left: max(24px, calc((100vw - 900px) / 2 - 164px));
+    top: 50%;
+    transform: translateY(-50%);
+    width: 140px;
+    height: 186px;
+  }
+}
+.scene-fireplace-img {
+  position: absolute;
+  inset: 0;
+  width: 140px;
+  height: 186px;
+  image-rendering: pixelated;
+}
+/* One frame's worth of window onto the strip; the strip itself slides behind it. */
+.scene-fire {
+  position: absolute;
+  left: 37px;
+  top: 118px;
+  width: 66px;
+  height: 58px;
+  overflow: hidden;
+}
+.scene-fire > img {
+  width: 264px;   /* 4 frames x 66px */
+  height: 58px;
+  image-rendering: pixelated;
+  animation: fire-flicker 0.55s steps(4) infinite;
+}
+@keyframes fire-flicker {
+  to { transform: translateX(-264px); }
+}
+/* The light the fire throws into the room. Pulses out of phase with the flame loop so the
+   two never lock into an obvious rhythm. */
+.scene-firelight {
+  position: absolute;
+  left: -120px;
+  top: 20px;
+  width: 400px;
+  height: 260px;
+  background: radial-gradient(
+    ellipse 50% 50% at 42% 55%,
+    rgba(255, 150, 60, 0.20),
+    rgba(255, 150, 60, 0) 70%
+  );
+  animation: firelight-pulse 2.3s ease-in-out infinite;
+}
+@keyframes firelight-pulse {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-fire > img,
+  .scene-firelight { animation: none; }
+}
+
+.scene-window {
+  display: none;
+}
+@media (min-width: 1120px) {
+  .scene-window {
+    display: block;
+    position: absolute;
+    right: max(24px, calc((100vw - 900px) / 2 - 144px));
+    top: 22%;
+    width: 120px;
+    height: 146px;
+  }
+}
+.scene-window-layer {
+  position: absolute;
+  inset: 0;
+  width: 120px;
+  height: 146px;
+  image-rendering: pixelated;
+}
+.scene-snow-clip {
+  position: absolute;
+  inset: 4px;
+  overflow: hidden;
+}
+/* Continuous drift, not stepped frames. Snow stepped at 4-8fps reads as stuttering; the
+   tile is seamless top-to-bottom so translating it by exactly one tile height loops
+   invisibly, and transform keeps it on the compositor. */
+.scene-snow {
+  position: absolute;
+  left: 0;
+  top: -72px;
+  width: 100%;
+  height: calc(100% + 144px);
+  background-image: url('/art/scene/snow.png');
+  background-repeat: repeat;
+  image-rendering: pixelated;
+  animation: snowfall 11s linear infinite;
+}
+@keyframes snowfall {
+  to { transform: translateY(72px); }
+}
+/* Cool spill from the window, the counterweight to .scene-firelight. Steady, not pulsing:
+   moonlight does not flicker, and the contrast between a still cool source and a breathing
+   warm one is what makes the fire read as alive. */
+.scene-moonlight {
+  position: absolute;
+  left: -90px;
+  top: -40px;
+  width: 320px;
+  height: 300px;
+  background: radial-gradient(
+    ellipse 45% 45% at 62% 40%,
+    rgba(150, 190, 235, 0.13),
+    rgba(150, 190, 235, 0) 70%
+  );
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-snow { animation: none; }
+}
+
 /* Lean mode: short viewports (landscape phone) are already at 100% of their height budget,
    so scenery is dropped wholesale rather than shrunk. */
 @media (max-height: 480px) {
@@ -76,6 +208,15 @@ body {
    Value separation from the wall does the rest: the wall is deliberately much darker so the
    table reads as nearer and lit, rather than as more of the same wood. */
 .table {
+  /* Layout and visuals kept in ONE rule on purpose: these were split ~100 lines apart, and
+     the 4px border below is not merely decorative — it eats into a `flex: 1; min-height: 0`
+     element on the tightest viewport, so whoever edits the layout needs to see it. */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+  overflow: hidden;
   background-image: url('/art/table_felt.png');
   background-repeat: repeat;
   image-rendering: pixelated;
@@ -181,15 +322,6 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.table {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  min-height: 0;
-  overflow: hidden;
 }
 
 .seats {

@@ -104,56 +104,115 @@ out than its nominal coordinates. `_assert_art_clear_of_indices()` now raises at
 if any character pixel lands in a reserved box, so the budget is enforced by the generator
 rather than re-checked by eye on every redesign.
 
-## Table & room (Phase 2c)
+## Environment shading — `ramp()` (Phase 2d)
 
-- **`table_felt.png`** — a 64×64 tileable wood-grain swatch, repeating CSS background for the
-  table surface.
-- **`wall_texture.png`** — a 96×96 tileable vertical log-cabin wall, `body`'s background behind
-  everything. Deliberately a different pattern axis (vertical logs vs. the felt's horizontal
-  plank grain) so the room reads as a distinct surface from the table, not more table.
-- **Hearth glow** is CSS only (a slow-pulsing `radial-gradient` low on the page, `body::before`
-  in `index.css`) — no art asset. Given how little page chrome is actually visible around the
-  table on most viewports, an illustrated scene (fire/window/cat) would mostly go unseen; the
-  glow is the ambience that reads at any viewport size. Full illustrated room elements are
-  deferred, not attempted-and-hidden.
+`darken()` (one derived shadow tone) is still what every **card** sprite uses, and is
+deliberately frozen — the 24 card faces are approved and their PNGs are asserted byte-identical
+on every run. Environment art instead uses `ramp(color, warm=True)`, which returns four tones
+(highlight, base, shadow, deep) with a **temperature split**: under warm light highlights bend
+amber and shadows bend blue; `warm=False` flips it for anything lit by the window.
 
-## Old-Timer portrait
+That split is the highest-impact idea of the phase. A plain multiply keeps every tone on one
+hue line, which is what made a three-brown environment read muddy — with nothing cool in frame,
+warm firelight has nothing to be warm *against*.
 
-`old_timer_{idle,happy,rueful}.png` — the single-player opponent's bust portrait, deliberately
-a different character design from the face-card royalty: a trapper hat with fur ear-flaps, a
-red flannel shirt and suspenders, a big gray mustache — a cabin regular, not a courtier. Built
-from the same `composite_sprite()`/`_poly`/`_ellipse` primitives as the face cards, at its own
-canvas size (`PORTRAIT_W/H`) since it isn't constrained by a card's corner-index layout.
+**Bug worth remembering:** the first version multiplied by a factor and then added a flat tint.
+That works on mid-dark colours, which is exactly why it shipped — it was only ever eyeballed on
+a brown. On bright or saturated colours, clamping silently discarded the tint on any channel
+near 255 and *inverted* the intended hue shift: `FIRE_CORE` highlighted to `(255,255,166)` (red
+and green both pinned, so it read greener, not warmer) and `FROST` to `(234,254,255)` (bending
+cool when the docstring promised warm). `_shift()` now scales both the lightening and the tint
+by each channel's remaining **headroom**, so neither can clamp at any brightness. Validate
+colour maths against the extremes of the palette, not one convenient mid-tone.
 
-Three expressions, swapped by `useOpponentExpression()` (`src/game/useOpponentExpression.ts`)
-on trick/hand outcomes and reverted to idle after ~2.2s — brows and mouth only, everything else
-identical, the same differentiation technique the face cards use:
-- **idle** — neutral, mustache alone reads as calm.
-- **happy** — squinting eyes, a smile. Fires when the Old-Timer's side wins a trick or a hand.
-- **rueful** — apologetic brows, a downturned mouth. Fires when the human's side does.
+## Environment palette
 
-## Scoreboard cards
+`TABLE_WOOD`, `WALL_WOOD`, `CHINKING`, `FLOOR_WOOD`, `NIGHT_BLUE`/`NIGHT_BLUE_DEEP`, `FROST`,
+`FIRE_CORE`/`FIRE_MID`/`FIRE_DEEP`, `EMBER`, `STONE_LIGHT`/`MED`/`DARK`, `RUG_RED`/`RUG_CREAM`.
 
-`scoreboard/{suit}_{4,6}.png` — a 4 and a 6 of a suit, laid out with a **traditional multi-pip
-grid** (2×2 and 2×3), not the single big center pip the 24-card deck uses. That's what lets the
-UI's `ScorePair` component (`src/ui/Scoreboard.tsx`) slide the 6 out from behind the 4 as score
-rises, echoing the real euchre 4-and-6 scoring convention. The slide is decorative rather than
-an exact pip-counting simulation — a numeral is shown alongside specifically so the slide never
-has to carry the whole burden of being legible. Each player has a fixed scoring suit for now
-(You: hearts, Old-Timer: spades); a real table lets a player choose, which is a natural later
-settings option, not a core-rules concern.
+These are separate constants on purpose: `WOOD_DARK`/`MED`/`LIGHT` are **not** reused or
+modified, because `make_card_back()` depends on them and the card art is frozen.
+
+## Tiles vs. placed objects — different rules
+
+- **`table_felt.png`** (64×64) — horizontal planks, grain running *along* them, seams lit from
+  above.
+- **`wall_texture.png`** (96×96) — horizontally stacked logs with mortar chinking, courses
+  broken by butt joints at varying offsets, ramp compressed toward base via `_mix()` so the
+  backdrop recedes rather than competing with the cards.
+
+Two rules learned the hard way, both about *repeating* tiles specifically:
+
+1. **No point features.** Knots in both tiles produced an unmistakable polka-dot grid at 3–4
+   repeats. Distinctive one-off marks belong in the scene layer as placed decals.
+2. **No unbroken uniform runs.** An earlier draft claimed switching vertical logs to horizontal
+   would fix striping because horizontal stacking is "self-breaking". **That was wrong** — review
+   caught it; nothing interrupts a horizontal run either. Axis was never the cause. Unbroken
+   runs at uniform spacing were, and the brightest element (chinking) telegraphed the tile
+   hardest, reading as venetian blinds. Butt joints + per-course variation + lower chinking
+   contrast are what actually fixed it.
+
+Placed scene objects (below) are exempt from both rules — they never repeat, so per-stone
+variation and individual detail are exactly what they *should* have.
+
+## Scene objects (Phase 2d.2)
+
+All live in `<SceneLayer>` (`src/ui/SceneLayer.tsx`) — `aria-hidden`, `pointer-events: none`,
+`z-index: -1`.
+
+**`z-index: -1` is load-bearing, not cosmetic.** A positioned element paints *above* static
+siblings, so at `z-index: 0` the hearth glow tinted the cards orange — directly attacking the
+card readability this phase names as its top risk. Behind the content it lights the room; in
+front it lights the cards.
+
+- **`fireplace.png`** (140×186) — stone surround, firebox, timber mantel. Stone uses a
+  *compressed* ramp: `ramp()`'s temperature swing is right for wood but turns stone into a
+  patchwork of blue-grey and khaki, and masonry needs visible mortar joints (draw a mortar
+  ground, inset each stone) or it reads as a colour-blocked grid.
+- **`fire_sheet.png`** (4 frames × 66×58) — flame tongues whose width profile is `1 - t**1.6`,
+  broad through the lower half; a simple taper from the base reads as a cone. Frame variation
+  comes only from phase/sway so the shape family stays consistent — animating by swapping
+  unrelated blobs reads as noise, not fire.
+- **`window_glass.png` + `window_frame.png`** (120×146) — split into two layers so snow falls
+  *behind* the glazing bars; baking the bars into the glass puts snow in front of them, which
+  reads as dirt on the lens. The glass is the room's **cool reference**, built with
+  `warm=False`; the sash is firelit and warm. That juxtaposition is the point of the object.
+- **`snow.png`** (120×72) — vertically seamless, animated by continuous `translateY` rather
+  than stepped frames. Snow stepped at 4–8fps stutters; the fire *wants* stepping, snow does not.
+
+## Animation convention
+
+Sprite sheets are horizontal strips (`make_sprite_sheet`). CSS shows one frame through an
+`overflow: hidden` window and animates the strip with **`transform` + `steps(n)`** —
+**never `background-position`**, which repaints every frame where `transform` stays on the
+compositor. With several ambient loops running continuously, that is the whole battery story.
+
+Every ambient animation needs a `prefers-reduced-motion` guard.
+
+**Two independent gates**, guarding two different scarce resources:
+- `max-height: 480px` (**lean mode**) — landscape phone is already at 100% of its vertical
+  budget, so the entire scene layer is dropped. Verified: 0 running animations in that mode.
+- `min-width: 1120px` — side scenery needs horizontal margin beside the table that a phone
+  does not have, so fireplace and window only appear once there is room.
+
+Scenery is decorative-only precisely so these gates can remove it without touching playability.
 
 ## Output
 
 All PNGs write to `public/art/` (Vite serves `public/` at the site root unchanged):
 
 ```
-public/art/cards/{suit}_{rank}.png        × 24
+public/art/cards/{suit}_{rank}.png         × 24
 public/art/card_back.png
 public/art/table_felt.png
 public/art/wall_texture.png
 public/art/portraits/old_timer_{state}.png × 3
-public/art/scoreboard/{suit}_{rank}.png    × 8
+public/art/scoreboard/{suit}_{rank}.png    × 4   (hearts + spades only; see SCORE_SUIT)
+public/art/scene/fireplace.png
+public/art/scene/fire_sheet.png            4 frames
+public/art/scene/window_glass.png
+public/art/scene/window_frame.png
+public/art/scene/snow.png
 ```
 
 ## Audio (Phase 2c)

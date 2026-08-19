@@ -83,10 +83,33 @@ def _clamp(v):
     return max(0, min(255, int(v)))
 
 
-def _tone(color, factor, tint):
+def _shift(color, amount, tint):
+    """Move a colour toward white (amount > 0) or black (amount < 0), with a hue `tint`.
+
+    Both the lightening and the tint are scaled by each channel's remaining HEADROOM in the
+    direction of travel, so neither can ever clamp. That scaling is the whole point:
+
+    An earlier version multiplied by a factor and then added a flat tint. On mid-dark colours
+    that worked, which is exactly why it shipped — it was only ever eyeballed on a brown. On
+    bright or saturated colours it inverted the intended hue shift, because clamping silently
+    discards the tint on any channel already near 255:
+        FIRE_CORE (255,226,140) -> (255,255,166): red AND green pinned, so the "warm"
+            highlight differed from base only in blue and read *greener*.
+        FROST     (176,198,220) -> (234,254,255): clamped to cyan-white, so the highlight
+            bent *cool* — the exact opposite of what the docstring claimed.
+    Scaling by headroom keeps the hue relationship intact at any brightness.
+    """
     r, g, b, a = color
-    return (_clamp(r * factor + tint[0]), _clamp(g * factor + tint[1]),
-            _clamp(b * factor + tint[2]), a)
+    out = []
+    for channel, t in zip((r, g, b), tint):
+        if amount >= 0:
+            headroom = 255 - channel
+            value = channel + headroom * amount
+        else:
+            value = channel * (1 + amount)
+            headroom = value
+        out.append(_clamp(value + t * headroom / 255))
+    return tuple(out) + (a,)
 
 
 def _mix(a, b, t):
@@ -95,18 +118,31 @@ def _mix(a, b, t):
     return tuple(_clamp(a[i] * (1 - t) + b[i] * t) for i in range(3)) + (a[3],)
 
 
-def ramp(color):
-    """Four tones — (highlight, base, shadow, deep) — with a temperature shift, not a plain
-    multiply. Highlights bend warm (toward amber), shadows bend cool (toward blue).
+# Hue bias applied to highlights; shadows get the negation. Warm is firelight (the default,
+# since the hearth lights most of this room); cool is moonlight/snow through the window.
+WARM_BIAS = (18, 7, -12)
+COOL_BIAS = (-14, -3, 18)
 
-    This is the single highest-impact change of the phase. A pure multiply keeps every tone
-    on one hue line, which is exactly what made the old three-brown environment read muddy:
-    with nothing cool in frame, warm firelight has nothing to be warm *against*."""
+
+def ramp(color, warm=True):
+    """Four tones — (highlight, base, shadow, deep) — with a temperature split, not a plain
+    multiply. Under warm light, highlights bend amber and shadows bend blue; `warm=False`
+    flips it for anything lit by the window instead of the fire.
+
+    The temperature split is the single highest-impact idea of this phase. A pure multiply
+    keeps every tone on one hue line, which is what made the old three-brown environment read
+    muddy: with nothing cool in frame, warm firelight has nothing to be warm *against*. The
+    `warm` flag matters for the same reason in reverse — moonlit frost given firelit
+    highlights stops reading as cold, and the window is supposed to be the cool reference the
+    whole room is judged against.
+    """
+    bias = WARM_BIAS if warm else COOL_BIAS
+    inverse = tuple(-v for v in bias)
     return (
-        _tone(color, 1.24, (16, 9, -7)),    # highlight — warmer
-        color,                               # base
-        _tone(color, 0.70, (-9, -4, 11)),   # shadow — cooler
-        _tone(color, 0.46, (-13, -7, 17)),  # deep — cooler still
+        _shift(color, 0.34, bias),      # highlight
+        color,                          # base
+        _shift(color, -0.30, inverse),  # shadow
+        _shift(color, -0.54, inverse),  # deep
     )
 
 
@@ -820,47 +856,269 @@ def make_table_felt() -> Image.Image:
 
 
 def make_wall_texture() -> Image.Image:
-    """Log-cabin wall — horizontally stacked logs with pale chinking between courses.
+    """Log-cabin wall — horizontally stacked logs with mortar chinking between courses.
 
-    This is a *backdrop*, and mostly occluded by the table, so it is deliberately
-    low-contrast: the ramp is compressed toward its base tone via _mix() so the wall reads
-    as quiet form rather than competing with the cards. Earlier drafts using the ramp at
-    full range looked like corduroy — high contrast plus a repeating course is exactly the
-    recipe for stripes.
+    **Correction to an earlier claim in this file.** A previous version argued that switching
+    from vertical to horizontal logs would fix the striping because horizontal stacking is
+    "self-breaking". That was wrong, and review caught it: nothing interrupts a horizontal
+    run either. Axis was never the cause — *unbroken runs at uniform spacing* were, and the
+    single brightest element (the chinking line) telegraphed the tile hardest, reading as
+    venetian blinds across the viewport.
 
-    Two other rules learned here and worth keeping:
-    - *Horizontal*, not vertical. Vertical full-height logs have nothing interrupting them
-      down the tile, so they stripe no matter how they are shaded; horizontal stacking is
-      both the iconic look and self-breaking. Contrast with the table now comes from form
-      and scale (big round stacked logs vs. a fine flat grain), a stronger distinction than
-      axis anyway.
-    - No point features in a repeating tile. Knots here tiled into obvious polka dots and
-      were removed; distinctive one-off marks belong in the scene layer as placed decals.
+    What actually breaks it, all three needed together:
+      - **Butt joints.** Each course is 2-3 log segments with joints at different offsets per
+        course, so no horizontal line runs uninterrupted across the tile.
+      - **Per-course variation.** Course tone and chinking thickness/brightness vary, so the
+        repeat has no single uniform signature to lock onto.
+      - **Lower chinking contrast.** It was the brightest thing in the tile by a wide margin;
+        pulled toward the base so it reads as mortar rather than as a drawn rule line.
+
+    Still a backdrop, so the ramp stays compressed toward base via _mix() — this should
+    recede behind the table, not compete with the cards.
     """
     size = 96
     hi_f, base, sh_f, deep_f = ramp(WALL_WOOD)
     hi = _mix(base, hi_f, 0.5)
     sh = _mix(base, sh_f, 0.5)
     deep = _mix(base, deep_f, 0.55)
-    chink = _mix(base, CHINKING, 0.5)
 
     img = Image.new("RGBA", (size, size), base)
     draw = ImageDraw.Draw(img)
 
     log_h = 24
     body_h = log_h - 2
-    for ly in range(0, size, log_h):
+    # Fixed per-course tables (never `random`, so the tile stays byte-reproducible).
+    joints = ((37,), (14, 63), (52,), (26, 71))
+    course_tint = (0.00, 0.10, -0.08, 0.05)
+    chink_bright = (0.34, 0.26, 0.40, 0.30)
+
+    for course, ly in enumerate(range(0, size, log_h)):
+        tint = course_tint[course % len(course_tint)]
+        c_base = _mix(base, hi if tint >= 0 else sh, abs(tint))
+        c_hi = _mix(c_base, hi, 0.85)
+        c_sh = _mix(c_base, sh, 0.85)
+
         for dy in range(body_h):
             frac = dy / (body_h - 1)
-            if frac < 0.22:
-                tone = hi
-            elif frac < 0.60:
-                tone = base
-            else:
-                tone = sh
+            tone = c_hi if frac < 0.22 else (c_base if frac < 0.60 else c_sh)
             draw.line((0, ly + dy, size, ly + dy), fill=tone)
+
+        # Butt joints: a short dark seam plus a lit lip, breaking the horizontal run.
+        for jx in joints[course % len(joints)]:
+            draw.line((jx, ly, jx, ly + body_h - 1), fill=deep)
+            draw.line((jx + 1, ly, jx + 1, ly + body_h - 1), fill=c_hi)
+
+        chink = _mix(c_base, CHINKING, chink_bright[course % len(chink_bright)])
         draw.line((0, ly + body_h, size, ly + body_h), fill=chink)
         draw.line((0, ly + body_h + 1, size, ly + body_h + 1), fill=deep)
+    return img
+
+
+def _flame(draw, cx, base_y, w, h, sway, color, phase):
+    """One flame tongue as a polygon, with a slight lateral wobble.
+
+    The width profile is `1 - t**1.6`, which stays broad through the lower half before
+    falling away — a plain `(1-t)**1.45` taper starts narrowing immediately from the base
+    and reads as a cone/party-hat rather than as fire. Frame-to-frame variation comes only
+    from `phase` and `sway`, so the shape family stays consistent while the silhouette
+    moves; animating by swapping unrelated blobs reads as noise, not flame."""
+    steps = 10
+    left, right = [], []
+    for i in range(steps + 1):
+        t = i / steps
+        half = (w / 2) * (1 - t ** 1.6)
+        drift = sway * t + math.sin(t * 3.4 + phase) * w * 0.08
+        y = base_y - h * t
+        left.append((cx + drift - half, y))
+        right.append((cx + drift + half, y))
+    draw.polygon(left + right[::-1], fill=color)
+
+
+def make_fire_frames(count=4, w=66, h=58):
+    """Animation frames for the hearth fire. Deterministic: every frame is a pure function of
+    its index, no randomness, so regeneration is byte-identical."""
+    frames = []
+    for i in range(count):
+        img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        phase = 2 * math.pi * i / count
+        cx, base = w / 2, h - 7
+
+        # Burning logs across the base, so the flames have something to rise from.
+        for lx, ly, lw in ((8, 4, 22), (26, 6, 24), (17, 0, 20)):
+            d.rectangle((lx, base + ly - 4, lx + lw, base + ly), fill=darken(WOOD_MED, 0.7))
+            d.rectangle((lx, base + ly - 4, lx + lw, base + ly - 3), fill=EMBER)
+
+        # Three nested tongues: outer deep red, mid orange, bright core.
+        _flame(d, cx, base, 34, 30 + 5 * math.sin(phase), 3 * math.sin(phase), FIRE_DEEP, phase)
+        _flame(d, cx, base, 23, 23 + 5 * math.sin(phase + 1.1), 2 * math.sin(phase + 1.1),
+               FIRE_MID, phase + 1.1)
+        _flame(d, cx, base, 12, 14 + 4 * math.sin(phase + 2.2), 1.5 * math.sin(phase + 2.2),
+               FIRE_CORE, phase + 2.2)
+
+        # A few embers lifting off, offset per frame so they read as rising.
+        for k, (ex, ey) in enumerate(((14, 20), (38, 26), (27, 14))):
+            off = (i * 3 + k * 2) % 12
+            d.point((ex + (k % 2), base - ey - off), fill=FIRE_CORE if off < 6 else FIRE_MID)
+        frames.append(img)
+    return frames
+
+
+def make_fireplace(w=140, h=186):
+    """Stone hearth surround with a firebox opening and a timber mantel.
+
+    Two things this gets wrong if done naively, both fixed here:
+
+    - **Stone wants a compressed ramp.** ramp() applies a deliberate warm/cool temperature
+      shift, which is right for wood but turns stone into a patchwork of blue-grey and khaki
+      blocks. Stone is close to neutral, so each course tone is pulled back toward base with
+      _mix(). This is the same compression the wall backdrop uses, for a different reason:
+      there to recede, here to stay believably one material.
+    - **Masonry needs mortar.** Abutting coloured rectangles read as a colour-blocked grid,
+      not as stacked stone. Drawing a mortar-coloured ground first and insetting every stone
+      by a pixel leaves visible joints, which is what actually sells it as masonry.
+
+    Unlike the tiled wall, this is a placed one-off object, so per-stone variation is fine —
+    it never repeats.
+    """
+    hi, base, sh, deep = ramp(STONE_MED)
+    # Neutralise stone: keep some tonal life, drop most of the temperature swing.
+    hi = _mix(base, hi, 0.4)
+    sh = _mix(base, sh, 0.4)
+    mortar = _mix(base, STONE_DARK, 0.7)
+
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+
+    body_top = 22
+    d.rectangle((0, body_top, w - 1, h - 1), fill=mortar)
+
+    course_h = 17
+    seed = 5
+    row = 0
+    y = body_top
+    while y < h:
+        x = -((row % 3) * 11)
+        while x < w:
+            sw = 19 + (seed % 15)
+            tone = (base, hi, sh, base)[(seed // 3) % 4]
+            # Clamp AND check: a course landing near the bottom edge can clamp y1 below y0,
+            # which PIL rejects outright ("x1 must be greater than or equal to x0").
+            x0, y0 = x + 1, y + 1
+            x1, y1 = min(x + sw - 2, w - 1), min(y + course_h - 3, h - 1)
+            if x1 >= x0 and y1 >= y0:
+                d.rectangle((x0, y0, x1, y1), fill=tone)
+                d.line((x0, y0, x1, y0), fill=_mix(tone, hi, 0.5))      # lit top edge
+                d.line((x0, y1, x1, y1), fill=_mix(tone, deep, 0.45))   # shadowed underside
+            x += sw
+            seed = (seed * 7 + 13) % 101
+        y += course_h
+        row += 1
+
+    # Firebox, carved after the stonework so it reads as cut into the masonry. Not pure
+    # black: a warm ember tone at the floor of the opening, so the recess reads as lit from
+    # within rather than as a hole punched in the wall.
+    ox0, ox1 = 36, w - 36
+    oy0, oy1 = 98, h - 10
+    d.rectangle((ox0, oy0, ox1, oy1), fill=(22, 15, 14, 255))
+    for i, band in enumerate(range(oy1 - 18, oy1, 4)):
+        d.rectangle((ox0 + 2, band, ox1 - 2, band + 3),
+                    fill=_mix((22, 15, 14, 255), EMBER, 0.18 + i * 0.14))
+    d.rectangle((ox0, oy0, ox1, oy1), outline=_mix(mortar, deep, 0.6), width=3)
+    d.line((ox0 + 3, oy0 + 3, ox1 - 3, oy0 + 3), fill=_mix(deep, FIRE_DEEP, 0.45))
+
+    # Timber mantel, overhanging the stone on both sides.
+    m_hi, m_base, m_sh, m_deep = ramp(TABLE_WOOD)
+    d.rectangle((0, body_top - 20, w - 1, body_top + 1), fill=m_base)
+    d.rectangle((0, body_top - 20, w - 1, body_top - 16), fill=m_hi)
+    d.line((0, body_top - 4, w - 1, body_top - 4), fill=m_sh)
+    d.line((0, body_top + 1, w - 1, body_top + 1), fill=m_deep)
+    return img
+
+
+WINDOW_W, WINDOW_H = 120, 146
+
+
+def make_window_glass(w=WINDOW_W, h=WINDOW_H):
+    """The view through the window — the room's COOL reference.
+
+    Everything else in this scene is hearth-lit and ramped warm. Without something genuinely
+    cold in frame, "warm" has no counterpart and the room just reads brown — that was the
+    original diagnosis behind this whole phase. So the glass, moon and frost are all built
+    with `ramp(..., warm=False)`. This is the one object that must not be firelit.
+
+    Split from the sash (make_window_frame) on purpose: snow has to fall BEHIND the glazing
+    bars to look like weather outside rather than static on the lens, which means glass,
+    snow and bars have to be three separate layers the DOM can stack.
+    """
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    g_hi, g_base, g_sh, g_deep = ramp(NIGHT_BLUE_DEEP, warm=False)
+
+    d.rectangle((0, 0, w - 1, h - 1), fill=g_base)
+    for i, y in enumerate(range(0, h, 6)):
+        d.rectangle((0, y, w - 1, min(y + 5, h - 1)),
+                    fill=_mix(g_deep, g_base, min(1.0, i / (h / 6.0) + 0.15)))
+
+    mx, my, mr = int(w * 0.68), int(h * 0.28), 11
+    for k in range(4, 0, -1):
+        d.ellipse((mx - mr - k * 3, my - mr - k * 3, mx + mr + k * 3, my + mr + k * 3),
+                  fill=_mix(g_base, FROST, 0.06 * (5 - k)))
+    d.ellipse((mx - mr, my - mr, mx + mr, my + mr), fill=_mix(FROST, (255, 255, 255, 255), 0.5))
+    d.ellipse((mx - mr + 4, my - mr + 2, mx + mr - 2, my + mr - 4),
+              fill=_mix(FROST, (255, 255, 255, 255), 0.75))
+    return img
+
+
+def make_window_frame(w=WINDOW_W, h=WINDOW_H):
+    """Sash and glazing bars only — transparent wherever glass shows, so it can be layered
+    OVER the falling snow. The frame is firelit (warm ramp) even though the glass behind it
+    is not; that warm-sash / cold-glass juxtaposition is the whole point of the object."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    f_hi, f_base, f_sh, f_deep = ramp(TABLE_WOOD)
+    g_base = ramp(NIGHT_BLUE_DEEP, warm=False)[1]
+
+    # Frost creeping in from the pane corners — drawn on the frame layer so it sits in front
+    # of the snow, the way frost on the inside of the glass actually would.
+    for cx, cy in ((0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)):
+        for r in range(26, 6, -5):
+            d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=_mix(g_base, FROST, 0.10))
+
+    bar = 5
+    d.rectangle((w // 2 - bar // 2, 0, w // 2 + bar // 2, h - 1), fill=f_base)
+    d.rectangle((0, h // 2 - bar // 2, w - 1, h // 2 + bar // 2), fill=f_base)
+    d.line((w // 2 - bar // 2, 0, w // 2 - bar // 2, h - 1), fill=f_hi)
+    d.line((0, h // 2 - bar // 2, w - 1, h // 2 - bar // 2), fill=f_hi)
+
+    for i, tone in enumerate((f_hi, f_base, f_sh)):
+        d.rectangle((i, i, w - 1 - i, h - 1 - i), outline=tone, width=1)
+    d.rectangle((3, 3, w - 4, h - 4), outline=f_deep, width=2)
+    return img
+
+
+def make_snowfall(w=120, h=72):
+    """A vertically tileable field of snowflakes.
+
+    Deliberately NOT a stepped sprite sheet like the fire. Snow should drift continuously,
+    and stepping it at 4-8fps reads as stuttering rather than falling. Instead this tile is
+    seamless top-to-bottom, so CSS can translateY it forever on the compositor and the loop
+    is invisible. Flake positions come from fixed arithmetic, never `random`, so the asset
+    stays byte-reproducible.
+    """
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    seed = 11
+    for i in range(34):
+        seed = (seed * 1103515245 + 12345) % 2147483648
+        x = seed % w
+        y = (seed // w) % h
+        near = (seed // 7) % 3  # depth: nearer flakes are bigger and brighter
+        tone = _mix(NIGHT_BLUE_DEEP, FROST, (0.45, 0.7, 1.0)[near])
+        if near == 2:
+            d.rectangle((x, y, x + 1, y + 1), fill=tone)
+        else:
+            d.point((x, y), fill=tone)
     return img
 
 
@@ -876,6 +1134,14 @@ def main() -> None:
     make_card_back().save(os.path.join(OUT_ROOT, "card_back.png"))
     make_table_felt().save(os.path.join(OUT_ROOT, "table_felt.png"))
     make_wall_texture().save(os.path.join(OUT_ROOT, "wall_texture.png"))
+
+    scene_dir = os.path.join(OUT_ROOT, "scene")
+    os.makedirs(scene_dir, exist_ok=True)
+    make_fireplace().save(os.path.join(scene_dir, "fireplace.png"))
+    make_sprite_sheet(make_fire_frames()).save(os.path.join(scene_dir, "fire_sheet.png"))
+    make_window_glass().save(os.path.join(scene_dir, "window_glass.png"))
+    make_window_frame().save(os.path.join(scene_dir, "window_frame.png"))
+    make_snowfall().save(os.path.join(scene_dir, "snow.png"))
 
     portraits_dir = os.path.join(OUT_ROOT, "portraits")
     os.makedirs(portraits_dir, exist_ok=True)
