@@ -42,6 +42,15 @@ export function SceneLayer() {
         <div className="scene-window-frame" />
         <div className="scene-moonlight" />
       </div>
+      {/* Living things. The cat and the seated figure both rest on the floor plane added in
+          the 2d.2 follow-up — without that ground they would float exactly the way the
+          fireplace originally did. */}
+      <div className="scene-shelf" />
+      <div className="scene-cat">
+        <div className="scene-cat-strip" />
+      </div>
+      <div className="scene-seated" />
+
       <div className="scene-hearth-glow" />
       <div className="scene-vignette" />
     </div>

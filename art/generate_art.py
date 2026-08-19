@@ -1173,6 +1173,155 @@ def make_floorboards(size=96):
     return img
 
 
+# --- Living things (Phase 2d.3) ----------------------------------------------------------- #
+
+SEAT_W, SEAT_H = 140, 196
+SEAT_CX = SEAT_W // 2
+SEAT_HEAD_CY = 66
+SEAT_HEAD_RX, SEAT_HEAD_RY = 26, 27
+
+
+def make_seated_old_timer():
+    """The opponent, seated in the room — same character as the scoreboard portrait (trapper
+    hat with fur flaps, red flannel, big gray mustache), rebuilt at full body holding a fan
+    of cards.
+
+    Head geometry deliberately matches `_old_timer_parts()` exactly (same radius, same hat
+    construction) so the seated figure and the portrait read as one person rather than two
+    similar characters. Only the framing differs.
+
+    **Placement is a compromise, and worth being honest about.** The design intent was "seated
+    across the table". The actual layout has the table spanning the full width of its
+    container with the scoreboard and status banner filling the entire band above it, so there
+    is no across-the-table space to put him in without restructuring the UI — which would put
+    the carefully-guarded landscape/portrait height budgets at risk. He therefore sits in the
+    side margin, on the floor, at the side of the table. That still puts a person in the room,
+    which was the point; it just isn't literally opposite you.
+    """
+    chair = darken(WOOD_MED, 0.55)
+    parts = [
+        # Chair back and stiles, behind everything.
+        (_poly([(SEAT_CX - 46, 54), (SEAT_CX + 46, 54), (SEAT_CX + 46, 74), (SEAT_CX - 46, 74)]), chair),
+        (_poly([(SEAT_CX - 46, 54), (SEAT_CX - 36, 54), (SEAT_CX - 36, SEAT_H), (SEAT_CX - 46, SEAT_H)]), chair),
+        (_poly([(SEAT_CX + 36, 54), (SEAT_CX + 46, 54), (SEAT_CX + 46, SEAT_H), (SEAT_CX + 36, SEAT_H)]), chair),
+        # Torso, widening to the seat.
+        (_poly([(SEAT_CX - 34, 96), (SEAT_CX + 34, 96), (SEAT_CX + 46, SEAT_H), (SEAT_CX - 46, SEAT_H)]), FLANNEL_RED),
+        # Suspenders.
+        (_poly([(SEAT_CX - 20, 96), (SEAT_CX - 12, 96), (SEAT_CX - 16, SEAT_H), (SEAT_CX - 24, SEAT_H)]), BOOT_DARK),
+        (_poly([(SEAT_CX + 12, 96), (SEAT_CX + 20, 96), (SEAT_CX + 24, SEAT_H), (SEAT_CX + 16, SEAT_H)]), BOOT_DARK),
+        # Arms coming forward to hold the hand.
+        (_poly([(SEAT_CX - 44, 112), (SEAT_CX - 26, 108), (SEAT_CX - 20, 152), (SEAT_CX - 40, 156)]), FLANNEL_RED),
+        (_poly([(SEAT_CX + 26, 108), (SEAT_CX + 44, 112), (SEAT_CX + 40, 156), (SEAT_CX + 20, 152)]), FLANNEL_RED),
+        (_ellipse(SEAT_CX - 44, 146, SEAT_CX - 24, 166), SKIN),
+        (_ellipse(SEAT_CX + 24, 146, SEAT_CX + 44, 166), SKIN),
+        # Head.
+        (_ellipse(SEAT_CX - SEAT_HEAD_RX, SEAT_HEAD_CY - SEAT_HEAD_RY,
+                  SEAT_CX + SEAT_HEAD_RX, SEAT_HEAD_CY + SEAT_HEAD_RY), SKIN),
+        (_poly([
+            (SEAT_CX - 20, SEAT_HEAD_CY + 8), (SEAT_CX - 4, SEAT_HEAD_CY + 4),
+            (SEAT_CX, SEAT_HEAD_CY + 7), (SEAT_CX + 4, SEAT_HEAD_CY + 4),
+            (SEAT_CX + 20, SEAT_HEAD_CY + 8), (SEAT_CX + 16, SEAT_HEAD_CY + 14),
+            (SEAT_CX, SEAT_HEAD_CY + 10), (SEAT_CX - 16, SEAT_HEAD_CY + 14),
+        ]), BEARD_GRAY),
+        # Trapper hat: crown raised clear of the brow, brim, fur ear-flaps. Same construction
+        # as the portrait — an earlier portrait bug put the brim across the eyebrow line and
+        # every expression read as one gray stripe.
+        (_poly([
+            (SEAT_CX - 24, SEAT_HEAD_CY - 22), (SEAT_CX - 24, SEAT_HEAD_CY - 40),
+            (SEAT_CX, SEAT_HEAD_CY - 48), (SEAT_CX + 24, SEAT_HEAD_CY - 40),
+            (SEAT_CX + 24, SEAT_HEAD_CY - 22),
+        ]), FLANNEL_RED),
+        (_ellipse(SEAT_CX - 30, SEAT_HEAD_CY - 20, SEAT_CX - 16, SEAT_HEAD_CY - 2), HAT_FUR),
+        (_ellipse(SEAT_CX + 16, SEAT_HEAD_CY - 20, SEAT_CX + 30, SEAT_HEAD_CY - 2), HAT_FUR),
+        (_poly([
+            (SEAT_CX - 25, SEAT_HEAD_CY - 24), (SEAT_CX + 25, SEAT_HEAD_CY - 24),
+            (SEAT_CX + 25, SEAT_HEAD_CY - 18), (SEAT_CX - 25, SEAT_HEAD_CY - 18),
+        ]), HAT_FUR),
+    ]
+    img = Image.new("RGBA", (SEAT_W, SEAT_H), (0, 0, 0, 0))
+    paste(img, composite_sprite(SEAT_W, SEAT_H, parts), 0, 0)
+
+    # A fanned hand of card backs, drawn after the silhouette so the cards read as held in
+    # front of him rather than as part of his body.
+    d = ImageDraw.Draw(img)
+    for i, ang in enumerate((-16, -8, 0, 8, 16)):
+        cx = SEAT_CX + ang * 1.5
+        top = 138 + abs(ang) * 0.35
+        d.rectangle((cx - 9, top, cx + 9, top + 30), fill=WOOD_MED, outline=INK)
+        d.rectangle((cx - 6, top + 3, cx + 6, top + 27), outline=GOLD)
+
+    # Eyes and brows last, on top of the face.
+    eye_y = SEAT_HEAD_CY - 3
+    for side in (-1, 1):
+        ex = SEAT_CX + side * 10
+        d.ellipse((ex - 3, eye_y - 4, ex + 3, eye_y + 4), fill=INK)
+        d.rectangle((ex - 2, eye_y - 3, ex - 1, eye_y - 2), fill=(255, 255, 255, 255))
+        d.line((SEAT_CX + side * 17, eye_y - 10, SEAT_CX + side * 5, eye_y - 10),
+               fill=BEARD_GRAY, width=3)
+    return img
+
+
+def make_cat_frames(count=2, w=52, h=30):
+    """A cat asleep by the fire, two frames of slow breathing.
+
+    Two frames is enough because the motion is a swell, not a gait — the body simply rises a
+    pixel. Animated slowly (see the CSS), that reads as breathing; more frames would add
+    nothing a viewer could perceive at this size."""
+    frames = []
+    for i in range(count):
+        img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        rise = i  # one pixel of swell on the inhale frame
+        body_top = 12 - rise
+        parts = [
+            (_ellipse(6, body_top, w - 14, h - 2), HAIR_BROWN),          # curled body
+            (_ellipse(w - 26, body_top - 5, w - 4, h - 8), HAIR_BROWN),  # head
+            (_poly([(w - 22, body_top - 4), (w - 17, body_top - 12), (w - 13, body_top - 3)]), HAIR_BROWN),
+            (_poly([(w - 11, body_top - 4), (w - 6, body_top - 12), (w - 3, body_top - 3)]), HAIR_BROWN),
+            (_ellipse(2, h - 12, 22, h - 4), HAIR_BROWN),                # tail curled round
+        ]
+        paste(img, composite_sprite(w, h, parts), 0, 0)
+        d = ImageDraw.Draw(img)
+        # Closed eyes: two small arcs. A sleeping cat needs no open eyes to read as a cat.
+        for ex in (w - 20, w - 11):
+            d.line((ex, body_top + 4, ex + 4, body_top + 4), fill=INK)
+        frames.append(img)
+    return frames
+
+
+def make_shelf(w=118, h=62):
+    """A wall shelf with clutter — jars, books, a lantern. Placed once, never tiled, so unlike
+    the wall texture it may carry all the distinctive point detail it likes."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    hi, base, sh, deep = ramp(TABLE_WOOD)
+
+    plank_y = h - 12
+    d.rectangle((0, plank_y, w - 1, plank_y + 6), fill=base)
+    d.line((0, plank_y, w - 1, plank_y), fill=hi)
+    d.line((0, plank_y + 6, w - 1, plank_y + 6), fill=deep)
+    for bx in (10, w - 16):
+        d.polygon([(bx, plank_y + 6), (bx + 6, plank_y + 6), (bx + 3, h - 1)], fill=sh)
+
+    # Books, leaning.
+    for i, (bx, bh, col) in enumerate(((8, 26, RUG_RED), (16, 30, LEAF_GREEN), (24, 24, CLOTH_BLUE))):
+        d.rectangle((bx, plank_y - bh, bx + 7, plank_y - 1), fill=col)
+        d.rectangle((bx, plank_y - bh, bx + 7, plank_y - bh + 2), fill=_mix(col, GOLD, 0.5))
+
+    # Jars.
+    for jx, jh, fill in ((44, 20, _mix(LEAF_GREEN, PARCHMENT, 0.4)), (62, 16, _mix(RUG_RED, PARCHMENT, 0.5))):
+        d.rectangle((jx, plank_y - jh, jx + 13, plank_y - 1), fill=fill)
+        d.rectangle((jx, plank_y - jh, jx + 13, plank_y - jh + 3), fill=sh)
+        d.line((jx, plank_y - jh + 5, jx + 13, plank_y - jh + 5), fill=_mix(fill, PARCHMENT, 0.5))
+
+    # Lantern, with a lit pane.
+    lx = 86
+    d.rectangle((lx, plank_y - 28, lx + 18, plank_y - 1), fill=sh)
+    d.rectangle((lx + 3, plank_y - 24, lx + 15, plank_y - 8), fill=_mix(FIRE_MID, PARCHMENT, 0.35))
+    d.rectangle((lx + 5, plank_y - 22, lx + 13, plank_y - 10), fill=FIRE_CORE)
+    d.rectangle((lx + 6, plank_y - 32, lx + 12, plank_y - 28), fill=deep)
+    return img
+
+
 def main() -> None:
     cards_dir = os.path.join(OUT_ROOT, "cards")
     os.makedirs(cards_dir, exist_ok=True)
@@ -1194,6 +1343,9 @@ def main() -> None:
     make_window_frame().save(os.path.join(scene_dir, "window_frame.png"))
     make_snowfall().save(os.path.join(scene_dir, "snow.png"))
     make_floorboards().save(os.path.join(scene_dir, "floor.png"))
+    make_seated_old_timer().save(os.path.join(scene_dir, "seated_old_timer.png"))
+    make_sprite_sheet(make_cat_frames()).save(os.path.join(scene_dir, "cat_sheet.png"))
+    make_shelf().save(os.path.join(scene_dir, "shelf.png"))
 
     portraits_dir = os.path.join(OUT_ROOT, "portraits")
     os.makedirs(portraits_dir, exist_ok=True)

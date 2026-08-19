@@ -202,6 +202,29 @@ front it lights the cards.
   sits between wall and table, so the scene reads back-to-front: wall (darkest) → floor →
   table (lightest). Scene objects are anchored to this floor line, not floated on the wall.
 
+## Living things (Phase 2d.3)
+
+- **`seated_old_timer.png`** (140×196) — the opponent, seated, holding a fan of card backs.
+  Head geometry (radius, hat construction, mustache) is copied exactly from
+  `_old_timer_parts()` so the seated figure and the scoreboard portrait read as *one person*
+  rather than two similar characters; only the framing differs.
+  - **Placement is a compromise worth documenting.** The design intent was "seated across the
+    table". The table spans the full width of its container with the scoreboard and status
+    banner filling the entire band above it, so there is no across-the-table space to put a
+    figure without restructuring the UI — which would put the carefully-guarded
+    landscape/portrait height budgets at risk. He sits in the side margin instead, on the
+    floor, at the side of the table. Still a person in the room; just not opposite you.
+    Revisit if the layout is ever reworked.
+- **`cat_sheet.png`** (2 frames × 52×30) — curled asleep by the hearth. Two frames is enough
+  because the motion is a swell, not a gait: the body rises one pixel. At 3.4s that reads as
+  breathing; more frames would add nothing perceptible at this size.
+- **`shelf.png`** (118×62) — books, jars, a lit lantern. A placed one-off, so it carries all
+  the distinctive point detail a repeating tile must not.
+
+Both the cat and the seated figure rest on the floor plane added in the 2d.2 follow-up.
+Without that ground they would float exactly the way the fireplace originally did — which is
+why the floor had to land before this sub-phase.
+
 ## Animation convention
 
 Sprite sheets are horizontal strips (`make_sprite_sheet`). CSS shows one frame through an
@@ -238,6 +261,10 @@ public/art/scene/fire_sheet.png            4 frames
 public/art/scene/window_glass.png
 public/art/scene/window_frame.png
 public/art/scene/snow.png
+public/art/scene/floor.png
+public/art/scene/seated_old_timer.png
+public/art/scene/cat_sheet.png             2 frames
+public/art/scene/shelf.png
 ```
 
 ## Audio (Phase 2c)

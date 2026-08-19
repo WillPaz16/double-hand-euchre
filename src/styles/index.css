@@ -200,10 +200,75 @@ body {
     rgba(150, 190, 235, 0) 70%
   );
 }
+/* --- Living things (2d.3) -------------------------------------------------------------- */
+/* All width-gated with the rest of the side scenery: same scarce resource, same 1240px rule. */
+.scene-seated,
+.scene-cat,
+.scene-shelf {
+  display: none;
+}
+@media (min-width: 1240px) {
+  .scene-seated,
+  .scene-cat,
+  .scene-shelf {
+    display: block;
+    position: absolute;
+    image-rendering: pixelated;
+  }
+  /* The opponent, seated in the right margin below the window and resting on the floor.
+     Intent was "across the table"; the table spans its container's full width with the
+     scoreboard and status banner filling the band above it, so there is no across-the-table
+     space without restructuring the UI and risking the mobile height budgets. He sits at the
+     side of the table instead — still a person in the room, just not opposite you. */
+  .scene-seated {
+    right: calc((100vw - 900px) / 2 - 160px);
+    bottom: calc(34% - 34px);
+    width: 140px;
+    height: 196px;
+    background-image: url('/art/scene/seated_old_timer.png');
+    animation: seated-breathe 5.5s ease-in-out infinite;
+  }
+  /* Curled on the floor by the hearth, where a cat would actually be. */
+  .scene-cat {
+    left: calc((100vw - 900px) / 2 - 148px);
+    bottom: calc(34% - 46px);
+    width: 52px;
+    height: 30px;
+    overflow: hidden;
+  }
+  .scene-shelf {
+    left: calc((100vw - 900px) / 2 - 154px);
+    bottom: calc(34% + 226px);
+    width: 118px;
+    height: 62px;
+    background-image: url('/art/scene/shelf.png');
+  }
+}
+.scene-cat-strip {
+  width: 104px;   /* 2 frames x 52px */
+  height: 30px;
+  background-image: url('/art/scene/cat_sheet.png');
+  image-rendering: pixelated;
+  /* Slow enough to read as breathing rather than as a glitch. Two frames is plenty: the
+     motion is a swell, not a gait. */
+  animation: cat-breathe 3.4s steps(2) infinite;
+}
+@keyframes cat-breathe {
+  to { transform: translateX(-104px); }
+}
+/* A barely-perceptible settle, so he is not a decal. Deliberately tiny and slow — a seated
+   person at rest shifts, they do not bob. */
+@keyframes seated-breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scene-fire-strip,
   .scene-firelight,
-  .scene-snow { animation: none; }
+  .scene-snow,
+  .scene-cat-strip,
+  .scene-seated { animation: none; }
 }
 
 /* Lean mode: short viewports (landscape phone) are already at 100% of their height budget,
