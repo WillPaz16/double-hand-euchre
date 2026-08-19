@@ -9,10 +9,25 @@ const SUIT_LABEL: Record<string, string> = {
   spades: 'Spades',
 };
 
-export function StatusBanner({ view }: { view: PlayerView }) {
+export function StatusBanner({
+  view,
+  onRestart,
+}: {
+  view: PlayerView;
+  onRestart?: () => void;
+}) {
   if (view.phase === 'game_over') {
     const message = view.winner === HUMAN ? 'You win the game!' : 'Old-Timer wins the game.';
-    return <div className="status-banner big">{message}</div>;
+    return (
+      <div className="status-banner big">
+        <div>{message}</div>
+        {onRestart && (
+          <button className="bid-button" onClick={onRestart}>
+            Play again
+          </button>
+        )}
+      </div>
+    );
   }
   if (view.phase === 'hand_complete') {
     return <div className="status-banner">Hand complete — dealing next hand…</div>;

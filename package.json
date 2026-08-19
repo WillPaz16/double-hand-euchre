@@ -8,7 +8,8 @@
     "fuzz": "tsx scripts/fuzz.ts",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "balance": "tsx scripts/balance.ts"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",

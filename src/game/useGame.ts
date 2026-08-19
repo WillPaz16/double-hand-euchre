@@ -165,7 +165,21 @@ export function useGame(initialSeed?: string) {
     [applyAction, completedTrick],
   );
 
+  /** Starts a fresh game. Without this, reaching `game_over` left the app with no way
+   *  forward at all — `newGame` was only ever called at mount, so finishing a game meant
+   *  reloading the page to play another. Found by actually playing one to 10. */
+  const restart = useCallback(() => {
+    setCompletedTrick(null);
+    pendingSweepRef.current = null;
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    setState(newGame(freshSeed(), HUMAN, DEFAULT_CONFIG));
+  }, []);
+
   return {
+    restart,
     view: redact(state, HUMAN),
     legal: legalActions(state, HUMAN),
     play,
