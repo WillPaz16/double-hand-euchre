@@ -1,5 +1,5 @@
 {
-  "0": "generate_art.py",
+  "0": "main",
   "1": "RULES.md — Two-Handed Euchre Rules Spec",
   "2": "reducer.ts",
   "3": "compilerOptions",
@@ -13,5 +13,10 @@
   "11": "types.ts",
   "12": "Art assets — spec",
   "13": "Two-Handed Euchre",
-  "14": "vite.config.ts"
+  "14": "vite.config.ts",
+  "15": "generate_art.py",
+  "16": "make_scoreboard_card",
+  "17": "composite_sprite",
+  "18": "Image",
+  "19": "_assert_art_clear_of_indices"
 }
