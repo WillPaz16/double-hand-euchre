@@ -52,19 +52,6 @@
   },
   "nodes": [
     {
-      "label": "Action",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L75",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "action",
-      "id": "shared_engine_types_action"
-    },
-    {
       "label": "PlayerView",
       "file_type": "code",
       "source_file": "shared/engine/types.ts",
@@ -117,6 +104,19 @@
       "id": "src_game_usesfx_soundname"
     },
     {
+      "label": "Game",
+      "file_type": "code",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L58",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "tests_usegame_test_game",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "game"
+    },
+    {
       "label": "deal",
       "file_type": "code",
       "source_file": "shared/engine/deck.ts",
@@ -128,6 +128,19 @@
       "community_name": "types.ts",
       "norm_label": "deal",
       "id": "shared_engine_deck_deal"
+    },
+    {
+      "label": "Action",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L75",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "action",
+      "id": "shared_engine_types_action"
     },
     {
       "label": "Card",
@@ -593,10 +606,10 @@
       "source_location": "L10",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_game_game",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "game()"
+      "norm_label": "game()",
+      "id": "src_ui_game_game"
     },
     {
       "label": "cardsEqual()",
@@ -605,10 +618,10 @@
       "source_location": "L4",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_handtray_cardsequal",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "cardsequal()"
+      "norm_label": "cardsequal()",
+      "id": "src_ui_handtray_cardsequal"
     },
     {
       "label": "HandTray()",
@@ -617,10 +630,10 @@
       "source_location": "L12",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_handtray_handtray",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "handtray()"
+      "norm_label": "handtray()",
+      "id": "src_ui_handtray_handtray"
     },
     {
       "label": "SceneLayer()",
@@ -717,6 +730,42 @@
       "community_name": "useGame.ts",
       "norm_label": "table()",
       "id": "src_ui_table_table"
+    },
+    {
+      "label": "advance()",
+      "file_type": "code",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L52",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "tests_usegame_test_advance",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "advance()"
+    },
+    {
+      "label": "driveToHeldTrick()",
+      "file_type": "code",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L79",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "tests_usegame_test_drivetoheldtrick",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "drivetoheldtrick()"
+    },
+    {
+      "label": "driveToPlayPhase()",
+      "file_type": "code",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L62",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "tests_usegame_test_drivetoplayphase",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "drivetoplayphase()"
     },
     {
       "label": "_arm()",
@@ -2125,17 +2174,6 @@
       "id": "claude_graphify"
     },
     {
-      "label": "bot/index.ts",
-      "file_type": "code",
-      "source_file": "shared/bot/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "bot/index.ts",
-      "id": "shared_bot_index"
-    },
-    {
       "label": "App.tsx",
       "file_type": "code",
       "source_file": "src/App.tsx",
@@ -2295,10 +2333,10 @@
       "source_file": "src/ui/Game.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_game",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "game.tsx"
+      "norm_label": "game.tsx",
+      "id": "src_ui_game"
     },
     {
       "label": "HandTray.tsx",
@@ -2306,10 +2344,10 @@
       "source_file": "src/ui/HandTray.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_handtray",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "handtray.tsx"
+      "norm_label": "handtray.tsx",
+      "id": "src_ui_handtray"
     },
     {
       "label": "SceneLayer.tsx",
@@ -2387,6 +2425,17 @@
       "community_name": "useGame.ts",
       "norm_label": "seats",
       "id": "src_ui_table_seats"
+    },
+    {
+      "label": "useGame.test.tsx",
+      "file_type": "code",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_usegame_test",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "usegame.test.tsx"
     },
     {
       "label": "ASSETS.md",
@@ -3327,43 +3376,43 @@
       "source_file": "package.json",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "package",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "package.json",
-      "id": "package"
+      "norm_label": "package.json"
     },
     {
       "label": "dependencies",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L22",
+      "source_location": "L25",
       "_origin": "ast",
+      "id": "package_dependencies",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "dependencies",
-      "id": "package_dependencies"
+      "norm_label": "dependencies"
     },
     {
       "label": "react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L26",
       "_origin": "ast",
+      "id": "package_dependencies_react",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "react",
-      "id": "package_dependencies_react"
+      "norm_label": "react"
     },
     {
       "label": "react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L24",
+      "source_location": "L27",
       "_origin": "ast",
+      "id": "package_dependencies_react_dom",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "react-dom",
-      "id": "package_dependencies_react_dom"
+      "norm_label": "react-dom"
     },
     {
       "label": "devDependencies",
@@ -3371,87 +3420,120 @@
       "source_file": "package.json",
       "source_location": "L13",
       "_origin": "ast",
+      "id": "package_devdependencies",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "devdependencies",
-      "id": "package_devdependencies"
+      "norm_label": "devdependencies"
+    },
+    {
+      "label": "jsdom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "package_devdependencies_jsdom",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "jsdom"
+    },
+    {
+      "label": "@testing-library/dom",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "package_devdependencies_testing_library_dom",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@testing-library/dom"
+    },
+    {
+      "label": "@testing-library/react",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "package_devdependencies_testing_library_react",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@testing-library/react"
     },
     {
       "label": "tsx",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L17",
+      "source_location": "L20",
       "_origin": "ast",
+      "id": "package_devdependencies_tsx",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "tsx",
-      "id": "package_devdependencies_tsx"
+      "norm_label": "tsx"
     },
     {
       "label": "@types/react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L14",
+      "source_location": "L16",
       "_origin": "ast",
+      "id": "package_devdependencies_types_react",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "@types/react",
-      "id": "package_devdependencies_types_react"
+      "norm_label": "@types/react"
     },
     {
       "label": "@types/react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L15",
+      "source_location": "L17",
       "_origin": "ast",
+      "id": "package_devdependencies_types_react_dom",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "@types/react-dom",
-      "id": "package_devdependencies_types_react_dom"
+      "norm_label": "@types/react-dom"
     },
     {
       "label": "typescript",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L18",
+      "source_location": "L21",
       "_origin": "ast",
+      "id": "package_devdependencies_typescript",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "typescript",
-      "id": "package_devdependencies_typescript"
+      "norm_label": "typescript"
     },
     {
       "label": "vite",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L19",
+      "source_location": "L22",
       "_origin": "ast",
+      "id": "package_devdependencies_vite",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "vite",
-      "id": "package_devdependencies_vite"
+      "norm_label": "vite"
     },
     {
       "label": "@vitejs/plugin-react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L16",
+      "source_location": "L18",
       "_origin": "ast",
+      "id": "package_devdependencies_vitejs_plugin_react",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "@vitejs/plugin-react",
-      "id": "package_devdependencies_vitejs_plugin_react"
+      "norm_label": "@vitejs/plugin-react"
     },
     {
       "label": "vitest",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L23",
       "_origin": "ast",
+      "id": "package_devdependencies_vitest",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "vitest",
-      "id": "package_devdependencies_vitest"
+      "norm_label": "vitest"
     },
     {
       "label": "name",
@@ -3459,10 +3541,10 @@
       "source_file": "package.json",
       "source_location": "L2",
       "_origin": "ast",
+      "id": "package_name",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "name",
-      "id": "package_name"
+      "norm_label": "name"
     },
     {
       "label": "private",
@@ -3470,10 +3552,10 @@
       "source_file": "package.json",
       "source_location": "L3",
       "_origin": "ast",
+      "id": "package_private",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "private",
-      "id": "package_private"
+      "norm_label": "private"
     },
     {
       "label": "scripts",
@@ -3481,10 +3563,10 @@
       "source_file": "package.json",
       "source_location": "L5",
       "_origin": "ast",
+      "id": "package_scripts",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "scripts",
-      "id": "package_scripts"
+      "norm_label": "scripts"
     },
     {
       "label": "build",
@@ -3492,10 +3574,10 @@
       "source_file": "package.json",
       "source_location": "L10",
       "_origin": "ast",
+      "id": "package_scripts_build",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "build",
-      "id": "package_scripts_build"
+      "norm_label": "build"
     },
     {
       "label": "dev",
@@ -3503,10 +3585,10 @@
       "source_file": "package.json",
       "source_location": "L9",
       "_origin": "ast",
+      "id": "package_scripts_dev",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "dev",
-      "id": "package_scripts_dev"
+      "norm_label": "dev"
     },
     {
       "label": "fuzz",
@@ -3514,10 +3596,10 @@
       "source_file": "package.json",
       "source_location": "L8",
       "_origin": "ast",
+      "id": "package_scripts_fuzz",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "fuzz",
-      "id": "package_scripts_fuzz"
+      "norm_label": "fuzz"
     },
     {
       "label": "preview",
@@ -3525,10 +3607,10 @@
       "source_file": "package.json",
       "source_location": "L11",
       "_origin": "ast",
+      "id": "package_scripts_preview",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "preview",
-      "id": "package_scripts_preview"
+      "norm_label": "preview"
     },
     {
       "label": "test",
@@ -3536,10 +3618,10 @@
       "source_file": "package.json",
       "source_location": "L6",
       "_origin": "ast",
+      "id": "package_scripts_test",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "test",
-      "id": "package_scripts_test"
+      "norm_label": "test"
     },
     {
       "label": "test:watch",
@@ -3547,10 +3629,10 @@
       "source_file": "package.json",
       "source_location": "L7",
       "_origin": "ast",
+      "id": "package_scripts_test_watch",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "test:watch",
-      "id": "package_scripts_test_watch"
+      "norm_label": "test:watch"
     },
     {
       "label": "type",
@@ -3558,109 +3640,142 @@
       "source_file": "package.json",
       "source_location": "L4",
       "_origin": "ast",
+      "id": "package_type",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "type",
-      "id": "package_type"
+      "norm_label": "type"
+    },
+    {
+      "label": "jsdom",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "jsdom",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "jsdom"
     },
     {
       "label": "react",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L26",
       "_origin": "ast",
+      "id": "react",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "react",
-      "id": "react"
+      "norm_label": "react"
     },
     {
       "label": "react-dom",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L24",
+      "source_location": "L27",
       "_origin": "ast",
+      "id": "react_dom",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "react-dom",
-      "id": "react_dom"
+      "norm_label": "react-dom"
+    },
+    {
+      "label": "@testing-library/dom",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "testing_library_dom",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@testing-library/dom"
+    },
+    {
+      "label": "@testing-library/react",
+      "file_type": "concept",
+      "source_file": "package.json",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "testing_library_react",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "@testing-library/react"
     },
     {
       "label": "tsx",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L17",
+      "source_location": "L20",
       "_origin": "ast",
+      "id": "tsx",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "tsx",
-      "id": "tsx"
+      "norm_label": "tsx"
     },
     {
       "label": "@types/react",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L14",
+      "source_location": "L16",
       "_origin": "ast",
+      "id": "types_react",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "@types/react",
-      "id": "types_react"
+      "norm_label": "@types/react"
     },
     {
       "label": "@types/react-dom",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L15",
+      "source_location": "L17",
       "_origin": "ast",
+      "id": "types_react_dom",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "@types/react-dom",
-      "id": "types_react_dom"
+      "norm_label": "@types/react-dom"
     },
     {
       "label": "typescript",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L18",
+      "source_location": "L21",
       "_origin": "ast",
+      "id": "typescript",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "typescript",
-      "id": "typescript"
+      "norm_label": "typescript"
     },
     {
       "label": "vite",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L19",
+      "source_location": "L22",
       "_origin": "ast",
+      "id": "vite",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "vite",
-      "id": "vite"
+      "norm_label": "vite"
     },
     {
       "label": "@vitejs/plugin-react",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L16",
+      "source_location": "L18",
       "_origin": "ast",
+      "id": "vitejs_plugin_react",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "@vitejs/plugin-react",
-      "id": "vitejs_plugin_react"
+      "norm_label": "@vitejs/plugin-react"
     },
     {
       "label": "vitest",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L23",
       "_origin": "ast",
+      "id": "vitest",
       "community": 4,
       "community_name": "devDependencies",
-      "norm_label": "vitest",
-      "id": "vitest"
+      "norm_label": "vitest"
     },
     {
       "label": "heuristic.ts",
@@ -3683,6 +3798,17 @@
       "community_name": "rules.ts",
       "norm_label": "suits",
       "id": "shared_bot_heuristic_suits"
+    },
+    {
+      "label": "bot/index.ts",
+      "file_type": "code",
+      "source_file": "shared/bot/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "bot/index.ts",
+      "id": "shared_bot_index"
     },
     {
       "label": "rules.ts",
@@ -6398,7 +6524,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/game/useGame.ts",
-      "source_location": "L45",
+      "source_location": "L51",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_game_usegame_usegame",
@@ -6485,9 +6611,9 @@
       "source_location": "L49",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray_handtray",
-      "target": "src_ui_handtray_cardsequal",
-      "confidence_score": 1.0
+      "target": "src_ui_handtray_cardsequal"
     },
     {
       "relation": "calls",
@@ -6704,6 +6830,30 @@
       "_origin": "ast",
       "source": "tests_helpers_selecthands",
       "target": "shared_engine_reducer_reduce"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_usegame_test_drivetoheldtrick",
+      "target": "tests_usegame_test_advance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L72",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_usegame_test_drivetoplayphase",
+      "target": "tests_usegame_test_advance",
+      "confidence_score": 1.0
     },
     {
       "relation": "re_exports",
@@ -6985,73 +7135,25 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L26",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_dependencies_react",
-      "target": "react"
+      "target": "react",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L24",
+      "source_location": "L27",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_dependencies_react_dom",
-      "target": "react_dom"
-    },
-    {
-      "relation": "imports",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
-      "source_location": "L17",
-      "weight": 1.0,
-      "context": "import",
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package_devdependencies_tsx",
-      "target": "tsx"
-    },
-    {
-      "relation": "imports",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
-      "source_location": "L14",
-      "weight": 1.0,
-      "context": "import",
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package_devdependencies_types_react",
-      "target": "types_react"
-    },
-    {
-      "relation": "imports",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
-      "source_location": "L15",
-      "weight": 1.0,
-      "context": "import",
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package_devdependencies_types_react_dom",
-      "target": "types_react_dom"
-    },
-    {
-      "relation": "imports",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
-      "source_location": "L18",
-      "weight": 1.0,
-      "context": "import",
-      "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package_devdependencies_typescript",
-      "target": "typescript"
+      "target": "react_dom",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7061,21 +7163,33 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package_devdependencies_vite",
-      "target": "vite"
+      "source": "package_devdependencies_jsdom",
+      "target": "jsdom",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L16",
+      "source_location": "L14",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
-      "source": "package_devdependencies_vitejs_plugin_react",
-      "target": "vitejs_plugin_react"
+      "source": "package_devdependencies_testing_library_dom",
+      "target": "testing_library_dom",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_devdependencies_testing_library_react",
+      "target": "testing_library_react",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7085,9 +7199,81 @@
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
-      "confidence_score": 1.0,
+      "source": "package_devdependencies_tsx",
+      "target": "tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L16",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_devdependencies_types_react",
+      "target": "types_react",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L17",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_devdependencies_types_react_dom",
+      "target": "types_react_dom",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_devdependencies_typescript",
+      "target": "typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_devdependencies_vite",
+      "target": "vite",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
+      "source": "package_devdependencies_vitejs_plugin_react",
+      "target": "vitejs_plugin_react",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L23",
+      "weight": 1.0,
+      "context": "import",
+      "_origin": "ast",
       "source": "package_devdependencies_vitest",
-      "target": "vitest"
+      "target": "vitest",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -7853,9 +8039,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usegame_usegame",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_usegame"
     },
     {
       "relation": "imports",
@@ -7865,9 +8051,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usesfx_usesfx",
-      "confidence_score": 1.0
+      "target": "src_game_usesfx_usesfx"
     },
     {
       "relation": "imports",
@@ -7877,9 +8063,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scenelayer_scenelayer",
-      "confidence_score": 1.0
+      "target": "src_ui_scenelayer_scenelayer"
     },
     {
       "relation": "imports",
@@ -7889,9 +8075,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scoreboard_scoreboard",
-      "confidence_score": 1.0
+      "target": "src_ui_scoreboard_scoreboard"
     },
     {
       "relation": "imports",
@@ -7901,9 +8087,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_statusbanner_statusbanner",
-      "confidence_score": 1.0
+      "target": "src_ui_statusbanner_statusbanner"
     },
     {
       "relation": "imports",
@@ -7913,9 +8099,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_table_table",
-      "confidence_score": 1.0
+      "target": "src_ui_table_table"
     },
     {
       "relation": "imports",
@@ -7925,9 +8111,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_bidpanel_bidpanel",
-      "confidence_score": 1.0
+      "target": "src_ui_bidpanel_bidpanel"
     },
     {
       "relation": "imports",
@@ -7937,9 +8123,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_handtray_handtray",
-      "confidence_score": 1.0
+      "target": "src_ui_handtray_handtray"
     },
     {
       "relation": "imports",
@@ -7949,9 +8135,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types_action",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_action"
     },
     {
       "relation": "imports",
@@ -7961,9 +8147,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types_card",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_card"
     },
     {
       "relation": "imports",
@@ -7973,9 +8159,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types_playerview",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_playerview"
     },
     {
       "relation": "imports",
@@ -7985,9 +8171,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_card_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card_card"
     },
     {
       "relation": "imports",
@@ -8626,6 +8812,42 @@
       "target": "shared_engine_rules_trickwinnerindex"
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_usegame_test",
+      "target": "shared_engine_types_action",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_usegame_test",
+      "target": "src_game_usegame_trick_hold_ms",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_usegame_test",
+      "target": "src_game_usegame_usegame",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -8957,9 +9179,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usegame",
-      "confidence_score": 1.0
+      "target": "src_game_usegame"
     },
     {
       "relation": "imports_from",
@@ -8969,9 +9191,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usesfx",
-      "confidence_score": 1.0
+      "target": "src_game_usesfx"
     },
     {
       "relation": "imports_from",
@@ -8981,9 +9203,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scenelayer",
-      "confidence_score": 1.0
+      "target": "src_ui_scenelayer"
     },
     {
       "relation": "imports_from",
@@ -8993,9 +9215,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scoreboard",
-      "confidence_score": 1.0
+      "target": "src_ui_scoreboard"
     },
     {
       "relation": "imports_from",
@@ -9005,9 +9227,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_statusbanner",
-      "confidence_score": 1.0
+      "target": "src_ui_statusbanner"
     },
     {
       "relation": "imports_from",
@@ -9017,9 +9239,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_table",
-      "confidence_score": 1.0
+      "target": "src_ui_table"
     },
     {
       "relation": "imports_from",
@@ -9029,9 +9251,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_bidpanel",
-      "confidence_score": 1.0
+      "target": "src_ui_bidpanel"
     },
     {
       "relation": "imports_from",
@@ -9041,9 +9263,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_handtray",
-      "confidence_score": 1.0
+      "target": "src_ui_handtray"
     },
     {
       "relation": "imports_from",
@@ -9053,9 +9275,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -9065,9 +9287,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card"
     },
     {
       "relation": "imports_from",
@@ -9320,6 +9542,30 @@
       "confidence_score": 1.0,
       "source": "tests_rules_test",
       "target": "shared_engine_rules"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_usegame_test",
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_usegame_test",
+      "target": "src_game_usegame",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -10365,9 +10611,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_devdependencies"
+      "target": "package_devdependencies",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10376,20 +10622,20 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_name"
+      "target": "package_name",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L22",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_dependencies"
+      "target": "package_dependencies",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10398,9 +10644,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_private"
+      "target": "package_private",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10409,9 +10655,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_type"
+      "target": "package_type",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10420,31 +10666,31 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_scripts"
+      "target": "package_scripts",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_react"
+      "target": "package_dependencies_react",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L24",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_react_dom"
+      "target": "package_dependencies_react_dom",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10453,9 +10699,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_types_react"
+      "target": "package_devdependencies_testing_library_dom",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10464,9 +10710,9 @@
       "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_types_react_dom"
+      "target": "package_devdependencies_testing_library_react",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10475,9 +10721,9 @@
       "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_vitejs_plugin_react"
+      "target": "package_devdependencies_types_react",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10486,9 +10732,9 @@
       "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_tsx"
+      "target": "package_devdependencies_types_react_dom",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10497,9 +10743,9 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_typescript"
+      "target": "package_devdependencies_vitejs_plugin_react",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10508,9 +10754,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_vite"
+      "target": "package_devdependencies_jsdom",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10519,9 +10765,42 @@
       "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_vitest"
+      "target": "package_devdependencies_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_typescript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_vite",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_vitest",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10530,9 +10809,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_build"
+      "target": "package_scripts_build",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10541,9 +10820,9 @@
       "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_preview"
+      "target": "package_scripts_preview",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10552,9 +10831,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_test"
+      "target": "package_scripts_test",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10563,9 +10842,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_test_watch"
+      "target": "package_scripts_test_watch",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10574,9 +10853,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_fuzz"
+      "target": "package_scripts_fuzz",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10585,9 +10864,9 @@
       "source_location": "L9",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_dev"
+      "target": "package_scripts_dev",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11619,9 +11898,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_game_game",
-      "confidence_score": 1.0
+      "target": "src_ui_game_game"
     },
     {
       "relation": "contains",
@@ -11630,9 +11909,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_handtray_handtray",
-      "confidence_score": 1.0
+      "target": "src_ui_handtray_handtray"
     },
     {
       "relation": "contains",
@@ -11641,9 +11920,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_handtray",
-      "target": "src_ui_handtray_cardsequal",
-      "confidence_score": 1.0
+      "target": "src_ui_handtray_cardsequal"
     },
     {
       "relation": "contains",
@@ -11853,6 +12132,50 @@
       "confidence_score": 1.0,
       "source": "tests_rules_test",
       "target": "tests_rules_test_c"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_usegame_test",
+      "target": "tests_usegame_test_advance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L58",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_usegame_test",
+      "target": "tests_usegame_test_game",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L62",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_usegame_test",
+      "target": "tests_usegame_test_drivetoplayphase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L79",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_usegame_test",
+      "target": "tests_usegame_test_drivetoheldtrick",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12951,5 +13274,5 @@
       "source_file": "RULES.md"
     }
   ],
-  "built_at_commit": "65d2de16149631349c7f54dfdf6e8281b8a1f9c4"
+  "built_at_commit": "1048c51fa380c7764539e1a82406b3467dd218d8"
 }

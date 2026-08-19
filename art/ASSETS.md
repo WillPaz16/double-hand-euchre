@@ -143,25 +143,63 @@ modified, because `make_card_back()` depends on them and the card art is frozen.
 
 ## Tiles vs. placed objects — different rules
 
-- **`table_felt.png`** (64×64) — horizontal planks, grain running *along* them, seams lit from
-  above.
-- **`wall_texture.png`** (96×96) — horizontally stacked logs with mortar chinking, courses
-  broken by butt joints at varying offsets, ramp compressed toward base via `_mix()` so the
-  backdrop recedes rather than competing with the cards.
+- **`table_felt.png`** (128×128) — horizontal planks with a gentle crown, grain running *along*
+  them. The calmest surface in the room by design: it sits directly under the cards.
+- **`wall_texture.png`** (128×128) — three stacked logs of unequal height, each shaded as a
+  cylinder, separated by a dark recess. Compressed toward base via `_mix()` so the backdrop
+  recedes rather than competing with the cards.
+- **`scene/floor.png`** (160×160) — long boards, one low-contrast end-joint each, quiet grain.
 
-Two rules learned the hard way, both about *repeating* tiles specifically:
+Value order is deliberate and asserted by eye at full size — wall (L≈33) → floor (L≈54) →
+table (L≈62), so the room reads back-to-front.
 
-1. **No point features.** Knots in both tiles produced an unmistakable polka-dot grid at 3–4
-   repeats. Distinctive one-off marks belong in the scene layer as placed decals.
-2. **No unbroken uniform runs.** An earlier draft claimed switching vertical logs to horizontal
-   would fix striping because horizontal stacking is "self-breaking". **That was wrong** — review
-   caught it; nothing interrupts a horizontal run either. Axis was never the cause. Unbroken
-   runs at uniform spacing were, and the brightest element (chinking) telegraphed the tile
-   hardest, reading as venetian blinds. Butt joints + per-course variation + lower chinking
-   contrast are what actually fixed it.
+### Rules for repeating tiles
 
-Placed scene objects (below) are exempt from both rules — they never repeat, so per-stone
+1. **Judge a tile only at the size it is displayed.** This is the meta-rule and every failure
+   below was hidden by ignoring it. Reviewing a 96×96 PNG on its own cannot show a tiling
+   defect, because the defect *is* the repetition. Tile it out to viewport width and look at
+   that instead — `PIL` can do it in six lines.
+2. **No point features.** Knots produced an unmistakable polka-dot grid at 3–4 repeats.
+   Distinctive one-off marks belong in the scene layer as placed decals.
+3. **Model the material, don't decorate the tile.** Three passes at the wall, and the first two
+   both failed by adding marks:
+   - *v1* claimed vertical→horizontal logs would self-break the striping. Wrong; nothing
+     interrupts a horizontal run either.
+   - *v2* added butt joints and segmented the mortar so no line ran the full width. Tiled to
+     1440px it read as **brickwork** — segmented mortar plus vertical joints is precisely a
+     brick bond. It cured the striping by changing the material.
+   - *v3* asked what the thing *is*. A log wall **is** horizontal bands; bands were never the
+     defect. It read as venetian blinds because the bands were flat fills separated by thin
+     bright rules, so the eye locked onto the rules — which are the tile's period. Giving each
+     log a smooth cylindrical falloff makes the band a lit surface with volume and the chinking
+     a shadowed recess. What kills a tiling signature is the **absence of hard uniform edges**,
+     not the addition of more marks.
+4. **A tile under the play area has a second job: get out of the way.** The old table surface
+   was the loudest texture on screen — dense bright grain across the whole play area — in
+   direct contradiction of the design spec's "rich periphery, calm centre". Grain there is now
+   pulled almost to base; the planks carry the form.
+
+Placed scene objects (below) are exempt from 2 and 3 — they never repeat, so per-stone
 variation and individual detail are exactly what they *should* have.
+
+### Lighting — `light_from()` (Phase 2d.5)
+
+The room's light source is the hearth, in the left margin. Scene sprites get a directional
+relight as a post-process: hearth-facing side lifted warm, far side dropped cool, along a
+smooth horizontal ramp.
+
+Applied in `main()` rather than inside each generator, for two reasons: the light model is
+then stated once in one place, and it demonstrably cannot reach the frozen card art. The
+fireplace and the window are their own light sources and are excluded.
+
+**How the need was found, and why it was invisible by eye.** Comparing each sprite's left-half
+mean luminance against its right half gave deltas under 1 unit for *every* scene object. They
+were all shaded purely top-down, so nothing in the room had a light direction — and a room
+whose objects don't agree where the light comes from reads as stickers on a backdrop however
+good the gradient painted over them is. After the pass the same measurement gives +22 to +25.
+Measuring beat looking here: "flat" is not a thing the eye reliably names.
+
+Keep `strength` at or below ~0.2. Higher and pixel art starts to look airbrushed.
 
 ## Scene objects (Phase 2d.2)
 

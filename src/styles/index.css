@@ -31,15 +31,51 @@ body {
      in front it would light the cards. Layering is: body wall texture -> scene -> game UI. */
   z-index: -1;
 }
+/* Room lighting (2d.5). Two jobs from one element, because they are the same problem:
+ *
+ *  1. LIGHT DIRECTION. This was a symmetrical glow at `50% 100%` — bottom-centre — while the
+ *     fireplace sits in the LEFT margin. So the room's only light source and the room's only
+ *     light disagreed, and every object was lit from nowhere in particular. Nothing else in
+ *     the scene has to change for the room to cohere; the light just has to come from the
+ *     fire. Below 1240px the hearth isn't rendered at all, so the light stays centred there —
+ *     a directional glow with no visible source would be a worse lie than a neutral one.
+ *
+ *  2. TILE-REPEAT BREAKUP. The wall tile's own repeat is broken internally (see
+ *     make_wall_texture), but ANY 96px tile repeated 15x across a 1440px viewport still
+ *     presents an identical block 15 times. A large, soft, non-repeating luminance field over
+ *     the top means no two regions of wall read the same, which is what actually stops the
+ *     eye finding the grid — and it costs one gradient rather than a second, larger tile.
+ *     Doing this with light rather than with noise is why the two jobs are one element. */
 .scene-hearth-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse 70% 45% at 50% 100%,
-    rgba(255, 140, 60, 0.16),
-    rgba(255, 140, 60, 0) 70%
-  );
+  background:
+    radial-gradient(
+      ellipse 70% 45% at 50% 100%,
+      rgba(255, 140, 60, 0.16),
+      rgba(255, 140, 60, 0) 70%
+    ),
+    /* The non-repeating field: broad, low-alpha, deliberately off-centre so it never lines
+       up with the tile grid or with the table's own symmetry. */
+    radial-gradient(ellipse 60% 70% at 18% 78%, rgba(255, 156, 74, 0.10), rgba(0, 0, 0, 0) 70%),
+    radial-gradient(ellipse 55% 60% at 88% 22%, rgba(120, 158, 205, 0.07), rgba(0, 0, 0, 0) 70%),
+    radial-gradient(ellipse 80% 45% at 62% 8%, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0) 75%);
   animation: hearth-glow 5s ease-in-out infinite;
+}
+/* Once the hearth is actually on screen, the warm key moves onto it and the room is lit from
+   its own fire. The cool fill stays opposite, at the window. */
+@media (min-width: 1240px) {
+  .scene-hearth-glow {
+    background:
+      radial-gradient(
+        ellipse 55% 60% at 8% 72%,
+        rgba(255, 146, 62, 0.20),
+        rgba(255, 140, 60, 0) 72%
+      ),
+      radial-gradient(ellipse 45% 50% at 30% 92%, rgba(255, 168, 88, 0.09), rgba(0, 0, 0, 0) 70%),
+      radial-gradient(ellipse 50% 55% at 93% 26%, rgba(120, 158, 205, 0.09), rgba(0, 0, 0, 0) 70%),
+      radial-gradient(ellipse 80% 45% at 66% 6%, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0) 75%);
+  }
 }
 .scene-vignette {
   position: absolute;
@@ -275,6 +311,11 @@ body {
    so scenery is dropped wholesale rather than shrunk. */
 @media (max-height: 480px) {
   .scene-layer { display: none; }
+  /* Belt and braces on the perf promise. `display: none` should cancel descendant animations,
+     and browsers do stop them — but the plan's stated guarantee is that ambient loops are
+     *suspended* on the device with the tightest battery and the tightest frame budget, and
+     that guarantee is worth one rule rather than a spec reading. */
+  .scene-layer * { animation: none !important; }
 }
 
 #root {

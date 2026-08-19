@@ -48,9 +48,14 @@ FIRE_CORE = (255, 226, 140, 255)
 FIRE_MID = (240, 150, 52, 255)
 FIRE_DEEP = (188, 74, 30, 255)
 EMBER = (120, 40, 22, 255)
-STONE_LIGHT = (128, 122, 116, 255)
-STONE_MED = (94, 89, 85, 255)
-STONE_DARK = (60, 57, 55, 255)
+# Warm greys, not neutral ones. These were near-neutral (128,122,116) and the hearth ended
+# up the COLDEST object on a screen whose whole premise is that it is the warm one — a fire
+# surrounded by cool stone reads as an unlit fireplace with something orange in it. Stone
+# beside a fire picks up that fire; nudging the greys toward amber costs nothing and is the
+# difference between the hearth belonging to the room and being pasted onto it.
+STONE_LIGHT = (134, 118, 102, 255)
+STONE_MED = (99, 85, 72, 255)
+STONE_DARK = (64, 54, 46, 255)
 RUG_RED = (128, 52, 46, 255)
 RUG_CREAM = (198, 172, 132, 255)
 
@@ -155,6 +160,45 @@ def make_sprite_sheet(frames):
     for i, frame in enumerate(frames):
         sheet.paste(frame, (i * w, 0), frame)
     return sheet
+
+
+def light_from(sprite, strength=0.16, from_left=True):
+    """Relight a finished sprite directionally, as a post-process.
+
+    **The measurement that prompted this.** Comparing the mean luminance of each scene
+    sprite's left half against its right half gave deltas under 1 unit for every single one:
+    the fireplace, the cat, the shelf, the seated figure. Every object was shaded purely
+    top-down, so nothing in the room had a light *direction* — and a room whose objects agree
+    on where the light is not coming from reads as stickers on a backdrop no matter how good
+    the gradient painted over them is.
+
+    The room's light source is the hearth, in the left margin. So scene sprites get their
+    hearth-facing side lifted and their far side dropped, along a smooth horizontal ramp.
+
+    Applied as a post-process on the composited sprite rather than threaded through every
+    generator: it is one call per object instead of a light model in a dozen drawing
+    functions, and it cannot possibly reach the cards, which are frozen. Deliberately subtle —
+    at strength much above ~0.2 pixel art starts to look airbrushed rather than shaded.
+    """
+    px = sprite.load()
+    w, h = sprite.size
+    for x in range(w):
+        t = x / (w - 1) if w > 1 else 0.5
+        if not from_left:
+            t = 1.0 - t
+        # +strength at the lit edge falling to -strength at the far edge.
+        amt = strength * (1.0 - 2.0 * t)
+        if amt == 0:
+            continue
+        for y in range(h):
+            r, g, b, a = px[x, y]
+            if a == 0:
+                continue
+            if amt > 0:
+                px[x, y] = _shift((r, g, b, a), amt, WARM_BIAS)
+            else:
+                px[x, y] = _shift((r, g, b, a), amt, tuple(-v for v in WARM_BIAS))
+    return sprite
 
 
 def contact_shadow(w, h, layers=3, max_alpha=104):
@@ -818,99 +862,144 @@ def make_card_back() -> Image.Image:
 
 
 def make_table_felt() -> Image.Image:
-    """Table surface — horizontal planks, grain running ALONG them, seams lit from above.
+    """Table surface — horizontal planks, lit from above. **The calmest surface in the room.**
 
-    Two rules learned the hard way here, both about what may live in a *repeating* tile:
-      1. No point features. An earlier version put knots in this tile and at 4x4 repeats they
-         read as a perfect polka-dot grid, instantly betraying the tiling. Distinctive
-         one-off marks belong in the scene layer as placed decals, never in the tile.
-      2. Keep tone variation between planks subtle. High contrast plank-to-plank reads as
-         stripes rather than as one wooden surface; the ramp's range is better spent on the
-         seam/grain micro-detail than on shouting plank boundaries.
+    Three rules, all learned by looking at the tile repeated to full size rather than on its
+    own:
+
+      1. **No point features.** An earlier version put knots here and at 14x14 repeats they
+         read as a perfect polka-dot grid, instantly betraying the tiling. Distinctive one-off
+         marks belong in the scene layer as placed decals, never in a tile.
+
+      2. **This tile sits directly under the cards.** The design spec's whole environment
+         principle is "rich periphery, calm centre", and the previous version violated it more
+         than anything else in the room: dense bright grain dashes at high contrast across the
+         entire play area — the loudest texture on screen, in the one place that must be
+         quietest. Grain is now pulled almost to base and the planks carry the interest.
+
+      3. **Plank tone stays close.** High plank-to-plank contrast reads as stripes rather than
+         as one wooden surface. The tonal range is better spent on the plank crown, which
+         gives the surface volume, than on shouting where one plank ends.
     """
-    size = 64
-    hi, base, sh, deep = ramp(TABLE_WOOD)
+    size = 128
+    hi_f, base, sh_f, deep_f = ramp(TABLE_WOOD)
+    hi = _mix(base, hi_f, 0.5)
+    sh = _mix(base, sh_f, 0.55)
+    deep = _mix(base, deep_f, 0.5)
+
     img = Image.new("RGBA", (size, size), base)
     draw = ImageDraw.Draw(img)
 
-    plank_h = 16
+    plank_h = 32
+    plank_tint = (0.00, 0.05, -0.04, 0.02)
+
     for i, py in enumerate(range(0, size, plank_h)):
-        draw.rectangle((0, py, size, py + plank_h - 1), fill=(base, sh)[i % 2])
+        tint = plank_tint[i % len(plank_tint)]
+        p_base = _mix(base, hi if tint >= 0 else sh, abs(tint))
+        body = plank_h - 2
+        for dy in range(body):
+            frac = dy / (body - 1)
+            tone = _mix(p_base, hi, 0.14) if 0.2 < frac < 0.6 else (
+                _mix(p_base, sh, 0.08) if frac < 0.86 else _mix(p_base, sh, 0.26))
+            draw.line((0, py + dy, size, py + dy), fill=tone)
 
-    for py in range(plank_h - 1, size, plank_h):
-        draw.line((0, py, size, py), fill=deep)
-        if py + 1 < size:
-            draw.line((0, py + 1, size, py + 1), fill=hi)
+        # Grain along the plank. Fixed arithmetic, never `random`, so the tile stays
+        # byte-reproducible — and low enough in contrast to read as figure, not as scratches.
+        seed = i * 19 + 5
+        for gy in range(3, body - 3, 6):
+            x = (seed * 7) % 15
+            while x < size:
+                dash = 12 + (seed % 18)
+                draw.line((x, py + gy, min(x + dash, size), py + gy),
+                          fill=_mix(p_base, sh if (seed // 4) % 2 else hi, 0.08))
+                x += dash + 9 + (seed % 7)
+                seed += 11
 
-    # Grain — dashes along the plank direction. Fixed arithmetic, never `random`, so the
-    # generator stays byte-reproducible.
-    seed = 3
-    for row in range(1, size, 3):
-        x = (row * 7) % 9
-        while x < size:
-            dash = 5 + (seed % 8)
-            draw.line((x, row, min(x + dash, size), row), fill=sh if (seed // 3) % 2 else hi)
-            x += dash + 4 + (seed % 5)
-            seed += 7
+        draw.line((0, py + body, size, py + body), fill=deep)
+        draw.line((0, py + body + 1, size, py + body + 1), fill=_mix(p_base, hi, 0.18))
     return img
 
 
 def make_wall_texture() -> Image.Image:
-    """Log-cabin wall — horizontally stacked logs with mortar chinking between courses.
+    """Log-cabin wall — stacked horizontal logs, each shaded as a cylinder.
 
-    **Correction to an earlier claim in this file.** A previous version argued that switching
-    from vertical to horizontal logs would fix the striping because horizontal stacking is
-    "self-breaking". That was wrong, and review caught it: nothing interrupts a horizontal
-    run either. Axis was never the cause — *unbroken runs at uniform spacing* were, and the
-    single brightest element (the chinking line) telegraphed the tile hardest, reading as
-    venetian blinds across the viewport.
+    **Three attempts, and the useful record is why the first two failed.**
 
-    What actually breaks it, all three needed together:
-      - **Butt joints.** Each course is 2-3 log segments with joints at different offsets per
-        course, so no horizontal line runs uninterrupted across the tile.
-      - **Per-course variation.** Course tone and chinking thickness/brightness vary, so the
-        repeat has no single uniform signature to lock onto.
-      - **Lower chinking contrast.** It was the brightest thing in the tile by a wide margin;
-        pulled toward the base so it reads as mortar rather than as a drawn rule line.
+    v1 argued vertical->horizontal logs would fix striping because horizontal stacking is
+    "self-breaking". Wrong: nothing interrupts a horizontal run either.
 
-    Still a backdrop, so the ramp stays compressed toward base via _mix() — this should
-    recede behind the table, not compete with the cards.
+    v2 added butt joints and broke the mortar into segments so no line ran the full width.
+    Tiled out to 1440px it read as **brickwork** — segmented mortar plus visible vertical
+    joints is, precisely, a brick bond. It fixed the striping by replacing the material.
+
+    v3 (this one) starts from what the thing IS. A log wall *is* horizontal bands; bands were
+    never the defect. It read as venetian blinds because the bands were flat fills separated
+    by thin bright rules — so the eye saw the rules, which are the tile's period. Give each
+    log a smooth cylindrical falloff and the band becomes a lit surface with volume, and the
+    chinking becomes the dark recess between two round things instead of a drawn line.
+
+    So: no joints, no bright mortar, no segmentation. Three logs of unequal height, each with
+    a continuous top-lit gradient, separated by a dark gap. What kills the tiling signature is
+    the absence of any hard uniform edge, not the addition of more marks.
+
+    Two constraints that still hold from earlier passes:
+      - **No point features** (knots, nails). At 11x repeats they become a polka-dot grid.
+      - **Stay compressed toward base** via _mix(). This is a backdrop; it must recede behind
+        the table rather than compete with the cards.
     """
-    size = 96
+    size = 128
     hi_f, base, sh_f, deep_f = ramp(WALL_WOOD)
-    hi = _mix(base, hi_f, 0.5)
-    sh = _mix(base, sh_f, 0.5)
-    deep = _mix(base, deep_f, 0.55)
+    hi = _mix(base, hi_f, 0.55)
+    sh = _mix(base, sh_f, 0.6)
+    deep = _mix(base, deep_f, 0.75)
 
     img = Image.new("RGBA", (size, size), base)
     draw = ImageDraw.Draw(img)
 
-    log_h = 24
-    body_h = log_h - 2
-    # Fixed per-course tables (never `random`, so the tile stays byte-reproducible).
-    joints = ((37,), (14, 63), (52,), (26, 71))
-    course_tint = (0.00, 0.10, -0.08, 0.05)
-    chink_bright = (0.34, 0.26, 0.40, 0.30)
+    # Unequal heights summing to `size`, so the wall has no single repeat frequency. The gap
+    # between logs is part of each course's height.
+    course_h = (40, 46, 42)
+    gap = 3
+    course_tint = (0.00, 0.08, -0.06)
 
-    for course, ly in enumerate(range(0, size, log_h)):
-        tint = course_tint[course % len(course_tint)]
+    ly = 0
+    for course, log_h in enumerate(course_h):
+        body_h = log_h - gap
+        tint = course_tint[course]
         c_base = _mix(base, hi if tint >= 0 else sh, abs(tint))
-        c_hi = _mix(c_base, hi, 0.85)
-        c_sh = _mix(c_base, sh, 0.85)
 
         for dy in range(body_h):
             frac = dy / (body_h - 1)
-            tone = c_hi if frac < 0.22 else (c_base if frac < 0.60 else c_sh)
+            # Cylinder: lit shoulder near the top, falling smoothly to a dark underside. The
+            # light sits at 0.3 rather than 0.0 so the very top edge reads as curving away,
+            # which is what stops the log looking like a flat strip with a highlight on it.
+            if frac < 0.30:
+                t = frac / 0.30
+                tone = _mix(_mix(c_base, hi, 0.20), _mix(c_base, hi, 0.52), t)
+            else:
+                t = (frac - 0.30) / 0.70
+                tone = _mix(_mix(c_base, hi, 0.52), _mix(c_base, sh, 0.95), t ** 0.85)
             draw.line((0, ly + dy, size, ly + dy), fill=tone)
 
-        # Butt joints: a short dark seam plus a lit lip, breaking the horizontal run.
-        for jx in joints[course % len(joints)]:
-            draw.line((jx, ly, jx, ly + body_h - 1), fill=deep)
-            draw.line((jx + 1, ly, jx + 1, ly + body_h - 1), fill=c_hi)
+        # Grain: long dashes running along the log, tinted with the local tone so they never
+        # cut across the cylinder shading. Fixed arithmetic, never `random`.
+        seed = course * 17 + 3
+        for gy in range(4, body_h - 4, 6):
+            x = (seed * 5) % 13
+            while x < size:
+                run = 9 + (seed % 14)
+                frac = gy / (body_h - 1)
+                streak = _mix(c_base, sh if (seed // 3) % 2 else hi, 0.10 + 0.12 * frac)
+                draw.line((x, ly + gy, min(x + run, size), ly + gy), fill=streak)
+                x += run + 7 + (seed % 6)
+                seed += 7
 
-        chink = _mix(c_base, CHINKING, chink_bright[course % len(chink_bright)])
-        draw.line((0, ly + body_h, size, ly + body_h), fill=chink)
-        draw.line((0, ly + body_h + 1, size, ly + body_h + 1), fill=deep)
+        # Chinking: the shadowed recess between two round logs. Dark, not pale — as a bright
+        # line this was the single loudest element in the tile and did most of the striping.
+        for g in range(gap):
+            draw.line((0, ly + body_h + g, size, ly + body_h + g),
+                      fill=deep if g < gap - 1 else _mix(deep, hi, 0.18))
+        ly += log_h
     return img
 
 
@@ -1132,44 +1221,60 @@ def make_snowfall(w=120, h=72):
     return img
 
 
-def make_floorboards(size=96):
-    """Tileable floor. The room had a wall and a table but no ground, which is the single
-    clearest reason it read as props pinned to a backdrop rather than as a place — and the
-    seated figure and cat in 2d.3 need something to rest on.
+def make_floorboards(size=160):
+    """Tileable floor — long boards, lit from above, deliberately quiet.
 
-    Boards run horizontally with staggered end-joints, the same anti-striping treatment
-    make_wall_texture needed: unbroken runs at uniform spacing are what telegraph a tile.
-    Value sits deliberately between the dark wall and the lit table, so the room reads
-    back-to-front as wall (darkest) -> floor -> table (lightest).
+    Judged tiled out to full width (the same check that caught the wall), the previous
+    version failed twice over:
+      - **Brick bond.** End-joints every 96px at high contrast made a masonry grid, not a
+        floor. Real boards are long; joints are rare and barely visible underfoot.
+      - **Speckle.** The grain dashes sat near the highlight end of the ramp and read as
+        white flecks — debris scattered across the room rather than wood figure.
+
+    The floor covers ~34% of the viewport and sits directly under the table, so its job is to
+    be a quiet ground plane. Detail here competes with the cards for nothing. Bigger tile,
+    one joint per board, and grain pulled almost to base.
     """
     hi_f, base, sh_f, deep_f = ramp(FLOOR_WOOD)
-    hi = _mix(base, hi_f, 0.55)
-    sh = _mix(base, sh_f, 0.55)
-    deep = _mix(base, deep_f, 0.6)
+    hi = _mix(base, hi_f, 0.45)
+    sh = _mix(base, sh_f, 0.5)
+    deep = _mix(base, deep_f, 0.55)
 
     img = Image.new("RGBA", (size, size), base)
     d = ImageDraw.Draw(img)
 
-    board_h = 24
-    joints = ((41,), (17, 68), (55,), (29, 79))
+    board_h = 32
+    # One joint per board, widely spaced and at different offsets, so nothing lines up.
+    joints = (103, 37, 128, 61, 14)
+    board_tint = (0.00, 0.07, -0.05, 0.03, -0.02)
+
     for row, by in enumerate(range(0, size, board_h)):
-        tone = (base, _mix(base, hi, 0.3), _mix(base, sh, 0.25), base)[row % 4]
-        d.rectangle((0, by, size, by + board_h - 2), fill=tone)
-        # Grain along the board.
-        seed = row * 13 + 5
-        for gy in range(by + 3, by + board_h - 3, 5):
-            x = (seed * 7) % 11
+        b_base = _mix(base, hi if board_tint[row] >= 0 else sh, abs(board_tint[row]))
+        body = board_h - 2
+        for dy in range(body):
+            frac = dy / (body - 1)
+            # Gentle crown: boards cup slightly, catching light along the middle.
+            tone = _mix(b_base, hi, 0.16) if 0.25 < frac < 0.62 else (
+                _mix(b_base, sh, 0.10) if frac < 0.85 else _mix(b_base, sh, 0.30))
+            d.line((0, by + dy, size, by + dy), fill=tone)
+
+        # Grain: long, low-contrast figure along the board. Barely there by design.
+        seed = row * 23 + 7
+        for gy in range(3, body - 3, 7):
+            x = (seed * 11) % 17
             while x < size:
-                run = 6 + (seed % 9)
-                d.line((x, gy, min(x + run, size), gy),
-                       fill=sh if (seed // 3) % 2 else hi)
-                x += run + 5 + (seed % 4)
-                seed += 7
-        for jx in joints[row % len(joints)]:
-            d.line((jx, by, jx, by + board_h - 3), fill=deep)
-            d.line((jx + 1, by, jx + 1, by + board_h - 3), fill=hi)
-        d.line((0, by + board_h - 2, size, by + board_h - 2), fill=deep)
-        d.line((0, by + board_h - 1, size, by + board_h - 1), fill=_mix(base, hi, 0.4))
+                run = 14 + (seed % 22)
+                d.line((x, by + gy, min(x + run, size), by + gy),
+                       fill=_mix(b_base, sh if (seed // 5) % 2 else hi, 0.09))
+                x += run + 11 + (seed % 9)
+                seed += 13
+
+        jx = joints[row % len(joints)]
+        d.line((jx, by, jx, by + body - 1), fill=_mix(b_base, deep, 0.55))
+
+        # Board seam: a soft shadow with a faint lit lip above it, not a hard rule.
+        d.line((0, by + body, size, by + body), fill=deep)
+        d.line((0, by + body + 1, size, by + body + 1), fill=_mix(b_base, hi, 0.14))
     return img
 
 
@@ -1373,9 +1478,14 @@ def main() -> None:
     make_window_frame().save(os.path.join(scene_dir, "window_frame.png"))
     make_snowfall().save(os.path.join(scene_dir, "snow.png"))
     make_floorboards().save(os.path.join(scene_dir, "floor.png"))
-    make_seated_old_timer().save(os.path.join(scene_dir, "seated_old_timer.png"))
-    make_sprite_sheet(make_cat_frames()).save(os.path.join(scene_dir, "cat_sheet.png"))
-    make_shelf().save(os.path.join(scene_dir, "shelf.png"))
+    # Everything in the room is lit by the hearth, which sits in the LEFT margin. Applied here
+    # rather than inside each generator so the light model is stated once, in one place, and
+    # so it demonstrably cannot reach the card art. The fireplace and the window are their own
+    # light sources and are deliberately excluded.
+    light_from(make_seated_old_timer()).save(os.path.join(scene_dir, "seated_old_timer.png"))
+    light_from(make_sprite_sheet(make_cat_frames()), strength=0.13).save(
+        os.path.join(scene_dir, "cat_sheet.png"))
+    light_from(make_shelf(), strength=0.13).save(os.path.join(scene_dir, "shelf.png"))
 
     portraits_dir = os.path.join(OUT_ROOT, "portraits")
     os.makedirs(portraits_dir, exist_ok=True)
