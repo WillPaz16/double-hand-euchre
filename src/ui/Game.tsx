@@ -1,4 +1,5 @@
 import { useGame } from '../game/useGame.ts';
+import { useSfx } from '../game/useSfx.ts';
 import { Scoreboard } from './Scoreboard.tsx';
 import { StatusBanner } from './StatusBanner.tsx';
 import { Table } from './Table.tsx';
@@ -7,6 +8,7 @@ import { HandTray } from './HandTray.tsx';
 
 export function Game() {
   const { view, legal, play } = useGame();
+  useSfx(view);
 
   return (
     <div className="game-root">

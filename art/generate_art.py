@@ -135,6 +135,8 @@ GLYPHS = {
     "Q": [".###.", "#...#", "#...#", "#...#", "#.#.#", "#..#.", ".##.#"],
     "K": ["#...#", "#..#.", "#.#..", "##...", "#.#..", "#..#.", "#...#"],
     "A": ["..#..", ".#.#.", "#...#", "#...#", "#####", "#...#", "#...#"],
+    "4": ["...#.", "..##.", ".#.#.", "#..#.", "#####", "...#.", "...#."],
+    "6": [".##..", "#....", "#....", "####.", "#...#", "#...#", ".###."],
 }
 GLYPH_SCALE = 2
 
@@ -544,6 +546,130 @@ def make_face_card(rank: str, suit: str) -> Image.Image:
     return card
 
 
+# --- Old-Timer opponent portrait ---------------------------------------------------------- #
+# A deliberately different character from the face-card royalty: where the King is regal
+# (crown, formal robe), the Old-Timer is a cabin regular — trapper hat with fur flaps, a red
+# flannel shirt and suspenders, a big gray mustache. Bust only (head + shoulders), since it
+# sits beside a seat label rather than filling a card, so it gets its own canvas size and none
+# of the corner-index layout constraints face cards have.
+
+FLANNEL_RED = (140, 46, 40, 255)
+HAT_FUR = (222, 210, 190, 255)
+
+PORTRAIT_W, PORTRAIT_H = 110, 130
+OT_CX = PORTRAIT_W // 2
+OT_HEAD_CY = 58
+OT_HEAD_RX, OT_HEAD_RY = 26, 27
+
+
+def _old_timer_parts():
+    return [
+        (_poly([
+            (OT_CX - 30, 92), (OT_CX + 30, 92), (OT_CX + 40, PORTRAIT_H), (OT_CX - 40, PORTRAIT_H),
+        ]), FLANNEL_RED),
+        (_poly([(OT_CX - 18, 92), (OT_CX - 12, 92), (OT_CX - 22, PORTRAIT_H), (OT_CX - 28, PORTRAIT_H)]), BOOT_DARK),
+        (_poly([(OT_CX + 12, 92), (OT_CX + 18, 92), (OT_CX + 28, PORTRAIT_H), (OT_CX + 22, PORTRAIT_H)]), BOOT_DARK),
+        (_ellipse(OT_CX - OT_HEAD_RX, OT_HEAD_CY - OT_HEAD_RY, OT_CX + OT_HEAD_RX, OT_HEAD_CY + OT_HEAD_RY), SKIN),
+        # Big mustache — drawn before the hat so the hat's brim can sit in front of the hairline.
+        (_poly([
+            (OT_CX - 20, OT_HEAD_CY + 8), (OT_CX - 4, OT_HEAD_CY + 4), (OT_CX, OT_HEAD_CY + 7),
+            (OT_CX + 4, OT_HEAD_CY + 4), (OT_CX + 20, OT_HEAD_CY + 8),
+            (OT_CX + 16, OT_HEAD_CY + 14), (OT_CX, OT_HEAD_CY + 10), (OT_CX - 16, OT_HEAD_CY + 14),
+        ]), BEARD_GRAY),
+        # Trapper hat: peaked crown, a fur brim, and two fur ear-flaps.
+        (_poly([
+            (OT_CX - 24, OT_HEAD_CY - 12), (OT_CX - 24, OT_HEAD_CY - 30), (OT_CX, OT_HEAD_CY - 38),
+            (OT_CX + 24, OT_HEAD_CY - 30), (OT_CX + 24, OT_HEAD_CY - 12),
+        ]), FLANNEL_RED),
+        (_ellipse(OT_CX - 30, OT_HEAD_CY - 16, OT_CX - 16, OT_HEAD_CY + 2), HAT_FUR),
+        (_ellipse(OT_CX + 16, OT_HEAD_CY - 16, OT_CX + 30, OT_HEAD_CY + 2), HAT_FUR),
+        (_poly([
+            (OT_CX - 25, OT_HEAD_CY - 14), (OT_CX + 25, OT_HEAD_CY - 14),
+            (OT_CX + 25, OT_HEAD_CY - 8), (OT_CX - 25, OT_HEAD_CY - 8),
+        ]), HAT_FUR),
+    ]
+
+
+def draw_old_timer_face(card: Image.Image, expression: str) -> None:
+    """`expression`: "idle" (neutral), "happy" (won a trick/euchre), "rueful" (lost one)."""
+    d = ImageDraw.Draw(card)
+    eye_y = OT_HEAD_CY - 3
+    for side in (-1, 1):
+        ex = OT_CX + side * 10
+        if expression == "happy":
+            d.arc((ex - 4, eye_y - 3, ex + 4, eye_y + 5), start=200, end=340, fill=INK, width=2)
+        else:
+            d.ellipse((ex - 3, eye_y - 4, ex + 3, eye_y + 4), fill=INK)
+            d.rectangle((ex - 2, eye_y - 3, ex - 1, eye_y - 2), fill=(255, 255, 255, 255))
+
+    by = eye_y - 10
+    for side in (-1, 1):
+        x_out, x_in = OT_CX + side * 17, OT_CX + side * 5
+        if expression == "rueful":
+            d.line((x_out, by - 3, x_in, by + 2), fill=BEARD_GRAY, width=3)
+        elif expression == "happy":
+            d.line((x_out, by + 1, x_in, by - 2), fill=BEARD_GRAY, width=3)
+        else:
+            d.line((x_out, by, x_in, by), fill=BEARD_GRAY, width=3)
+
+    my = OT_HEAD_CY + 16
+    if expression == "happy":
+        d.arc((OT_CX - 8, my - 4, OT_CX + 8, my + 6), start=15, end=165, fill=INK, width=2)
+    elif expression == "rueful":
+        d.arc((OT_CX - 6, my, OT_CX + 6, my + 8), start=200, end=340, fill=INK, width=2)
+    # idle: no explicit mouth line — the mustache alone reads as neutral.
+
+
+def make_old_timer_portrait(expression: str) -> Image.Image:
+    card = Image.new("RGBA", (PORTRAIT_W, PORTRAIT_H), (0, 0, 0, 0))
+    paste(card, composite_sprite(PORTRAIT_W, PORTRAIT_H, _old_timer_parts()), 0, 0)
+    draw_old_timer_face(card, expression)
+    return card
+
+
+# --- Scoreboard cards ---------------------------------------------------------------------- #
+# Authentic euchre scoring: a 4 and a 6 of a chosen suit, laid out with a traditional
+# multi-pip grid (not the single big center pip the playing deck uses) so the two can overlap
+# and read as "a partially covered card" the way they do at a real table. The UI slides the 6
+# out from behind the 4 as the score rises; a numeral sits alongside since the slide is a
+# decorative nod to the ritual, not a pixel-exact pip-counting simulation.
+
+SCORE_CARD_W, SCORE_CARD_H = 60, 84
+
+
+def _score_card_frame(draw: ImageDraw.ImageDraw, w: int, h: int) -> None:
+    draw.rectangle((0, 0, w - 1, h - 1), fill=PARCHMENT)
+    draw.rectangle((0, 0, w - 1, h - 1), outline=INK, width=2)
+    draw.rectangle((2, 2, w - 3, h - 3), outline=PARCHMENT_SHADOW)
+
+
+def make_scoreboard_card(rank: str, suit: str) -> Image.Image:
+    w, h = SCORE_CARD_W, SCORE_CARD_H
+    card = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(card)
+    _score_card_frame(draw, w, h)
+
+    body = body_color(suit)
+    pip_size = 12
+    positions = (
+        [(0.32, 0.32), (0.68, 0.32), (0.32, 0.68), (0.68, 0.68)]
+        if rank == "4"
+        else [
+            (0.32, 0.24), (0.68, 0.24), (0.32, 0.5), (0.68, 0.5), (0.32, 0.76), (0.68, 0.76),
+        ]
+    )
+    for fx, fy in positions:
+        sprite = pip_sprite(suit, pip_size, body, outline_px=1, shade_depth=1)
+        paste(card, sprite, w * fx - pip_size / 2, h * fy - pip_size / 2)
+
+    text = text_color(suit)
+    for x, y in ((3, 3), (w - 13, h - 17)):
+        gdraw = ImageDraw.Draw(card)
+        draw_glyph(gdraw, x, y, GLYPHS[rank], text, scale=1)
+
+    return card
+
+
 def make_card_back() -> Image.Image:
     img = Image.new("RGBA", (CARD_W, CARD_H), WOOD_DARK)
     draw = ImageDraw.Draw(img)
@@ -590,6 +716,27 @@ def make_table_felt() -> Image.Image:
     return img
 
 
+def make_wall_texture() -> Image.Image:
+    """Log-cabin wall — vertical rounded logs, distinct from the table felt's horizontal plank
+    grain, so the room reads as a different surface behind the table rather than more table."""
+    size = 96
+    img = Image.new("RGBA", (size, size), WOOD_DARK)
+    draw = ImageDraw.Draw(img)
+
+    log_w = 16
+    for lx in range(0, size + log_w, log_w):
+        draw.ellipse((lx - log_w / 2, -8, lx + log_w / 2, size + 8), outline=WOOD_LIGHT, width=2)
+        draw.line((lx, -8, lx, size + 8), fill=WOOD_MED, width=1)
+
+    for row in range(6, size, 17):
+        seed = row * 5
+        for lx in range(0, size, log_w):
+            notch_x = lx + log_w // 2 + (seed % 5) - 2
+            draw.line((notch_x - 3, row, notch_x + 3, row), fill=WOOD_DARK)
+            seed += 13
+    return img
+
+
 def main() -> None:
     cards_dir = os.path.join(OUT_ROOT, "cards")
     os.makedirs(cards_dir, exist_ok=True)
@@ -601,8 +748,25 @@ def main() -> None:
 
     make_card_back().save(os.path.join(OUT_ROOT, "card_back.png"))
     make_table_felt().save(os.path.join(OUT_ROOT, "table_felt.png"))
+    make_wall_texture().save(os.path.join(OUT_ROOT, "wall_texture.png"))
 
-    print(f"Generated {len(SUITS) * len(RANKS)} card faces + card back + table felt -> {OUT_ROOT}")
+    portraits_dir = os.path.join(OUT_ROOT, "portraits")
+    os.makedirs(portraits_dir, exist_ok=True)
+    for expression in ("idle", "happy", "rueful"):
+        make_old_timer_portrait(expression).save(
+            os.path.join(portraits_dir, f"old_timer_{expression}.png")
+        )
+
+    score_dir = os.path.join(OUT_ROOT, "scoreboard")
+    os.makedirs(score_dir, exist_ok=True)
+    for suit in SUITS:
+        for rank in ("4", "6"):
+            make_scoreboard_card(rank, suit).save(os.path.join(score_dir, f"{suit}_{rank}.png"))
+
+    print(
+        f"Generated {len(SUITS) * len(RANKS)} card faces + card back + table felt "
+        f"+ 3 Old-Timer portraits + {len(SUITS) * 2} scoreboard cards -> {OUT_ROOT}"
+    )
 
 
 if __name__ == "__main__":
