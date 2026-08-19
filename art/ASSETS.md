@@ -204,10 +204,27 @@ front it lights the cards.
 
 ## Living things (Phase 2d.3)
 
-- **`seated_old_timer.png`** (140×196) — the opponent, seated, holding a fan of card backs.
-  Head geometry (radius, hat construction, mustache) is copied exactly from
+- **`seated_old_timer.png`** (140×196) — the opponent, seated in a chair, holding a fan of
+  card backs. Head geometry (radius, hat construction, mustache) is copied exactly from
   `_old_timer_parts()` so the seated figure and the scoreboard portrait read as *one person*
   rather than two similar characters; only the framing differs.
+  - **Bug worth remembering — a variable named for the intent, in code that did something
+    else.** The fan loop's variable was called `ang`, but no rotation was ever applied; it was
+    used purely as an x-offset. Five 18px cards at 12px spacing merged into one contiguous
+    band, filled brown with a gold inner rect — unmistakably a belt with a brass buckle. This
+    is close to invisible on re-reading, because the author sees the name and reads the
+    intent while a fresh reader sees the belt. Each card is now genuinely rotated on its own
+    layer (NEAREST, to keep edges hard) before compositing.
+  - Two more from the same review: the chair was `darken(WOOD_MED, 0.55)`, near-black against
+    a dark wall and therefore invisible, and the torso ran off the canvas with no thigh
+    break — so he read as a standing bust, not a seated man. The chair now uses lit ramp
+    tones and the torso stops at a drawn lap. Arms were FLANNEL_RED over a FLANNEL_RED torso
+    in an overlapping x-range, i.e. no silhouette separation at all; they now use a shade
+    tone.
+  - A suggestion that was **evaluated and rejected on measurement**: shifting him left so the
+    table's rim occludes his lower edge. Measured at 1400×860, a 40px shift puts only 20px of
+    his 140px width behind the table, leaving 120px of the bottom edge still visible — it
+    does not do what it intends. Drawing a real lap fixes the underlying problem instead.
   - **Placement is a compromise worth documenting.** The design intent was "seated across the
     table". The table spans the full width of its container with the scoreboard and status
     banner filling the entire band above it, so there is no across-the-table space to put a

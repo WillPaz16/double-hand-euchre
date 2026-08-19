@@ -1181,6 +1181,20 @@ SEAT_HEAD_CY = 66
 SEAT_HEAD_RX, SEAT_HEAD_RY = 26, 27
 
 
+def _mini_card_back(w=20, h=30):
+    """A small card back for the seated figure's hand. Uses the real card-back palette
+    (WOOD_DARK ground, GOLD inner border, lattice) rather than an arbitrary brown, so a hand
+    of them reads as *cards* and not as some other brown object."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.rectangle((0, 0, w - 1, h - 1), fill=WOOD_DARK, outline=INK)
+    d.rectangle((2, 2, w - 3, h - 3), outline=GOLD)
+    for y in range(5, h - 4, 5):
+        for x in range(5, w - 4, 5):
+            d.point((x, y), fill=WOOD_LIGHT)
+    return img
+
+
 def make_seated_old_timer():
     """The opponent, seated in the room — same character as the scoreboard portrait (trapper
     hat with fur flaps, red flannel, big gray mustache), rebuilt at full body holding a fan
@@ -1190,30 +1204,43 @@ def make_seated_old_timer():
     construction) so the seated figure and the portrait read as one person rather than two
     similar characters. Only the framing differs.
 
-    **Placement is a compromise, and worth being honest about.** The design intent was "seated
-    across the table". The actual layout has the table spanning the full width of its
-    container with the scoreboard and status banner filling the entire band above it, so there
-    is no across-the-table space to put him in without restructuring the UI — which would put
-    the carefully-guarded landscape/portrait height budgets at risk. He therefore sits in the
-    side margin, on the floor, at the side of the table. That still puts a person in the room,
-    which was the point; it just isn't literally opposite you.
+    Three bugs review caught in the first version, all worth remembering:
+
+    1. **The "fan" was never rotated.** The loop variable was named `ang`, which encoded the
+       *intent*, but it was only ever used as an x-offset — no rotation was applied anywhere.
+       Five 18px cards at 12px spacing merged into one contiguous band, filled brown with a
+       gold inner rect: unmistakably a belt with a brass buckle. A variable named for what you
+       meant, in code that does something else, is nearly invisible on re-reading — the author
+       sees the intent, a fresh reader sees the belt. Each card is now rotated on its own
+       layer before compositing.
+    2. **No chair and no lap, so he read as a standing bust.** The chair was
+       `darken(WOOD_MED, 0.55)` — near-black against a dark wall, invisible at every viewport
+       — and the torso simply ran off the bottom of the canvas with no thigh break. The chair
+       now uses lit ramp tones, and the torso stops at a lap.
+    3. **Invisible arms.** FLANNEL_RED arms drawn over a FLANNEL_RED torso in an overlapping
+       x-range have no silhouette separation at all. They now use the shade tone.
     """
-    chair = darken(WOOD_MED, 0.55)
+    c_hi, c_base, c_sh, c_deep = ramp(WOOD_MED)
+    arm = darken(FLANNEL_RED, 0.74)
+    trouser = darken(BOOT_DARK, 1.25)
+    lap_y = 158
+
     parts = [
-        # Chair back and stiles, behind everything.
-        (_poly([(SEAT_CX - 46, 54), (SEAT_CX + 46, 54), (SEAT_CX + 46, 74), (SEAT_CX - 46, 74)]), chair),
-        (_poly([(SEAT_CX - 46, 54), (SEAT_CX - 36, 54), (SEAT_CX - 36, SEAT_H), (SEAT_CX - 46, SEAT_H)]), chair),
-        (_poly([(SEAT_CX + 36, 54), (SEAT_CX + 46, 54), (SEAT_CX + 46, SEAT_H), (SEAT_CX + 36, SEAT_H)]), chair),
-        # Torso, widening to the seat.
-        (_poly([(SEAT_CX - 34, 96), (SEAT_CX + 34, 96), (SEAT_CX + 46, SEAT_H), (SEAT_CX - 46, SEAT_H)]), FLANNEL_RED),
-        # Suspenders.
-        (_poly([(SEAT_CX - 20, 96), (SEAT_CX - 12, 96), (SEAT_CX - 16, SEAT_H), (SEAT_CX - 24, SEAT_H)]), BOOT_DARK),
-        (_poly([(SEAT_CX + 12, 96), (SEAT_CX + 20, 96), (SEAT_CX + 24, SEAT_H), (SEAT_CX + 16, SEAT_H)]), BOOT_DARK),
-        # Arms coming forward to hold the hand.
-        (_poly([(SEAT_CX - 44, 112), (SEAT_CX - 26, 108), (SEAT_CX - 20, 152), (SEAT_CX - 40, 156)]), FLANNEL_RED),
-        (_poly([(SEAT_CX + 26, 108), (SEAT_CX + 44, 112), (SEAT_CX + 40, 156), (SEAT_CX + 20, 152)]), FLANNEL_RED),
-        (_ellipse(SEAT_CX - 44, 146, SEAT_CX - 24, 166), SKIN),
-        (_ellipse(SEAT_CX + 24, 146, SEAT_CX + 44, 166), SKIN),
+        # Chair: lit enough to actually be visible against the dark wall behind it.
+        (_poly([(SEAT_CX - 46, 50), (SEAT_CX + 46, 50), (SEAT_CX + 46, 72), (SEAT_CX - 46, 72)]), c_base),
+        (_poly([(SEAT_CX - 46, 50), (SEAT_CX - 37, 50), (SEAT_CX - 37, SEAT_H), (SEAT_CX - 46, SEAT_H)]), c_sh),
+        (_poly([(SEAT_CX + 37, 50), (SEAT_CX + 46, 50), (SEAT_CX + 46, SEAT_H), (SEAT_CX + 37, SEAT_H)]), c_sh),
+        # Lap and thighs — the break that makes "seated" read instead of "standing bust".
+        (_poly([(SEAT_CX - 40, lap_y), (SEAT_CX + 40, lap_y), (SEAT_CX + 44, SEAT_H), (SEAT_CX - 44, SEAT_H)]), trouser),
+        # Torso, stopping at the lap.
+        (_poly([(SEAT_CX - 32, 96), (SEAT_CX + 32, 96), (SEAT_CX + 38, lap_y), (SEAT_CX - 38, lap_y)]), FLANNEL_RED),
+        (_poly([(SEAT_CX - 19, 96), (SEAT_CX - 11, 96), (SEAT_CX - 14, lap_y), (SEAT_CX - 22, lap_y)]), BOOT_DARK),
+        (_poly([(SEAT_CX + 11, 96), (SEAT_CX + 19, 96), (SEAT_CX + 22, lap_y), (SEAT_CX + 14, lap_y)]), BOOT_DARK),
+        # Arms in the shade tone so they separate from the torso.
+        (_poly([(SEAT_CX - 44, 108), (SEAT_CX - 30, 104), (SEAT_CX - 24, 150), (SEAT_CX - 42, 154)]), arm),
+        (_poly([(SEAT_CX + 30, 104), (SEAT_CX + 44, 108), (SEAT_CX + 42, 154), (SEAT_CX + 24, 150)]), arm),
+        (_ellipse(SEAT_CX - 44, 140, SEAT_CX - 26, 158), SKIN),
+        (_ellipse(SEAT_CX + 26, 140, SEAT_CX + 44, 158), SKIN),
         # Head.
         (_ellipse(SEAT_CX - SEAT_HEAD_RX, SEAT_HEAD_CY - SEAT_HEAD_RY,
                   SEAT_CX + SEAT_HEAD_RX, SEAT_HEAD_CY + SEAT_HEAD_RY), SKIN),
@@ -1223,9 +1250,8 @@ def make_seated_old_timer():
             (SEAT_CX + 20, SEAT_HEAD_CY + 8), (SEAT_CX + 16, SEAT_HEAD_CY + 14),
             (SEAT_CX, SEAT_HEAD_CY + 10), (SEAT_CX - 16, SEAT_HEAD_CY + 14),
         ]), BEARD_GRAY),
-        # Trapper hat: crown raised clear of the brow, brim, fur ear-flaps. Same construction
-        # as the portrait — an earlier portrait bug put the brim across the eyebrow line and
-        # every expression read as one gray stripe.
+        # Trapper hat: crown raised clear of the brow (a portrait bug once put the brim across
+        # the eyebrow line and every expression read as one gray stripe).
         (_poly([
             (SEAT_CX - 24, SEAT_HEAD_CY - 22), (SEAT_CX - 24, SEAT_HEAD_CY - 40),
             (SEAT_CX, SEAT_HEAD_CY - 48), (SEAT_CX + 24, SEAT_HEAD_CY - 40),
@@ -1241,16 +1267,16 @@ def make_seated_old_timer():
     img = Image.new("RGBA", (SEAT_W, SEAT_H), (0, 0, 0, 0))
     paste(img, composite_sprite(SEAT_W, SEAT_H, parts), 0, 0)
 
-    # A fanned hand of card backs, drawn after the silhouette so the cards read as held in
-    # front of him rather than as part of his body.
-    d = ImageDraw.Draw(img)
-    for i, ang in enumerate((-16, -8, 0, 8, 16)):
-        cx = SEAT_CX + ang * 1.5
-        top = 138 + abs(ang) * 0.35
-        d.rectangle((cx - 9, top, cx + 9, top + 30), fill=WOOD_MED, outline=INK)
-        d.rectangle((cx - 6, top + 3, cx + 6, top + 27), outline=GOLD)
+    # The hand, composited after the silhouette so it reads as held in front of him. Each card
+    # is rotated on its own layer — NEAREST keeps the edges hard, as pixel art requires.
+    for ang, dx in zip((-26, -13, 0, 13, 26), (-34, -18, 0, 18, 34)):
+        card = _mini_card_back()
+        rot = card.rotate(-ang, expand=True, resample=Image.NEAREST)
+        cx = SEAT_CX + dx - rot.width // 2
+        cy = int(126 + abs(ang) * 0.42)
+        img.paste(rot, (cx, cy), rot)
 
-    # Eyes and brows last, on top of the face.
+    d = ImageDraw.Draw(img)
     eye_y = SEAT_HEAD_CY - 3
     for side in (-1, 1):
         ex = SEAT_CX + side * 10
@@ -1261,27 +1287,31 @@ def make_seated_old_timer():
     return img
 
 
-def make_cat_frames(count=2, w=52, h=30):
+def make_cat_frames(count=2, w=52, h=34):
     """A cat asleep by the fire, two frames of slow breathing.
 
-    Two frames is enough because the motion is a swell, not a gait — the body simply rises a
-    pixel. Animated slowly (see the CSS), that reads as breathing; more frames would add
-    nothing a viewer could perceive at this size."""
+    Two frames is enough because the motion is a swell, not a gait — the body rises a pixel.
+    Animated slowly that reads as breathing; more frames would add nothing perceptible here.
+
+    Carries a contact shadow. Brown fur on a brown floor with no shadow read as a smudge, and
+    `contact_shadow()` had sat unused since 2d.1 built it — this is its first real consumer.
+    """
     frames = []
+    shadow = contact_shadow(44, 9, max_alpha=118)
     for i in range(count):
         img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-        rise = i  # one pixel of swell on the inhale frame
-        body_top = 12 - rise
+        img.paste(shadow, (5, h - 10), shadow)
+        rise = i
+        body_top = 14 - rise
         parts = [
-            (_ellipse(6, body_top, w - 14, h - 2), HAIR_BROWN),          # curled body
-            (_ellipse(w - 26, body_top - 5, w - 4, h - 8), HAIR_BROWN),  # head
+            (_ellipse(6, body_top, w - 14, h - 6), HAIR_BROWN),
+            (_ellipse(w - 26, body_top - 5, w - 4, h - 12), HAIR_BROWN),
             (_poly([(w - 22, body_top - 4), (w - 17, body_top - 12), (w - 13, body_top - 3)]), HAIR_BROWN),
             (_poly([(w - 11, body_top - 4), (w - 6, body_top - 12), (w - 3, body_top - 3)]), HAIR_BROWN),
-            (_ellipse(2, h - 12, 22, h - 4), HAIR_BROWN),                # tail curled round
+            (_ellipse(2, h - 16, 22, h - 8), HAIR_BROWN),
         ]
         paste(img, composite_sprite(w, h, parts), 0, 0)
         d = ImageDraw.Draw(img)
-        # Closed eyes: two small arcs. A sleeping cat needs no open eyes to read as a cat.
         for ex in (w - 20, w - 11):
             d.line((ex, body_top + 4, ex + 4, body_top + 4), fill=INK)
         frames.append(img)

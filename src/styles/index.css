@@ -233,7 +233,7 @@ body {
     left: calc((100vw - 900px) / 2 - 148px);
     bottom: calc(34% - 46px);
     width: 52px;
-    height: 30px;
+    height: 34px;
     overflow: hidden;
   }
   .scene-shelf {
@@ -246,7 +246,7 @@ body {
 }
 .scene-cat-strip {
   width: 104px;   /* 2 frames x 52px */
-  height: 30px;
+  height: 34px;
   background-image: url('/art/scene/cat_sheet.png');
   image-rendering: pixelated;
   /* Slow enough to read as breathing rather than as a glitch. Two frames is plenty: the
