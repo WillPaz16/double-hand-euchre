@@ -4,10 +4,16 @@ Generated deterministically by [`generate_art.py`](generate_art.py) — same app
 `claude-fairy-pixel-art`: a spec here, a script that draws every asset from math and logic (no
 AI image generation, no hand-placed pixels to lose track of), reproducible on every run.
 
-Native pixel grid throughout — assets are drawn small and displayed scaled by a whole-number
-factor with `image-rendering: pixelated`, per the "hybrid fixed-grid" approach in the Phase 2
-design spec. Never edit the PNGs in `public/art/` directly; edit this spec / the script and
+Native pixel grid throughout — assets are drawn small and displayed at a whole-number scale
+with `image-rendering: pixelated`, per the "hybrid fixed-grid" approach in the Phase 2 design
+spec. Never edit the PNGs in `public/art/` directly; edit this spec / the script and
 regenerate.
+
+**Native resolution is 80×112**, not the original 40×56 — chosen specifically so it equals what
+was previously the *2x on-screen display size*. That means bumping resolution for smoother
+pip curves and more portrait detail required zero CSS/React changes: the "normal" card size in
+`index.css` is now a true 1:1 native render (crisper than before, which was a 2x upscale of a
+smaller source) and the "mini" seat-back size is a clean 2x downscale of the same source.
 
 ## Palette — cabin by the fire
 
@@ -53,28 +59,42 @@ parchment doesn't need the distinction.
 
 ## Cards
 
-- **Native size:** 40×56px (5:7, close to a real card's ratio).
+- **Native size:** 80×112px (5:7, close to a real card's ratio).
 - **24 faces** — 4 suits × {9, 10, J, Q, K, A}.
-- **Corners:** rank glyph (hand-drawn 5×7 bitmap font — see script) stacked over a small
-  outlined suit pip, top-left and mirrored (180°) bottom-right. Classic card convention.
-- **Suit pips:** real geometry (overlapping circles/polygons — `_heart_mask` / `_spade_mask` /
-  `_club_mask` / `_diamond_mask`), not hand-typed bitmaps, and outlined via `pip_sprite()`. A
-  mini corner pip and a large center pip are the same mask function at a different size, so the
-  curves stay properly round at any scale instead of needing a separate asset per size.
+- **Corners:** rank glyph (5×7 bitmap font drawn at 2x block scale — see script) stacked over a
+  small outlined suit pip, with a deliberate gap between them, top-left and mirrored (180°)
+  bottom-right. Classic card convention. Generous margins on purpose — the pre-critique version
+  had the glyph and pip touching with almost no breathing room.
+- **Suit pips:** real geometry, not hand-typed bitmaps or crude circle-unions — outlined via
+  `pip_sprite()`. Hearts and spades use the actual parametric heart curve
+  (`x=16sin³t, y=13cos t − 5cos 2t − 2cos 3t − cos 4t`), not an approximation from overlapping
+  circles; spade is that same curve flipped plus a stem — the real heart/spade relationship.
+  Clubs are three circles at a wide-enough arrangement radius that a "waist" shows between
+  lobes instead of merging into one blob, plus a tapered stem. A mini corner pip and a large
+  center pip are the same mask function at a different size, so curves stay round at any scale.
+  - **Bug worth remembering:** an early version of the heart/spade flip had the boolean
+    inverted — visually the two looked similar enough at a glance that it took drawing explicit
+    top/bottom markers on a test render to actually prove which one was upside down. Lesson:
+    when a shape's correctness depends on orientation, verify it with an unambiguous visual
+    reference, don't eyeball two similar blobs against each other.
 - **Number cards (9, 10, A):** center gets one large outlined suit pip.
-- **Face cards (J, Q, K):** a chibi bust portrait (big head, small body — `draw_head` /
-  `draw_shoulders` / `draw_face` in the script), not a letter in a box. Every rank shares the
-  same face-building blocks (round eyes with a highlight dot, brows, blush, a mouth) and
-  differs in headwear and expression, built from primitive shapes so proportions are single-line
-  tweaks rather than pixel-by-pixel redraws:
-  - **King** — old and grizzled, gray beard, furrowed brows, gold crown, no smile. A deliberate
-    nod to the single-player opponent rather than a generic storybook king.
-  - **Queen** — auburn hair falling past the shoulders, gold circlet, level brows, smiling.
-  - **Jack** — a knave, not royalty: no crown, a tilted cap and feather, one raised eyebrow for
-    a bit of cheek, smiling.
-  - Shoulders/collar are suit-colored, tying each face card back to its suit the same way the
-    corner pips do.
-- **Card back:** same 40×56 frame, `wood_dark` base with a `wood_med`/`wood_light` diamond
+- **Face cards (J, Q, K):** an extreme-chibi bust portrait (`draw_head` / `draw_body` /
+  `draw_face` in the script) — big round head carrying almost the whole character, small simple
+  color-blocked body underneath, directly inspired by Gen 3/4 Pokémon overworld trainer sprites
+  rather than a more evenly-proportioned figure. Headwear is the main silhouette/identity
+  signature, the same way it is on those sprites — not the face. Every rank shares the same
+  face-building blocks (round eyes with a highlight dot, brows, blush, a mouth) and differs in
+  headwear and expression, built from primitive shapes so proportions are single-line tweaks
+  rather than pixel-by-pixel redraws:
+  - **King** — old and grizzled, gray beard, furrowed brows, a big 5-peak gold crown, no smile.
+    A deliberate nod to the single-player opponent rather than a generic storybook king.
+  - **Queen** — auburn hair falling past the shoulders, a gold circlet with a small gem, level
+    brows, smiling.
+  - **Jack** — a knave, not royalty: no crown, a tilted cap and a long feather, one raised
+    eyebrow for a bit of cheek, smiling.
+  - Body/collar are suit-colored, tying each face card back to its suit the same way the corner
+    pips do.
+- **Card back:** same 80×112 frame, `wood_dark` base with a `wood_med`/`wood_light` diamond
   lattice, `gold` corner accent.
 
 ## Table
