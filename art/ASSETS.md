@@ -125,6 +125,14 @@ cool when the docstring promised warm). `_shift()` now scales both the lightenin
 by each channel's remaining **headroom**, so neither can clamp at any brightness. Validate
 colour maths against the extremes of the palette, not one convenient mid-tone.
 
+**Honest limit of that fix.** Headroom scaling stops the clamping, but it does not preserve
+the temperature *relative to base* on colours already at a channel ceiling. `FIRE_CORE` is
+already 255 red, so lightening can only raise green and blue — its highlight is necessarily
+*less* saturated, and therefore less warm, than its base. That is physically right (a
+highlight approaching white loses hue) but it does mean the warm/cool split is weakest exactly
+at the brightest, most saturated colours. Where a warm highlight genuinely matters on a bright
+element, tint the base colour instead of relying on the ramp.
+
 ## Environment palette
 
 `TABLE_WOOD`, `WALL_WOOD`, `CHINKING`, `FLOOR_WOOD`, `NIGHT_BLUE`/`NIGHT_BLUE_DEEP`, `FROST`,
@@ -173,12 +181,26 @@ front it lights the cards.
   broad through the lower half; a simple taper from the base reads as a cone. Frame variation
   comes only from phase/sway so the shape family stays consistent — animating by swapping
   unrelated blobs reads as noise, not fire.
+  - **Bug worth remembering:** height and sway were both driven by `sin(phase)`. With four
+    frames, phases 0 and π both give `sin = 0`, so frames 0 and 2 came out identical in the
+    dominant outer silhouette — four frames, three distinct shapes, and a loop that pumped
+    between two states. Height now uses `sin` and sway `cos` so the pair traces a circle and
+    every sample differs. Sampling one sinusoid at multiples of π is the general trap.
+  - The hearth's own stones are lit by firelight falloff from the opening. An object that
+    throws light into the room but is itself uniformly lit quietly breaks the illusion.
 - **`window_glass.png` + `window_frame.png`** (120×146) — split into two layers so snow falls
   *behind* the glazing bars; baking the bars into the glass puts snow in front of them, which
   reads as dirt on the lens. The glass is the room's **cool reference**, built with
   `warm=False`; the sash is firelit and warm. That juxtaposition is the point of the object.
 - **`snow.png`** (120×72) — vertically seamless, animated by continuous `translateY` rather
-  than stepped frames. Snow stepped at 4–8fps stutters; the fire *wants* stepping, snow does not.
+  than stepped frames. Snow stepped at 4–8fps stutters; the fire *wants* stepping, snow does
+  not. Rate matters: 3.5s per 72px tile ≈ 21px/s, crossing the pane in ~7s. An earlier 11s
+  worked out at 6.5px/s — about 22s to cross — and read as static specks, not weather.
+- **`floor.png`** (96×96) — tileable floorboards with staggered end-joints, plus a CSS
+  skirting line at the wall/floor junction. The room previously had a wall and a table but no
+  ground, which was the clearest single reason it read as props pinned to a backdrop. Value
+  sits between wall and table, so the scene reads back-to-front: wall (darkest) → floor →
+  table (lightest). Scene objects are anchored to this floor line, not floated on the wall.
 
 ## Animation convention
 
@@ -192,8 +214,11 @@ Every ambient animation needs a `prefers-reduced-motion` guard.
 **Two independent gates**, guarding two different scarce resources:
 - `max-height: 480px` (**lean mode**) — landscape phone is already at 100% of its vertical
   budget, so the entire scene layer is dropped. Verified: 0 running animations in that mode.
-- `min-width: 1120px` — side scenery needs horizontal margin beside the table that a phone
-  does not have, so fireplace and window only appear once there is room.
+- `min-width: 1240px` — side scenery needs real horizontal margin beside the table. 1240 =
+  the table's 900px cap plus 170px each side. An earlier 1120 gate was wrong in a specific
+  way worth remembering: it turned scenery *on* at a width where the objects then slid under
+  the table, and since the layer is `z-index: -1` they were silently occluded by it. A
+  `max(24px, …)` floor on their position gave back exactly the margin the gate had promised.
 
 Scenery is decorative-only precisely so these gates can remove it without touching playability.
 

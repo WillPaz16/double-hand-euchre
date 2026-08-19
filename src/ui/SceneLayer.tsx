@@ -8,18 +8,26 @@
  *  Two independent gates decide what shows, because they guard different scarce resources:
  *    - height (`max-height: 480px`) — landscape phone is already at 100% of its vertical
  *      budget, so the whole layer goes.
- *    - width  (`min-width: 1120px`) — side scenery needs horizontal margin beside the table
- *      that simply doesn't exist on a phone, so it only appears once there's room for it.
+ *    - width  (`min-width: 1240px`) — side scenery needs real horizontal margin beside the
+ *      table. 1240 = the table's 900px cap plus 170px each side; gating at 1120 let the
+ *      fireplace and window slide *under* the table, and since this layer is z-index -1 they
+ *      were simply occluded by it.
+ *
+ *  Every asset is a CSS background on a gated selector rather than an <img>, so nothing is
+ *  fetched at viewports where it can never be shown.
  */
 export function SceneLayer() {
   return (
     <div className="scene-layer" aria-hidden="true">
+      {/* The floor. Without a ground plane and a wall/floor junction the room read as props
+          pinned to a backdrop; it is also what 2d.3's seated figure and cat will rest on. */}
+      <div className="scene-floor" />
+
       <div className="scene-fireplace">
-        <img className="scene-fireplace-img" src="/art/scene/fireplace.png" alt="" />
-        {/* Frame strip animated with transform + steps(): compositor-only. Animating
+        {/* Sprite strip animated with transform + steps(): compositor-only. Animating
             background-position instead would repaint every frame — see ASSETS.md. */}
         <div className="scene-fire">
-          <img src="/art/scene/fire_sheet.png" alt="" />
+          <div className="scene-fire-strip" />
         </div>
         <div className="scene-firelight" />
       </div>
@@ -27,11 +35,11 @@ export function SceneLayer() {
           then sash. Baking the bars into the glass would put snow in front of them, which
           reads as dirt on the lens rather than as weather outside. */}
       <div className="scene-window">
-        <img className="scene-window-layer" src="/art/scene/window_glass.png" alt="" />
+        <div className="scene-window-glass" />
         <div className="scene-snow-clip">
           <div className="scene-snow" />
         </div>
-        <img className="scene-window-layer" src="/art/scene/window_frame.png" alt="" />
+        <div className="scene-window-frame" />
         <div className="scene-moonlight" />
       </div>
       <div className="scene-hearth-glow" />

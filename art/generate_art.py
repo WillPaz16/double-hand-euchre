@@ -935,31 +935,35 @@ def _flame(draw, cx, base_y, w, h, sway, color, phase):
 
 
 def make_fire_frames(count=4, w=66, h=58):
-    """Animation frames for the hearth fire. Deterministic: every frame is a pure function of
-    its index, no randomness, so regeneration is byte-identical."""
+    """Animation frames for the hearth fire. Deterministic: each frame is a pure function of
+    its index, no randomness, so regeneration is byte-identical.
+
+    **Height and sway are driven by sin and cos respectively, not both by sin.** With both on
+    `sin(phase)` and four frames, phases 0 and pi both give sin = 0, so frames 0 and 2 came out
+    with identical height *and* sway — 4 frames but only 3 distinct outer silhouettes, and the
+    loop read as a shape pumping between two states rather than as fire. Using sin for one
+    dimension and cos for the other makes the pair trace a circle, so every sample is distinct.
+    Sampling a single sinusoid at multiples of pi is the general trap here.
+    """
     frames = []
     for i in range(count):
         img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         d = ImageDraw.Draw(img)
         phase = 2 * math.pi * i / count
+        sin_p, cos_p = math.sin(phase), math.cos(phase)
         cx, base = w / 2, h - 7
 
-        # Burning logs across the base, so the flames have something to rise from.
-        for lx, ly, lw in ((8, 4, 22), (26, 6, 24), (17, 0, 20)):
+        for lx, ly, lw in ((10, 4, 24), (30, 6, 26), (20, 0, 22)):
             d.rectangle((lx, base + ly - 4, lx + lw, base + ly), fill=darken(WOOD_MED, 0.7))
             d.rectangle((lx, base + ly - 4, lx + lw, base + ly - 3), fill=EMBER)
 
-        # Three nested tongues: outer deep red, mid orange, bright core.
-        _flame(d, cx, base, 34, 30 + 5 * math.sin(phase), 3 * math.sin(phase), FIRE_DEEP, phase)
-        _flame(d, cx, base, 23, 23 + 5 * math.sin(phase + 1.1), 2 * math.sin(phase + 1.1),
-               FIRE_MID, phase + 1.1)
-        _flame(d, cx, base, 12, 14 + 4 * math.sin(phase + 2.2), 1.5 * math.sin(phase + 2.2),
-               FIRE_CORE, phase + 2.2)
+        _flame(d, cx, base, 36, 32 + 6 * sin_p, 3.5 * cos_p, FIRE_DEEP, phase)
+        _flame(d, cx, base, 25, 24 + 5 * cos_p, 2.5 * sin_p, FIRE_MID, phase + 1.1)
+        _flame(d, cx, base, 13, 15 + 4 * sin_p, 1.5 * cos_p, FIRE_CORE, phase + 2.2)
 
-        # A few embers lifting off, offset per frame so they read as rising.
-        for k, (ex, ey) in enumerate(((14, 20), (38, 26), (27, 14))):
-            off = (i * 3 + k * 2) % 12
-            d.point((ex + (k % 2), base - ey - off), fill=FIRE_CORE if off < 6 else FIRE_MID)
+        for k, (ex, ey) in enumerate(((16, 22), (42, 28), (30, 16))):
+            off = (i * 4 + k * 3) % 14
+            d.point((ex + (k % 2), base - ey - off), fill=FIRE_CORE if off < 7 else FIRE_MID)
         frames.append(img)
     return frames
 
@@ -1007,6 +1011,12 @@ def make_fireplace(w=140, h=186):
             x0, y0 = x + 1, y + 1
             x1, y1 = min(x + sw - 2, w - 1), min(y + course_h - 3, h - 1)
             if x1 >= x0 and y1 >= y0:
+                # Firelight falloff: the hearth emits light into the room, so its own stones
+                # must be lit by it too. Without this the object throwing the glow is itself
+                # uniformly lit, which quietly breaks the illusion.
+                mid_x, mid_y = (x0 + x1) / 2, (y0 + y1) / 2
+                dist = math.hypot(mid_x - w / 2, mid_y - 132) / 110.0
+                tone = _mix(tone, FIRE_DEEP, max(0.0, 0.30 - dist * 0.30))
                 d.rectangle((x0, y0, x1, y1), fill=tone)
                 d.line((x0, y0, x1, y0), fill=_mix(tone, hi, 0.5))      # lit top edge
                 d.line((x0, y1, x1, y1), fill=_mix(tone, deep, 0.45))   # shadowed underside
@@ -1109,7 +1119,7 @@ def make_snowfall(w=120, h=72):
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     seed = 11
-    for i in range(34):
+    for i in range(58):
         seed = (seed * 1103515245 + 12345) % 2147483648
         x = seed % w
         y = (seed // w) % h
@@ -1119,6 +1129,47 @@ def make_snowfall(w=120, h=72):
             d.rectangle((x, y, x + 1, y + 1), fill=tone)
         else:
             d.point((x, y), fill=tone)
+    return img
+
+
+def make_floorboards(size=96):
+    """Tileable floor. The room had a wall and a table but no ground, which is the single
+    clearest reason it read as props pinned to a backdrop rather than as a place — and the
+    seated figure and cat in 2d.3 need something to rest on.
+
+    Boards run horizontally with staggered end-joints, the same anti-striping treatment
+    make_wall_texture needed: unbroken runs at uniform spacing are what telegraph a tile.
+    Value sits deliberately between the dark wall and the lit table, so the room reads
+    back-to-front as wall (darkest) -> floor -> table (lightest).
+    """
+    hi_f, base, sh_f, deep_f = ramp(FLOOR_WOOD)
+    hi = _mix(base, hi_f, 0.55)
+    sh = _mix(base, sh_f, 0.55)
+    deep = _mix(base, deep_f, 0.6)
+
+    img = Image.new("RGBA", (size, size), base)
+    d = ImageDraw.Draw(img)
+
+    board_h = 24
+    joints = ((41,), (17, 68), (55,), (29, 79))
+    for row, by in enumerate(range(0, size, board_h)):
+        tone = (base, _mix(base, hi, 0.3), _mix(base, sh, 0.25), base)[row % 4]
+        d.rectangle((0, by, size, by + board_h - 2), fill=tone)
+        # Grain along the board.
+        seed = row * 13 + 5
+        for gy in range(by + 3, by + board_h - 3, 5):
+            x = (seed * 7) % 11
+            while x < size:
+                run = 6 + (seed % 9)
+                d.line((x, gy, min(x + run, size), gy),
+                       fill=sh if (seed // 3) % 2 else hi)
+                x += run + 5 + (seed % 4)
+                seed += 7
+        for jx in joints[row % len(joints)]:
+            d.line((jx, by, jx, by + board_h - 3), fill=deep)
+            d.line((jx + 1, by, jx + 1, by + board_h - 3), fill=hi)
+        d.line((0, by + board_h - 2, size, by + board_h - 2), fill=deep)
+        d.line((0, by + board_h - 1, size, by + board_h - 1), fill=_mix(base, hi, 0.4))
     return img
 
 
@@ -1142,6 +1193,7 @@ def main() -> None:
     make_window_glass().save(os.path.join(scene_dir, "window_glass.png"))
     make_window_frame().save(os.path.join(scene_dir, "window_frame.png"))
     make_snowfall().save(os.path.join(scene_dir, "snow.png"))
+    make_floorboards().save(os.path.join(scene_dir, "floor.png"))
 
     portraits_dir = os.path.join(OUT_ROOT, "portraits")
     os.makedirs(portraits_dir, exist_ok=True)

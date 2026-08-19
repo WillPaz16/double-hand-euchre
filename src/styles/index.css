@@ -58,35 +58,63 @@ body {
   .scene-hearth-glow { animation: none; }
 }
 /* --- Scene objects (2d.2) ------------------------------------------------------------- */
-/* Side scenery needs horizontal margin beside the table, which a phone simply does not have.
-   So it is gated on WIDTH, separately from lean mode's HEIGHT gate — two different scarce
-   resources, two different gates. Below this width the room is just glow + vignette. */
-.scene-fireplace {
+/* Assets are CSS backgrounds on gated selectors rather than <img> tags, so nothing is
+   fetched at viewports where it can never be shown. */
+
+/* The floor, and the wall/floor junction. The room previously had a wall and a table but no
+   ground, which is the clearest single reason it read as props pinned to a backdrop. The
+   scene now reads back-to-front by value: wall (darkest) -> floor -> table (lightest). */
+.scene-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 34%;
+  background-image: url('/art/scene/floor.png');
+  background-repeat: repeat;
+  image-rendering: pixelated;
+  /* The junction itself: a dark skirting line plus a lit lip, the same lit-edge/shadow pair
+     the table rim uses to read as a physical boundary rather than a colour change. */
+  border-top: 3px solid #17100c;
+  box-shadow: inset 0 3px 0 rgba(255, 198, 132, 0.10);
+}
+
+/* Side scenery is gated on WIDTH, separately from lean mode's HEIGHT gate — two different
+   scarce resources. 1240 = the table's 900px cap plus 170px of real margin each side. An
+   earlier 1120 gate let both objects slide under the table and, being z-index -1, simply be
+   occluded by it: the gate promised margin that its own max(24px, …) floor then took back. */
+.scene-fireplace,
+.scene-window {
   display: none;
 }
-@media (min-width: 1120px) {
+@media (min-width: 1240px) {
   .game-root {
     max-width: 900px;
     margin-inline: auto;
   }
-  .scene-fireplace {
+  .scene-fireplace,
+  .scene-window {
     display: block;
     position: absolute;
-    left: max(24px, calc((100vw - 900px) / 2 - 164px));
-    top: 50%;
-    transform: translateY(-50%);
+  }
+  /* Anchored so the hearth's base meets the floor line rather than floating on the wall. */
+  .scene-fireplace {
+    left: calc((100vw - 900px) / 2 - 160px);
+    bottom: calc(34% - 6px);
     width: 140px;
     height: 186px;
+    background-image: url('/art/scene/fireplace.png');
+    image-rendering: pixelated;
+  }
+  .scene-window {
+    right: calc((100vw - 900px) / 2 - 140px);
+    top: 16%;
+    width: 120px;
+    height: 146px;
   }
 }
-.scene-fireplace-img {
-  position: absolute;
-  inset: 0;
-  width: 140px;
-  height: 186px;
-  image-rendering: pixelated;
-}
-/* One frame's worth of window onto the strip; the strip itself slides behind it. */
+
+/* One frame's window onto the strip; the strip slides behind it. */
 .scene-fire {
   position: absolute;
   left: 37px;
@@ -95,11 +123,12 @@ body {
   height: 58px;
   overflow: hidden;
 }
-.scene-fire > img {
+.scene-fire-strip {
   width: 264px;   /* 4 frames x 66px */
   height: 58px;
+  background-image: url('/art/scene/fire_sheet.png');
   image-rendering: pixelated;
-  animation: fire-flicker 0.55s steps(4) infinite;
+  animation: fire-flicker 0.5s steps(4) infinite;
 }
 @keyframes fire-flicker {
   to { transform: translateX(-264px); }
@@ -108,13 +137,13 @@ body {
    two never lock into an obvious rhythm. */
 .scene-firelight {
   position: absolute;
-  left: -120px;
-  top: 20px;
-  width: 400px;
-  height: 260px;
+  left: -140px;
+  top: -20px;
+  width: 440px;
+  height: 320px;
   background: radial-gradient(
     ellipse 50% 50% at 42% 55%,
-    rgba(255, 150, 60, 0.20),
+    rgba(255, 150, 60, 0.22),
     rgba(255, 150, 60, 0) 70%
   );
   animation: firelight-pulse 2.3s ease-in-out infinite;
@@ -123,39 +152,25 @@ body {
   0%, 100% { opacity: 0.75; }
   50% { opacity: 1; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .scene-fire > img,
-  .scene-firelight { animation: none; }
-}
 
-.scene-window {
-  display: none;
-}
-@media (min-width: 1120px) {
-  .scene-window {
-    display: block;
-    position: absolute;
-    right: max(24px, calc((100vw - 900px) / 2 - 144px));
-    top: 22%;
-    width: 120px;
-    height: 146px;
-  }
-}
-.scene-window-layer {
+.scene-window-glass,
+.scene-window-frame {
   position: absolute;
   inset: 0;
-  width: 120px;
-  height: 146px;
   image-rendering: pixelated;
 }
+.scene-window-glass { background-image: url('/art/scene/window_glass.png'); }
+.scene-window-frame { background-image: url('/art/scene/window_frame.png'); }
+
 .scene-snow-clip {
   position: absolute;
   inset: 4px;
   overflow: hidden;
 }
-/* Continuous drift, not stepped frames. Snow stepped at 4-8fps reads as stuttering; the
-   tile is seamless top-to-bottom so translating it by exactly one tile height loops
-   invisibly, and transform keeps it on the compositor. */
+/* Continuous drift, not stepped frames: snow stepped at 4-8fps stutters. The tile is seamless
+   top-to-bottom, so translating by exactly one tile height (72px) loops invisibly and stays on
+   the compositor. 3.5s -> ~21px/s, crossing the pane in about 7s; an earlier 11s worked out at
+   6.5px/s, which took ~22s to cross and read as static specks rather than as weather. */
 .scene-snow {
   position: absolute;
   left: 0;
@@ -165,14 +180,14 @@ body {
   background-image: url('/art/scene/snow.png');
   background-repeat: repeat;
   image-rendering: pixelated;
-  animation: snowfall 11s linear infinite;
+  animation: snowfall 3.5s linear infinite;
 }
 @keyframes snowfall {
   to { transform: translateY(72px); }
 }
 /* Cool spill from the window, the counterweight to .scene-firelight. Steady, not pulsing:
-   moonlight does not flicker, and the contrast between a still cool source and a breathing
-   warm one is what makes the fire read as alive. */
+   moonlight does not flicker, and a still cool source beside a breathing warm one is what
+   makes the fire read as the living thing. */
 .scene-moonlight {
   position: absolute;
   left: -90px;
@@ -186,6 +201,8 @@ body {
   );
 }
 @media (prefers-reduced-motion: reduce) {
+  .scene-fire-strip,
+  .scene-firelight,
   .scene-snow { animation: none; }
 }
 
