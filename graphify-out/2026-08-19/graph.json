@@ -52,71 +52,6 @@
   },
   "nodes": [
     {
-      "label": "Action",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L75",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "action",
-      "id": "shared_engine_types_action"
-    },
-    {
-      "label": "HandRole",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L4",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "handrole",
-      "id": "shared_engine_types_handrole"
-    },
-    {
-      "label": "LonerTier",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L16",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "lonertier",
-      "id": "shared_engine_types_lonertier"
-    },
-    {
-      "label": "Phase",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L18",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "phase",
-      "id": "shared_engine_types_phase"
-    },
-    {
-      "label": "Player",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L3",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "player",
-      "id": "shared_engine_types_player"
-    },
-    {
       "label": "PlayerView",
       "file_type": "code",
       "source_file": "shared/engine/types.ts",
@@ -125,22 +60,9 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "playerview",
       "id": "shared_engine_types_playerview"
-    },
-    {
-      "label": "Suit",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L1",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "suit",
-      "id": "shared_engine_types_suit"
     },
     {
       "label": "Expression",
@@ -151,7 +73,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "expression",
       "id": "src_game_useopponentexpression_expression"
     },
@@ -164,22 +86,48 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "soundname",
       "id": "src_game_usesfx_soundname"
     },
     {
-      "label": "PlayStateOptions",
+      "label": "deal",
       "file_type": "code",
-      "source_file": "tests/helpers.ts",
-      "source_location": "L41",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L50",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 11,
+      "community": 2,
       "community_name": "types.ts",
-      "norm_label": "playstateoptions",
-      "id": "tests_helpers_playstateoptions"
+      "norm_label": "deal",
+      "id": "shared_engine_deck_deal"
+    },
+    {
+      "label": "Action",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L75",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "action",
+      "id": "shared_engine_types_action"
+    },
+    {
+      "label": "Card",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L6",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "card",
+      "id": "shared_engine_types_card"
     },
     {
       "label": "Config",
@@ -190,7 +138,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "config",
       "id": "shared_engine_types_config"
     },
@@ -203,7 +151,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "gamestate",
       "id": "shared_engine_types_gamestate"
     },
@@ -216,22 +164,113 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "handid",
       "id": "shared_engine_types_handid"
     },
     {
-      "label": "Card",
+      "label": "HandRole",
       "file_type": "code",
       "source_file": "shared/engine/types.ts",
-      "source_location": "L6",
+      "source_location": "L4",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "card",
-      "id": "shared_engine_types_card"
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "handrole",
+      "id": "shared_engine_types_handrole"
+    },
+    {
+      "label": "LonerTier",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L16",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "lonertier",
+      "id": "shared_engine_types_lonertier"
+    },
+    {
+      "label": "Phase",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L18",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "phase",
+      "id": "shared_engine_types_phase"
+    },
+    {
+      "label": "Player",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L3",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "player",
+      "id": "shared_engine_types_player"
+    },
+    {
+      "label": "PlayerHands",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L30",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "playerhands",
+      "id": "shared_engine_types_playerhands"
+    },
+    {
+      "label": "Rank",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L2",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "rank",
+      "id": "shared_engine_types_rank"
+    },
+    {
+      "label": "Suit",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L1",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "suit",
+      "id": "shared_engine_types_suit"
+    },
+    {
+      "label": "PlayStateOptions",
+      "file_type": "code",
+      "source_file": "tests/helpers.ts",
+      "source_location": "L41",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "playstateoptions",
+      "id": "tests_helpers_playstateoptions"
     },
     {
       "label": "TrickCard",
@@ -247,61 +286,10 @@
       "id": "shared_engine_types_trickcard"
     },
     {
-      "label": "deal",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L50",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "deck.ts",
-      "norm_label": "deal",
-      "id": "shared_engine_deck_deal"
-    },
-    {
-      "label": "PlayerHands",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L30",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "deck.ts",
-      "norm_label": "playerhands",
-      "id": "shared_engine_types_playerhands"
-    },
-    {
-      "label": "Rank",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L2",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "deck.ts",
-      "norm_label": "rank",
-      "id": "shared_engine_types_rank"
-    },
-    {
-      "label": "_clamp()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L82",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_clamp",
-      "community": 0,
-      "community_name": "main",
-      "norm_label": "_clamp()"
-    },
-    {
       "label": "main()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L1325",
+      "source_location": "L1355",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_main",
@@ -349,7 +337,7 @@
       "label": "make_shelf()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L1291",
+      "source_location": "L1321",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_shelf",
@@ -368,18 +356,6 @@
       "community": 0,
       "community_name": "main",
       "norm_label": "make_snowfall()"
-    },
-    {
-      "label": "make_sprite_sheet()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L149",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_make_sprite_sheet",
-      "community": 0,
-      "community_name": "main",
-      "norm_label": "make_sprite_sheet()"
     },
     {
       "label": "make_table_felt()",
@@ -454,18 +430,6 @@
       "norm_label": "ramp()"
     },
     {
-      "label": "_shift()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L86",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_shift",
-      "community": 0,
-      "community_name": "main",
-      "norm_label": "_shift()"
-    },
-    {
       "label": "App()",
       "file_type": "code",
       "source_file": "src/App.tsx",
@@ -473,7 +437,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "app()",
       "id": "src_app_app"
     },
@@ -485,7 +449,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "freshseed()",
       "id": "src_game_usegame_freshseed"
     },
@@ -497,7 +461,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "usegame()",
       "id": "src_game_usegame_usegame"
     },
@@ -509,7 +473,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "useopponentexpression()",
       "id": "src_game_useopponentexpression_useopponentexpression"
     },
@@ -521,7 +485,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "play()",
       "id": "src_game_usesfx_play"
     },
@@ -533,7 +497,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "usesfx()",
       "id": "src_game_usesfx_usesfx"
     },
@@ -545,7 +509,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "usesoundbank()",
       "id": "src_game_usesfx_usesoundbank"
     },
@@ -557,7 +521,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "bidpanel()",
       "id": "src_ui_bidpanel_bidpanel"
     },
@@ -569,7 +533,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "label()",
       "id": "src_ui_bidpanel_label"
     },
@@ -581,7 +545,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "card()",
       "id": "src_ui_card_card"
     },
@@ -593,7 +557,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "cardasset()",
       "id": "src_ui_card_cardasset"
     },
@@ -605,7 +569,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "cardback()",
       "id": "src_ui_card_cardback"
     },
@@ -617,33 +581,9 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "game()",
       "id": "src_ui_game_game"
-    },
-    {
-      "label": "cardsEqual()",
-      "file_type": "code",
-      "source_file": "src/ui/HandTray.tsx",
-      "source_location": "L4",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "cardsequal()",
-      "id": "src_ui_handtray_cardsequal"
-    },
-    {
-      "label": "HandTray()",
-      "file_type": "code",
-      "source_file": "src/ui/HandTray.tsx",
-      "source_location": "L12",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "handtray()",
-      "id": "src_ui_handtray_handtray"
     },
     {
       "label": "SceneLayer()",
@@ -652,10 +592,10 @@
       "source_location": "L19",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_scenelayer_scenelayer",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "scenelayer()"
+      "community_name": "Game.tsx",
+      "norm_label": "scenelayer()",
+      "id": "src_ui_scenelayer_scenelayer"
     },
     {
       "label": "Scoreboard()",
@@ -665,7 +605,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "scoreboard()",
       "id": "src_ui_scoreboard_scoreboard"
     },
@@ -677,7 +617,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "scorepair()",
       "id": "src_ui_scoreboard_scorepair"
     },
@@ -689,7 +629,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "statusbanner()",
       "id": "src_ui_statusbanner_statusbanner"
     },
@@ -701,7 +641,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "remaininginhand()",
       "id": "src_ui_table_remaininginhand"
     },
@@ -713,7 +653,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "samehand()",
       "id": "src_ui_table_samehand"
     },
@@ -725,7 +665,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "seatlabel()",
       "id": "src_ui_table_seatlabel"
     },
@@ -737,7 +677,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "table()",
       "id": "src_ui_table_table"
     },
@@ -750,20 +690,8 @@
       "_origin": "ast",
       "id": "art_generate_art_arm",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "_arm()"
-    },
-    {
-      "label": "_club_mask()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L335",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_club_mask",
-      "community": 15,
-      "community_name": "generate_art.py",
-      "norm_label": "_club_mask()"
     },
     {
       "label": "_collar()",
@@ -774,32 +702,20 @@
       "_origin": "ast",
       "id": "art_generate_art_collar",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "_collar()"
     },
     {
-      "label": "contact_shadow()",
+      "label": "draw_face()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L160",
+      "source_location": "L497",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_contact_shadow",
+      "id": "art_generate_art_draw_face",
       "community": 15,
-      "community_name": "generate_art.py",
-      "norm_label": "contact_shadow()"
-    },
-    {
-      "label": "_diamond_mask()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L325",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_diamond_mask",
-      "community": 15,
-      "community_name": "generate_art.py",
-      "norm_label": "_diamond_mask()"
+      "community_name": "make_face_card",
+      "norm_label": "draw_face()"
     },
     {
       "label": "_ellipse()",
@@ -810,7 +726,7 @@
       "_origin": "ast",
       "id": "art_generate_art_ellipse",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "_ellipse()"
     },
     {
@@ -822,7 +738,7 @@
       "_origin": "ast",
       "id": "art_generate_art_fringe",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "_fringe()"
     },
     {
@@ -834,7 +750,7 @@
       "_origin": "ast",
       "id": "art_generate_art_hand",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "_hand()"
     },
     {
@@ -846,32 +762,8 @@
       "_origin": "ast",
       "id": "art_generate_art_head",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "_head()"
-    },
-    {
-      "label": "_heart_curve_points()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L278",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_heart_curve_points",
-      "community": 15,
-      "community_name": "generate_art.py",
-      "norm_label": "_heart_curve_points()"
-    },
-    {
-      "label": "_heart_mask()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L310",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_heart_mask",
-      "community": 15,
-      "community_name": "generate_art.py",
-      "norm_label": "_heart_mask()"
     },
     {
       "label": "_hem_trim()",
@@ -882,7 +774,7 @@
       "_origin": "ast",
       "id": "art_generate_art_hem_trim",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "_hem_trim()"
     },
     {
@@ -894,7 +786,7 @@
       "_origin": "ast",
       "id": "art_generate_art_make_face_card",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "make_face_card()"
     },
     {
@@ -906,7 +798,7 @@
       "_origin": "ast",
       "id": "art_generate_art_old_timer_parts",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "_old_timer_parts()"
     },
     {
@@ -918,7 +810,7 @@
       "_origin": "ast",
       "id": "art_generate_art_poly",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "_poly()"
     },
     {
@@ -930,7 +822,7 @@
       "_origin": "ast",
       "id": "art_generate_art_robe",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "_robe()"
     },
     {
@@ -942,32 +834,8 @@
       "_origin": "ast",
       "id": "art_generate_art_sculpted_hair",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "_sculpted_hair()"
-    },
-    {
-      "label": "_spade_mask()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L317",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_spade_mask",
-      "community": 15,
-      "community_name": "generate_art.py",
-      "norm_label": "_spade_mask()"
-    },
-    {
-      "label": "_stem()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L296",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_stem",
-      "community": 15,
-      "community_name": "generate_art.py",
-      "norm_label": "_stem()"
     },
     {
       "label": "body_color()",
@@ -978,7 +846,7 @@
       "_origin": "ast",
       "id": "art_generate_art_body_color",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "body_color()"
     },
     {
@@ -990,7 +858,7 @@
       "_origin": "ast",
       "id": "art_generate_art_draw_card_frame",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "draw_card_frame()"
     },
     {
@@ -1002,8 +870,20 @@
       "_origin": "ast",
       "id": "art_generate_art_draw_glyph",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "draw_glyph()"
+    },
+    {
+      "label": "draw_old_timer_face()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L717",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_draw_old_timer_face",
+      "community": 16,
+      "community_name": "Image",
+      "norm_label": "draw_old_timer_face()"
     },
     {
       "label": "make_number_card()",
@@ -1014,8 +894,20 @@
       "_origin": "ast",
       "id": "art_generate_art_make_number_card",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "make_number_card()"
+    },
+    {
+      "label": "make_old_timer_portrait()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L747",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_make_old_timer_portrait",
+      "community": 16,
+      "community_name": "Image",
+      "norm_label": "make_old_timer_portrait()"
     },
     {
       "label": "make_scoreboard_card()",
@@ -1026,8 +918,20 @@
       "_origin": "ast",
       "id": "art_generate_art_make_scoreboard_card",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "make_scoreboard_card()"
+    },
+    {
+      "label": "paste()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L243",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_paste",
+      "community": 16,
+      "community_name": "Image",
+      "norm_label": "paste()"
     },
     {
       "label": "paste_corners()",
@@ -1038,7 +942,7 @@
       "_origin": "ast",
       "id": "art_generate_art_paste_corners",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "paste_corners()"
     },
     {
@@ -1050,7 +954,7 @@
       "_origin": "ast",
       "id": "art_generate_art_pip_sprite",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "pip_sprite()"
     },
     {
@@ -1062,7 +966,7 @@
       "_origin": "ast",
       "id": "art_generate_art_score_card_frame",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "_score_card_frame()"
     },
     {
@@ -1074,7 +978,7 @@
       "_origin": "ast",
       "id": "art_generate_art_text_color",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "text_color()"
     },
     {
@@ -1086,7 +990,7 @@
       "_origin": "ast",
       "id": "art_generate_art_composite_sprite",
       "community": 17,
-      "community_name": "composite_sprite",
+      "community_name": "make_seated_old_timer",
       "norm_label": "composite_sprite()"
     },
     {
@@ -1098,7 +1002,7 @@
       "_origin": "ast",
       "id": "art_generate_art_darken",
       "community": 17,
-      "community_name": "composite_sprite",
+      "community_name": "make_seated_old_timer",
       "norm_label": "darken()"
     },
     {
@@ -1110,7 +1014,7 @@
       "_origin": "ast",
       "id": "art_generate_art_flame",
       "community": 17,
-      "community_name": "composite_sprite",
+      "community_name": "make_seated_old_timer",
       "norm_label": "_flame()"
     },
     {
@@ -1122,20 +1026,32 @@
       "_origin": "ast",
       "id": "art_generate_art_make_fire_frames",
       "community": 17,
-      "community_name": "composite_sprite",
+      "community_name": "make_seated_old_timer",
       "norm_label": "make_fire_frames()"
     },
     {
       "label": "make_seated_old_timer()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L1184",
+      "source_location": "L1198",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_seated_old_timer",
       "community": 17,
-      "community_name": "composite_sprite",
+      "community_name": "make_seated_old_timer",
       "norm_label": "make_seated_old_timer()"
+    },
+    {
+      "label": "_mini_card_back()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1184",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_mini_card_back",
+      "community": 17,
+      "community_name": "make_seated_old_timer",
+      "norm_label": "_mini_card_back()"
     },
     {
       "label": "_shadow_band()",
@@ -1146,68 +1062,32 @@
       "_origin": "ast",
       "id": "art_generate_art_shadow_band",
       "community": 17,
-      "community_name": "composite_sprite",
+      "community_name": "make_seated_old_timer",
       "norm_label": "_shadow_band()"
     },
     {
-      "label": "draw_face()",
+      "label": "contact_shadow()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L497",
+      "source_location": "L160",
       "_callable": true,
       "_origin": "ast",
-      "id": "art_generate_art_draw_face",
+      "id": "art_generate_art_contact_shadow",
       "community": 18,
-      "community_name": "Image",
-      "norm_label": "draw_face()"
-    },
-    {
-      "label": "draw_old_timer_face()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L717",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_draw_old_timer_face",
-      "community": 18,
-      "community_name": "Image",
-      "norm_label": "draw_old_timer_face()"
+      "community_name": "make_cat_frames",
+      "norm_label": "contact_shadow()"
     },
     {
       "label": "make_cat_frames()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L1264",
+      "source_location": "L1290",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_cat_frames",
       "community": 18,
-      "community_name": "Image",
+      "community_name": "make_cat_frames",
       "norm_label": "make_cat_frames()"
-    },
-    {
-      "label": "make_old_timer_portrait()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L747",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_make_old_timer_portrait",
-      "community": 18,
-      "community_name": "Image",
-      "norm_label": "make_old_timer_portrait()"
-    },
-    {
-      "label": "paste()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L243",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_paste",
-      "community": 18,
-      "community_name": "Image",
-      "norm_label": "paste()"
     },
     {
       "label": "_assert_art_clear_of_indices()",
@@ -1218,8 +1098,68 @@
       "_origin": "ast",
       "id": "art_generate_art_assert_art_clear_of_indices",
       "community": 19,
-      "community_name": "_assert_art_clear_of_indices",
+      "community_name": "generate_art.py",
       "norm_label": "_assert_art_clear_of_indices()"
+    },
+    {
+      "label": "_clamp()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L82",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_clamp",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "_clamp()"
+    },
+    {
+      "label": "_club_mask()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L335",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_club_mask",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "_club_mask()"
+    },
+    {
+      "label": "_diamond_mask()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L325",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_diamond_mask",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "_diamond_mask()"
+    },
+    {
+      "label": "_heart_curve_points()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L278",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_heart_curve_points",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "_heart_curve_points()"
+    },
+    {
+      "label": "_heart_mask()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L310",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_heart_mask",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "_heart_mask()"
     },
     {
       "label": "_index_boxes()",
@@ -1230,8 +1170,56 @@
       "_origin": "ast",
       "id": "art_generate_art_index_boxes",
       "community": 19,
-      "community_name": "_assert_art_clear_of_indices",
+      "community_name": "generate_art.py",
       "norm_label": "_index_boxes()"
+    },
+    {
+      "label": "make_sprite_sheet()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L149",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_make_sprite_sheet",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "make_sprite_sheet()"
+    },
+    {
+      "label": "_shift()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L86",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_shift",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "_shift()"
+    },
+    {
+      "label": "_spade_mask()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L317",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_spade_mask",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "_spade_mask()"
+    },
+    {
+      "label": "_stem()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L296",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_stem",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "_stem()"
     },
     {
       "label": "pick()",
@@ -1241,7 +1229,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "pick()",
       "id": "scripts_fuzz_pick"
     },
@@ -1253,7 +1241,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "playrandomdeal()",
       "id": "scripts_fuzz_playrandomdeal"
     },
@@ -1265,9 +1253,45 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "seededrng()",
       "id": "scripts_fuzz_seededrng"
+    },
+    {
+      "label": "fullDeck()",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L6",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "fulldeck()",
+      "id": "shared_engine_deck_fulldeck"
+    },
+    {
+      "label": "seededRng()",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L17",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "seededrng()",
+      "id": "shared_engine_deck_seededrng"
+    },
+    {
+      "label": "shuffledDeck()",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L32",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "shuffleddeck()",
+      "id": "shared_engine_deck_shuffleddeck"
     },
     {
       "label": "actingHand()",
@@ -1277,7 +1301,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "actinghand()",
       "id": "shared_engine_legal_actinghand"
     },
@@ -1289,7 +1313,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "handcards()",
       "id": "shared_engine_legal_handcards"
     },
@@ -1301,7 +1325,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "legalactions()",
       "id": "shared_engine_legal_legalactions"
     },
@@ -1313,7 +1337,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "otherplayer()",
       "id": "shared_engine_legal_otherplayer"
     },
@@ -1325,7 +1349,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "turnplayer()",
       "id": "shared_engine_legal_turnplayer"
     },
@@ -1337,7 +1361,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "assertlegal()",
       "id": "shared_engine_reducer_assertlegal"
     },
@@ -1349,7 +1373,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "buildring()",
       "id": "shared_engine_reducer_buildring"
     },
@@ -1361,7 +1385,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "cardsequal()",
       "id": "shared_engine_reducer_cardsequal"
     },
@@ -1373,7 +1397,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "enterdealerexchange()",
       "id": "shared_engine_reducer_enterdealerexchange"
     },
@@ -1385,7 +1409,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "enterplay()",
       "id": "shared_engine_reducer_enterplay"
     },
@@ -1397,7 +1421,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "newgame()",
       "id": "shared_engine_reducer_newgame"
     },
@@ -1409,7 +1433,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "nextdeal()",
       "id": "shared_engine_reducer_nextdeal"
     },
@@ -1421,7 +1445,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "reduce()",
       "id": "shared_engine_reducer_reduce"
     },
@@ -1433,7 +1457,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "removecard()",
       "id": "shared_engine_reducer_removecard"
     },
@@ -1445,7 +1469,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "settlescore()",
       "id": "shared_engine_reducer_settlescore"
     },
@@ -1457,7 +1481,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "handsequal()",
       "id": "shared_engine_view_handsequal"
     },
@@ -1469,7 +1493,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "redact()",
       "id": "shared_engine_view_redact"
     },
@@ -1481,9 +1505,33 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "visible()",
       "id": "shared_engine_view_visible"
+    },
+    {
+      "label": "cardsEqual()",
+      "file_type": "code",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L4",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "cardsequal()",
+      "id": "src_ui_handtray_cardsequal"
+    },
+    {
+      "label": "HandTray()",
+      "file_type": "code",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L12",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "handtray()",
+      "id": "src_ui_handtray_handtray"
     },
     {
       "label": "dealerDiscardFirstLegal()",
@@ -1493,7 +1541,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "dealerdiscardfirstlegal()",
       "id": "tests_helpers_dealerdiscardfirstlegal"
     },
@@ -1505,7 +1553,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "makeplaystate()",
       "id": "tests_helpers_makeplaystate"
     },
@@ -1517,7 +1565,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "orderupround1()",
       "id": "tests_helpers_orderupround1"
     },
@@ -1529,7 +1577,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "passlonerwindows()",
       "id": "tests_helpers_passlonerwindows"
     },
@@ -1541,7 +1589,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "playouthand()",
       "id": "tests_helpers_playouthand"
     },
@@ -1553,7 +1601,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "selecthands()",
       "id": "tests_helpers_selecthands"
     },
@@ -1930,42 +1978,6 @@
       "id": "art_generate_audio_write_wav"
     },
     {
-      "label": "fullDeck()",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L6",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "deck.ts",
-      "norm_label": "fulldeck()",
-      "id": "shared_engine_deck_fulldeck"
-    },
-    {
-      "label": "seededRng()",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L17",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "deck.ts",
-      "norm_label": "seededrng()",
-      "id": "shared_engine_deck_seededrng"
-    },
-    {
-      "label": "shuffledDeck()",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L32",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "deck.ts",
-      "norm_label": "shuffleddeck()",
-      "id": "shared_engine_deck_shuffleddeck"
-    },
-    {
       "label": "The view through the window \u2014 the room's COOL reference. Everything else in\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
@@ -2035,23 +2047,12 @@
       "label": "A wall shelf with clutter \u2014 jars, books, a lantern. Placed once, never tiled,\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
-      "source_location": "L1292",
+      "source_location": "L1322",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1292",
+      "id": "art_generate_art_rationale_1322",
       "community": 0,
       "community_name": "main",
       "norm_label": "a wall shelf with clutter \u2014 jars, books, a lantern. placed once, never tiled,..."
-    },
-    {
-      "label": "Paste equal-sized frames into one horizontal strip for CSS steps() animation.\u2026",
-      "file_type": "rationale",
-      "source_file": "art/generate_art.py",
-      "source_location": "L150",
-      "_origin": "ast",
-      "id": "art_generate_art_rationale_150",
-      "community": 0,
-      "community_name": "main",
-      "norm_label": "paste equal-sized frames into one horizontal strip for css steps() animation...."
     },
     {
       "label": "Table surface \u2014 horizontal planks, grain running ALONG them, seams lit from\u2026",
@@ -2074,17 +2075,6 @@
       "community": 0,
       "community_name": "main",
       "norm_label": "log-cabin wall \u2014 horizontally stacked logs with mortar chinking between..."
-    },
-    {
-      "label": "Move a colour toward white (amount > 0) or black (amount < 0), with a hue\u2026",
-      "file_type": "rationale",
-      "source_file": "art/generate_art.py",
-      "source_location": "L87",
-      "_origin": "ast",
-      "id": "art_generate_art_rationale_87",
-      "community": 0,
-      "community_name": "main",
-      "norm_label": "move a colour toward white (amount > 0) or black (amount < 0), with a hue..."
     },
     {
       "label": "Stone hearth surround with a firebox opening and a timber mantel. Two things\u2026",
@@ -2122,35 +2112,13 @@
       "id": "claude_graphify"
     },
     {
-      "label": "bot/index.ts",
-      "file_type": "code",
-      "source_file": "shared/bot/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "bot/index.ts",
-      "id": "shared_bot_index"
-    },
-    {
-      "label": "types.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "types.ts",
-      "id": "shared_engine_types"
-    },
-    {
       "label": "App.tsx",
       "file_type": "code",
       "source_file": "src/App.tsx",
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "app.tsx",
       "id": "src_app"
     },
@@ -2161,7 +2129,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "usegame.ts",
       "id": "src_game_usegame"
     },
@@ -2172,7 +2140,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "bot",
       "id": "src_game_usegame_bot"
     },
@@ -2183,7 +2151,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "human",
       "id": "src_game_usegame_human"
     },
@@ -2194,7 +2162,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "useopponentexpression.ts",
       "id": "src_game_useopponentexpression"
     },
@@ -2205,7 +2173,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "usesfx.ts",
       "id": "src_game_usesfx"
     },
@@ -2216,7 +2184,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "sound_files",
       "id": "src_game_usesfx_sound_files"
     },
@@ -2227,7 +2195,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "main.tsx",
       "id": "src_main"
     },
@@ -2238,7 +2206,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "root",
       "id": "src_main_root"
     },
@@ -2249,7 +2217,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "bidpanel.tsx",
       "id": "src_ui_bidpanel"
     },
@@ -2260,7 +2228,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "bid_phases",
       "id": "src_ui_bidpanel_bid_phases"
     },
@@ -2271,7 +2239,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "suit_label",
       "id": "src_ui_bidpanel_suit_label"
     },
@@ -2282,7 +2250,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "card.tsx",
       "id": "src_ui_card"
     },
@@ -2293,20 +2261,9 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "game.tsx",
       "id": "src_ui_game"
-    },
-    {
-      "label": "HandTray.tsx",
-      "file_type": "code",
-      "source_file": "src/ui/HandTray.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "handtray.tsx",
-      "id": "src_ui_handtray"
     },
     {
       "label": "SceneLayer.tsx",
@@ -2314,10 +2271,10 @@
       "source_file": "src/ui/SceneLayer.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_scenelayer",
       "community": 11,
-      "community_name": "types.ts",
-      "norm_label": "scenelayer.tsx"
+      "community_name": "Game.tsx",
+      "norm_label": "scenelayer.tsx",
+      "id": "src_ui_scenelayer"
     },
     {
       "label": "Scoreboard.tsx",
@@ -2326,7 +2283,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "scoreboard.tsx",
       "id": "src_ui_scoreboard"
     },
@@ -2337,7 +2294,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "score_suit",
       "id": "src_ui_scoreboard_score_suit"
     },
@@ -2348,7 +2305,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "statusbanner.tsx",
       "id": "src_ui_statusbanner"
     },
@@ -2359,7 +2316,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "suit_label",
       "id": "src_ui_statusbanner_suit_label"
     },
@@ -2370,7 +2327,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "table.tsx",
       "id": "src_ui_table"
     },
@@ -2381,7 +2338,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "community": 11,
-      "community_name": "types.ts",
+      "community_name": "Game.tsx",
       "norm_label": "seats",
       "id": "src_ui_table_seats"
     },
@@ -2402,7 +2359,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "art/ASSETS.md",
-      "source_location": "L228",
+      "source_location": "L245",
       "_origin": "ast",
       "id": "art_assets_animation_convention",
       "community": 12,
@@ -2426,7 +2383,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "art/ASSETS.md",
-      "source_location": "L270",
+      "source_location": "L287",
       "_origin": "ast",
       "id": "art_assets_audio_phase_2c",
       "community": 12,
@@ -2498,7 +2455,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "art/ASSETS.md",
-      "source_location": "L248",
+      "source_location": "L265",
       "_origin": "ast",
       "id": "art_assets_output",
       "community": 12,
@@ -2522,7 +2479,7 @@
       "file_type": "document",
       "node_kind": "heading",
       "source_file": "art/ASSETS.md",
-      "source_location": "L293",
+      "source_location": "L310",
       "_origin": "ast",
       "id": "art_assets_regenerating",
       "community": 12,
@@ -2637,28 +2594,6 @@
       "id": "vite_config"
     },
     {
-      "label": "generate_art.py",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "art_generate_art",
-      "community": 15,
-      "community_name": "generate_art.py",
-      "norm_label": "generate_art.py"
-    },
-    {
-      "label": "A stepped dark ellipse to sit under an object so it reads as resting on a\u2026",
-      "file_type": "rationale",
-      "source_file": "art/generate_art.py",
-      "source_location": "L161",
-      "_origin": "ast",
-      "id": "art_generate_art_rationale_161",
-      "community": 15,
-      "community_name": "generate_art.py",
-      "norm_label": "a stepped dark ellipse to sit under an object so it reads as resting on a..."
-    },
-    {
       "label": "Hair falling over the brow with a jagged 'bangs' edge \u2014 the single most\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
@@ -2666,7 +2601,7 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_440",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "hair falling over the brow with a jagged 'bangs' edge \u2014 the single most..."
     },
     {
@@ -2677,7 +2612,7 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_459",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "a sleeved arm angling out from the shoulder. lives in the free middle band of..."
     },
     {
@@ -2688,8 +2623,19 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_473",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "hair as a shaped mass \u2014 hugging the skull, flaring at the jaw/shoulder, then..."
+    },
+    {
+      "label": "Big round eyes with a sparkle, brows, blush. Drawn after the silhouette outline\u2026",
+      "file_type": "rationale",
+      "source_file": "art/generate_art.py",
+      "source_location": "L499",
+      "_origin": "ast",
+      "id": "art_generate_art_rationale_499",
+      "community": 15,
+      "community_name": "make_face_card",
+      "norm_label": "big round eyes with a sparkle, brows, blush. drawn after the silhouette outline..."
     },
     {
       "label": "Full-body avatars in the spirit of Gen 4/5 Pokemon overworld trainer sprites: a\u2026",
@@ -2699,8 +2645,19 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_561",
       "community": 15,
-      "community_name": "generate_art.py",
+      "community_name": "make_face_card",
       "norm_label": "full-body avatars in the spirit of gen 4/5 pokemon overworld trainer sprites: a..."
+    },
+    {
+      "label": "Image",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "image",
+      "community": 16,
+      "community_name": "Image",
+      "norm_label": "image"
     },
     {
       "label": "ImageDraw",
@@ -2710,7 +2667,7 @@
       "_origin": "ast",
       "id": "imagedraw",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "imagedraw"
     },
     {
@@ -2721,7 +2678,7 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_175",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "for the un-outlined corner rank glyph \u2014 wants maximum contrast against..."
     },
     {
@@ -2732,18 +2689,40 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_180",
       "community": 16,
-      "community_name": "make_scoreboard_card",
+      "community_name": "Image",
       "norm_label": "for anything outlined (pips, garments) \u2014 needs to differ from the ink outline..."
     },
     {
-      "label": "The opponent, seated in the room \u2014 same character as the scoreboard portrait\u2026",
+      "label": "`expression`: \"idle\" (neutral), \"happy\" (won a trick/euchre), \"rueful\" (lost\u2026",
+      "file_type": "rationale",
+      "source_file": "art/generate_art.py",
+      "source_location": "L718",
+      "_origin": "ast",
+      "id": "art_generate_art_rationale_718",
+      "community": 16,
+      "community_name": "Image",
+      "norm_label": "`expression`: \"idle\" (neutral), \"happy\" (won a trick/euchre), \"rueful\" (lost..."
+    },
+    {
+      "label": "A small card back for the seated figure's hand. Uses the real card-back palette\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
       "source_location": "L1185",
       "_origin": "ast",
       "id": "art_generate_art_rationale_1185",
       "community": 17,
-      "community_name": "composite_sprite",
+      "community_name": "make_seated_old_timer",
+      "norm_label": "a small card back for the seated figure's hand. uses the real card-back palette..."
+    },
+    {
+      "label": "The opponent, seated in the room \u2014 same character as the scoreboard portrait\u2026",
+      "file_type": "rationale",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1199",
+      "_origin": "ast",
+      "id": "art_generate_art_rationale_1199",
+      "community": 17,
+      "community_name": "make_seated_old_timer",
       "norm_label": "the opponent, seated in the room \u2014 same character as the scoreboard portrait..."
     },
     {
@@ -2754,7 +2733,7 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_220",
       "community": 17,
-      "community_name": "composite_sprite",
+      "community_name": "make_seated_old_timer",
       "norm_label": "`parts` is a list of (draw_fn, color) painted in order \u2014 later parts cover..."
     },
     {
@@ -2765,7 +2744,7 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_71",
       "community": 17,
-      "community_name": "composite_sprite",
+      "community_name": "make_seated_old_timer",
       "norm_label": "one derived shadow tone per material \u2014 keeps the palette from exploding while..."
     },
     {
@@ -2776,7 +2755,7 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_918",
       "community": 17,
-      "community_name": "composite_sprite",
+      "community_name": "make_seated_old_timer",
       "norm_label": "one flame tongue as a polygon, with a slight lateral wobble. the width profile..."
     },
     {
@@ -2787,52 +2766,52 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_938",
       "community": 17,
-      "community_name": "composite_sprite",
+      "community_name": "make_seated_old_timer",
       "norm_label": "animation frames for the hearth fire. deterministic: each frame is a pure..."
-    },
-    {
-      "label": "Image",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "image",
-      "community": 18,
-      "community_name": "Image",
-      "norm_label": "image"
     },
     {
       "label": "A cat asleep by the fire, two frames of slow breathing. Two frames is enough\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
-      "source_location": "L1265",
+      "source_location": "L1291",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1265",
+      "id": "art_generate_art_rationale_1291",
       "community": 18,
-      "community_name": "Image",
+      "community_name": "make_cat_frames",
       "norm_label": "a cat asleep by the fire, two frames of slow breathing. two frames is enough..."
     },
     {
-      "label": "Big round eyes with a sparkle, brows, blush. Drawn after the silhouette outline\u2026",
+      "label": "A stepped dark ellipse to sit under an object so it reads as resting on a\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
-      "source_location": "L499",
+      "source_location": "L161",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_499",
+      "id": "art_generate_art_rationale_161",
       "community": 18,
-      "community_name": "Image",
-      "norm_label": "big round eyes with a sparkle, brows, blush. drawn after the silhouette outline..."
+      "community_name": "make_cat_frames",
+      "norm_label": "a stepped dark ellipse to sit under an object so it reads as resting on a..."
     },
     {
-      "label": "`expression`: \"idle\" (neutral), \"happy\" (won a trick/euchre), \"rueful\" (lost\u2026",
+      "label": "generate_art.py",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "art_generate_art",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "generate_art.py"
+    },
+    {
+      "label": "Paste equal-sized frames into one horizontal strip for CSS steps() animation.\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
-      "source_location": "L718",
+      "source_location": "L150",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_718",
-      "community": 18,
-      "community_name": "Image",
-      "norm_label": "`expression`: \"idle\" (neutral), \"happy\" (won a trick/euchre), \"rueful\" (lost..."
+      "id": "art_generate_art_rationale_150",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "paste equal-sized frames into one horizontal strip for css steps() animation...."
     },
     {
       "label": "The two rectangles paste_corners() reserves \u2014 kept in sync with it by deriving\u2026",
@@ -2842,7 +2821,7 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_534",
       "community": 19,
-      "community_name": "_assert_art_clear_of_indices",
+      "community_name": "generate_art.py",
       "norm_label": "the two rectangles paste_corners() reserves \u2014 kept in sync with it by deriving..."
     },
     {
@@ -2853,8 +2832,19 @@
       "_origin": "ast",
       "id": "art_generate_art_rationale_547",
       "community": 19,
-      "community_name": "_assert_art_clear_of_indices",
+      "community_name": "generate_art.py",
       "norm_label": "guardrail: centred artwork must never intrude into a reserved corner index box...."
+    },
+    {
+      "label": "Move a colour toward white (amount > 0) or black (amount < 0), with a hue\u2026",
+      "file_type": "rationale",
+      "source_file": "art/generate_art.py",
+      "source_location": "L87",
+      "_origin": "ast",
+      "id": "art_generate_art_rationale_87",
+      "community": 19,
+      "community_name": "generate_art.py",
+      "norm_label": "move a colour toward white (amount > 0) or black (amount < 0), with a hue..."
     },
     {
       "label": "fuzz.ts",
@@ -2863,7 +2853,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "fuzz.ts",
       "id": "scripts_fuzz"
     },
@@ -2874,7 +2864,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "outcomes",
       "id": "scripts_fuzz_outcomes"
     },
@@ -2885,7 +2875,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "terminal_phases",
       "id": "scripts_fuzz_terminal_phases"
     },
@@ -2896,7 +2886,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "config.ts",
       "id": "shared_engine_config"
     },
@@ -2907,9 +2897,42 @@
       "source_location": "L3",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "default_config",
       "id": "shared_engine_config_default_config"
+    },
+    {
+      "label": "deck.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "deck.ts",
+      "id": "shared_engine_deck"
+    },
+    {
+      "label": "RANKS",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L4",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "ranks",
+      "id": "shared_engine_deck_ranks"
+    },
+    {
+      "label": "SUITS",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "suits",
+      "id": "shared_engine_deck_suits"
     },
     {
       "label": "engine/index.ts",
@@ -2918,7 +2941,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "engine/index.ts",
       "id": "shared_engine_index"
     },
@@ -2929,7 +2952,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "legal.ts",
       "id": "shared_engine_legal"
     },
@@ -2940,9 +2963,20 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "reducer.ts",
       "id": "shared_engine_reducer"
+    },
+    {
+      "label": "types.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "types.ts",
+      "id": "shared_engine_types"
     },
     {
       "label": "view.ts",
@@ -2951,7 +2985,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "view.ts",
       "id": "shared_engine_view"
     },
@@ -2962,9 +2996,31 @@
       "source_location": "L4",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "deal_over_phases",
       "id": "shared_engine_view_deal_over_phases"
+    },
+    {
+      "label": "HandTray.tsx",
+      "file_type": "code",
+      "source_file": "src/ui/HandTray.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "handtray.tsx",
+      "id": "src_ui_handtray"
+    },
+    {
+      "label": "deck.test.ts",
+      "file_type": "code",
+      "source_file": "tests/deck.test.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "deck.test.ts",
+      "id": "tests_deck_test"
     },
     {
       "label": "helpers.ts",
@@ -2973,7 +3029,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "helpers.ts",
       "id": "tests_helpers"
     },
@@ -2984,7 +3040,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "reducer.ts",
+      "community_name": "types.ts",
       "norm_label": "reducer.test.ts",
       "id": "tests_reducer_test"
     },
@@ -3594,6 +3650,17 @@
       "id": "shared_bot_heuristic_suits"
     },
     {
+      "label": "bot/index.ts",
+      "file_type": "code",
+      "source_file": "shared/bot/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "bot/index.ts",
+      "id": "shared_bot_index"
+    },
+    {
       "label": "rules.ts",
       "file_type": "code",
       "source_file": "shared/engine/rules.ts",
@@ -3724,50 +3791,6 @@
       "community_name": "generate_audio.py",
       "norm_label": "a four-note ascending arpeggio \u2014 the hand-won stinger, bigger than a single...",
       "id": "art_generate_audio_rationale_97"
-    },
-    {
-      "label": "deck.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "deck.ts",
-      "norm_label": "deck.ts",
-      "id": "shared_engine_deck"
-    },
-    {
-      "label": "RANKS",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L4",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "deck.ts",
-      "norm_label": "ranks",
-      "id": "shared_engine_deck_ranks"
-    },
-    {
-      "label": "SUITS",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L3",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "deck.ts",
-      "norm_label": "suits",
-      "id": "shared_engine_deck_suits"
-    },
-    {
-      "label": "deck.test.ts",
-      "file_type": "code",
-      "source_file": "tests/deck.test.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": "deck.ts",
-      "norm_label": "deck.test.ts",
-      "id": "tests_deck_test"
     },
     {
       "label": "\u00a73 Bidding (standard, on/after the upcard)",
@@ -4335,7 +4358,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1331",
+      "source_location": "L1361",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4347,7 +4370,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1331",
+      "source_location": "L1361",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4359,7 +4382,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1334",
+      "source_location": "L1364",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4371,7 +4394,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1335",
+      "source_location": "L1365",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4383,7 +4406,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1336",
+      "source_location": "L1366",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4395,7 +4418,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1340",
+      "source_location": "L1370",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4407,7 +4430,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1341",
+      "source_location": "L1371",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4419,7 +4442,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1341",
+      "source_location": "L1371",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4431,7 +4454,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1342",
+      "source_location": "L1372",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4443,7 +4466,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1343",
+      "source_location": "L1373",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4455,7 +4478,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1344",
+      "source_location": "L1374",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4467,7 +4490,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1345",
+      "source_location": "L1375",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4479,7 +4502,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1346",
+      "source_location": "L1376",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4491,7 +4514,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1347",
+      "source_location": "L1377",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4503,7 +4526,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1348",
+      "source_location": "L1378",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4515,7 +4538,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1353",
+      "source_location": "L1383",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4527,7 +4550,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1366",
+      "source_location": "L1396",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4539,7 +4562,19 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1276",
+      "source_location": "L1300",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_make_cat_frames",
+      "target": "art_generate_art_contact_shadow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1307",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_cat_frames",
@@ -4551,7 +4586,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1278",
+      "source_location": "L1309",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_cat_frames",
@@ -4563,7 +4598,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1282",
+      "source_location": "L1313",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_cat_frames",
@@ -4575,7 +4610,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1282",
+      "source_location": "L1313",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_cat_frames",
@@ -5043,7 +5078,19 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1201",
+      "source_location": "L1223",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_make_seated_old_timer",
+      "target": "art_generate_art_ramp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1224",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_seated_old_timer",
@@ -5055,7 +5102,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1204",
+      "source_location": "L1230",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_seated_old_timer",
@@ -5067,7 +5114,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1215",
+      "source_location": "L1242",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_seated_old_timer",
@@ -5079,7 +5126,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1242",
+      "source_location": "L1268",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_seated_old_timer",
@@ -5091,7 +5138,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1242",
+      "source_location": "L1268",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_seated_old_timer",
@@ -5103,7 +5150,19 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1296",
+      "source_location": "L1273",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_make_seated_old_timer",
+      "target": "art_generate_art_mini_card_back",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1326",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_shelf",
@@ -5115,7 +5174,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1308",
+      "source_location": "L1338",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_shelf",
@@ -9487,7 +9546,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/ASSETS.md",
-      "source_location": "L228",
+      "source_location": "L245",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_assets_art_assets_spec",
@@ -9498,7 +9557,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/ASSETS.md",
-      "source_location": "L248",
+      "source_location": "L265",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_assets_art_assets_spec",
@@ -9509,7 +9568,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/ASSETS.md",
-      "source_location": "L270",
+      "source_location": "L287",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_assets_art_assets_spec",
@@ -9520,7 +9579,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/ASSETS.md",
-      "source_location": "L293",
+      "source_location": "L310",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_assets_art_assets_spec",
@@ -9612,18 +9671,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
-      "target": "art_generate_art_make_seated_old_timer",
+      "target": "art_generate_art_mini_card_back",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1264",
+      "source_location": "L1198",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
-      "target": "art_generate_art_make_cat_frames",
+      "target": "art_generate_art_make_seated_old_timer",
       "confidence_score": 1.0
     },
     {
@@ -9641,7 +9700,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1291",
+      "source_location": "L1290",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art",
+      "target": "art_generate_art_make_cat_frames",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1321",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -9652,7 +9722,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1325",
+      "source_location": "L1355",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -11536,9 +11606,9 @@
       "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scenelayer",
-      "target": "src_ui_scenelayer_scenelayer",
-      "confidence_score": 1.0
+      "target": "src_ui_scenelayer_scenelayer"
     },
     {
       "relation": "contains",
@@ -11955,18 +12025,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_rationale_1185",
-      "target": "art_generate_art_make_seated_old_timer",
+      "target": "art_generate_art_mini_card_back",
       "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1265",
+      "source_location": "L1199",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "art_generate_art_rationale_1265",
-      "target": "art_generate_art_make_cat_frames",
+      "source": "art_generate_art_rationale_1199",
+      "target": "art_generate_art_make_seated_old_timer",
       "confidence_score": 1.0
     },
     {
@@ -11984,10 +12054,21 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1292",
+      "source_location": "L1291",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "art_generate_art_rationale_1292",
+      "source": "art_generate_art_rationale_1291",
+      "target": "art_generate_art_make_cat_frames",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1322",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_rationale_1322",
       "target": "art_generate_art_make_shelf",
       "confidence_score": 1.0
     },
@@ -12824,5 +12905,5 @@
       "source_file": "RULES.md"
     }
   ],
-  "built_at_commit": "09d43800a034434d0f8675a11ea987bbea5115cd"
+  "built_at_commit": "56365fe9caf622f884659a71893979d9397d0d84"
 }
