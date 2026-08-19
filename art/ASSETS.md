@@ -32,15 +32,20 @@ upgrade, not a palette change.
 - **24 faces** — 4 suits × {9, 10, J, Q, K, A}.
 - **Corners:** rank glyph (hand-drawn 4×6 bitmap font — see script) stacked over a mini suit
   pip, top-left and mirrored (180°) bottom-right. Classic card convention.
+- **Suit pips:** real geometry (overlapping circles/polygons via `draw_heart_pip` /
+  `draw_spade_pip` / `draw_club_pip` / `draw_diamond_pip`), not hand-typed bitmaps — a mini
+  corner pip and a large center pip are the same function at a different box size, so the
+  curves stay properly round at any scale instead of needing a separate asset per size.
 - **Number cards (9, 10, A):** center gets one large suit pip.
-- **Face cards (J, Q, K):** center gets a bordered emblem — the rank letter, large, with a
-  rank-specific accessory silhouette above it (crown for K, circlet for Q, cap for J) so the
-  three read as distinct shapes at a glance, not just a different letter.
-  - **Honest note:** the spec's stretch goal was "small hand-styled pixel portraits." What the
-    script produces is distinct rank silhouettes/emblems, not faces — procedural facial
-    pixel-art reads badly at this size without real hand-touch-up. This is the v1 approximation
-    the generator pipeline is built for: swap in real portraits later without touching the
-    corner/back/table code.
+- **Face cards (J, Q, K):** an actual small bust portrait (head + shoulders, `draw_bust` in the
+  script), not a letter in a box — built from primitive shapes (ellipses/polygons), so each
+  rank is easy to retune without redrawing pixel-by-pixel:
+  - **King** — old and grizzled, gray beard, gold crown. A deliberate nod to the single-player
+    opponent rather than a generic storybook king.
+  - **Queen** — auburn hair falling past the shoulders, gold circlet.
+  - **Jack** — a knave, not royalty: no crown, just a tilted cap and a feather.
+  - Shoulders/collar are suit-colored, tying each face card back to its suit the same way the
+    corner pips do.
 - **Card back:** same 40×56 frame, `wood_dark` base with a `wood_med`/`wood_light` diamond
   lattice, `gold` corner accent.
 

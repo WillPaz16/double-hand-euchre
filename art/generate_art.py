@@ -18,6 +18,12 @@ GOLD = (212, 165, 74, 255)
 WOOD_DARK = (42, 26, 16, 255)
 WOOD_MED = (74, 46, 30, 255)
 WOOD_LIGHT = (91, 58, 41, 255)
+SKIN = (222, 175, 130, 255)
+BEARD_GRAY = (160, 152, 140, 255)  # the King is old and grizzled — same spirit as the
+# single-player opponent — rather than a generic storybook king.
+HAIR_AUBURN = (120, 64, 34, 255)
+CAP_NAVY = (52, 60, 74, 255)  # the Jack's cap — deliberately not suit-colored, so it reads
+# as its own garment against all four suit-colored collars.
 
 SUITS = ["clubs", "diamonds", "hearts", "spades"]
 RANKS = ["9", "10", "J", "Q", "K", "A"]
@@ -87,70 +93,68 @@ GLYPHS = {
     ],
 }
 
-# --- Suit pip bitmaps, 7x7. --- #
-PIPS = {
-    "hearts": [
-        ".#.#.#.",
-        "#######",
-        "#######",
-        ".#####.",
-        "..###..",
-        "...#...",
-        ".......",
-    ],
-    "diamonds": [
-        "...#...",
-        "..###..",
-        ".#####.",
-        "#######",
-        ".#####.",
-        "..###..",
-        "...#...",
-    ],
-    "spades": [
-        "...#...",
-        "..###..",
-        ".#####.",
-        "#######",
-        "#######",
-        "..#.#..",
-        "...#...",
-    ],
-    "clubs": [
-        "..###..",
-        ".#####.",
-        "..###..",
-        "#.###.#",
-        "#######",
-        "..#.#..",
-        "...#...",
-    ],
+# --- Suit pips, drawn as real geometry (overlapping circles/polygons) rather than hand-typed
+# bitmaps, so the curves are actually round and the proportions hold at any size — a mini
+# corner pip and a large center pip come from the same function, just a different box. --- #
+
+
+def draw_diamond_pip(draw: ImageDraw.ImageDraw, box, color) -> None:
+    x0, y0, x1, y1 = box
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    draw.polygon([(cx, y0), (x1, cy), (cx, y1), (x0, cy)], fill=color)
+
+
+def draw_heart_pip(draw: ImageDraw.ImageDraw, box, color) -> None:
+    x0, y0, x1, y1 = box
+    w, h = x1 - x0, y1 - y0
+    r = w * 0.28
+    lobe_cy = y0 + h * 0.34
+    left_cx, right_cx = x0 + w * 0.28, x0 + w * 0.72
+    draw.ellipse((left_cx - r, lobe_cy - r, left_cx + r, lobe_cy + r), fill=color)
+    draw.ellipse((right_cx - r, lobe_cy - r, right_cx + r, lobe_cy + r), fill=color)
+    draw.polygon([(x0, lobe_cy), (x1, lobe_cy), ((x0 + x1) / 2, y1)], fill=color)
+
+
+def draw_spade_pip(draw: ImageDraw.ImageDraw, box, color) -> None:
+    """A heart flipped point-up, plus a stem — the classic spade/heart relationship."""
+    x0, y0, x1, y1 = box
+    w, h = x1 - x0, y1 - y0
+    body_bottom = y0 + h * 0.78
+    r = w * 0.28
+    lobe_cy = y0 + h * 0.5
+    left_cx, right_cx = x0 + w * 0.28, x0 + w * 0.72
+    draw.ellipse((left_cx - r, lobe_cy - r, left_cx + r, lobe_cy + r), fill=color)
+    draw.ellipse((right_cx - r, lobe_cy - r, right_cx + r, lobe_cy + r), fill=color)
+    draw.polygon([(x0, lobe_cy), (x1, lobe_cy), ((x0 + x1) / 2, y0)], fill=color)
+    cx = (x0 + x1) / 2
+    stem_w = max(1.0, w * 0.14)
+    draw.rectangle((cx - stem_w / 2, body_bottom - 1, cx + stem_w / 2, y1), fill=color)
+
+
+def draw_club_pip(draw: ImageDraw.ImageDraw, box, color) -> None:
+    x0, y0, x1, y1 = box
+    w, h = x1 - x0, y1 - y0
+    r = w * 0.26
+    top_cx, top_cy = (x0 + x1) / 2, y0 + h * 0.3
+    left_cx, left_cy = x0 + w * 0.26, y0 + h * 0.58
+    right_cx, right_cy = x0 + w * 0.74, y0 + h * 0.58
+    for cx, cy in ((top_cx, top_cy), (left_cx, left_cy), (right_cx, right_cy)):
+        draw.ellipse((cx - r, cy - r, cx + r, cy + r), fill=color)
+    cx = (x0 + x1) / 2
+    stem_w = max(1.0, w * 0.16)
+    draw.rectangle((cx - stem_w / 2, y0 + h * 0.62, cx + stem_w / 2, y1), fill=color)
+
+
+PIP_DRAWERS = {
+    "hearts": draw_heart_pip,
+    "diamonds": draw_diamond_pip,
+    "spades": draw_spade_pip,
+    "clubs": draw_club_pip,
 }
 
-# --- Face-card accessory bitmaps, 9x5, drawn above the rank letter. --- #
-ACCESSORIES = {
-    "K": [  # crown
-        "#.#.#.#.#",
-        "#########",
-        ".#######.",
-        "..#####..",
-        "...###...",
-    ],
-    "Q": [  # circlet
-        ".........",
-        ".#.#.#.#.",
-        "#########",
-        ".........",
-        ".........",
-    ],
-    "J": [  # cap
-        "...####..",
-        "..######.",
-        ".########",
-        "#########",
-        ".........",
-    ],
-}
+
+def draw_pip(draw: ImageDraw.ImageDraw, box, suit: str, color) -> None:
+    PIP_DRAWERS[suit](draw, box, color)
 
 
 def suit_color(suit: str):
@@ -164,16 +168,11 @@ def draw_bitmap(draw: ImageDraw.ImageDraw, x: int, y: int, bitmap, color, skip="
                 draw.point((x + col_i, y + row_i), fill=color)
 
 
-def bitmap_size(bitmap):
-    return len(bitmap[0]), len(bitmap)
-
-
 def corner_marker(rank: str, suit: str) -> Image.Image:
     """Rank glyph stacked over a mini suit pip — the top-left corner mark. Mirrored 180° for
     the bottom-right corner by the caller."""
     color = suit_color(suit)
-    mini_pip = [row[1:6] for row in PIPS[suit][1:6]]  # crop the 7x7 pip down to a 5x5 mini
-    pip_w, pip_h = bitmap_size(mini_pip)
+    pip_w, pip_h = 6, 6
     glyph_w = 4 + 1 + 4 if rank == "10" else 4  # '1' + gap + '0' when two digits
     glyph_h = 6
 
@@ -188,7 +187,8 @@ def corner_marker(rank: str, suit: str) -> Image.Image:
     else:
         draw_bitmap(draw, 0, 0, GLYPHS[rank], color)
 
-    draw_bitmap(draw, 0, glyph_h + 1, mini_pip, color)
+    pip_x = (w - pip_w) // 2
+    draw_pip(draw, (pip_x, glyph_h + 1, pip_x + pip_w, glyph_h + 1 + pip_h), suit, color)
     return img
 
 
@@ -211,45 +211,79 @@ def make_number_card(rank: str, suit: str) -> Image.Image:
     draw_card_frame(draw)
 
     color = suit_color(suit)
-    pip = PIPS[suit]
-    pw, ph = bitmap_size(pip)
-    scale = 2  # center pip drawn at 2x for presence
-    big = Image.new("RGBA", (pw * scale, ph * scale), (0, 0, 0, 0))
-    big_draw = ImageDraw.Draw(big)
-    for row_i, row in enumerate(pip):
-        for col_i, ch in enumerate(row):
-            if ch == "#":
-                big_draw.rectangle(
-                    (col_i * scale, row_i * scale, col_i * scale + scale - 1, row_i * scale + scale - 1),
-                    fill=color,
-                )
-    card.paste(big, ((CARD_W - big.width) // 2, (CARD_H - big.height) // 2), big)
+    size = 20
+    box = ((CARD_W - size) / 2, (CARD_H - size) / 2, (CARD_W + size) / 2, (CARD_H + size) / 2)
+    draw_pip(draw, box, suit, color)
 
     paste_corners(card, rank, suit)
     return card
 
 
+def draw_bust(draw: ImageDraw.ImageDraw, cx: int, head_cy: int, head_r: int, shoulder_color):
+    """Shoulders (drawn first, behind the head) + a skin-toned head with two eyes. Returns the
+    shoulder y-bounds so callers can react to them."""
+    shoulder_top_y = head_cy + head_r - 1
+    shoulder_bottom_y = shoulder_top_y + 12
+    half_top, half_bottom = head_r, head_r + 5
+    draw.polygon(
+        [
+            (cx - half_top, shoulder_top_y),
+            (cx + half_top, shoulder_top_y),
+            (cx + half_bottom, shoulder_bottom_y),
+            (cx - half_bottom, shoulder_bottom_y),
+        ],
+        fill=shoulder_color,
+    )
+    draw.line((cx - half_top, shoulder_top_y, cx + half_top, shoulder_top_y), fill=GOLD)
+    draw.ellipse((cx - head_r, head_cy - head_r, cx + head_r, head_cy + head_r), fill=SKIN, outline=INK)
+    draw.point((cx - 2, head_cy - 1), fill=INK)
+    draw.point((cx + 2, head_cy - 1), fill=INK)
+    return shoulder_top_y, shoulder_bottom_y
+
+
 def make_face_card(rank: str, suit: str) -> Image.Image:
+    """Each rank gets an actual small bust portrait rather than a letter in a box: the King is
+    old and grizzled (a nod to the single-player opponent) with a crown and beard, the Queen
+    has a circlet and flowing hair, the Jack — a knave, not royalty — just a rakish cap and
+    feather. Same silhouette-differentiation idea as before, now built from a real head and
+    shoulders instead of an abstract emblem."""
     card = Image.new("RGBA", (CARD_W, CARD_H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(card)
     draw_card_frame(draw)
 
     color = suit_color(suit)
+    cx, head_cy, head_r = CARD_W // 2, 21, 5
 
-    # Emblem box.
-    box = (7, 14, CARD_W - 8, CARD_H - 15)
-    draw.rectangle(box, outline=color)
-    draw.rectangle((box[0] + 1, box[1] + 1, box[2] - 1, box[3] - 1), outline=GOLD)
+    if rank == "K":
+        shoulder_top_y, _ = draw_bust(draw, cx, head_cy, head_r, color)
+        chin_y = head_cy + head_r - 1
+        draw.polygon([(cx - 4, chin_y), (cx + 4, chin_y), (cx, chin_y + 6)], fill=BEARD_GRAY)
+        crown_y = head_cy - head_r - 1
+        draw.polygon(
+            [
+                (cx - 6, crown_y),
+                (cx - 6, crown_y - 4),
+                (cx - 3, crown_y - 1),
+                (cx, crown_y - 5),
+                (cx + 3, crown_y - 1),
+                (cx + 6, crown_y - 4),
+                (cx + 6, crown_y),
+            ],
+            fill=GOLD,
+        )
+        draw.rectangle((cx - 6, crown_y - 1, cx + 6, crown_y + 1), fill=GOLD)
 
-    accessory = ACCESSORIES[rank]
-    aw, ah = bitmap_size(accessory)
-    ax = (CARD_W - aw) // 2
-    draw_bitmap(draw, ax, box[1] + 4, accessory, GOLD)
+    elif rank == "Q":
+        draw_bust(draw, cx, head_cy, head_r, color)
+        draw.ellipse((cx - 7, head_cy - 3, cx - 3, head_cy + 7), fill=HAIR_AUBURN)
+        draw.ellipse((cx + 3, head_cy - 3, cx + 7, head_cy + 7), fill=HAIR_AUBURN)
+        draw.line((cx - 4, head_cy - 5, cx + 4, head_cy - 5), fill=GOLD)
+        draw.point((cx, head_cy - 6), fill=GOLD)
 
-    glyph = GLYPHS[rank]
-    gw, gh = bitmap_size(glyph)
-    gx = (CARD_W - gw) // 2
-    draw_bitmap(draw, gx, box[1] + 4 + ah + 3, glyph, color)
+    else:  # J — a knave, not royalty: no crown, just a cap and a bit of swagger.
+        draw_bust(draw, cx, head_cy, head_r, color)
+        draw.ellipse((cx - 6, head_cy - 9, cx + 4, head_cy - 3), fill=CAP_NAVY)
+        draw.line((cx + 3, head_cy - 8, cx + 8, head_cy - 14), fill=GOLD)
 
     paste_corners(card, rank, suit)
     return card
