@@ -60,139 +60,9 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "action",
       "id": "shared_engine_types_action"
-    },
-    {
-      "label": "PlayerView",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L91",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "playerview",
-      "id": "shared_engine_types_playerview"
-    },
-    {
-      "label": "CompletedTrick",
-      "file_type": "code",
-      "source_file": "src/game/useGame.ts",
-      "source_location": "L29",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "completedtrick",
-      "id": "src_game_usegame_completedtrick"
-    },
-    {
-      "label": "Expression",
-      "file_type": "code",
-      "source_file": "src/game/useOpponentExpression.ts",
-      "source_location": "L5",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "expression",
-      "id": "src_game_useopponentexpression_expression"
-    },
-    {
-      "label": "SoundName",
-      "file_type": "code",
-      "source_file": "src/game/useSfx.ts",
-      "source_location": "L12",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "soundname",
-      "id": "src_game_usesfx_soundname"
-    },
-    {
-      "label": "Compass",
-      "file_type": "code",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L18",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_ui_table_compass",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "compass"
-    },
-    {
-      "label": "Outcome",
-      "file_type": "code",
-      "source_file": "tests/fullGame.test.tsx",
-      "source_location": "L35",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "outcome",
-      "id": "tests_fullgame_test_outcome"
-    },
-    {
-      "label": "Game",
-      "file_type": "code",
-      "source_file": "tests/useGame.test.tsx",
-      "source_location": "L58",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "game",
-      "id": "tests_usegame_test_game"
-    },
-    {
-      "label": "deal",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L50",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "deal",
-      "id": "shared_engine_deck_deal"
-    },
-    {
-      "label": "Card",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L6",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "card",
-      "id": "shared_engine_types_card"
-    },
-    {
-      "label": "Config",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L85",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "config",
-      "id": "shared_engine_types_config"
     },
     {
       "label": "GameState",
@@ -202,23 +72,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "types.ts",
       "norm_label": "gamestate",
       "id": "shared_engine_types_gamestate"
-    },
-    {
-      "label": "HandId",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L11",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "handid",
-      "id": "shared_engine_types_handid"
     },
     {
       "label": "HandRole",
@@ -228,23 +85,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "types.ts",
       "norm_label": "handrole",
       "id": "shared_engine_types_handrole"
-    },
-    {
-      "label": "LonerTier",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L16",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "lonertier",
-      "id": "shared_engine_types_lonertier"
     },
     {
       "label": "Phase",
@@ -254,7 +98,7 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "types.ts",
       "norm_label": "phase",
       "id": "shared_engine_types_phase"
@@ -267,10 +111,114 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
+      "community": 11,
       "community_name": "types.ts",
       "norm_label": "player",
       "id": "shared_engine_types_player"
+    },
+    {
+      "label": "PlayerView",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L91",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "playerview",
+      "id": "shared_engine_types_playerview"
+    },
+    {
+      "label": "TrickCard",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L37",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "trickcard",
+      "id": "shared_engine_types_trickcard"
+    },
+    {
+      "label": "CompletedTrick",
+      "file_type": "code",
+      "source_file": "src/game/useGame.ts",
+      "source_location": "L29",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "completedtrick",
+      "id": "src_game_usegame_completedtrick"
+    },
+    {
+      "label": "Expression",
+      "file_type": "code",
+      "source_file": "src/game/useOpponentExpression.ts",
+      "source_location": "L5",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "expression",
+      "id": "src_game_useopponentexpression_expression"
+    },
+    {
+      "label": "SoundName",
+      "file_type": "code",
+      "source_file": "src/game/useSfx.ts",
+      "source_location": "L12",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "soundname",
+      "id": "src_game_usesfx_soundname"
+    },
+    {
+      "label": "Outcome",
+      "file_type": "code",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L35",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "outcome",
+      "id": "tests_fullgame_test_outcome"
+    },
+    {
+      "label": "Game",
+      "file_type": "code",
+      "source_file": "tests/useGame.test.tsx",
+      "source_location": "L58",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "game",
+      "id": "tests_usegame_test_game"
+    },
+    {
+      "label": "deal",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L50",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "deck.ts",
+      "norm_label": "deal",
+      "id": "shared_engine_deck_deal"
     },
     {
       "label": "PlayerHands",
@@ -280,23 +228,62 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
+      "community": 13,
+      "community_name": "deck.ts",
       "norm_label": "playerhands",
       "id": "shared_engine_types_playerhands"
     },
     {
-      "label": "Rank",
+      "label": "Card",
       "file_type": "code",
       "source_file": "shared/engine/types.ts",
-      "source_location": "L2",
+      "source_location": "L6",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "rank",
-      "id": "shared_engine_types_rank"
+      "community_name": "reducer.ts",
+      "norm_label": "card",
+      "id": "shared_engine_types_card"
+    },
+    {
+      "label": "Config",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L85",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "reducer.ts",
+      "norm_label": "config",
+      "id": "shared_engine_types_config"
+    },
+    {
+      "label": "HandId",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L11",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "reducer.ts",
+      "norm_label": "handid",
+      "id": "shared_engine_types_handid"
+    },
+    {
+      "label": "LonerTier",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L16",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "reducer.ts",
+      "norm_label": "lonertier",
+      "id": "shared_engine_types_lonertier"
     },
     {
       "label": "Suit",
@@ -307,7 +294,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "suit",
       "id": "shared_engine_types_suit"
     },
@@ -320,28 +307,28 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "playstateoptions",
       "id": "tests_helpers_playstateoptions"
     },
     {
-      "label": "TrickCard",
+      "label": "Rank",
       "file_type": "code",
       "source_file": "shared/engine/types.ts",
-      "source_location": "L37",
+      "source_location": "L2",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 5,
       "community_name": "rules.ts",
-      "norm_label": "trickcard",
-      "id": "shared_engine_types_trickcard"
+      "norm_label": "rank",
+      "id": "shared_engine_types_rank"
     },
     {
       "label": "main()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L1473",
+      "source_location": "L1460",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_main",
@@ -389,7 +376,7 @@
       "label": "make_shelf()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L1439",
+      "source_location": "L1426",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_shelf",
@@ -494,6 +481,18 @@
       "norm_label": "ramp()"
     },
     {
+      "label": "handsEqual()",
+      "file_type": "code",
+      "source_file": "shared/engine/view.ts",
+      "source_location": "L6",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "handsequal()",
+      "id": "shared_engine_view_handsequal"
+    },
+    {
       "label": "App()",
       "file_type": "code",
       "source_file": "src/App.tsx",
@@ -501,7 +500,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "app()",
       "id": "src_app_app"
     },
@@ -513,7 +512,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "freshseed()",
       "id": "src_game_usegame_freshseed"
     },
@@ -525,7 +524,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "usegame()",
       "id": "src_game_usegame_usegame"
     },
@@ -537,7 +536,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "useopponentexpression()",
       "id": "src_game_useopponentexpression_useopponentexpression"
     },
@@ -549,7 +548,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "play()",
       "id": "src_game_usesfx_play"
     },
@@ -561,7 +560,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "usesfx()",
       "id": "src_game_usesfx_usesfx"
     },
@@ -573,7 +572,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "usesoundbank()",
       "id": "src_game_usesfx_usesoundbank"
     },
@@ -585,7 +584,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "bidpanel()",
       "id": "src_ui_bidpanel_bidpanel"
     },
@@ -597,7 +596,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "label()",
       "id": "src_ui_bidpanel_label"
     },
@@ -608,10 +607,10 @@
       "source_location": "L7",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_card_card",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "card()"
+      "community_name": "types.ts",
+      "norm_label": "card()",
+      "id": "src_ui_card_card"
     },
     {
       "label": "cardAsset()",
@@ -620,22 +619,22 @@
       "source_location": "L3",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_card_cardasset",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "cardasset()"
+      "community_name": "types.ts",
+      "norm_label": "cardasset()",
+      "id": "src_ui_card_cardasset"
     },
     {
       "label": "CardBack()",
       "file_type": "code",
       "source_file": "src/ui/Card.tsx",
-      "source_location": "L37",
+      "source_location": "L29",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_card_cardback",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "cardback()"
+      "community_name": "types.ts",
+      "norm_label": "cardback()",
+      "id": "src_ui_card_cardback"
     },
     {
       "label": "Game()",
@@ -645,7 +644,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "game()",
       "id": "src_ui_game_game"
     },
@@ -657,7 +656,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "cardsequal()",
       "id": "src_ui_handtray_cardsequal"
     },
@@ -669,7 +668,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "handtray()",
       "id": "src_ui_handtray_handtray"
     },
@@ -681,7 +680,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "scenelayer()",
       "id": "src_ui_scenelayer_scenelayer"
     },
@@ -692,10 +691,10 @@
       "source_location": "L26",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_scoreboard_scoreboard",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "scoreboard()"
+      "community_name": "types.ts",
+      "norm_label": "scoreboard()",
+      "id": "src_ui_scoreboard_scoreboard"
     },
     {
       "label": "ScorePair()",
@@ -704,94 +703,70 @@
       "source_location": "L10",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_scoreboard_scorepair",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "scorepair()"
+      "community_name": "types.ts",
+      "norm_label": "scorepair()",
+      "id": "src_ui_scoreboard_scorepair"
     },
     {
       "label": "StatusBanner()",
       "file_type": "code",
       "source_file": "src/ui/StatusBanner.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_statusbanner_statusbanner",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "statusbanner()"
+      "community_name": "types.ts",
+      "norm_label": "statusbanner()",
+      "id": "src_ui_statusbanner_statusbanner"
     },
     {
       "label": "remainingInHand()",
       "file_type": "code",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L49",
+      "source_location": "L32",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_remaininginhand",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "remaininginhand()"
+      "community_name": "types.ts",
+      "norm_label": "remaininginhand()",
+      "id": "src_ui_table_remaininginhand"
     },
     {
       "label": "sameHand()",
       "file_type": "code",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L38",
+      "source_location": "L25",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_samehand",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "samehand()"
+      "community_name": "types.ts",
+      "norm_label": "samehand()",
+      "id": "src_ui_table_samehand"
     },
     {
       "label": "seatLabel()",
       "file_type": "code",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L54",
+      "source_location": "L37",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_seatlabel",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "seatlabel()"
-    },
-    {
-      "label": "seatOf()",
-      "file_type": "code",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L42",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_ui_table_seatof",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "seatof()"
-    },
-    {
-      "label": "shortSeatLabel()",
-      "file_type": "code",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L62",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_ui_table_shortseatlabel",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "shortseatlabel()"
+      "community_name": "types.ts",
+      "norm_label": "seatlabel()",
+      "id": "src_ui_table_seatlabel"
     },
     {
       "label": "Table()",
       "file_type": "code",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L79",
+      "source_location": "L43",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_ui_table_table",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "table()"
+      "community_name": "types.ts",
+      "norm_label": "table()",
+      "id": "src_ui_table_table"
     },
     {
       "label": "advance()",
@@ -801,7 +776,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "advance()",
       "id": "tests_fullgame_test_advance"
     },
@@ -813,7 +788,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "lcg()",
       "id": "tests_fullgame_test_lcg"
     },
@@ -825,7 +800,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "playfullgame()",
       "id": "tests_fullgame_test_playfullgame"
     },
@@ -837,7 +812,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "advance()",
       "id": "tests_usegame_test_advance"
     },
@@ -849,7 +824,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "drivetoheldtrick()",
       "id": "tests_usegame_test_drivetoheldtrick"
     },
@@ -861,9 +836,45 @@
       "_callable": true,
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "drivetoplayphase()",
       "id": "tests_usegame_test_drivetoplayphase"
+    },
+    {
+      "label": "fullDeck()",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L6",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "deck.ts",
+      "norm_label": "fulldeck()",
+      "id": "shared_engine_deck_fulldeck"
+    },
+    {
+      "label": "seededRng()",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L17",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "deck.ts",
+      "norm_label": "seededrng()",
+      "id": "shared_engine_deck_seededrng"
+    },
+    {
+      "label": "shuffledDeck()",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L32",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "deck.ts",
+      "norm_label": "shuffleddeck()",
+      "id": "shared_engine_deck_shuffleddeck"
     },
     {
       "label": "_arm()",
@@ -1289,7 +1300,7 @@
       "label": "make_cat_frames()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L1408",
+      "source_location": "L1395",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_cat_frames",
@@ -1413,7 +1424,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "pick()",
       "id": "scripts_fuzz_pick"
     },
@@ -1425,7 +1436,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "playrandomdeal()",
       "id": "scripts_fuzz_playrandomdeal"
     },
@@ -1437,45 +1448,9 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "seededrng()",
       "id": "scripts_fuzz_seededrng"
-    },
-    {
-      "label": "fullDeck()",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L6",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "fulldeck()",
-      "id": "shared_engine_deck_fulldeck"
-    },
-    {
-      "label": "seededRng()",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L17",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "seededrng()",
-      "id": "shared_engine_deck_seededrng"
-    },
-    {
-      "label": "shuffledDeck()",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L32",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "shuffleddeck()",
-      "id": "shared_engine_deck_shuffleddeck"
     },
     {
       "label": "actingHand()",
@@ -1485,7 +1460,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "actinghand()",
       "id": "shared_engine_legal_actinghand"
     },
@@ -1497,7 +1472,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "handcards()",
       "id": "shared_engine_legal_handcards"
     },
@@ -1509,7 +1484,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "legalactions()",
       "id": "shared_engine_legal_legalactions"
     },
@@ -1521,7 +1496,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "otherplayer()",
       "id": "shared_engine_legal_otherplayer"
     },
@@ -1533,7 +1508,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "turnplayer()",
       "id": "shared_engine_legal_turnplayer"
     },
@@ -1545,7 +1520,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "assertlegal()",
       "id": "shared_engine_reducer_assertlegal"
     },
@@ -1557,7 +1532,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "buildring()",
       "id": "shared_engine_reducer_buildring"
     },
@@ -1569,7 +1544,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "cardsequal()",
       "id": "shared_engine_reducer_cardsequal"
     },
@@ -1581,7 +1556,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "enterdealerexchange()",
       "id": "shared_engine_reducer_enterdealerexchange"
     },
@@ -1593,7 +1568,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "enterplay()",
       "id": "shared_engine_reducer_enterplay"
     },
@@ -1605,7 +1580,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "newgame()",
       "id": "shared_engine_reducer_newgame"
     },
@@ -1617,7 +1592,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "nextdeal()",
       "id": "shared_engine_reducer_nextdeal"
     },
@@ -1629,7 +1604,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "reduce()",
       "id": "shared_engine_reducer_reduce"
     },
@@ -1641,7 +1616,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "removecard()",
       "id": "shared_engine_reducer_removecard"
     },
@@ -1653,21 +1628,9 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "settlescore()",
       "id": "shared_engine_reducer_settlescore"
-    },
-    {
-      "label": "handsEqual()",
-      "file_type": "code",
-      "source_file": "shared/engine/view.ts",
-      "source_location": "L6",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "handsequal()",
-      "id": "shared_engine_view_handsequal"
     },
     {
       "label": "redact()",
@@ -1677,7 +1640,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "redact()",
       "id": "shared_engine_view_redact"
     },
@@ -1689,7 +1652,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "visible()",
       "id": "shared_engine_view_visible"
     },
@@ -1701,7 +1664,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "dealerdiscardfirstlegal()",
       "id": "tests_helpers_dealerdiscardfirstlegal"
     },
@@ -1713,7 +1676,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "makeplaystate()",
       "id": "tests_helpers_makeplaystate"
     },
@@ -1725,7 +1688,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "orderupround1()",
       "id": "tests_helpers_orderupround1"
     },
@@ -1737,7 +1700,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "passlonerwindows()",
       "id": "tests_helpers_passlonerwindows"
     },
@@ -1749,7 +1712,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "playouthand()",
       "id": "tests_helpers_playouthand"
     },
@@ -1761,7 +1724,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "selecthands()",
       "id": "tests_helpers_selecthands"
     },
@@ -2254,9 +2217,9 @@
       "label": "A wall shelf with clutter \u2014 jars, books, a lantern. Placed once, never tiled,\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
-      "source_location": "L1440",
+      "source_location": "L1427",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1440",
+      "id": "art_generate_art_rationale_1427",
       "community": 0,
       "community_name": "main",
       "norm_label": "a wall shelf with clutter \u2014 jars, books, a lantern. placed once, never tiled,..."
@@ -2319,13 +2282,57 @@
       "id": "claude_graphify"
     },
     {
+      "label": "engine/index.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "engine/index.ts",
+      "id": "shared_engine_index"
+    },
+    {
+      "label": "types.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "types.ts",
+      "id": "shared_engine_types"
+    },
+    {
+      "label": "view.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/view.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "view.ts",
+      "id": "shared_engine_view"
+    },
+    {
+      "label": "DEAL_OVER_PHASES",
+      "file_type": "code",
+      "source_file": "shared/engine/view.ts",
+      "source_location": "L4",
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "types.ts",
+      "norm_label": "deal_over_phases",
+      "id": "shared_engine_view_deal_over_phases"
+    },
+    {
       "label": "App.tsx",
       "file_type": "code",
       "source_file": "src/App.tsx",
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "app.tsx",
       "id": "src_app"
     },
@@ -2336,7 +2343,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "usegame.ts",
       "id": "src_game_usegame"
     },
@@ -2347,7 +2354,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "bot",
       "id": "src_game_usegame_bot"
     },
@@ -2358,7 +2365,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "human",
       "id": "src_game_usegame_human"
     },
@@ -2369,7 +2376,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "trick_hold_ms",
       "id": "src_game_usegame_trick_hold_ms"
     },
@@ -2380,7 +2387,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "useopponentexpression.ts",
       "id": "src_game_useopponentexpression"
     },
@@ -2391,7 +2398,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "usesfx.ts",
       "id": "src_game_usesfx"
     },
@@ -2402,7 +2409,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "sound_files",
       "id": "src_game_usesfx_sound_files"
     },
@@ -2413,7 +2420,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "main.tsx",
       "id": "src_main"
     },
@@ -2424,7 +2431,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "root",
       "id": "src_main_root"
     },
@@ -2435,7 +2442,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "bidpanel.tsx",
       "id": "src_ui_bidpanel"
     },
@@ -2446,7 +2453,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "bid_phases",
       "id": "src_ui_bidpanel_bid_phases"
     },
@@ -2457,7 +2464,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "suit_label",
       "id": "src_ui_bidpanel_suit_label"
     },
@@ -2467,10 +2474,10 @@
       "source_file": "src/ui/Card.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_card",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "card.tsx"
+      "community_name": "types.ts",
+      "norm_label": "card.tsx",
+      "id": "src_ui_card"
     },
     {
       "label": "Game.tsx",
@@ -2479,7 +2486,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "game.tsx",
       "id": "src_ui_game"
     },
@@ -2490,7 +2497,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "handtray.tsx",
       "id": "src_ui_handtray"
     },
@@ -2501,7 +2508,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "scenelayer.tsx",
       "id": "src_ui_scenelayer"
     },
@@ -2511,10 +2518,10 @@
       "source_file": "src/ui/Scoreboard.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_scoreboard",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "scoreboard.tsx"
+      "community_name": "types.ts",
+      "norm_label": "scoreboard.tsx",
+      "id": "src_ui_scoreboard"
     },
     {
       "label": "SCORE_SUIT",
@@ -2522,10 +2529,10 @@
       "source_file": "src/ui/Scoreboard.tsx",
       "source_location": "L7",
       "_origin": "ast",
-      "id": "src_ui_scoreboard_score_suit",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "score_suit"
+      "community_name": "types.ts",
+      "norm_label": "score_suit",
+      "id": "src_ui_scoreboard_score_suit"
     },
     {
       "label": "StatusBanner.tsx",
@@ -2533,21 +2540,21 @@
       "source_file": "src/ui/StatusBanner.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_statusbanner",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "statusbanner.tsx"
+      "community_name": "types.ts",
+      "norm_label": "statusbanner.tsx",
+      "id": "src_ui_statusbanner"
     },
     {
       "label": "SUIT_LABEL",
       "file_type": "code",
       "source_file": "src/ui/StatusBanner.tsx",
-      "source_location": "L4",
+      "source_location": "L5",
       "_origin": "ast",
-      "id": "src_ui_statusbanner_suit_label",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "suit_label"
+      "community_name": "types.ts",
+      "norm_label": "suit_label",
+      "id": "src_ui_statusbanner_suit_label"
     },
     {
       "label": "Table.tsx",
@@ -2555,32 +2562,21 @@
       "source_file": "src/ui/Table.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_ui_table",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "table.tsx"
-    },
-    {
-      "label": "KITTY_PHASES",
-      "file_type": "code",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L70",
-      "_origin": "ast",
-      "id": "src_ui_table_kitty_phases",
-      "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "kitty_phases"
+      "community_name": "types.ts",
+      "norm_label": "table.tsx",
+      "id": "src_ui_table"
     },
     {
       "label": "SEATS",
       "file_type": "code",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L31",
+      "source_location": "L18",
       "_origin": "ast",
-      "id": "src_ui_table_seats",
       "community": 11,
-      "community_name": "useGame.ts",
-      "norm_label": "seats"
+      "community_name": "types.ts",
+      "norm_label": "seats",
+      "id": "src_ui_table_seats"
     },
     {
       "label": "fullGame.test.tsx",
@@ -2589,7 +2585,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "fullgame.test.tsx",
       "id": "tests_fullgame_test"
     },
@@ -2600,7 +2596,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 11,
-      "community_name": "useGame.ts",
+      "community_name": "types.ts",
       "norm_label": "usegame.test.tsx",
       "id": "tests_usegame_test"
     },
@@ -2611,10 +2607,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "art_assets",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "assets.md",
-      "id": "art_assets"
+      "norm_label": "assets.md"
     },
     {
       "label": "Animation convention",
@@ -2623,10 +2619,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L283",
       "_origin": "ast",
+      "id": "art_assets_animation_convention",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "animation convention",
-      "id": "art_assets_animation_convention"
+      "norm_label": "animation convention"
     },
     {
       "label": "Art assets \u2014 spec",
@@ -2635,10 +2631,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "art_assets_art_assets_spec",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "art assets \u2014 spec",
-      "id": "art_assets_art_assets_spec"
+      "norm_label": "art assets \u2014 spec"
     },
     {
       "label": "Audio (Phase 2c)",
@@ -2647,10 +2643,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L325",
       "_origin": "ast",
+      "id": "art_assets_audio_phase_2c",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "audio (phase 2c)",
-      "id": "art_assets_audio_phase_2c"
+      "norm_label": "audio (phase 2c)"
     },
     {
       "label": "Cards",
@@ -2659,10 +2655,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L55",
       "_origin": "ast",
+      "id": "art_assets_cards",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "cards",
-      "id": "art_assets_cards"
+      "norm_label": "cards"
     },
     {
       "label": "Environment palette",
@@ -2671,10 +2667,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L136",
       "_origin": "ast",
+      "id": "art_assets_environment_palette",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "environment palette",
-      "id": "art_assets_environment_palette"
+      "norm_label": "environment palette"
     },
     {
       "label": "Environment shading \u2014 `ramp()` (Phase 2d)",
@@ -2683,10 +2679,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L107",
       "_origin": "ast",
+      "id": "art_assets_environment_shading_ramp_phase_2d",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "environment shading \u2014 `ramp()` (phase 2d)",
-      "id": "art_assets_environment_shading_ramp_phase_2d"
+      "norm_label": "environment shading \u2014 `ramp()` (phase 2d)"
     },
     {
       "label": "Layout budget \u2014 asserted, not eyeballed",
@@ -2695,10 +2691,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L94",
       "_origin": "ast",
+      "id": "art_assets_layout_budget_asserted_not_eyeballed",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "layout budget \u2014 asserted, not eyeballed",
-      "id": "art_assets_layout_budget_asserted_not_eyeballed"
+      "norm_label": "layout budget \u2014 asserted, not eyeballed"
     },
     {
       "label": "Lighting \u2014 `light_from()` (Phase 2d.5)",
@@ -2707,10 +2703,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L185",
       "_origin": "ast",
+      "id": "art_assets_lighting_light_from_phase_2d_5",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "lighting \u2014 `light_from()` (phase 2d.5)",
-      "id": "art_assets_lighting_light_from_phase_2d_5"
+      "norm_label": "lighting \u2014 `light_from()` (phase 2d.5)"
     },
     {
       "label": "Living things (Phase 2d.3)",
@@ -2719,10 +2715,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L243",
       "_origin": "ast",
+      "id": "art_assets_living_things_phase_2d_3",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "living things (phase 2d.3)",
-      "id": "art_assets_living_things_phase_2d_3"
+      "norm_label": "living things (phase 2d.3)"
     },
     {
       "label": "Output",
@@ -2731,10 +2727,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L303",
       "_origin": "ast",
+      "id": "art_assets_output",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "output",
-      "id": "art_assets_output"
+      "norm_label": "output"
     },
     {
       "label": "Palette \u2014 cabin by the fire",
@@ -2743,10 +2739,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L21",
       "_origin": "ast",
+      "id": "art_assets_palette_cabin_by_the_fire",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "palette \u2014 cabin by the fire",
-      "id": "art_assets_palette_cabin_by_the_fire"
+      "norm_label": "palette \u2014 cabin by the fire"
     },
     {
       "label": "Regenerating",
@@ -2755,10 +2751,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L348",
       "_origin": "ast",
+      "id": "art_assets_regenerating",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "regenerating",
-      "id": "art_assets_regenerating"
+      "norm_label": "regenerating"
     },
     {
       "label": "Rules for repeating tiles",
@@ -2767,10 +2763,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L156",
       "_origin": "ast",
+      "id": "art_assets_rules_for_repeating_tiles",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "rules for repeating tiles",
-      "id": "art_assets_rules_for_repeating_tiles"
+      "norm_label": "rules for repeating tiles"
     },
     {
       "label": "Scene objects (Phase 2d.2)",
@@ -2779,10 +2775,10 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L204",
       "_origin": "ast",
+      "id": "art_assets_scene_objects_phase_2d_2",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "scene objects (phase 2d.2)",
-      "id": "art_assets_scene_objects_phase_2d_2"
+      "norm_label": "scene objects (phase 2d.2)"
     },
     {
       "label": "Tiles vs. placed objects \u2014 different rules",
@@ -2791,10 +2787,54 @@
       "source_file": "art/ASSETS.md",
       "source_location": "L144",
       "_origin": "ast",
+      "id": "art_assets_tiles_vs_placed_objects_different_rules",
       "community": 12,
       "community_name": "Art assets \u2014 spec",
-      "norm_label": "tiles vs. placed objects \u2014 different rules",
-      "id": "art_assets_tiles_vs_placed_objects_different_rules"
+      "norm_label": "tiles vs. placed objects \u2014 different rules"
+    },
+    {
+      "label": "deck.ts",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "deck.ts",
+      "norm_label": "deck.ts",
+      "id": "shared_engine_deck"
+    },
+    {
+      "label": "RANKS",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L4",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "deck.ts",
+      "norm_label": "ranks",
+      "id": "shared_engine_deck_ranks"
+    },
+    {
+      "label": "SUITS",
+      "file_type": "code",
+      "source_file": "shared/engine/deck.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "deck.ts",
+      "norm_label": "suits",
+      "id": "shared_engine_deck_suits"
+    },
+    {
+      "label": "deck.test.ts",
+      "file_type": "code",
+      "source_file": "tests/deck.test.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 13,
+      "community_name": "deck.ts",
+      "norm_label": "deck.test.ts",
+      "id": "tests_deck_test"
     },
     {
       "label": "vite.config.ts",
@@ -2976,9 +3016,9 @@
       "label": "A cat asleep by the fire, two frames of slow breathing. Two frames is enough\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
-      "source_location": "L1409",
+      "source_location": "L1396",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1409",
+      "id": "art_generate_art_rationale_1396",
       "community": 17,
       "community_name": "make_seated_old_timer",
       "norm_label": "a cat asleep by the fire, two frames of slow breathing. two frames is enough..."
@@ -3067,7 +3107,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "fuzz.ts",
       "id": "scripts_fuzz"
     },
@@ -3078,7 +3118,7 @@
       "source_location": "L71",
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "outcomes",
       "id": "scripts_fuzz_outcomes"
     },
@@ -3089,7 +3129,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "terminal_phases",
       "id": "scripts_fuzz_terminal_phases"
     },
@@ -3100,7 +3140,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "config.ts",
       "id": "shared_engine_config"
     },
@@ -3111,53 +3151,9 @@
       "source_location": "L3",
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "default_config",
       "id": "shared_engine_config_default_config"
-    },
-    {
-      "label": "deck.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "deck.ts",
-      "id": "shared_engine_deck"
-    },
-    {
-      "label": "RANKS",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L4",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "ranks",
-      "id": "shared_engine_deck_ranks"
-    },
-    {
-      "label": "SUITS",
-      "file_type": "code",
-      "source_file": "shared/engine/deck.ts",
-      "source_location": "L3",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "suits",
-      "id": "shared_engine_deck_suits"
-    },
-    {
-      "label": "engine/index.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "engine/index.ts",
-      "id": "shared_engine_index"
     },
     {
       "label": "legal.ts",
@@ -3166,7 +3162,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "legal.ts",
       "id": "shared_engine_legal"
     },
@@ -3177,53 +3173,9 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "reducer.ts",
       "id": "shared_engine_reducer"
-    },
-    {
-      "label": "types.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "types.ts",
-      "id": "shared_engine_types"
-    },
-    {
-      "label": "view.ts",
-      "file_type": "code",
-      "source_file": "shared/engine/view.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "view.ts",
-      "id": "shared_engine_view"
-    },
-    {
-      "label": "DEAL_OVER_PHASES",
-      "file_type": "code",
-      "source_file": "shared/engine/view.ts",
-      "source_location": "L4",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "deal_over_phases",
-      "id": "shared_engine_view_deal_over_phases"
-    },
-    {
-      "label": "deck.test.ts",
-      "file_type": "code",
-      "source_file": "tests/deck.test.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "deck.test.ts",
-      "id": "tests_deck_test"
     },
     {
       "label": "helpers.ts",
@@ -3232,7 +3184,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "helpers.ts",
       "id": "tests_helpers"
     },
@@ -3243,7 +3195,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "community": 2,
-      "community_name": "types.ts",
+      "community_name": "reducer.ts",
       "norm_label": "reducer.test.ts",
       "id": "tests_reducer_test"
     },
@@ -4766,7 +4718,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1479",
+      "source_location": "L1466",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4778,7 +4730,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1479",
+      "source_location": "L1466",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4790,7 +4742,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1482",
+      "source_location": "L1469",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4802,7 +4754,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1483",
+      "source_location": "L1470",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4814,7 +4766,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1484",
+      "source_location": "L1471",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4826,7 +4778,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1488",
+      "source_location": "L1475",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4838,7 +4790,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1489",
+      "source_location": "L1476",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4850,7 +4802,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1489",
+      "source_location": "L1476",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4862,7 +4814,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1490",
+      "source_location": "L1477",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4874,7 +4826,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1491",
+      "source_location": "L1478",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4886,7 +4838,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1492",
+      "source_location": "L1479",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4898,7 +4850,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1493",
+      "source_location": "L1480",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4910,7 +4862,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1498",
+      "source_location": "L1485",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4922,7 +4874,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1498",
+      "source_location": "L1485",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4934,7 +4886,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1499",
+      "source_location": "L1486",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4946,7 +4898,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1501",
+      "source_location": "L1488",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4958,7 +4910,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1506",
+      "source_location": "L1493",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4970,7 +4922,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1519",
+      "source_location": "L1506",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -4982,7 +4934,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1418",
+      "source_location": "L1405",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_cat_frames",
@@ -4994,7 +4946,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1425",
+      "source_location": "L1412",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_cat_frames",
@@ -5006,7 +4958,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1427",
+      "source_location": "L1414",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_cat_frames",
@@ -5018,7 +4970,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1431",
+      "source_location": "L1418",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_cat_frames",
@@ -5030,7 +4982,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1431",
+      "source_location": "L1418",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_cat_frames",
@@ -5570,7 +5522,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1390",
+      "source_location": "L1378",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_seated_old_timer",
@@ -5582,7 +5534,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1444",
+      "source_location": "L1431",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_shelf",
@@ -5594,7 +5546,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1456",
+      "source_location": "L1443",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_shelf",
@@ -6878,12 +6830,12 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Card.tsx",
-      "source_location": "L32",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card_card",
-      "target": "src_ui_card_cardasset",
-      "confidence_score": 1.0
+      "target": "src_ui_card_cardasset"
     },
     {
       "relation": "calls",
@@ -6938,84 +6890,48 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L50",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_remaininginhand",
-      "target": "src_ui_table_samehand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_samehand"
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L43",
+      "source_location": "L53",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "src_ui_table_seatof",
-      "target": "src_ui_table_samehand",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L100",
-      "weight": 1.0,
-      "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_shortseatlabel",
-      "confidence_score": 1.0
+      "target": "src_ui_table_samehand"
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L148",
+      "source_location": "L54",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_seatof",
-      "confidence_score": 1.0
+      "target": "src_ui_table_remaininginhand"
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L95",
+      "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table_table",
-      "target": "src_ui_table_samehand",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L96",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_ui_table_table",
-      "target": "src_ui_table_remaininginhand",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L99",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_ui_table_table",
-      "target": "src_ui_table_seatlabel",
-      "confidence_score": 1.0
+      "target": "src_ui_table_seatlabel"
     },
     {
       "relation": "calls",
@@ -8429,9 +8345,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card",
-      "target": "shared_engine_types_card",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_card"
     },
     {
       "relation": "imports",
@@ -8585,9 +8501,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "shared_engine_types_player",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_player"
     },
     {
       "relation": "imports",
@@ -8597,9 +8513,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "shared_engine_types_playerview",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_playerview"
     },
     {
       "relation": "imports",
@@ -8609,9 +8525,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "shared_engine_types_suit",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_suit"
     },
     {
       "relation": "imports",
@@ -8621,9 +8537,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "src_game_usegame_bot",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_bot"
     },
     {
       "relation": "imports",
@@ -8633,9 +8549,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "src_game_usegame_human",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_human"
     },
     {
       "relation": "imports",
@@ -8645,9 +8561,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "src_game_useopponentexpression_useopponentexpression",
-      "confidence_score": 1.0
+      "target": "src_game_useopponentexpression_useopponentexpression"
     },
     {
       "relation": "imports",
@@ -8657,9 +8573,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "shared_engine_types_playerview",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_playerview"
     },
     {
       "relation": "imports",
@@ -8669,9 +8585,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_game_usegame_bot",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_bot"
     },
     {
       "relation": "imports",
@@ -8681,9 +8597,33 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_game_usegame_human",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_human"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_ui_statusbanner",
+      "target": "src_ui_card_card"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_ui_statusbanner",
+      "target": "src_ui_card_cardback"
     },
     {
       "relation": "imports",
@@ -8693,9 +8633,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types_handid",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_handid"
     },
     {
       "relation": "imports",
@@ -8705,9 +8645,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types_playerview",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_playerview"
     },
     {
       "relation": "imports",
@@ -8717,9 +8657,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame_bot",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_bot"
     },
     {
       "relation": "imports",
@@ -8729,9 +8669,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame_human",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_human"
     },
     {
       "relation": "imports",
@@ -8741,9 +8681,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame_completedtrick",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_completedtrick"
     },
     {
       "relation": "imports",
@@ -8753,9 +8693,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card_card"
     },
     {
       "relation": "imports",
@@ -8765,9 +8705,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card_cardback",
-      "confidence_score": 1.0
+      "target": "src_ui_card_cardback"
     },
     {
       "relation": "imports",
@@ -9641,9 +9581,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -9773,9 +9713,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -9785,9 +9725,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "src_game_usegame",
-      "confidence_score": 1.0
+      "target": "src_game_usegame"
     },
     {
       "relation": "imports_from",
@@ -9797,9 +9737,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "src_game_useopponentexpression",
-      "confidence_score": 1.0
+      "target": "src_game_useopponentexpression"
     },
     {
       "relation": "imports_from",
@@ -9809,9 +9749,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -9821,9 +9761,21 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_game_usegame",
-      "confidence_score": 1.0
+      "target": "src_game_usegame"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/ui/StatusBanner.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 1.0,
+      "source": "src_ui_statusbanner",
+      "target": "src_ui_card"
     },
     {
       "relation": "imports_from",
@@ -9833,9 +9785,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -9845,9 +9797,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_game_usegame",
-      "confidence_score": 1.0
+      "target": "src_game_usegame"
     },
     {
       "relation": "imports_from",
@@ -9857,9 +9809,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card"
     },
     {
       "relation": "imports_from",
@@ -10228,9 +10180,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets",
-      "target": "art_assets_art_assets_spec"
+      "target": "art_assets_art_assets_spec",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10239,9 +10191,9 @@
       "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_environment_shading_ramp_phase_2d"
+      "target": "art_assets_environment_shading_ramp_phase_2d",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10250,9 +10202,9 @@
       "source_location": "L136",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_environment_palette"
+      "target": "art_assets_environment_palette",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10261,9 +10213,9 @@
       "source_location": "L144",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_tiles_vs_placed_objects_different_rules"
+      "target": "art_assets_tiles_vs_placed_objects_different_rules",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10272,9 +10224,9 @@
       "source_location": "L204",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_scene_objects_phase_2d_2"
+      "target": "art_assets_scene_objects_phase_2d_2",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10283,9 +10235,9 @@
       "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_palette_cabin_by_the_fire"
+      "target": "art_assets_palette_cabin_by_the_fire",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10294,9 +10246,9 @@
       "source_location": "L243",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_living_things_phase_2d_3"
+      "target": "art_assets_living_things_phase_2d_3",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10305,9 +10257,9 @@
       "source_location": "L283",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_animation_convention"
+      "target": "art_assets_animation_convention",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10316,9 +10268,9 @@
       "source_location": "L303",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_output"
+      "target": "art_assets_output",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10327,9 +10279,9 @@
       "source_location": "L325",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_audio_phase_2c"
+      "target": "art_assets_audio_phase_2c",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10338,9 +10290,9 @@
       "source_location": "L348",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_regenerating"
+      "target": "art_assets_regenerating",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10349,9 +10301,9 @@
       "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_cards"
+      "target": "art_assets_cards",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10360,9 +10312,9 @@
       "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_art_assets_spec",
-      "target": "art_assets_layout_budget_asserted_not_eyeballed"
+      "target": "art_assets_layout_budget_asserted_not_eyeballed",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10371,9 +10323,9 @@
       "source_location": "L156",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_tiles_vs_placed_objects_different_rules",
-      "target": "art_assets_rules_for_repeating_tiles"
+      "target": "art_assets_rules_for_repeating_tiles",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10382,9 +10334,9 @@
       "source_location": "L185",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "art_assets_tiles_vs_placed_objects_different_rules",
-      "target": "art_assets_lighting_light_from_phase_2d_5"
+      "target": "art_assets_lighting_light_from_phase_2d_5",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10511,7 +10463,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1408",
+      "source_location": "L1395",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -10522,7 +10474,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1439",
+      "source_location": "L1426",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -10533,7 +10485,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1473",
+      "source_location": "L1460",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
@@ -12458,23 +12410,23 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Card.tsx",
-      "source_location": "L3",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card",
-      "target": "src_ui_card_cardasset",
-      "confidence_score": 1.0
+      "target": "src_ui_card_cardback"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Card.tsx",
-      "source_location": "L37",
+      "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card",
-      "target": "src_ui_card_cardback",
-      "confidence_score": 1.0
+      "target": "src_ui_card_cardasset"
     },
     {
       "relation": "contains",
@@ -12483,9 +12435,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_card",
-      "target": "src_ui_card_card",
-      "confidence_score": 1.0
+      "target": "src_ui_card_card"
     },
     {
       "relation": "contains",
@@ -12538,9 +12490,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "src_ui_scoreboard_scorepair",
-      "confidence_score": 1.0
+      "target": "src_ui_scoreboard_scorepair"
     },
     {
       "relation": "contains",
@@ -12549,9 +12501,9 @@
       "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "src_ui_scoreboard_scoreboard",
-      "confidence_score": 1.0
+      "target": "src_ui_scoreboard_scoreboard"
     },
     {
       "relation": "contains",
@@ -12560,31 +12512,31 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_scoreboard",
-      "target": "src_ui_scoreboard_score_suit",
-      "confidence_score": 1.0
+      "target": "src_ui_scoreboard_score_suit"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/StatusBanner.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_ui_statusbanner_statusbanner",
-      "confidence_score": 1.0
+      "target": "src_ui_statusbanner_statusbanner"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/StatusBanner.tsx",
-      "source_location": "L4",
+      "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_ui_statusbanner_suit_label",
-      "confidence_score": 1.0
+      "target": "src_ui_statusbanner_suit_label"
     },
     {
       "relation": "contains",
@@ -12593,97 +12545,53 @@
       "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_compass",
-      "confidence_score": 1.0
+      "target": "src_ui_table_seats"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L31",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_seats",
-      "confidence_score": 1.0
+      "target": "src_ui_table_samehand"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L38",
+      "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_samehand",
-      "confidence_score": 1.0
+      "target": "src_ui_table_remaininginhand"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L42",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_seatof",
-      "confidence_score": 1.0
+      "target": "src_ui_table_seatlabel"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L49",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "src_ui_table",
-      "target": "src_ui_table_remaininginhand",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L54",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_ui_table",
-      "target": "src_ui_table_seatlabel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L62",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_ui_table",
-      "target": "src_ui_table_shortseatlabel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L70",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_ui_table",
-      "target": "src_ui_table_kitty_phases",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/ui/Table.tsx",
-      "source_location": "L79",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "src_ui_table",
-      "target": "src_ui_table_table",
-      "confidence_score": 1.0
+      "target": "src_ui_table_table"
     },
     {
       "relation": "contains",
@@ -13140,10 +13048,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1409",
+      "source_location": "L1396",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "art_generate_art_rationale_1409",
+      "source": "art_generate_art_rationale_1396",
       "target": "art_generate_art_make_cat_frames",
       "confidence_score": 1.0
     },
@@ -13151,10 +13059,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1440",
+      "source_location": "L1427",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "art_generate_art_rationale_1440",
+      "source": "art_generate_art_rationale_1427",
       "target": "art_generate_art_make_shelf",
       "confidence_score": 1.0
     },
@@ -13969,5 +13877,5 @@
       "source_file": "RULES.md"
     }
   ],
-  "built_at_commit": "b6002a30db1938398e7aa1fb058deac9c0b6fb4c"
+  "built_at_commit": "24741cdc54b36fe989e7354542d57de1f274fa83"
 }

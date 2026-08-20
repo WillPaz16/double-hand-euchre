@@ -43,16 +43,20 @@ describe('loner declaration windows', () => {
     expect(s2.ringOrder!.some((h) => h.player === 'A' && h.role === 'blind')).toBe(false);
   });
 
-  it('blind-trump loner names any suit and dealer still exchanges the upcard', () => {
+  it('blind-hand loner trump is the upcard, and hands stay hidden until it resolves', () => {
     let s = selectHands(newGame('seed-3', 'B', DEFAULT_CONFIG));
     s = reduce(s, { type: 'PASS', player: 'A' });
     s = reduce(s, { type: 'PASS', player: 'B' }); // decline full-blind window
-    expect(s.phase).toBe('loner_blind_trump');
-    expect(s.selectedHandsRevealed).toBe(true);
+    expect(s.phase).toBe('loner_blind_hand');
+    // §2 correction: this window has the upcard turned but NOT the players' own hands — the
+    // reverse of the pre-swap ordering, and the source of the tier's whole information gap.
+    expect(s.upcardRevealed).toBe(true);
+    expect(s.selectedHandsRevealed).toBe(false);
 
-    s = reduce(s, { type: 'DECLARE_BLIND_TRUMP_LONER', player: 'A', suit: 'spades' });
-    expect(s.trump).toBe('spades');
-    expect(s.lonerTier).toBe('blind_trump');
+    const upcardSuit = s.kitty[0]!.suit;
+    s = reduce(s, { type: 'DECLARE_BLIND_HAND_LONER', player: 'A' });
+    expect(s.trump).toBe(upcardSuit);
+    expect(s.lonerTier).toBe('blind_hand');
     expect(s.phase).toBe('dealer_exchange');
 
     s = dealerDiscardFirstLegal(s);
@@ -203,12 +207,12 @@ describe('trick play and scoring (crafted hands for determinism)', () => {
     expect(end.gameScore.A).toBe(8);
   });
 
-  it('a blind-trump loner sweep scores 6', () => {
+  it('a blind-hand loner sweep scores 6', () => {
     const s0 = makePlayState({
       dealer: 'B',
       trump: hearts,
       maker: 'A',
-      lonerTier: 'blind_trump',
+      lonerTier: 'blind_hand',
       hands: sweepHands,
     });
     const end = playOutHand(s0);
@@ -256,10 +260,37 @@ describe('visibility (redact)', () => {
     expect(viewA.ownBlindHand).toBeNull();
   });
 
-  it('selected hand becomes visible only after both decline the full-blind window', () => {
+  // The information boundary at each loner window IS the tier (§2) — full-blind sees
+  // neither the upcard nor its own hand, blind-hand sees the upcard but not its own hand, and
+  // only normal bidding sees both. That invariant is exactly what the reveal-order swap in
+  // reducer.ts touches, so it needs its own assertion rather than living only inside the
+  // reducer's phase/flag checks above — a swap that silently inverted AGAIN would still pass
+  // those.
+  it('the full-blind window shows neither the upcard nor your own hand', () => {
+    const s = selectHands(newGame('seed-12a', 'B', DEFAULT_CONFIG));
+    expect(s.phase).toBe('loner_full_blind');
+    const viewA = redact(s, 'A');
+    expect(viewA.upcard).toBeNull();
+    expect(viewA.ownSelectedHand).toBeNull();
+  });
+
+  it('the blind-hand window shows the upcard but still not your own hand', () => {
+    let s = selectHands(newGame('seed-12b', 'B', DEFAULT_CONFIG));
+    s = reduce(s, { type: 'PASS', player: 'A' });
+    s = reduce(s, { type: 'PASS', player: 'B' }); // decline full-blind
+    expect(s.phase).toBe('loner_blind_hand');
+    const viewA = redact(s, 'A');
+    expect(viewA.upcard).not.toBeNull();
+    expect(viewA.ownSelectedHand).toBeNull();
+  });
+
+  it('selected hand becomes visible only after both decline the blind-hand window too', () => {
     let s = selectHands(newGame('seed-12', 'B', DEFAULT_CONFIG));
     s = reduce(s, { type: 'PASS', player: 'A' });
-    s = reduce(s, { type: 'PASS', player: 'B' });
+    s = reduce(s, { type: 'PASS', player: 'B' }); // decline full-blind
+    s = reduce(s, { type: 'PASS', player: 'A' });
+    s = reduce(s, { type: 'PASS', player: 'B' }); // decline blind-hand
+    expect(s.phase).toBe('bidding_round1');
     const viewA = redact(s, 'A');
     expect(viewA.ownSelectedHand).toHaveLength(5);
     expect(viewA.ownBlindHand).toBeNull(); // blind hand still hidden

@@ -13,12 +13,12 @@ export interface HandId {
   role: HandRole;
 }
 
-export type LonerTier = 'standard' | 'blind_trump' | 'full_blind';
+export type LonerTier = 'standard' | 'blind_hand' | 'full_blind';
 
 export type Phase =
   | 'select'
   | 'loner_full_blind'
-  | 'loner_blind_trump'
+  | 'loner_blind_hand'
   | 'bidding_round1'
   | 'bidding_round2'
   | 'dealer_exchange'
@@ -75,7 +75,10 @@ export interface GameState {
 export type Action =
   | { type: 'SELECT_HAND'; player: Player; packetIndex: 0 | 1 }
   | { type: 'DECLARE_FULL_BLIND_LONER'; player: Player }
-  | { type: 'DECLARE_BLIND_TRUMP_LONER'; player: Player; suit: Suit }
+  /* No `suit` field — the trump for this tier IS the upcard's suit (§2). You've seen the
+     upcard turned face-up, but not your own hand; the reverse of the standard-loner
+     information state, hence "blind hand" rather than "blind trump". */
+  | { type: 'DECLARE_BLIND_HAND_LONER'; player: Player }
   | { type: 'ORDER_UP'; player: Player; loner?: boolean }
   | { type: 'NAME_TRUMP'; player: Player; suit: Suit; loner?: boolean }
   | { type: 'PASS'; player: Player }

@@ -22,14 +22,24 @@ Going alone can be called with three different amounts of information. Each tier
 window in the sequence, and once a window passes it cannot be revisited.
 
 1. **Full-blind loner window** — immediately after blind selection, before either player has
-   looked at their selected hand. A player may declare a full-blind loner here: alone, zero
-   information about their hand or the upcard. **8 points** on a win.
-2. Both players now look at their selected hand (not the blind hand).
-3. **Blind-trump loner window** — after seeing the selected hand but before the upcard is
-   turned face-up. A player may declare a blind-trump loner: alone, hand known, trump unknown
-   — they name a trump suit blind. **6 points** on a win.
-4. Upcard is turned face-up. Normal bidding begins (§3), during which a standard loner may be
-   called. **4 points** on a win.
+   looked at their selected hand or the upcard is turned. A player may declare a full-blind
+   loner here: alone, zero information about anything. **8 points** on a win.
+2. Upcard is turned face-up — visible to both players, still nobody has looked at their own
+   hand.
+3. **Blind-hand loner window** — trump is now known (the upcard's suit), but neither player
+   has looked at their own selected hand. A player may declare a blind-hand loner here: alone,
+   trump known, hand unseen. Trump is fixed to the upcard's suit — this tier does not name a
+   suit, unlike the reducer's `DECLARE_BLIND_TRUMP_LONER` predecessor which incorrectly let it.
+   **6 points** on a win.
+4. Both players now look at their selected hand. Normal bidding begins (§3), during which a
+   standard loner may be called. **4 points** on a win.
+
+**Corrected from an earlier version of this document**, which had steps 2 and 3 the other way
+around (hand seen, trump blind). That was backwards: a player who has seen the upcard but not
+their own hand has *less* freedom than one who has seen their hand but not the trump — naming
+trump blind is a real decision, while committing to alone-with-a-fixed-trump before seeing
+your cards is closer to the full-blind gamble, just with the trump suit given away for free.
+The point values (6 sits between 4 and 8) only make sense under this ordering.
 
 Declaration order within each window: non-dealer, then dealer. If either player declares in
 a window, bidding ends there and play proceeds to §5 with that player as the lone maker. If
@@ -42,7 +52,7 @@ special case.
 
 ## 3. Bidding (standard, on/after the upcard)
 
-Only reached if nobody declared a full-blind or blind-trump loner.
+Only reached if nobody declared a full-blind or blind-hand loner.
 
 - **Round 1**: non-dealer, then dealer, may order up the upcard's suit as trump (optionally
   declaring a standard loner, 4 points). Ordering up: dealer takes the upcard into their
@@ -60,11 +70,12 @@ Only reached if nobody declared a full-blind or blind-trump loner.
 
 A standard loner may be called by either player at the moment they name/order trump in
 rounds 1 or 2, from their **selected** hand only (never the blind hand — they haven't seen
-it).
+it). This is the *only* way to call a standard loner — there is no separate "go alone" action
+independent of naming trump.
 
 ## 4. Tiers 2 & 3 dealer exchange
 
-If the maker declared blind-trump or full-blind (tiers 2/3), the dealer still receives the
+If the maker declared blind-hand or full-blind (tiers 2/3), the dealer still receives the
 upcard and discards, **regardless of who is the maker or whether the dealer is even
 involved in the bid** — this happens whether the dealer made the call or not:
 
@@ -81,7 +92,7 @@ The lone player sets one of their two hands **face-down and out of play entirely
 deal (their partner-hand does not participate at all — neither leading, following, nor being
 dealt into later tricks). Which hand is set aside:
 
-- Standard/blind-trump loner: the player has a selected hand; the **other** (unselected) hand
+- Standard/blind-hand loner: the player has a selected hand; the **other** (unselected) hand
   is set aside. Player plays all 5 tricks from their selected hand alone, against both of the
   opponent's hands.
 - Full-blind loner: **resolved by sequencing, not actually ambiguous** — blind selection

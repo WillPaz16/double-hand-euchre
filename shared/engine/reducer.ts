@@ -172,12 +172,15 @@ export function reduce(state: GameState, action: Action): GameState {
       return enterDealerExchange(withMaker);
     }
 
-    case 'DECLARE_BLIND_TRUMP_LONER': {
+    case 'DECLARE_BLIND_HAND_LONER': {
+      // Trump is the upcard's suit, not a player choice — the whole point of this tier is
+      // that trump is the KNOWN part (you've seen the upcard) and your hand is the unknown
+      // part. Same shape as DECLARE_FULL_BLIND_LONER just below.
       const withMaker = {
         ...base,
         maker: action.player,
-        lonerTier: 'blind_trump' as const,
-        trump: action.suit,
+        lonerTier: 'blind_hand' as const,
+        trump: base.kitty[0]!.suit,
         passedBy: [],
       };
       return enterDealerExchange(withMaker);
@@ -210,10 +213,13 @@ export function reduce(state: GameState, action: Action): GameState {
       if (passedBy.length < 2) return { ...base, passedBy };
 
       switch (base.phase) {
+        // Swapped from v1 (§2 correction): the upcard turns FIRST, then the blind-hand
+        // window sees it but not the player's own cards. selectedHandsRevealed now happens
+        // at the end of THIS window, immediately before bidding_round1 needs to read hands.
         case 'loner_full_blind':
-          return { ...base, phase: 'loner_blind_trump', passedBy: [], selectedHandsRevealed: true };
-        case 'loner_blind_trump':
-          return { ...base, phase: 'bidding_round1', passedBy: [], upcardRevealed: true };
+          return { ...base, phase: 'loner_blind_hand', passedBy: [], upcardRevealed: true };
+        case 'loner_blind_hand':
+          return { ...base, phase: 'bidding_round1', passedBy: [], selectedHandsRevealed: true };
         case 'bidding_round1':
           return {
             ...base,

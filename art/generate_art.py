@@ -201,6 +201,41 @@ def light_from(sprite, strength=0.16, from_left=True):
     return sprite
 
 
+# --- 2x pixel grid (Phase 2e.1) ----------------------------------------------------------- #
+# Card art at 100x140 with 1px-precise strokes (draw_face's `width=2` lines, single-pixel eye
+# highlights, GLYPH_SCALE=2 rank glyphs) reads as smooth line art at 1:1 — the apparent "pixel"
+# is one screen pixel, not the 2+ screen pixels every Pokemon/Stardew reference maps one art
+# pixel to. Nothing about the CANVAS size changes here (still 100x140, so no CSS or layout is
+# touched) — only what the pixels inside it are allowed to look like.
+#
+# Rather than hand-doubling every coordinate across draw_face, the pip masks, and the glyph
+# table — a large, error-prone rewrite of code that has no other reason to change — this snaps
+# the FINISHED image to the grid as a last step: downsample by PX with NEAREST (which keeps
+# whichever single pixel lands on each PX x PX block, with no blending, since nothing in this
+# file draws anti-aliased edges), then upsample back with NEAREST. Every existing composition,
+# proportion and colour choice is unchanged; only the finest 1px detail gets pulled onto a
+# coarser grid. It is the same trick real pixel-art pipelines use to enforce a grid on
+# freehand work, and it is mechanical enough to apply everywhere at once instead of asset by
+# asset.
+PX = 2
+
+
+def snap_to_pixel_grid(img: Image.Image, px: int = PX) -> Image.Image:
+    w, h = img.size
+    assert w % px == 0 and h % px == 0, f"{w}x{h} is not a multiple of {px}"
+    small = img.resize((w // px, h // px), Image.NEAREST)
+    return small.resize((w, h), Image.NEAREST)
+
+
+def _assert_pixel_grid(img: Image.Image, px: int = PX, label: str = "") -> None:
+    """Fails if `img` has any detail finer than the PX grid. Round-tripping an image that is
+    ALREADY on the grid through downsample-then-upsample is a no-op by construction, so this
+    is a cheap, exact check rather than a heuristic — the same kind of build-time guardrail as
+    `_assert_art_clear_of_indices`, which already caught two bugs visual review missed."""
+    if snap_to_pixel_grid(img, px).tobytes() != img.tobytes():
+        raise AssertionError(f"{label or 'image'} has detail finer than the {px}px grid")
+
+
 def contact_shadow(w, h, layers=3, max_alpha=104):
     """A stepped dark ellipse to sit under an object so it reads as resting on a surface
     rather than floating. Deliberately stepped rather than gaussian-blurred — a soft blur
@@ -437,6 +472,8 @@ def make_number_card(rank: str, suit: str) -> Image.Image:
     size = 48
     paste(card, pip_sprite(suit, size, body_color(suit), outline_px=3), CX - size / 2, 70 - size / 2)
     paste_corners(card, rank, suit)
+    card = snap_to_pixel_grid(card)
+    _assert_pixel_grid(card, label=f"{rank} of {suit}")
     return card
 
 
@@ -706,6 +743,8 @@ def make_face_card(rank: str, suit: str) -> Image.Image:
         draw_face(card, brow_color=HAIR_BROWN, brow_angle=-1, mouth="smile", eyes="wink")
 
     paste_corners(card, rank, suit)
+    card = snap_to_pixel_grid(card)
+    _assert_pixel_grid(card, label=f"{rank} of {suit}")
     return card
 
 
@@ -792,17 +831,31 @@ def make_old_timer_portrait(expression: str) -> Image.Image:
     card = Image.new("RGBA", (PORTRAIT_W, PORTRAIT_H), (0, 0, 0, 0))
     paste(card, composite_sprite(PORTRAIT_W, PORTRAIT_H, _old_timer_parts()), 0, 0)
     draw_old_timer_face(card, expression)
+    card = snap_to_pixel_grid(card)
+    _assert_pixel_grid(card, label=f"portrait ({expression})")
     return card
 
 
-# --- Scoreboard cards ---------------------------------------------------------------------- #
-# Authentic euchre scoring: a 4 and a 6 of a chosen suit, laid out with a traditional
-# multi-pip grid (not the single big center pip the playing deck uses) so the two can overlap
-# and read as "a partially covered card" the way they do at a real table. The UI slides the 6
-# out from behind the 4 as the score rises; a numeral sits alongside since the slide is a
-# decorative nod to the ritual, not a pixel-exact pip-counting simulation.
+# --- Scoreboard cards (Phase 2e.6) -------------------------------------------------------- #
+# The real euchre 4-and-6 scoring ritual: a 4 and a 6 of a chosen suit, and the score at any
+# moment is the SUM OF EXPOSED PIPS across both — you raise the 4 to show 1-4, then once it
+# reads a full 4 you start raising the 6 to carry the rest, up to a full 10.
+#
+# That constraint is what fixed the layout: pips need to be revealable ONE AT A TIME, so they
+# sit in a SINGLE vertical column (not the traditional two-column grid — see the "corrected
+# from" note below) with a sliding cover in front. `SCORE_PIP_Y0/Y1` mark where that column
+# starts and ends; `src/ui/Scoreboard.tsx` computes the SAME boundary fractions in TS to size
+# the cover, so the two files must be read together — same cross-file coupling pattern as
+# TRICK_HOLD_MS between useGame.ts and Table.tsx.
+#
+# **Corrected from an earlier version**, which used the traditional 2x2/2x3 pip GRID (a real
+# card's actual layout) with the UI sliding the whole 6 card sideways out from behind the 4.
+# That grid can only reveal pips two at a time (a whole row), so it could never represent an
+# odd score — and a game to 10 spends most of its life on 1-point hands. Sum-of-exposed-pips
+# needs single-pip granularity, which only a single column can give losslessly.
 
 SCORE_CARD_W, SCORE_CARD_H = 60, 84
+SCORE_PIP_Y0, SCORE_PIP_Y1 = 6, 78  # pip column bounds — mirrored in Scoreboard.tsx
 
 
 def _score_card_frame(draw: ImageDraw.ImageDraw, w: int, h: int) -> None:
@@ -818,23 +871,30 @@ def make_scoreboard_card(rank: str, suit: str) -> Image.Image:
     _score_card_frame(draw, w, h)
 
     body = body_color(suit)
-    pip_size = 12
-    positions = (
-        [(0.32, 0.32), (0.68, 0.32), (0.32, 0.68), (0.68, 0.68)]
-        if rank == "4"
-        else [
-            (0.32, 0.24), (0.68, 0.24), (0.32, 0.5), (0.68, 0.5), (0.32, 0.76), (0.68, 0.76),
-        ]
-    )
-    for fx, fy in positions:
+    count = 4 if rank == "4" else 6
+    # Smaller pips for the 6-column than the 4-column — at equal spacing (Y1-Y0)/count, six
+    # pips packed into the same band sit closer together than four do, and an unchanged pip
+    # size would overlap them.
+    pip_size = 11 if count == 4 else 9
+    band = SCORE_PIP_Y1 - SCORE_PIP_Y0
+    for i in range(count):
+        # Centre of the i-th pip's slot, top to bottom — see Scoreboard.tsx for why this
+        # exact formula (not just visual placement, but the reveal-boundary math too).
+        fy = (SCORE_PIP_Y0 + (i + 0.5) * band / count) / h
         sprite = pip_sprite(suit, pip_size, body, outline_px=1, shade_depth=1)
-        paste(card, sprite, w * fx - pip_size / 2, h * fy - pip_size / 2)
+        paste(card, sprite, w * 0.5 - pip_size / 2, h * fy - pip_size / 2)
 
     text = text_color(suit)
-    for x, y in ((3, 3), (w - 13, h - 17)):
+    # Corners, clear of the centred pip column horizontally regardless of vertical overlap.
+    # scale=2, matching PX: a scale=1 glyph draws 1-screen-pixel strokes, which is exactly the
+    # detail the 2x grid snap discards — it survived unnoticed while scale=1 was still legal
+    # (pre-2e.1), but after the pixel-grid pass it collapsed into an unreadable smear.
+    for x, y in ((2, 2), (w - 18, h - 20)):
         gdraw = ImageDraw.Draw(card)
-        draw_glyph(gdraw, x, y, GLYPHS[rank], text, scale=1)
+        draw_glyph(gdraw, x, y, GLYPHS[rank], text, scale=2)
 
+    card = snap_to_pixel_grid(card)
+    _assert_pixel_grid(card, label=f"scoreboard {rank} of {suit}")
     return card
 
 
@@ -858,6 +918,8 @@ def make_card_back() -> Image.Image:
             draw.point((x + step // 2, y + step // 2), fill=WOOD_MED)
 
     draw.rectangle((7, 7, CARD_W - 8, CARD_H - 8), outline=GOLD, width=2)
+    img = snap_to_pixel_grid(img)
+    _assert_pixel_grid(img, label="card back")
     return img
 
 

@@ -12,7 +12,6 @@ const SUITS: Suit[] = ['clubs', 'diamonds', 'hearts', 'spades'];
 const ORDER_UP_TRUMP_THRESHOLD = 3;
 const ORDER_UP_LONER_THRESHOLD = 4;
 const NAME_TRUMP_THRESHOLD = 3;
-const BLIND_TRUMP_LONER_THRESHOLD = 4;
 
 function countTrump(hand: Card[], suit: Suit): number {
   return hand.filter((c) => isTrump(c, suit)).length;
@@ -69,15 +68,12 @@ export function chooseMove(view: PlayerView, legal: Action[]): Action {
       return byType(legal, 'PASS')[0]!;
     }
 
-    case 'loner_blind_trump': {
-      const hand = view.ownSelectedHand!;
-      const best = bestSuitByTrumpCount(hand, SUITS);
-      if (countTrump(hand, best) >= BLIND_TRUMP_LONER_THRESHOLD) {
-        const declare = legal.find(
-          (a) => a.type === 'DECLARE_BLIND_TRUMP_LONER' && a.suit === best,
-        );
-        if (declare) return declare;
-      }
+    case 'loner_blind_hand': {
+      // Swapped tier (§2 correction): trump is known (the upcard), but your own hand is NOT
+      // — view.ownSelectedHand is null here, same as loner_full_blind. There is nothing left
+      // to evaluate, so the bot never gambles on this tier either. It is a genuine gap for
+      // single-player (this and the 8pt tier are dead code for the bot) but a correct one:
+      // guessing without your hand isn't a heuristic, it's a coin flip.
       return byType(legal, 'PASS')[0]!;
     }
 

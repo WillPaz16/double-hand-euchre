@@ -52,14 +52,11 @@ export function legalActions(state: GameState, player: Player): Action[] {
       return [{ type: 'DECLARE_FULL_BLIND_LONER', player }, { type: 'PASS', player }];
     }
 
-    case 'loner_blind_trump': {
+    case 'loner_blind_hand': {
+      // No suit argument — trump for this tier is the upcard's suit, which is already
+      // revealed by the time this window opens (see reducer.ts PASS). One action, not four.
       if (turnPlayer(state) !== player) return [];
-      const declares: Action[] = SUITS.map((suit) => ({
-        type: 'DECLARE_BLIND_TRUMP_LONER',
-        player,
-        suit,
-      }));
-      return [...declares, { type: 'PASS', player }];
+      return [{ type: 'DECLARE_BLIND_HAND_LONER', player }, { type: 'PASS', player }];
     }
 
     case 'bidding_round1': {

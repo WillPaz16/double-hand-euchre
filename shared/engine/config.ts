@@ -5,7 +5,7 @@ export const DEFAULT_CONFIG: Config = {
   gameTarget: 10,
   lonerPoints: {
     standard: 4,
-    blind_trump: 6,
+    blind_hand: 6,
     full_blind: 8,
   },
 };

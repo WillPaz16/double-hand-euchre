@@ -15,32 +15,36 @@ import { Card, CardBack } from './Card.tsx';
  *  tuning this. */
 const TRICK_HOLD_BEFORE_SWEEP_MS = 620;
 
-type Compass = 'n' | 'e' | 's' | 'w';
+type Seat = 'sw' | 'se' | 'nw' | 'ne';
 
-/** Seating, and the whole reason this component is shaped the way it is.
+/** Seating (Phase 2e.4, revised from the round-table 2e version).
  *
- *  Two-handed euchre is four-handed euchre where each player controls two hands, and the
- *  seats alternate A, B, A, B — so each player's two hands sit OPPOSITE each other, as
- *  partners. That is a fact about the game, and the old layout (a 2x2 grid of labelled
- *  panels) threw it away: you had to read four text labels to work out a seating
- *  relationship the table itself should just show you.
+ *  Two-sided: you and your two hands sit south, the Old-Timer and his two hands sit north —
+ *  "opponent across from me, both my hands in front of me, both of theirs in front of them."
+ *  The earlier round-table layout instead seated hands A/B/A/B around the rim so each
+ *  player's own two hands faced each other as PARTNERS would in real 4-handed euchre. That
+ *  was a faithful model of the underlying 4-seat game, but it isn't how the two of you
+ *  actually sit at a table together, and it's a two-PLAYER game before it's a 4-hand
+ *  abstraction — the seating should show the two of you, not the four seats.
  *
- *  Going round the table: you at south, Old-Timer west, you north, Old-Timer east. Your two
- *  hands face each other across the felt, and so do his. No label is needed to see it.
- */
-const SEATS: { hand: HandId; at: Compass }[] = [
-  { hand: { player: HUMAN, role: 'selected' }, at: 's' },
-  { hand: { player: BOT, role: 'selected' }, at: 'w' },
-  { hand: { player: HUMAN, role: 'blind' }, at: 'n' },
-  { hand: { player: BOT, role: 'blind' }, at: 'e' },
+ *  Known tradeoff: the play ring (RULES.md §6) is fixed —
+ *  `non-dealer selected -> dealer selected -> non-dealer blind -> dealer blind` — and does
+ *  not change with seating. Under two-sided seating that ring zig-zags between north and
+ *  south instead of walking round a rim, so turn order is no longer readable from position
+ *  alone. The `.acting` highlight is load-bearing here, not decorative. */
+const SEATS: { hand: HandId; at: Seat }[] = [
+  { hand: { player: HUMAN, role: 'selected' }, at: 'sw' },
+  { hand: { player: HUMAN, role: 'blind' }, at: 'se' },
+  { hand: { player: BOT, role: 'selected' }, at: 'nw' },
+  { hand: { player: BOT, role: 'blind' }, at: 'ne' },
 ];
 
 function sameHand(a: HandId, b: HandId): boolean {
   return a.player === b.player && a.role === b.role;
 }
 
-function seatOf(hand: HandId): Compass {
-  return SEATS.find((s) => sameHand(s.hand, hand))?.at ?? 'n';
+function seatOf(hand: HandId): Seat {
+  return SEATS.find((s) => sameHand(s.hand, hand))?.at ?? 'nw';
 }
 
 /** Every active hand plays exactly one card per trick, so its remaining count is always
@@ -70,7 +74,7 @@ function shortSeatLabel(hand: HandId): string {
 const KITTY_PHASES = new Set([
   'select',
   'loner_full_blind',
-  'loner_blind_trump',
+  'loner_blind_hand',
   'bidding_round1',
   'bidding_round2',
   'dealer_exchange',
@@ -95,7 +99,16 @@ export function Table({
         const acting = view.actingHand ? sameHand(view.actingHand, hand) : false;
         const count = remainingInHand(view, hand);
         return (
-          <div key={`${hand.player}-${hand.role}`} className={`seat seat-${at}${acting ? ' acting' : ''}`}>
+          <div
+            key={`${hand.player}-${hand.role}`}
+            className={`seat seat-${at}${acting ? ' acting' : ''}`}
+            // Read by HandTray's pickup animation (2e.5) to find where a hand's fan sits
+            // on the table, so the tray can animate FROM that position rather than just
+            // appearing. A plain DOM query rather than a ref prop-drilled through Game.tsx —
+            // Table and HandTray are siblings with no natural parent to own the ref, and
+            // this keeps the animation entirely HandTray's concern.
+            data-seat={`${hand.player}-${hand.role}`}
+          >
             <div className="seat-label">{seatLabel(hand)}</div>
             <div className="seat-label-short">{shortSeatLabel(hand)}</div>
             {/* An acting hand has been PICKED UP — its faces are in the tray below, so its

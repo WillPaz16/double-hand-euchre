@@ -13,8 +13,8 @@ function label(a: Action): string {
       return `Pick Packet ${a.packetIndex + 1}`;
     case 'DECLARE_FULL_BLIND_LONER':
       return 'Go Alone — Full Blind (8 pts)';
-    case 'DECLARE_BLIND_TRUMP_LONER':
-      return `Go Alone — Blind Trump: ${SUIT_LABEL[a.suit]} (6 pts)`;
+    case 'DECLARE_BLIND_HAND_LONER':
+      return 'Go Alone — Blind Hand (6 pts)';
     case 'ORDER_UP':
       return a.loner ? 'Order It Up — Alone (4 pts)' : 'Order It Up';
     case 'NAME_TRUMP':
@@ -26,10 +26,10 @@ function label(a: Action): string {
   }
 }
 
-const BID_PHASES = new Set([
+export const BID_PHASES = new Set([
   'select',
   'loner_full_blind',
-  'loner_blind_trump',
+  'loner_blind_hand',
   'bidding_round1',
   'bidding_round2',
 ]);
