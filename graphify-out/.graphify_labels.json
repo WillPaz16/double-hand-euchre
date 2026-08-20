@@ -1,7 +1,7 @@
 {
   "0": "main",
   "1": "RULES.md — Two-Handed Euchre Rules Spec",
-  "2": "types.ts",
+  "2": "reducer.ts",
   "3": "compilerOptions",
   "4": "devDependencies",
   "5": "rules.ts",
@@ -10,12 +10,13 @@
   "8": "Hand B1 (Player B, selected/blind)",
   "9": "balance.ts",
   "10": "CLAUDE.md",
-  "11": "useGame.ts",
+  "11": "types.ts",
   "12": "Art assets — spec",
+  "13": "deck.ts",
   "14": "vite.config.ts",
-  "15": "make_face_card",
+  "15": "generate_art.py",
   "16": "Image",
   "17": "make_seated_old_timer",
-  "18": "make_cat_frames",
-  "19": "generate_art.py"
+  "18": "_assert_art_clear_of_indices",
+  "19": "_shift"
 }

@@ -37,7 +37,7 @@ body {
  *     fireplace sits in the LEFT margin. So the room's only light source and the room's only
  *     light disagreed, and every object was lit from nowhere in particular. Nothing else in
  *     the scene has to change for the room to cohere; the light just has to come from the
- *     fire. Below 1240px the hearth isn't rendered at all, so the light stays centred there —
+ *     fire. Below 1000px the hearth isn't rendered at all, so the light stays centred there —
  *     a directional glow with no visible source would be a worse lie than a neutral one.
  *
  *  2. TILE-REPEAT BREAKUP. The wall tile's own repeat is broken internally (see
@@ -64,7 +64,7 @@ body {
 }
 /* Once the hearth is actually on screen, the warm key moves onto it and the room is lit from
    its own fire. The cool fill stays opposite, at the window. */
-@media (min-width: 1240px) {
+@media (min-width: 1000px) {
   .scene-hearth-glow {
     background:
       radial-gradient(
@@ -116,18 +116,20 @@ body {
 }
 
 /* Side scenery is gated on WIDTH, separately from lean mode's HEIGHT gate — two different
-   scarce resources. 1240 = the table's 900px cap plus 170px of real margin each side. An
-   earlier 1120 gate let both objects slide under the table and, being z-index -1, simply be
-   occluded by it: the gate promised margin that its own max(24px, …) floor then took back. */
+   scarce resources. 1000 = the table's 760px cap plus 120px of real margin each side.
+
+   The gate was 1240 until the table was rebuilt (Phase 2e). That number was the old
+   full-width panel's 900px cap plus its margins, and it meant the entire room was
+   `display: none` on every phone and most laptop windows — every scenery asset built in 2d.2
+   and 2d.3 was invisible to almost everyone. Narrowing the table is what bought the margin
+   back; the gate is a consequence of the layout, so it moves when the layout does. (An even
+   earlier 1120 gate let both objects slide *under* the table and, being z-index -1, simply be
+   occluded by it: the gate promised margin that the layout then took back.) */
 .scene-fireplace,
 .scene-window {
   display: none;
 }
-@media (min-width: 1240px) {
-  .game-root {
-    max-width: 900px;
-    margin-inline: auto;
-  }
+@media (min-width: 1000px) {
   .scene-fireplace,
   .scene-window {
     display: block;
@@ -135,7 +137,7 @@ body {
   }
   /* Anchored so the hearth's base meets the floor line rather than floating on the wall. */
   .scene-fireplace {
-    left: calc((100vw - 900px) / 2 - 160px);
+    left: calc((100vw - 760px) / 2 - 150px);
     bottom: calc(34% - 6px);
     width: 140px;
     height: 186px;
@@ -143,7 +145,7 @@ body {
     image-rendering: pixelated;
   }
   .scene-window {
-    right: calc((100vw - 900px) / 2 - 140px);
+    right: calc((100vw - 760px) / 2 - 130px);
     top: 16%;
     width: 120px;
     height: 146px;
@@ -237,13 +239,13 @@ body {
   );
 }
 /* --- Living things (2d.3) -------------------------------------------------------------- */
-/* All width-gated with the rest of the side scenery: same scarce resource, same 1240px rule. */
+/* All width-gated with the rest of the side scenery: same scarce resource, same 1000px rule. */
 .scene-seated,
 .scene-cat,
 .scene-shelf {
   display: none;
 }
-@media (min-width: 1240px) {
+@media (min-width: 1000px) {
   .scene-seated,
   .scene-cat,
   .scene-shelf {
@@ -257,7 +259,7 @@ body {
      space without restructuring the UI and risking the mobile height budgets. He sits at the
      side of the table instead — still a person in the room, just not opposite you. */
   .scene-seated {
-    right: calc((100vw - 900px) / 2 - 160px);
+    right: calc((100vw - 760px) / 2 - 150px);
     bottom: calc(34% - 34px);
     width: 140px;
     height: 196px;
@@ -266,14 +268,14 @@ body {
   }
   /* Curled on the floor by the hearth, where a cat would actually be. */
   .scene-cat {
-    left: calc((100vw - 900px) / 2 - 148px);
+    left: calc((100vw - 760px) / 2 - 138px);
     bottom: calc(34% - 46px);
     width: 52px;
     height: 34px;
     overflow: hidden;
   }
   .scene-shelf {
-    left: calc((100vw - 900px) / 2 - 154px);
+    left: calc((100vw - 760px) / 2 - 144px);
     bottom: calc(34% + 226px);
     width: 118px;
     height: 62px;
@@ -323,35 +325,6 @@ body {
   z-index: 1;
 }
 
-/* The table is an OBJECT sitting in a room, not just a background fill. Three things sell
-   that, and it read as flat wallpaper without them:
-     - a thick dark rim (the table edge seen side-on)
-     - a lit inner top edge, since light comes from the hearth above
-     - a drop shadow onto the floor, the same contact-shadow principle used on sprites
-   Value separation from the wall does the rest: the wall is deliberately much darker so the
-   table reads as nearer and lit, rather than as more of the same wood. */
-.table {
-  /* Layout and visuals kept in ONE rule on purpose: these were split ~100 lines apart, and
-     the 4px border below is not merely decorative — it eats into a `flex: 1; min-height: 0`
-     element on the tightest viewport, so whoever edits the layout needs to see it. */
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  min-height: 0;
-  overflow: hidden;
-  background-image: url('/art/table_felt.png');
-  background-repeat: repeat;
-  image-rendering: pixelated;
-  border: 4px solid #2a1a10;
-  border-radius: 10px;
-  padding: 0.5rem;
-  box-shadow:
-    inset 0 3px 0 rgba(255, 198, 132, 0.14),
-    inset 0 -3px 0 rgba(0, 0, 0, 0.34),
-    0 8px 18px rgba(0, 0, 0, 0.55);
-}
-
 /* --- Phase 2a placeholder styling — no art yet, just legible and responsive. --- */
 
 .game-root {
@@ -372,11 +345,39 @@ body {
   justify-content: center;
   padding-top: 0.25rem;
 }
+/* At 375px the two slots plus the portrait measured wider than the viewport and the
+   Old-Timer's half was cut off by the right edge. */
+@media (max-width: 560px) {
+  .scoreboard {
+    gap: 0.75rem;
+  }
+  .opponent-portrait {
+    display: none;
+  }
+  .score-pair {
+    width: 84px;
+    height: 59px;
+  }
+  .score-card {
+    width: 42px;
+    height: 59px;
+  }
+}
+/* Laid out as a ROW. Stacked (portrait over label over cards over numeral) this block was
+   208px tall at desktop — as much vertical space as the table itself had, for two numbers.
+   The same information side by side is ~90px, and the ~120px recovered went straight into
+   the felt. */
 .score-slot {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 0.15rem;
+  gap: 0.5rem;
+}
+.score-slot .score-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
 }
 /* 66x78 is exactly 60% of the source art's native 110x130 — same aspect ratio, so
    object-fit here is a pure scale with zero actual cropping (verified: 110/130 == 66/78).
@@ -447,64 +448,313 @@ body {
   gap: 0.5rem;
 }
 
-.seats {
+/* ============================================================================
+   THE TABLE  (rebuilt, Phase 2e)
+
+   What this replaced, and why. The table used to be a full-width flex panel with a 2x2 grid
+   of labelled seat boxes stacked above a dashed "trick area" rectangle. It was a UI panel
+   wearing a wood texture, and three separate problems all traced back to that one fact:
+
+     - It spanned its container, so there were no side margins. The whole scene layer had to
+       be gated at 1240px to have somewhere to live, which meant that on a phone — the primary
+       target — the entire room was `display: none`. Every scenery asset built in 2d.2 and
+       2d.3 was invisible to most players.
+     - The seated Old-Timer could not sit "across the table" as designed, because there was no
+       across-the-table space. He was parked in the side margin instead.
+     - The rug was dropped for the same reason: anything under the table was fully occluded.
+
+   So: a 3x3 grid with the felt in the middle and the four hands around its edge. The table is
+   now an object with a size, which is what gives the room back its margins.
+
+   Seating is not decorative. Seats alternate A, B, A, B, so each player's two hands sit
+   opposite each other as partners — you north/south, Old-Timer east/west. The old grid made
+   you read four text labels to recover a relationship the table can simply show.
+   ============================================================================ */
+
+.table-area {
+  flex: 1;
+  min-height: 0;
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  /* The felt's size drives the GRID TRACKS, rather than the felt being centred inside tracks
+     that are larger than it. With a `1fr` centre row the felt sat in the middle of a tall
+     track and the seats were pinned to the far edges of theirs — four hands floating a
+     hundred pixels off a table nobody was sitting at. Tracks sized to the felt put the seats
+     against its rim, which is where people sit.
+
+     Three caps on the width because three different things run out first: the viewport's
+     width on a phone, the viewport's HEIGHT on a laptop in landscape (the felt is wider than
+     it is tall, so height binds sooner than you expect), and a hard ceiling so the table
+     stops growing on a large monitor instead of eating the room again. */
+  /* The felt takes its size from the SPACE LEFT, not from a guess about the viewport.
+     Deriving it from `vh` meant hardcoding an assumption about how tall the scoreboard,
+     status strip and hand tray happen to be; when that assumption drifted the felt claimed
+     more height than the grid had and the south seat was squeezed out underneath the tray.
+     A `1fr` centre row plus `height: 100%` on the felt lets the browser do that arithmetic,
+     and it stays right when the chrome above changes. */
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  /* Ceiling on the whole block, so a very tall window cannot open a gap between the felt and
+     the seats: the felt stops growing at its max-width, and without this the extra height
+     would go into the centre row and push the hands off the rim again. */
+  max-height: 560px;
+  grid-template-areas:
+    '.  n  .'
+    'w  t  e'
+    '.  s  .';
+  justify-items: center;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  margin-inline: auto;
 }
 
-.seat {
-  border: 1px solid #4a3728;
-  border-radius: 8px;
-  padding: 0.4rem;
-  background: rgba(20, 14, 10, 0.72);
+/* --- The felt ------------------------------------------------------------------------- */
+/* The table is an OBJECT sitting in a room, not a background fill. A thick dark rim (the
+   edge seen side-on), a lit inner top edge since the light comes from the hearth, and a drop
+   shadow onto the floor — the same contact-shadow principle the sprites use. Value
+   separation does the rest: the wall is much darker, so the table reads as nearer and lit
+   rather than as more of the same wood. */
+.table-top {
+  grid-area: t;
+  position: relative;
+  /* Fills its row and derives its width from that. Sizing the felt independently of its row
+     once let it claim more height than the row had; grid does not overlap items, so the seats
+     above and below were squeezed into slivers and their fans spilled *under* the felt (which
+     is positioned, so it paints over static siblings) and vanished. */
+  height: 100%;
+  width: auto;
+  max-width: min(460px, 92vw);
+  aspect-ratio: 1.3;
+  /* Round, because it is a table seen from above and the four hands sit around its edge. The
+     ellipse is also what makes the corners of the layout available to the room again. */
+  border-radius: 50%;
+  background-image: url('/art/table_felt.png');
+  background-repeat: repeat;
+  image-rendering: pixelated;
+  border: 5px solid #2a1a10;
+  box-shadow:
+    inset 0 4px 0 rgba(255, 198, 132, 0.13),
+    inset 0 -5px 0 rgba(0, 0, 0, 0.36),
+    0 10px 22px rgba(0, 0, 0, 0.55);
 }
-.seat.acting {
-  border-color: #ffd54a;
-  box-shadow: 0 0 8px rgba(255, 213, 74, 0.5);
-}
-.seat-label {
-  font-size: 0.75rem;
-  opacity: 0.8;
-  margin-bottom: 0.3rem;
-}
-.seat-backs {
-  display: flex;
-  gap: 3px;
-  flex-wrap: wrap;
-}
-/* Idle seats show real card-back art at half native resolution, fanned with heavy overlap so
-   five of them stay compact — they only need to convey a count, not be tap targets. */
-.seat-backs .card-back.mini {
-  margin-left: -35px;
-}
-.seat-backs .card-back.mini:first-child {
-  margin-left: 0;
+.table-trick {
+  position: absolute;
+  inset: 0;
 }
 
-.trick-area {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 0.5rem;
-  min-height: 100px;
-  flex-wrap: wrap;
-  padding: 0.5rem;
-  border: 1px dashed #4a3728;
-  border-radius: 8px;
-  background: rgba(20, 14, 10, 0.35);
+/* The kitty and its turned card, lying in the upper-left of the felt. The trick pinwheel
+   uses the four compass axes, so the diagonals are free — this sits in one of them and
+   never collides with a played card. */
+/* Centred on the felt. Nothing else is on the table during bidding, so the deck and the card
+   that everyone is bidding on get the middle of it, at full size — this is the one card in
+   the hand that both players are reading closely.
+
+   It was tucked into a corner while it was still rendered during play, and that produced a
+   subtler bug worth recording: a corner of the layout BOX is not a corner of an ELLIPSE. At
+   13%/15% the kitty tested outside ((x/a)^2 + (y/b)^2 > 1) and sat out on the rim, half over
+   the wall. Once the kitty only shows while it is live, it can simply have the centre. */
+.table-kitty {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-7deg);
+}
+.table-kitty .card-back.mini {
+  display: block;
+}
+/* The turned card lying across the deck, offset so both read as separate objects. */
+.kitty-upcard {
+  position: absolute;
+  left: 26px;
+  top: 16px;
+  transform: rotate(12deg);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
 }
 .trick-empty {
-  opacity: 0.5;
-  align-self: center;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0.4;
+  font-size: 0.8rem;
+  pointer-events: none;
 }
+
+/* --- Played cards --------------------------------------------------------------------- */
+/* Each card sits on its own seat's side of the centre, overlapping into the middle. That is
+   how a trick looks on a real table, and it means position alone says who played what — the
+   old row of four cards each needed a text label underneath to convey the same thing. */
 .trick-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  --tx: 0px;
+  --ty: 0px;
+  --rot: 0deg;
+  transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot));
+}
+/* Spread wide enough that the four positions read as four SEATS rather than as a pile. At
+   half these offsets the cards overlapped so heavily that position stopped carrying the
+   information it exists to carry, which defeats the point of placing them by seat at all. */
+.trick-card.at-n { --ty: -70px; --rot: 3deg; }
+.trick-card.at-s { --ty: 70px; --rot: -3deg; }
+.trick-card.at-w { --tx: -88px; --rot: -7deg; }
+.trick-card.at-e { --tx: 88px; --rot: 7deg; }
+
+/* --- Seats ---------------------------------------------------------------------------- */
+.seat-n { grid-area: n; }
+.seat-s { grid-area: s; }
+.seat-w { grid-area: w; justify-self: end; }
+.seat-e { grid-area: e; justify-self: start; }
+
+.seat {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.2rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+}
+/* The empty seat keeps its footprint so nothing reflows when a hand is picked up. */
+.seat-fan.is-empty {
+  width: 70px;
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 213, 74, 0.35);
+}
+.seat-w .seat-fan.is-empty,
+.seat-e .seat-fan.is-empty {
+  width: 70px;
+  height: 46px;
+}
+.seat.acting {
+  border-color: #ffd54a;
+  box-shadow: 0 0 10px rgba(255, 213, 74, 0.4);
+  background: rgba(255, 213, 74, 0.06);
+}
+.seat-label {
   font-size: 0.7rem;
-  opacity: 0.85;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+.seat-label-short {
+  display: none;
+  font-size: 0.6rem;
+  opacity: 0.75;
+}
+.seat-count {
+  display: none;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ffd54a;
+}
+
+/* --- The fan -------------------------------------------------------------------------- */
+/* A real arc, not a flat slide. The previous version overlapped the backs by a negative
+   margin and nothing else, which stacks cards along a straight line — it reads as a deck
+   half-pushed sideways, not as a hand someone is holding.
+   
+   A held fan pivots near the bottom edge of the cards, so each card is rotated about a point
+   well below itself. `transform-origin: 50% 190%` puts that pivot roughly a card-height below
+   the card, and rotation alone then produces both the splay and the natural droop of the
+   outer cards — no per-card vertical offset needed, because the arc falls out of the
+   geometry. Getting the pivot right is the whole trick. */
+/* Quarter native (25x35), not half. This is not a compromise for space — it is what a hand
+   lying on a table looks like from above next to a card that has been played into the middle.
+   The played cards are the thing you read; the idle hands only carry a count.
+
+   It is also what makes the geometry work. At half size each seat cost 110px of height, so
+   the felt could only be 338x260, and four 100x140 played cards would not fit on an ellipse
+   that small — they hung over the rim. Quarter-size backs bring a seat to ~70px and give the
+   felt back the ~90px it needed. Both quarter and half are exact fractions of the 100x140
+   source, so pixels stay crisp either way.
+
+   Tall enough to contain the arc: rotated cards overflow their layout box at the outer
+   angles, and an exactly card-height box let that overflow collide with the hand tray. */
+.seat-fan {
+  display: flex;
+  align-items: flex-end;
+  height: 46px;
+}
+.seat-fan .card-back {
+  width: 25px;
+  height: 35px;
+  transform-origin: 50% 190%;
+  margin-left: -15px;
+}
+.seat-fan .card-back:first-child {
+  margin-left: 0;
+}
+/* Five is the maximum and the common case; the shorter fans are narrower arcs of the same
+   curve so the hand never appears to change shape as it is played out. */
+.seat-fan[data-count='5'] .card-back:nth-child(1) { transform: rotate(-16deg); }
+.seat-fan[data-count='5'] .card-back:nth-child(2) { transform: rotate(-8deg); }
+.seat-fan[data-count='5'] .card-back:nth-child(3) { transform: rotate(0deg); }
+.seat-fan[data-count='5'] .card-back:nth-child(4) { transform: rotate(8deg); }
+.seat-fan[data-count='5'] .card-back:nth-child(5) { transform: rotate(16deg); }
+.seat-fan[data-count='4'] .card-back:nth-child(1) { transform: rotate(-13deg); }
+.seat-fan[data-count='4'] .card-back:nth-child(2) { transform: rotate(-4deg); }
+.seat-fan[data-count='4'] .card-back:nth-child(3) { transform: rotate(4deg); }
+.seat-fan[data-count='4'] .card-back:nth-child(4) { transform: rotate(13deg); }
+.seat-fan[data-count='3'] .card-back:nth-child(1) { transform: rotate(-10deg); }
+.seat-fan[data-count='3'] .card-back:nth-child(2) { transform: rotate(0deg); }
+.seat-fan[data-count='3'] .card-back:nth-child(3) { transform: rotate(10deg); }
+.seat-fan[data-count='2'] .card-back:nth-child(1) { transform: rotate(-6deg); }
+.seat-fan[data-count='2'] .card-back:nth-child(2) { transform: rotate(6deg); }
+
+/* The side hands face the table, so their fans are turned to sit along its edge. Rotation
+   does not change the layout box, so the seat reserves the rotated footprint explicitly. */
+.seat-w .seat-fan,
+.seat-e .seat-fan {
+  width: 46px;
+  height: 72px;
+  justify-content: center;
+  align-items: center;
+}
+.seat-w .seat-fan { transform: rotate(90deg); }
+.seat-e .seat-fan { transform: rotate(-90deg); }
+.seat-w .seat-label,
+.seat-e .seat-label {
+  font-size: 0.62rem;
+  max-width: 5rem;
+  white-space: normal;
+  text-align: center;
+}
+
+/* Narrow viewports have no side columns to put a hand in — below this the west and east
+   fans were simply squeezed to zero width and vanished, taking their card counts with them.
+   Portrait is a primary target, so they move onto the felt's rim as markers instead. North
+   and south keep their fans: there is plenty of HEIGHT in portrait, only width is scarce, so
+   only the hands that needed width give theirs up. */
+@media (max-width: 760px) {
+  .seat-w,
+  .seat-e {
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    padding: 1px 5px;
+    border-radius: 6px;
+    background: rgba(16, 11, 8, 0.72);
+    transform: translateY(-50%);
+  }
+  .seat-w { left: 2px; }
+  .seat-e { right: 2px; }
+  .seat-w .seat-fan,
+  .seat-e .seat-fan {
+    display: none;
+  }
+  .seat-w .seat-count,
+  .seat-e .seat-count,
+  .seat-w .seat-label-short,
+  .seat-e .seat-label-short {
+    display: block;
+    text-align: center;
+  }
+  .seat-w .seat-label,
+  .seat-e .seat-label {
+    display: none;
+  }
 }
 
 /* --- Card motion (2d.4) ---------------------------------------------------------------- */
@@ -513,36 +763,41 @@ body {
    below the trick area, so "arrives from below" is directionally true without measuring a
    source rect, and it needs no animation library. The architecture doc names Framer Motion
    for this; it stayed unused because these three effects don't need cross-container tweening
-   and it is ~50KB against an offline-capable PWA. */
-
-/* A played card arcs up into the trick area from the direction of the hand. */
+   and it is ~50KB against an offline-capable PWA.
+   
+   Every keyframe below composes the seat offset through the same `--tx/--ty/--rot` custom
+   properties the static rule uses. A keyframe that set a bare `transform` would silently drop
+   the card back to the centre of the table for the duration of its animation — which is
+   exactly what happened the first time these were carried over from the old row layout. */
 .trick-card {
   animation: card-play-in 260ms cubic-bezier(0.22, 0.9, 0.3, 1.1) both;
 }
 @keyframes card-play-in {
-  from { transform: translateY(46px) scale(0.86) rotate(-4deg); opacity: 0; }
-  to   { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+  from {
+    transform: translate(-50%, -50%) translate(var(--tx), calc(var(--ty) + 54px))
+      rotate(var(--rot)) scale(0.86);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot))
+      scale(1);
+    opacity: 1;
+  }
 }
-
-/* The winner pops and glows while the finished trick is held on the table. */
 .trick-card.is-winner .card-face img {
   filter: drop-shadow(0 0 5px #ffd54a) drop-shadow(0 0 2px #ffd54a);
 }
 .trick-card.is-winner {
-  animation: card-play-in 260ms cubic-bezier(0.22, 0.9, 0.3, 1.1) both,
-             winner-pop 620ms ease-out;
+  animation: winner-pop 500ms ease-out;
+  z-index: 2;
 }
 @keyframes winner-pop {
-  0%   { transform: scale(1); }
-  35%  { transform: scale(1.12); }
-  100% { transform: scale(1); }
+  0% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); }
+  40% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1.14); }
+  100% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); }
 }
-
-/* Then the whole trick sweeps toward whoever took it — which is also how the player learns
-   who won, with no extra text. animation-delay is set inline so the hold reads before the
-   sweep starts. */
 .trick-card.is-sweeping {
-  animation: card-play-in 260ms cubic-bezier(0.22, 0.9, 0.3, 1.1) both;
+  animation: sweep-down 620ms ease-in both;
 }
 .trick-card.is-sweeping.sweep-down {
   animation: sweep-down 620ms ease-in both;
@@ -556,27 +811,31 @@ body {
 .trick-card.is-sweeping.is-winner.sweep-up {
   animation: winner-pop 500ms ease-out, sweep-up 620ms ease-in both;
 }
+/* The sweep travels toward the winner's side of the table — south for you, north for him. */
 @keyframes sweep-down {
-  from { transform: translateY(0) scale(1); opacity: 1; }
-  to   { transform: translateY(150px) scale(0.7); opacity: 0; }
+  from { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); opacity: 1; }
+  to   { transform: translate(-50%, -50%) translate(var(--tx), calc(var(--ty) + 150px)) rotate(var(--rot)) scale(0.7); opacity: 0; }
 }
 @keyframes sweep-up {
-  from { transform: translateY(0) scale(1); opacity: 1; }
-  to   { transform: translateY(-150px) scale(0.7); opacity: 0; }
+  from { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); opacity: 1; }
+  to   { transform: translate(-50%, -50%) translate(var(--tx), calc(var(--ty) - 150px)) rotate(var(--rot)) scale(0.7); opacity: 0; }
 }
 
-/* The deal: idle seat backs fan in with a stagger rather than appearing all at once. */
-.seat-backs .card-back.mini {
+/* The deal: the fan builds up card by card rather than appearing all at once. Each card
+   animates to its OWN resting rotation, so the deal ends in the arc rather than snapping into
+   it — hence the per-count keyframes being avoided in favour of animating only opacity and a
+   translation, composed on top of the rotation the element already carries. */
+.seat-fan .card-back {
   animation: deal-in 300ms ease-out both;
 }
-.seat-backs .card-back.mini:nth-child(1) { animation-delay: 0ms; }
-.seat-backs .card-back.mini:nth-child(2) { animation-delay: 55ms; }
-.seat-backs .card-back.mini:nth-child(3) { animation-delay: 110ms; }
-.seat-backs .card-back.mini:nth-child(4) { animation-delay: 165ms; }
-.seat-backs .card-back.mini:nth-child(5) { animation-delay: 220ms; }
+.seat-fan .card-back:nth-child(1) { animation-delay: 0ms; }
+.seat-fan .card-back:nth-child(2) { animation-delay: 55ms; }
+.seat-fan .card-back:nth-child(3) { animation-delay: 110ms; }
+.seat-fan .card-back:nth-child(4) { animation-delay: 165ms; }
+.seat-fan .card-back:nth-child(5) { animation-delay: 220ms; }
 @keyframes deal-in {
-  from { transform: translate(-26px, -18px) rotate(-12deg); opacity: 0; }
-  to   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -587,7 +846,7 @@ body {
   .trick-card.is-sweeping.sweep-up,
   .trick-card.is-sweeping.is-winner.sweep-down,
   .trick-card.is-sweeping.is-winner.sweep-up,
-  .seat-backs .card-back.mini { animation: none; }
+  .seat-fan .card-back { animation: none; }
 }
 
 .bid-panel {
@@ -623,12 +882,33 @@ body {
   opacity: 0.8;
   margin-bottom: 0.4rem;
 }
+/* Your own hand is a held hand, so it arcs like one — the same bottom pivot the seat fans
+   use, just at full card size. It was a flat row with a flat negative margin on narrow
+   screens, which reads as a deck pushed sideways rather than as cards someone is holding.
+   
+   `align-items: flex-end` matters: rotating about a point below the card lifts the outer
+   ones, and without a shared baseline the row's height would jump as the hand is played
+   down. `flex-wrap` is off — a wrapped arc is not an arc. */
 .hand-tray-cards {
   display: flex;
   justify-content: center;
+  align-items: flex-end;
   gap: 0.4rem;
-  flex-wrap: wrap;
   perspective: 400px;
+}
+.hand-tray-cards .card-face {
+  transform-origin: 50% 260%;
+  transition: transform 120ms ease-out;
+}
+.hand-tray-cards .card-face:nth-child(1) { transform: rotate(-6deg); }
+.hand-tray-cards .card-face:nth-child(2) { transform: rotate(-3deg); }
+.hand-tray-cards .card-face:nth-child(3) { transform: rotate(0deg); }
+.hand-tray-cards .card-face:nth-child(4) { transform: rotate(3deg); }
+.hand-tray-cards .card-face:nth-child(5) { transform: rotate(6deg); }
+/* Lifting the card you are about to play out of the arc is the affordance that says "this
+   one is playable" as directly as the glow does. */
+.hand-tray-cards .card-face.highlighted:hover {
+  transform: translateY(-10px) rotate(0deg);
 }
 /* The flip — fires when the human switches which hand is up. Kept short (180ms) because it
    repeats ~10x a deal; see Phase 2 design spec §8, "The flip". */
@@ -691,28 +971,29 @@ body {
 .card-face.dimmed img {
   opacity: 0.4;
 }
-.card-back.mini {
+.card-back.mini,
+.card-face.mini {
   width: 50px;
   height: 70px;
 }
 
-/* Narrow screens can't fit five 100px cards side by side, so the hand fans with overlap the
-   way a real hand of cards does. The rank index sits in each card's top-left corner, so it
-   stays visible on every card even when overlapped — and the uncovered left strip of each
-   card remains its own tap target. */
+/* Narrow screens can't fit five 100px cards side by side, so the hand steps down to exactly
+   half native rather than overlapping.
+   
+   It used to overlap by -48px at full size, on the reasoning that the rank index sits in the
+   top-left corner so it stays visible and the uncovered strip is still a tap target. In
+   practice five cards each showing a 50px sliver, now also rotated into an arc, was a jumble:
+   you could see that you had five cards and almost nothing about what they were. Half-size
+   cards show the WHOLE card, are still a 50px touch target (above the 44px minimum), and stay
+   crisp because half is an exact fraction of the 100x140 source. */
 @media (max-width: 560px) {
   .hand-tray-cards {
-    gap: 0;
+    gap: 0.3rem;
   }
-  .hand-tray-cards .card-face + .card-face {
-    margin-left: -48px;
-  }
-}
-
-/* Landscape: give the table more horizontal room, four seats in a row. */
-@media (orientation: landscape) {
-  .seats {
-    grid-template-columns: repeat(4, 1fr);
+  .hand-tray-cards .card-face {
+    width: 50px;
+    height: 70px;
+    margin-left: 0;
   }
 }
 
@@ -723,6 +1004,49 @@ body {
 @media (max-height: 480px) {
   .game-root {
     gap: 0.25rem;
+  }
+  /* Landscape phone: the seats stop being grid rows and become markers on the felt's rim.
+     As grid rows they cost 140px of a 141px-tall table area, which left the felt 1px high —
+     it disappeared entirely and the played cards floated on the wall. Taking the seats out of
+     flow gives the whole area to the table, and the felt becomes a wide ellipse that suits
+     the viewport's shape instead of fighting it. */
+  .table-area {
+    display: block;
+    position: relative;
+    max-height: none;
+  }
+  .table-top {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    max-width: none;
+    aspect-ratio: auto;
+  }
+  .seat {
+    position: absolute;
+    /* Above the played cards: on a felt this flat the trick reaches the rim, and a seat
+       marker hidden behind a card conveys nothing. A dark chip keeps it legible over both
+       the felt and a card face. */
+    z-index: 3;
+    padding: 1px 4px;
+    border-radius: 6px;
+    background: rgba(16, 11, 8, 0.72);
+  }
+  .seat-n { top: 0; left: 50%; transform: translateX(-50%); }
+  .seat-s { bottom: 0; left: 50%; transform: translateX(-50%); }
+  .seat-w { left: 2px; top: 50%; transform: translateY(-50%); }
+  .seat-e { right: 2px; top: 50%; transform: translateY(-50%); }
+  .seat-fan {
+    display: none;
+  }
+  .seat-count,
+  .seat-label-short {
+    display: block;
+    text-align: center;
+  }
+  .seat-label {
+    display: none;
   }
   .status-banner {
     font-size: 0.8rem;
@@ -735,9 +1059,15 @@ body {
   .hand-tray-cards .card-face + .card-face {
     margin-left: 0;
   }
-  .trick-area {
-    min-height: 60px;
-    padding: 0.25rem;
+  /* Half-size cards mean half-size everything the table positions by hand. The seat offsets
+     and the felt are all expressed against the 100x140 card, so they scale together or the
+     played cards drift off the felt. */
+  .trick-card.at-n { --ty: -35px; }
+  .trick-card.at-s { --ty: 35px; }
+  .trick-card.at-w { --tx: -44px; }
+  .trick-card.at-e { --tx: 44px; }
+  .seat-label {
+    font-size: 0.6rem;
   }
   .hand-tray-cards {
     perspective: 200px;

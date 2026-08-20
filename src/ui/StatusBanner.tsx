@@ -1,6 +1,5 @@
 import type { PlayerView } from '../../shared/engine/types.ts';
 import { HUMAN, BOT } from '../game/useGame.ts';
-import { Card, CardBack } from './Card.tsx';
 
 const SUIT_LABEL: Record<string, string> = {
   clubs: 'Clubs',
@@ -36,13 +35,13 @@ export function StatusBanner({
     return <div className="status-banner">Misdeal — redealing…</div>;
   }
 
+  // The upcard itself now sits on the felt (see Table.tsx) rather than floating on the wall
+  // above it. What is left here is genuinely textual status, so this is one compact strip.
   return (
     <div className="status-banner">
-      <div className="status-row">
-        <span>Upcard:</span>
-        {view.upcard ? <Card card={view.upcard} /> : <CardBack />}
-        {view.turnedDownSuit && <span>(turned down: {SUIT_LABEL[view.turnedDownSuit]})</span>}
-      </div>
+      {view.turnedDownSuit && (
+        <div className="status-row">Turned down: {SUIT_LABEL[view.turnedDownSuit]}</div>
+      )}
       {view.trump && (
         <div className="status-row">
           Trump: {SUIT_LABEL[view.trump]}

@@ -1,541 +1,541 @@
 {
   "package.json": {
     "mtime": 1787180381.2181697,
-    "seen": 1787180924.285822,
+    "seen": 1787181859.2308118,
     "ast_hash": "399ebf742973d8e3a52a4fe25a17f382",
     "semantic_hash": ""
   },
   "scripts/fuzz.ts": {
     "mtime": 1787083545.7248116,
-    "seen": 1787180924.285824,
+    "seen": 1787181859.230813,
     "ast_hash": "e0fafc41e56425db39730884defa26ff",
     "semantic_hash": "e0fafc41e56425db39730884defa26ff"
   },
   "shared/engine/config.ts": {
     "mtime": 1787083101.2829852,
-    "seen": 1787180924.285826,
+    "seen": 1787181859.230815,
     "ast_hash": "77e46772e0231a9962cef581edf6e35f",
     "semantic_hash": "77e46772e0231a9962cef581edf6e35f"
   },
   "shared/engine/deck.ts": {
     "mtime": 1787083098.2733374,
-    "seen": 1787180924.285826,
+    "seen": 1787181859.230815,
     "ast_hash": "eba90792c630fcf080a888206aaa6ea5",
     "semantic_hash": "eba90792c630fcf080a888206aaa6ea5"
   },
   "shared/engine/index.ts": {
     "mtime": 1787083279.9674788,
-    "seen": 1787180924.2858272,
+    "seen": 1787181859.230816,
     "ast_hash": "72cd0e889c458d1f56a1013243ed53c5",
     "semantic_hash": "72cd0e889c458d1f56a1013243ed53c5"
   },
   "shared/engine/legal.ts": {
     "mtime": 1787083216.296767,
-    "seen": 1787180924.2858272,
+    "seen": 1787181859.230816,
     "ast_hash": "ac9ec2cd2bb84d762132c47e8cfd150f",
     "semantic_hash": "ac9ec2cd2bb84d762132c47e8cfd150f"
   },
   "shared/engine/reducer.ts": {
     "mtime": 1787083503.4143987,
-    "seen": 1787180924.285828,
+    "seen": 1787181859.230816,
     "ast_hash": "ed3f5cbe157f9f7d2a3370737998d176",
     "semantic_hash": "ed3f5cbe157f9f7d2a3370737998d176"
   },
   "shared/engine/rules.ts": {
     "mtime": 1787095484.5208468,
-    "seen": 1787180924.285828,
+    "seen": 1787181859.230817,
     "ast_hash": "9dd8e371b57bee2aceef70a4a6ac823b",
     "semantic_hash": ""
   },
   "shared/engine/types.ts": {
     "mtime": 1787083222.3604655,
-    "seen": 1787180924.285829,
+    "seen": 1787181859.230817,
     "ast_hash": "2b0666ac830caed1e4db2ebba3e5059f",
     "semantic_hash": "2b0666ac830caed1e4db2ebba3e5059f"
   },
   "shared/engine/view.ts": {
     "mtime": 1787083277.4379313,
-    "seen": 1787180924.285829,
+    "seen": 1787181859.230818,
     "ast_hash": "3e01e34d2152f7d8290b6f9011b41fb1",
     "semantic_hash": "3e01e34d2152f7d8290b6f9011b41fb1"
   },
   "tests/deck.test.ts": {
     "mtime": 1787083350.0255105,
-    "seen": 1787180924.2858381,
+    "seen": 1787181859.230824,
     "ast_hash": "e3ec35c3182a29fb78393b59e980daa6",
     "semantic_hash": "e3ec35c3182a29fb78393b59e980daa6"
   },
   "tests/helpers.ts": {
     "mtime": 1787083424.3936114,
-    "seen": 1787180924.285839,
+    "seen": 1787181859.230825,
     "ast_hash": "05093bd82c8c6b815f3bef54fc54c4a4",
     "semantic_hash": "05093bd82c8c6b815f3bef54fc54c4a4"
   },
   "tests/reducer.test.ts": {
     "mtime": 1787083478.1893208,
-    "seen": 1787180924.285839,
+    "seen": 1787181859.230826,
     "ast_hash": "593112bada1b443072ee0bd90f83a328",
     "semantic_hash": "593112bada1b443072ee0bd90f83a328"
   },
   "tests/rules.test.ts": {
     "mtime": 1787083341.565913,
-    "seen": 1787180924.2858398,
+    "seen": 1787181859.230826,
     "ast_hash": "aa1d22d81b94ee1b4cb27d34717b59c4",
     "semantic_hash": "aa1d22d81b94ee1b4cb27d34717b59c4"
   },
   "tsconfig.json": {
     "mtime": 1787095407.604914,
-    "seen": 1787180924.285841,
+    "seen": 1787181859.230827,
     "ast_hash": "c3b187c5dda44f27fbd78cd599d73097",
     "semantic_hash": ""
   },
   "RULES.md": {
     "mtime": 1787082711.5651069,
-    "seen": 1787180924.285843,
+    "seen": 1787181859.230829,
     "ast_hash": "463fc754867744d61585fb21a516544e",
     "semantic_hash": "463fc754867744d61585fb21a516544e"
   },
   "CLAUDE.md": {
     "mtime": 1787084123.6262023,
-    "seen": 1787180924.285842,
+    "seen": 1787181859.230828,
     "ast_hash": "82efb97a359f5c7290bf2513d14686be",
     "semantic_hash": ""
   },
   "README.md": {
     "mtime": 1787084141.472113,
-    "seen": 1787180924.285842,
+    "seen": 1787181859.230828,
     "ast_hash": "b7c376ef401d49ce13ef6f00974e71d0",
     "semantic_hash": ""
   },
   ".claude/settings.json": {
     "mtime": 1787096022.3604915,
-    "seen": 1787180924.285818,
+    "seen": 1787181859.230808,
     "ast_hash": "f2dcff7c2d50e71a5bbf466dd0fa25f1",
     "semantic_hash": ""
   },
   "shared/bot/heuristic.ts": {
     "mtime": 1787095535.0702195,
-    "seen": 1787180924.285825,
+    "seen": 1787181859.230814,
     "ast_hash": "cdb287295147729f2a0ca3fbed2f47a3",
     "semantic_hash": ""
   },
   "shared/bot/index.ts": {
     "mtime": 1787095540.8914263,
-    "seen": 1787180924.285825,
+    "seen": 1787181859.230814,
     "ast_hash": "3941634d82506f26e41a3b7a153138c7",
     "semantic_hash": ""
   },
   "src/App.tsx": {
     "mtime": 1787095418.4460306,
-    "seen": 1787180924.2858298,
+    "seen": 1787181859.230818,
     "ast_hash": "6507501c56d5af8c127a7ab8d6b53a5e",
     "semantic_hash": ""
   },
   "src/game/useGame.ts": {
     "mtime": 1787180896.8005104,
-    "seen": 1787180924.2858298,
+    "seen": 1787181859.230818,
     "ast_hash": "56b0fdaf63135a358e3b45833d2ea754",
     "semantic_hash": ""
   },
   "src/main.tsx": {
     "mtime": 1787095411.3493867,
-    "seen": 1787180924.285832,
+    "seen": 1787181859.2308202,
     "ast_hash": "92c45caa339f1694bab0dbe15fc0fc97",
     "semantic_hash": ""
   },
   "src/ui/BidPanel.tsx": {
     "mtime": 1787095710.0784588,
-    "seen": 1787180924.285833,
+    "seen": 1787181859.2308202,
     "ast_hash": "e755d26bad39a35567770ba094169d26",
     "semantic_hash": ""
   },
   "src/ui/Card.tsx": {
     "mtime": 1787096485.3511279,
-    "seen": 1787180924.285833,
+    "seen": 1787181859.2308211,
     "ast_hash": "ea7036beae827234d4c00744614a7ca7",
     "semantic_hash": ""
   },
   "src/ui/Game.tsx": {
     "mtime": 1787180707.1934512,
-    "seen": 1787180924.285834,
+    "seen": 1787181859.2308211,
     "ast_hash": "1b39c3bc062063b469544270817a4a08",
     "semantic_hash": ""
   },
   "src/ui/HandTray.tsx": {
     "mtime": 1787179205.0825086,
-    "seen": 1787180924.285834,
+    "seen": 1787181859.2308218,
     "ast_hash": "db4d4d5be0c8cc124aedf1d0cf33aad4",
     "semantic_hash": ""
   },
   "src/ui/Scoreboard.tsx": {
     "mtime": 1787146175.505324,
-    "seen": 1787180924.285836,
+    "seen": 1787181859.2308228,
     "ast_hash": "fe1b2161de9621661be97fea5e28cc00",
     "semantic_hash": ""
   },
   "src/ui/StatusBanner.tsx": {
     "mtime": 1787180707.1931946,
-    "seen": 1787180924.2858372,
+    "seen": 1787181859.2308228,
     "ast_hash": "9b14f1bcde9009d68e905daae86c4686",
     "semantic_hash": ""
   },
   "src/ui/Table.tsx": {
     "mtime": 1787164635.4489157,
-    "seen": 1787180924.2858372,
+    "seen": 1787181859.230824,
     "ast_hash": "c45802b8305bf7893368ecb05f3763d1",
     "semantic_hash": ""
   },
   "vite.config.ts": {
     "mtime": 1787095398.76527,
-    "seen": 1787180924.285841,
+    "seen": 1787181859.230828,
     "ast_hash": "eb98c53348e57a55028f415914969a6b",
     "semantic_hash": ""
   },
   "index.html": {
     "mtime": 1787095398.768682,
-    "seen": 1787180924.2858438,
+    "seen": 1787181859.2308302,
     "ast_hash": "c14ada84dfb5ff2d60dec30a89059c62",
     "semantic_hash": ""
   },
   "art/generate_art.py": {
-    "mtime": 1787163166.6418393,
-    "seen": 1787180924.285821,
-    "ast_hash": "050c4df3657dfcdab366b74d0694723c",
+    "mtime": 1787181708.9613028,
+    "seen": 1787181859.2308102,
+    "ast_hash": "48b111c9770ed9730946bce8d4d64b0e",
     "semantic_hash": ""
   },
   "art/ASSETS.md": {
-    "mtime": 1787163307.831648,
-    "seen": 1787180924.285843,
-    "ast_hash": "a2161826691359735d0cc7fbfc301961",
+    "mtime": 1787181834.5625076,
+    "seen": 1787181859.230829,
+    "ast_hash": "0ca8b644f018afa1edd69c672c671ad8",
     "semantic_hash": ""
   },
   "public/art/card_back.png": {
-    "mtime": 1787164787.042161,
-    "seen": 1787180924.2858438,
+    "mtime": 1787181715.8775167,
+    "seen": 1787181859.230832,
     "ast_hash": "948f0a3ccba5d5482c2079fe17a0b002",
     "semantic_hash": ""
   },
   "public/art/cards/clubs_10.png": {
-    "mtime": 1787164786.9850805,
-    "seen": 1787180924.285845,
+    "mtime": 1787181715.8054817,
+    "seen": 1787181859.2308328,
     "ast_hash": "4cbc1a54418e0942d4419939bdddae79",
     "semantic_hash": ""
   },
   "public/art/cards/clubs_9.png": {
-    "mtime": 1787164786.9839828,
-    "seen": 1787180924.285846,
+    "mtime": 1787181715.8040206,
+    "seen": 1787181859.2308328,
     "ast_hash": "646c2e44b7cefd566210109a67439624",
     "semantic_hash": ""
   },
   "public/art/cards/clubs_A.png": {
-    "mtime": 1787164786.9969192,
-    "seen": 1787180924.285846,
+    "mtime": 1787181715.8210855,
+    "seen": 1787181859.230834,
     "ast_hash": "41efafc9fad7eaef67d05b71ab33c439",
     "semantic_hash": ""
   },
   "public/art/cards/clubs_J.png": {
-    "mtime": 1787164786.9890442,
-    "seen": 1787180924.285847,
+    "mtime": 1787181715.8107562,
+    "seen": 1787181859.230834,
     "ast_hash": "0e8022bd19edc298aa45ec73c247ac1e",
     "semantic_hash": ""
   },
   "public/art/cards/clubs_K.png": {
-    "mtime": 1787164786.995942,
-    "seen": 1787180924.285847,
+    "mtime": 1787181715.8198059,
+    "seen": 1787181859.230835,
     "ast_hash": "2194ddf0238f367aa5f2e5c3e7160104",
     "semantic_hash": ""
   },
   "public/art/cards/clubs_Q.png": {
-    "mtime": 1787164786.9924755,
-    "seen": 1787180924.2858481,
+    "mtime": 1787181715.8152654,
+    "seen": 1787181859.230835,
     "ast_hash": "6850e5a14fe31d6963ca1225b8241405",
     "semantic_hash": ""
   },
   "public/art/cards/diamonds_10.png": {
-    "mtime": 1787164786.9988835,
-    "seen": 1787180924.2858481,
+    "mtime": 1787181715.8236387,
+    "seen": 1787181859.230836,
     "ast_hash": "89a9d2ad2f6e016d5cdaa7be6748525e",
     "semantic_hash": ""
   },
   "public/art/cards/diamonds_9.png": {
-    "mtime": 1787164786.9978962,
-    "seen": 1787180924.285849,
+    "mtime": 1787181715.822365,
+    "seen": 1787181859.230836,
     "ast_hash": "96605542f04319fab9d3d9fa1e6f1710",
     "semantic_hash": ""
   },
   "public/art/cards/diamonds_A.png": {
-    "mtime": 1787164787.011493,
-    "seen": 1787180924.28585,
+    "mtime": 1787181715.839379,
+    "seen": 1787181859.230837,
     "ast_hash": "6e2a509d709526ebe43d8fe130f15cbb",
     "semantic_hash": ""
   },
   "public/art/cards/diamonds_J.png": {
-    "mtime": 1787164787.0030208,
-    "seen": 1787180924.28585,
+    "mtime": 1787181715.8289912,
+    "seen": 1787181859.230837,
     "ast_hash": "0ba722b0ced62f8e1a0047cdbe5adaf5",
     "semantic_hash": ""
   },
   "public/art/cards/diamonds_K.png": {
-    "mtime": 1787164787.0104482,
-    "seen": 1787180924.28585,
+    "mtime": 1787181715.8380978,
+    "seen": 1787181859.230838,
     "ast_hash": "a4a35fc680c7f7eb314fe7a86caafb4f",
     "semantic_hash": ""
   },
   "public/art/cards/diamonds_Q.png": {
-    "mtime": 1787164787.006611,
-    "seen": 1787180924.2858508,
+    "mtime": 1787181715.833584,
+    "seen": 1787181859.230838,
     "ast_hash": "61b894f20c61f01812d404adabb17ab2",
     "semantic_hash": ""
   },
   "public/art/cards/hearts_10.png": {
-    "mtime": 1787164787.0139046,
-    "seen": 1787180924.2858508,
+    "mtime": 1787181715.8422568,
+    "seen": 1787181859.230838,
     "ast_hash": "d50aa99371bc09c78c9b4b75675a8cfe",
     "semantic_hash": ""
   },
   "public/art/cards/hearts_9.png": {
-    "mtime": 1787164787.012739,
-    "seen": 1787180924.285852,
+    "mtime": 1787181715.840843,
+    "seen": 1787181859.230839,
     "ast_hash": "aa17253600372a7e5789566817b4deec",
     "semantic_hash": ""
   },
   "public/art/cards/hearts_A.png": {
-    "mtime": 1787164787.0266917,
-    "seen": 1787180924.285853,
+    "mtime": 1787181715.8579948,
+    "seen": 1787181859.230839,
     "ast_hash": "378587791713a0f0bc47dced24e4ba53",
     "semantic_hash": ""
   },
   "public/art/cards/hearts_J.png": {
-    "mtime": 1787164787.0180974,
-    "seen": 1787180924.285853,
+    "mtime": 1787181715.8474371,
+    "seen": 1787181859.23084,
     "ast_hash": "5a37720602f72b899cb897634fb9fa8f",
     "semantic_hash": ""
   },
   "public/art/cards/hearts_K.png": {
-    "mtime": 1787164787.0255427,
-    "seen": 1787180924.2858539,
+    "mtime": 1787181715.8565528,
+    "seen": 1787181859.23084,
     "ast_hash": "d8bab815360e144af6cddd9d31a6e703",
     "semantic_hash": ""
   },
   "public/art/cards/hearts_Q.png": {
-    "mtime": 1787164787.021818,
-    "seen": 1787180924.2858539,
+    "mtime": 1787181715.8519976,
+    "seen": 1787181859.2308412,
     "ast_hash": "c18f7d05b54a9bd96d6c410f554987fe",
     "semantic_hash": ""
   },
   "public/art/cards/spades_10.png": {
-    "mtime": 1787164787.0289392,
-    "seen": 1787180924.285855,
+    "mtime": 1787181715.8608491,
+    "seen": 1787181859.2308412,
     "ast_hash": "faef017b267e2df9778d2ca627d3aa93",
     "semantic_hash": ""
   },
   "public/art/cards/spades_9.png": {
-    "mtime": 1787164787.0278206,
-    "seen": 1787180924.285855,
+    "mtime": 1787181715.8594284,
+    "seen": 1787181859.2308412,
     "ast_hash": "7531b927ed265fdea6e7878839145c02",
     "semantic_hash": ""
   },
   "public/art/cards/spades_A.png": {
-    "mtime": 1787164787.0413964,
-    "seen": 1787180924.285856,
+    "mtime": 1787181715.8765955,
+    "seen": 1787181859.230842,
     "ast_hash": "2eaf7985f3c18541460b49ddf0fe4ba3",
     "semantic_hash": ""
   },
   "public/art/cards/spades_J.png": {
-    "mtime": 1787164787.032961,
-    "seen": 1787180924.285856,
+    "mtime": 1787181715.866038,
+    "seen": 1787181859.230842,
     "ast_hash": "e66c3abdaa208394e29e70738f418b3f",
     "semantic_hash": ""
   },
   "public/art/cards/spades_K.png": {
-    "mtime": 1787164787.0401857,
-    "seen": 1787180924.285857,
+    "mtime": 1787181715.8751452,
+    "seen": 1787181859.2308428,
     "ast_hash": "f1323b66121a2620bdfddac8228c406f",
     "semantic_hash": ""
   },
   "public/art/cards/spades_Q.png": {
-    "mtime": 1787164787.0365727,
-    "seen": 1787180924.285857,
+    "mtime": 1787181715.8705795,
+    "seen": 1787181859.2308428,
     "ast_hash": "b7861a95df56b8765fa62e5b16fb98d2",
     "semantic_hash": ""
   },
   "public/art/table_felt.png": {
-    "mtime": 1787164787.0425265,
-    "seen": 1787180924.285867,
-    "ast_hash": "3439f3246d966098a70256028ecfa67d",
+    "mtime": 1787181715.8787026,
+    "seen": 1787181859.230855,
+    "ast_hash": "d356e95da793832d21cbdfdfd956b553",
     "semantic_hash": ""
   },
   "art/generate_audio.py": {
     "mtime": 1787143508.1266615,
-    "seen": 1787180924.285822,
+    "seen": 1787181859.2308109,
     "ast_hash": "d888427232dca100b2ffb56b108fed8e",
     "semantic_hash": ""
   },
   "src/game/useOpponentExpression.ts": {
     "mtime": 1787143429.8602018,
-    "seen": 1787180924.285831,
+    "seen": 1787181859.230819,
     "ast_hash": "a0b803500ce1eca7be2244ceb9d37df6",
     "semantic_hash": ""
   },
   "src/game/useSfx.ts": {
     "mtime": 1787143576.4617631,
-    "seen": 1787180924.285831,
+    "seen": 1787181859.230819,
     "ast_hash": "64283363e47f4334435582177c072065",
     "semantic_hash": ""
   },
   "public/art/portraits/old_timer_happy.png": {
-    "mtime": 1787164787.0607414,
-    "seen": 1787180924.2858582,
+    "mtime": 1787181715.9353552,
+    "seen": 1787181859.230844,
     "ast_hash": "1df0021ef4b43d513af31fbf799c133f",
     "semantic_hash": ""
   },
   "public/art/portraits/old_timer_idle.png": {
-    "mtime": 1787164787.058101,
-    "seen": 1787180924.285859,
+    "mtime": 1787181715.932223,
+    "seen": 1787181859.230844,
     "ast_hash": "66d432e0ba051db630f3c9e24ec1b2a2",
     "semantic_hash": ""
   },
   "public/art/portraits/old_timer_rueful.png": {
-    "mtime": 1787164787.0632722,
-    "seen": 1787180924.285859,
+    "mtime": 1787181715.9384713,
+    "seen": 1787181859.230845,
     "ast_hash": "17b2f3572d021319a34601249ef4cfc8",
     "semantic_hash": ""
   },
   "public/art/scoreboard/hearts_4.png": {
-    "mtime": 1787164787.064202,
-    "seen": 1787180924.285865,
+    "mtime": 1787181715.9393516,
+    "seen": 1787181859.230849,
     "ast_hash": "0ed3832a508727a5a74a617088cf7ecb",
     "semantic_hash": ""
   },
   "public/art/scoreboard/hearts_6.png": {
-    "mtime": 1787164787.0651407,
-    "seen": 1787180924.285865,
+    "mtime": 1787181715.9404266,
+    "seen": 1787181859.230853,
     "ast_hash": "1a72931c9a3c127d4161cffc39b76373",
     "semantic_hash": ""
   },
   "public/art/scoreboard/spades_4.png": {
-    "mtime": 1787164787.065847,
-    "seen": 1787180924.285866,
+    "mtime": 1787181715.9412656,
+    "seen": 1787181859.2308538,
     "ast_hash": "dd0968a11c429bfa707383982800b17a",
     "semantic_hash": ""
   },
   "public/art/scoreboard/spades_6.png": {
-    "mtime": 1787164787.0667374,
-    "seen": 1787180924.285866,
+    "mtime": 1787181715.942328,
+    "seen": 1787181859.2308538,
     "ast_hash": "21b2a248794b8decfa41213f1787c174",
     "semantic_hash": ""
   },
   "public/art/wall_texture.png": {
-    "mtime": 1787164787.0429766,
-    "seen": 1787180924.285867,
-    "ast_hash": "77468bd3365fe0b0f1063367c1994f70",
+    "mtime": 1787181715.8803608,
+    "seen": 1787181859.230855,
+    "ast_hash": "7183e22b0d16f425634377fe3e41312a",
     "semantic_hash": ""
   },
   "public/audio/card_play.wav": {
     "mtime": 1787143508.2150936,
-    "seen": 1787180924.285868,
+    "seen": 1787181859.230856,
     "ast_hash": "13769ef83f8ebe58b23d370b45c63907",
     "semantic_hash": ""
   },
   "public/audio/euchre_fanfare.wav": {
     "mtime": 1787143508.2210155,
-    "seen": 1787180924.285868,
+    "seen": 1787181859.230856,
     "ast_hash": "857f34ff06fe40ecbfe6642696405d80",
     "semantic_hash": ""
   },
   "public/audio/game_win_fanfare.wav": {
     "mtime": 1787143508.2285247,
-    "seen": 1787180924.2858691,
+    "seen": 1787181859.230857,
     "ast_hash": "8499208115a6a1cfe14ca1e74b49bc77",
     "semantic_hash": ""
   },
   "public/audio/shuffle.wav": {
     "mtime": 1787143508.2310517,
-    "seen": 1787180924.2858691,
+    "seen": 1787181859.230857,
     "ast_hash": "bab8d06b6e15b028992c78079f7e43ff",
     "semantic_hash": ""
   },
   "public/audio/trick_win.wav": {
     "mtime": 1787143508.2167888,
-    "seen": 1787180924.28587,
+    "seen": 1787181859.230858,
     "ast_hash": "a771d2662dd68e07329ba3a5e7e307b7",
     "semantic_hash": ""
   },
   "src/ui/SceneLayer.tsx": {
     "mtime": 1787162476.464412,
-    "seen": 1787180924.285835,
+    "seen": 1787181859.2308218,
     "ast_hash": "61833bc1cc81fca0d18ca0efc109b7a4",
     "semantic_hash": ""
   },
   "public/art/scene/fire_sheet.png": {
-    "mtime": 1787164787.0456405,
-    "seen": 1787180924.28586,
+    "mtime": 1787181715.8830156,
+    "seen": 1787181859.230846,
     "ast_hash": "ed2c3dd53922c054c049c7ba88fe74e1",
     "semantic_hash": ""
   },
   "public/art/scene/fireplace.png": {
-    "mtime": 1787164787.0448546,
-    "seen": 1787180924.285861,
-    "ast_hash": "2a967512da41666171806cd4e48107fb",
+    "mtime": 1787181715.882115,
+    "seen": 1787181859.230846,
+    "ast_hash": "7196e8901c302fe1d6e4efd3dfbff0fd",
     "semantic_hash": ""
   },
   "public/art/scene/snow.png": {
-    "mtime": 1787164787.047393,
-    "seen": 1787180924.285863,
+    "mtime": 1787181715.8852053,
+    "seen": 1787181859.230848,
     "ast_hash": "d6e5c3269455b189c51cb589675999c9",
     "semantic_hash": ""
   },
   "public/art/scene/window_frame.png": {
-    "mtime": 1787164787.0469902,
-    "seen": 1787180924.2858639,
+    "mtime": 1787181715.884714,
+    "seen": 1787181859.230848,
     "ast_hash": "11b5b4843e1224373f48d64419da07ea",
     "semantic_hash": ""
   },
   "public/art/scene/window_glass.png": {
-    "mtime": 1787164787.0463529,
-    "seen": 1787180924.2858639,
+    "mtime": 1787181715.8839028,
+    "seen": 1787181859.230849,
     "ast_hash": "a27df68a6e8400be9aa18a12688d94c9",
     "semantic_hash": ""
   },
   "public/art/scene/floor.png": {
-    "mtime": 1787164787.0478761,
-    "seen": 1787180924.285862,
-    "ast_hash": "d1153c0a351bd3d7deb1868612d36c8c",
+    "mtime": 1787181715.8873847,
+    "seen": 1787181859.230846,
+    "ast_hash": "5f81403af4bc95b6f0528b20a05ce771",
     "semantic_hash": ""
   },
   "public/art/scene/cat_sheet.png": {
-    "mtime": 1787164787.055178,
-    "seen": 1787180924.28586,
-    "ast_hash": "2eb6163dec1ff7c03092175b15bdbbb3",
+    "mtime": 1787181715.9243538,
+    "seen": 1787181859.230845,
+    "ast_hash": "048af947e316dc96bd5e022eb5421bec",
     "semantic_hash": ""
   },
   "public/art/scene/seated_old_timer.png": {
-    "mtime": 1787164787.0540836,
-    "seen": 1787180924.285862,
-    "ast_hash": "da3de2be00761ae247344e25020e176f",
+    "mtime": 1787181715.9195015,
+    "seen": 1787181859.230847,
+    "ast_hash": "8af6c4e8e2a6eaddda06abd5daeb173e",
     "semantic_hash": ""
   },
   "public/art/scene/shelf.png": {
-    "mtime": 1787164787.0555387,
-    "seen": 1787180924.285863,
-    "ast_hash": "c75222e321555e450a1e40cb6bee8865",
+    "mtime": 1787181715.9290774,
+    "seen": 1787181859.230847,
+    "ast_hash": "b534059cf4c2ce47ad1b0a3bffc9f0f3",
     "semantic_hash": ""
   },
   "tests/useGame.test.tsx": {
     "mtime": 1787180002.5102534,
-    "seen": 1787180924.2858398,
+    "seen": 1787181859.230827,
     "ast_hash": "9265b5eec673f33e79092cfeb2498bf0",
     "semantic_hash": ""
   },
   "scripts/balance.ts": {
     "mtime": 1787180723.9883375,
-    "seen": 1787180924.2858229,
+    "seen": 1787181859.230813,
     "ast_hash": "92ecc8900f1217ef5c55346e40c97e39",
     "semantic_hash": ""
   },
   "tests/fullGame.test.tsx": {
     "mtime": 1787180884.770361,
-    "seen": 1787180924.2858381,
+    "seen": 1787181859.230825,
     "ast_hash": "2d51ffb8413c44bb27322cc89fb47162",
     "semantic_hash": ""
   }

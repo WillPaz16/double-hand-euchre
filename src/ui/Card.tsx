@@ -9,17 +9,25 @@ export function Card({
   onClick,
   highlighted,
   dimmed,
+  mini,
+  className = '',
 }: {
   card: CardType;
   onClick?: () => void;
   highlighted?: boolean;
   dimmed?: boolean;
+  /** Half native (50x70). Exactly half, never an in-between size, so pixels stay crisp. */
+  mini?: boolean;
+  className?: string;
 }) {
   return (
     <button
       onClick={onClick}
       disabled={!onClick}
-      className={`card-face${highlighted ? ' highlighted' : ''}${dimmed ? ' dimmed' : ''}`}
+      className={
+        `card-face${highlighted ? ' highlighted' : ''}${dimmed ? ' dimmed' : ''}` +
+        `${mini ? ' mini' : ''}${className ? ` ${className}` : ''}`
+      }
     >
       <img src={cardAsset(card)} alt={`${card.rank} of ${card.suit}`} draggable={false} />
     </button>

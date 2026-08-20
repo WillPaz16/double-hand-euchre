@@ -52,6 +52,19 @@
   },
   "nodes": [
     {
+      "label": "Action",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L75",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "action",
+      "id": "shared_engine_types_action"
+    },
+    {
       "label": "PlayerView",
       "file_type": "code",
       "source_file": "shared/engine/types.ts",
@@ -104,6 +117,19 @@
       "id": "src_game_usesfx_soundname"
     },
     {
+      "label": "Outcome",
+      "file_type": "code",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L35",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "tests_fullgame_test_outcome",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "outcome"
+    },
+    {
       "label": "Game",
       "file_type": "code",
       "source_file": "tests/useGame.test.tsx",
@@ -111,10 +137,10 @@
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "id": "tests_usegame_test_game",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "game"
+      "norm_label": "game",
+      "id": "tests_usegame_test_game"
     },
     {
       "label": "deal",
@@ -128,19 +154,6 @@
       "community_name": "types.ts",
       "norm_label": "deal",
       "id": "shared_engine_deck_deal"
-    },
-    {
-      "label": "Action",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L75",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "action",
-      "id": "shared_engine_types_action"
     },
     {
       "label": "Card",
@@ -606,10 +619,10 @@
       "source_location": "L10",
       "_callable": true,
       "_origin": "ast",
+      "id": "src_ui_game_game",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "game()",
-      "id": "src_ui_game_game"
+      "norm_label": "game()"
     },
     {
       "label": "cardsEqual()",
@@ -678,10 +691,10 @@
       "source_location": "L12",
       "_callable": true,
       "_origin": "ast",
+      "id": "src_ui_statusbanner_statusbanner",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "statusbanner()",
-      "id": "src_ui_statusbanner_statusbanner"
+      "norm_label": "statusbanner()"
     },
     {
       "label": "remainingInHand()",
@@ -734,14 +747,50 @@
     {
       "label": "advance()",
       "file_type": "code",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L22",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "tests_fullgame_test_advance",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "advance()"
+    },
+    {
+      "label": "lcg()",
+      "file_type": "code",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L30",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "tests_fullgame_test_lcg",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "lcg()"
+    },
+    {
+      "label": "playFullGame()",
+      "file_type": "code",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L44",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "tests_fullgame_test_playfullgame",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "playfullgame()"
+    },
+    {
+      "label": "advance()",
+      "file_type": "code",
       "source_file": "tests/useGame.test.tsx",
       "source_location": "L52",
       "_callable": true,
       "_origin": "ast",
-      "id": "tests_usegame_test_advance",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "advance()"
+      "norm_label": "advance()",
+      "id": "tests_usegame_test_advance"
     },
     {
       "label": "driveToHeldTrick()",
@@ -750,10 +799,10 @@
       "source_location": "L79",
       "_callable": true,
       "_origin": "ast",
-      "id": "tests_usegame_test_drivetoheldtrick",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "drivetoheldtrick()"
+      "norm_label": "drivetoheldtrick()",
+      "id": "tests_usegame_test_drivetoheldtrick"
     },
     {
       "label": "driveToPlayPhase()",
@@ -762,10 +811,10 @@
       "source_location": "L62",
       "_callable": true,
       "_origin": "ast",
-      "id": "tests_usegame_test_drivetoplayphase",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "drivetoplayphase()"
+      "norm_label": "drivetoplayphase()",
+      "id": "tests_usegame_test_drivetoplayphase"
     },
     {
       "label": "_arm()",
@@ -2040,6 +2089,42 @@
       "id": "art_generate_audio_write_wav"
     },
     {
+      "label": "playGame()",
+      "file_type": "code",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L34",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "scripts_balance_playgame",
+      "community": 9,
+      "community_name": "balance.ts",
+      "norm_label": "playgame()"
+    },
+    {
+      "label": "run()",
+      "file_type": "code",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L52",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "scripts_balance_run",
+      "community": 9,
+      "community_name": "balance.ts",
+      "norm_label": "run()"
+    },
+    {
+      "label": "whoseTurn()",
+      "file_type": "code",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L29",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "scripts_balance_whoseturn",
+      "community": 9,
+      "community_name": "balance.ts",
+      "norm_label": "whoseturn()"
+    },
+    {
       "label": "The view through the window \u2014 the room's COOL reference. Everything else in\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
@@ -2333,10 +2418,10 @@
       "source_file": "src/ui/Game.tsx",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_ui_game",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "game.tsx",
-      "id": "src_ui_game"
+      "norm_label": "game.tsx"
     },
     {
       "label": "HandTray.tsx",
@@ -2388,10 +2473,10 @@
       "source_file": "src/ui/StatusBanner.tsx",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_ui_statusbanner",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "statusbanner.tsx",
-      "id": "src_ui_statusbanner"
+      "norm_label": "statusbanner.tsx"
     },
     {
       "label": "SUIT_LABEL",
@@ -2399,10 +2484,10 @@
       "source_file": "src/ui/StatusBanner.tsx",
       "source_location": "L5",
       "_origin": "ast",
+      "id": "src_ui_statusbanner_suit_label",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "suit_label",
-      "id": "src_ui_statusbanner_suit_label"
+      "norm_label": "suit_label"
     },
     {
       "label": "Table.tsx",
@@ -2427,15 +2512,26 @@
       "id": "src_ui_table_seats"
     },
     {
+      "label": "fullGame.test.tsx",
+      "file_type": "code",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "tests_fullgame_test",
+      "community": 11,
+      "community_name": "useGame.ts",
+      "norm_label": "fullgame.test.tsx"
+    },
+    {
       "label": "useGame.test.tsx",
       "file_type": "code",
       "source_file": "tests/useGame.test.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "tests_usegame_test",
       "community": 11,
       "community_name": "useGame.ts",
-      "norm_label": "usegame.test.tsx"
+      "norm_label": "usegame.test.tsx",
+      "id": "tests_usegame_test"
     },
     {
       "label": "ASSETS.md",
@@ -2604,78 +2700,6 @@
       "community_name": "Art assets \u2014 spec",
       "norm_label": "tiles vs. placed objects \u2014 different rules",
       "id": "art_assets_tiles_vs_placed_objects_different_rules"
-    },
-    {
-      "label": "README.md",
-      "file_type": "document",
-      "node_kind": "page",
-      "source_file": "README.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 13,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "readme.md",
-      "id": "readme"
-    },
-    {
-      "label": "Knowledge graph",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L39",
-      "_origin": "ast",
-      "community": 13,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "knowledge graph",
-      "id": "readme_knowledge_graph"
-    },
-    {
-      "label": "Repo layout",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L21",
-      "_origin": "ast",
-      "community": 13,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "repo layout",
-      "id": "readme_repo_layout"
-    },
-    {
-      "label": "Running the engine",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L31",
-      "_origin": "ast",
-      "community": 13,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "running the engine",
-      "id": "readme_running_the_engine"
-    },
-    {
-      "label": "Status",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L11",
-      "_origin": "ast",
-      "community": 13,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "status",
-      "id": "readme_status"
-    },
-    {
-      "label": "Two-Handed Euchre",
-      "file_type": "document",
-      "node_kind": "heading",
-      "source_file": "README.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 13,
-      "community_name": "Two-Handed Euchre",
-      "norm_label": "two-handed euchre",
-      "id": "readme_two_handed_euchre"
     },
     {
       "label": "vite.config.ts",
@@ -3385,7 +3409,7 @@
       "label": "dependencies",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L25",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "package_dependencies",
       "community": 4,
@@ -3396,7 +3420,7 @@
       "label": "react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L26",
+      "source_location": "L27",
       "_origin": "ast",
       "id": "package_dependencies_react",
       "community": 4,
@@ -3407,7 +3431,7 @@
       "label": "react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L27",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "package_dependencies_react_dom",
       "community": 4,
@@ -3418,7 +3442,7 @@
       "label": "devDependencies",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L13",
+      "source_location": "L14",
       "_origin": "ast",
       "id": "package_devdependencies",
       "community": 4,
@@ -3429,7 +3453,7 @@
       "label": "jsdom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L19",
+      "source_location": "L20",
       "_origin": "ast",
       "id": "package_devdependencies_jsdom",
       "community": 4,
@@ -3440,7 +3464,7 @@
       "label": "@testing-library/dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L14",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "package_devdependencies_testing_library_dom",
       "community": 4,
@@ -3451,7 +3475,7 @@
       "label": "@testing-library/react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L15",
+      "source_location": "L16",
       "_origin": "ast",
       "id": "package_devdependencies_testing_library_react",
       "community": 4,
@@ -3462,7 +3486,7 @@
       "label": "tsx",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L21",
       "_origin": "ast",
       "id": "package_devdependencies_tsx",
       "community": 4,
@@ -3473,7 +3497,7 @@
       "label": "@types/react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L16",
+      "source_location": "L17",
       "_origin": "ast",
       "id": "package_devdependencies_types_react",
       "community": 4,
@@ -3484,7 +3508,7 @@
       "label": "@types/react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L17",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "package_devdependencies_types_react_dom",
       "community": 4,
@@ -3495,7 +3519,7 @@
       "label": "typescript",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L21",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "package_devdependencies_typescript",
       "community": 4,
@@ -3506,7 +3530,7 @@
       "label": "vite",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L22",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "package_devdependencies_vite",
       "community": 4,
@@ -3517,7 +3541,7 @@
       "label": "@vitejs/plugin-react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L18",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "package_devdependencies_vitejs_plugin_react",
       "community": 4,
@@ -3528,7 +3552,7 @@
       "label": "vitest",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "package_devdependencies_vitest",
       "community": 4,
@@ -3567,6 +3591,17 @@
       "community": 4,
       "community_name": "devDependencies",
       "norm_label": "scripts"
+    },
+    {
+      "label": "balance",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "package_scripts_balance",
+      "community": 4,
+      "community_name": "devDependencies",
+      "norm_label": "balance"
     },
     {
       "label": "build",
@@ -3649,7 +3684,7 @@
       "label": "jsdom",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L19",
+      "source_location": "L20",
       "_origin": "ast",
       "id": "jsdom",
       "community": 4,
@@ -3660,7 +3695,7 @@
       "label": "react",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L26",
+      "source_location": "L27",
       "_origin": "ast",
       "id": "react",
       "community": 4,
@@ -3671,7 +3706,7 @@
       "label": "react-dom",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L27",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "react_dom",
       "community": 4,
@@ -3682,7 +3717,7 @@
       "label": "@testing-library/dom",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L14",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "testing_library_dom",
       "community": 4,
@@ -3693,7 +3728,7 @@
       "label": "@testing-library/react",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L15",
+      "source_location": "L16",
       "_origin": "ast",
       "id": "testing_library_react",
       "community": 4,
@@ -3704,7 +3739,7 @@
       "label": "tsx",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L21",
       "_origin": "ast",
       "id": "tsx",
       "community": 4,
@@ -3715,7 +3750,7 @@
       "label": "@types/react",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L16",
+      "source_location": "L17",
       "_origin": "ast",
       "id": "types_react",
       "community": 4,
@@ -3726,7 +3761,7 @@
       "label": "@types/react-dom",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L17",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "types_react_dom",
       "community": 4,
@@ -3737,7 +3772,7 @@
       "label": "typescript",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L21",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "typescript",
       "community": 4,
@@ -3748,7 +3783,7 @@
       "label": "vite",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L22",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "vite",
       "community": 4,
@@ -3759,7 +3794,7 @@
       "label": "@vitejs/plugin-react",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L18",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "vitejs_plugin_react",
       "community": 4,
@@ -3770,7 +3805,7 @@
       "label": "vitest",
       "file_type": "concept",
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "vitest",
       "community": 4,
@@ -3798,17 +3833,6 @@
       "community_name": "rules.ts",
       "norm_label": "suits",
       "id": "shared_bot_heuristic_suits"
-    },
-    {
-      "label": "bot/index.ts",
-      "file_type": "code",
-      "source_file": "shared/bot/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "bot/index.ts",
-      "id": "shared_bot_index"
     },
     {
       "label": "rules.ts",
@@ -3853,6 +3877,78 @@
       "community_name": "rules.ts",
       "norm_label": "rules.test.ts",
       "id": "tests_rules_test"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "readme.md",
+      "id": "readme"
+    },
+    {
+      "label": "Knowledge graph",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "README.md",
+      "source_location": "L39",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "knowledge graph",
+      "id": "readme_knowledge_graph"
+    },
+    {
+      "label": "Repo layout",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "README.md",
+      "source_location": "L21",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "repo layout",
+      "id": "readme_repo_layout"
+    },
+    {
+      "label": "Running the engine",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "README.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "running the engine",
+      "id": "readme_running_the_engine"
+    },
+    {
+      "label": "Status",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "README.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "status",
+      "id": "readme_status"
+    },
+    {
+      "label": "Two-Handed Euchre",
+      "file_type": "document",
+      "node_kind": "heading",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "two-handed euchre",
+      "id": "readme_two_handed_euchre"
     },
     {
       "label": "generate_audio.py",
@@ -3941,6 +4037,61 @@
       "community_name": "generate_audio.py",
       "norm_label": "a four-note ascending arpeggio \u2014 the hand-won stinger, bigger than a single...",
       "id": "art_generate_audio_rationale_97"
+    },
+    {
+      "label": "balance.ts",
+      "file_type": "code",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "scripts_balance",
+      "community": 9,
+      "community_name": "balance.ts",
+      "norm_label": "balance.ts"
+    },
+    {
+      "label": "aDealsFirst",
+      "file_type": "code",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L70",
+      "_origin": "ast",
+      "id": "scripts_balance_adealsfirst",
+      "community": 9,
+      "community_name": "balance.ts",
+      "norm_label": "adealsfirst"
+    },
+    {
+      "label": "bDealsFirst",
+      "file_type": "code",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L71",
+      "_origin": "ast",
+      "id": "scripts_balance_bdealsfirst",
+      "community": 9,
+      "community_name": "balance.ts",
+      "norm_label": "bdealsfirst"
+    },
+    {
+      "label": "PLAYERS",
+      "file_type": "code",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "scripts_balance_players",
+      "community": 9,
+      "community_name": "balance.ts",
+      "norm_label": "players"
+    },
+    {
+      "label": "bot/index.ts",
+      "file_type": "code",
+      "source_file": "shared/bot/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "balance.ts",
+      "norm_label": "bot/index.ts",
+      "id": "shared_bot_index"
     },
     {
       "label": "\u00a73 Bidding (standard, on/after the upcard)",
@@ -5791,6 +5942,30 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance_playgame",
+      "target": "scripts_balance_whoseturn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance_run",
+      "target": "scripts_balance_playgame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
       "source_file": "scripts/fuzz.ts",
       "source_location": "L33",
       "weight": 1.0,
@@ -6679,6 +6854,42 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test_playfullgame",
+      "target": "src_game_usegame_usegame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test_playfullgame",
+      "target": "tests_fullgame_test_lcg",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test_playfullgame",
+      "target": "tests_fullgame_test_advance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/helpers.ts",
       "source_location": "L38",
@@ -6839,9 +7050,9 @@
       "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "tests_usegame_test_drivetoheldtrick",
-      "target": "tests_usegame_test_advance",
-      "confidence_score": 1.0
+      "target": "tests_usegame_test_advance"
     },
     {
       "relation": "calls",
@@ -6851,9 +7062,9 @@
       "source_location": "L72",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "tests_usegame_test_drivetoplayphase",
-      "target": "tests_usegame_test_advance",
-      "confidence_score": 1.0
+      "target": "tests_usegame_test_advance"
     },
     {
       "relation": "re_exports",
@@ -7135,7 +7346,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L26",
+      "source_location": "L27",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -7147,7 +7358,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L27",
+      "source_location": "L28",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -7159,7 +7370,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -7171,7 +7382,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -7183,7 +7394,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -7195,7 +7406,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -7207,7 +7418,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -7219,7 +7430,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -7231,7 +7442,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -7243,7 +7454,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -7255,7 +7466,7 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
@@ -7267,12 +7478,36 @@
       "relation": "imports",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0,
       "context": "import",
       "_origin": "ast",
       "source": "package_devdependencies_vitest",
       "target": "vitest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance",
+      "target": "shared_engine_types_gamestate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance",
+      "target": "shared_engine_types_player",
       "confidence_score": 1.0
     },
     {
@@ -8039,9 +8274,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usegame_usegame"
+      "target": "src_game_usegame_usegame",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8051,9 +8286,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usesfx_usesfx"
+      "target": "src_game_usesfx_usesfx",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8063,9 +8298,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scenelayer_scenelayer"
+      "target": "src_ui_scenelayer_scenelayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8075,9 +8310,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scoreboard_scoreboard"
+      "target": "src_ui_scoreboard_scoreboard",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8087,9 +8322,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_statusbanner_statusbanner"
+      "target": "src_ui_statusbanner_statusbanner",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8099,9 +8334,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_table_table"
+      "target": "src_ui_table_table",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8111,9 +8346,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_bidpanel_bidpanel"
+      "target": "src_ui_bidpanel_bidpanel",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8123,9 +8358,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_handtray_handtray"
+      "target": "src_ui_handtray_handtray",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8255,9 +8490,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "shared_engine_types_playerview"
+      "target": "shared_engine_types_playerview",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8267,9 +8502,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_game_usegame_bot"
+      "target": "src_game_usegame_bot",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8279,9 +8514,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_game_usegame_human"
+      "target": "src_game_usegame_human",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8291,9 +8526,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_ui_card_card"
+      "target": "src_ui_card_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8303,9 +8538,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_ui_card_cardback"
+      "target": "src_ui_card_cardback",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8426,6 +8661,66 @@
       "confidence_score": 1.0,
       "source": "tests_deck_test",
       "target": "shared_engine_deck_shuffleddeck"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test",
+      "target": "shared_engine_types_action",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test",
+      "target": "src_game_usegame_bot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test",
+      "target": "src_game_usegame_human",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test",
+      "target": "src_game_usegame_trick_hold_ms",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test",
+      "target": "src_game_usegame_usegame",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -8819,9 +9114,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "tests_usegame_test",
-      "target": "shared_engine_types_action",
-      "confidence_score": 1.0
+      "target": "shared_engine_types_action"
     },
     {
       "relation": "imports",
@@ -8831,9 +9126,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "tests_usegame_test",
-      "target": "src_game_usegame_trick_hold_ms",
-      "confidence_score": 1.0
+      "target": "src_game_usegame_trick_hold_ms"
     },
     {
       "relation": "imports",
@@ -8843,8 +9138,44 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "tests_usegame_test",
-      "target": "src_game_usegame_usegame",
+      "target": "src_game_usegame_usegame"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance",
+      "target": "shared_engine_index",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance",
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance",
+      "target": "shared_bot_index",
       "confidence_score": 1.0
     },
     {
@@ -9179,9 +9510,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usegame"
+      "target": "src_game_usegame",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9191,9 +9522,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_game_usesfx"
+      "target": "src_game_usesfx",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9203,9 +9534,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scenelayer"
+      "target": "src_ui_scenelayer",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9215,9 +9546,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_scoreboard"
+      "target": "src_ui_scoreboard",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9227,9 +9558,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_statusbanner"
+      "target": "src_ui_statusbanner",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9239,9 +9570,9 @@
       "source_location": "L6",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_table"
+      "target": "src_ui_table",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9251,9 +9582,9 @@
       "source_location": "L7",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_bidpanel"
+      "target": "src_ui_bidpanel",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9263,9 +9594,9 @@
       "source_location": "L8",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_handtray"
+      "target": "src_ui_handtray",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9335,9 +9666,9 @@
       "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "shared_engine_types"
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9347,9 +9678,9 @@
       "source_location": "L2",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_game_usegame"
+      "target": "src_game_usegame",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9359,9 +9690,9 @@
       "source_location": "L3",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_ui_card"
+      "target": "src_ui_card",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9410,6 +9741,30 @@
       "confidence_score": 1.0,
       "source": "tests_deck_test",
       "target": "shared_engine_deck"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test",
+      "target": "shared_engine_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test",
+      "target": "src_game_usegame",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -9551,9 +9906,9 @@
       "source_location": "L4",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "tests_usegame_test",
-      "target": "shared_engine_types",
-      "confidence_score": 1.0
+      "target": "shared_engine_types"
     },
     {
       "relation": "imports_from",
@@ -9563,9 +9918,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "tests_usegame_test",
-      "target": "src_game_usegame",
-      "confidence_score": 1.0
+      "target": "src_game_usegame"
     },
     {
       "relation": "references",
@@ -10608,7 +10963,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package",
@@ -10630,7 +10985,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package",
@@ -10674,7 +11029,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L26",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -10685,7 +11040,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L27",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_dependencies",
@@ -10696,7 +11051,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -10707,7 +11062,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -10718,7 +11073,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -10729,7 +11084,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -10740,7 +11095,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -10751,7 +11106,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L19",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -10762,7 +11117,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L20",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -10773,7 +11128,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -10784,7 +11139,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -10795,7 +11150,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "package_devdependencies",
@@ -10822,6 +11177,17 @@
       "_origin": "ast",
       "source": "package_scripts",
       "target": "package_scripts_preview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "package_scripts",
+      "target": "package_scripts_balance",
       "confidence_score": 1.0
     },
     {
@@ -10922,6 +11288,72 @@
       "confidence_score": 1.0,
       "source": "readme_two_handed_euchre",
       "target": "readme_knowledge_graph"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance",
+      "target": "scripts_balance_players",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance",
+      "target": "scripts_balance_whoseturn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance",
+      "target": "scripts_balance_playgame",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance",
+      "target": "scripts_balance_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance",
+      "target": "scripts_balance_adealsfirst",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/balance.ts",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "scripts_balance",
+      "target": "scripts_balance_bdealsfirst",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11898,9 +12330,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_game",
-      "target": "src_ui_game_game"
+      "target": "src_ui_game_game",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11975,9 +12407,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_ui_statusbanner_statusbanner"
+      "target": "src_ui_statusbanner_statusbanner",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11986,9 +12418,9 @@
       "source_location": "L5",
       "weight": 1.0,
       "_origin": "ast",
-      "confidence_score": 1.0,
       "source": "src_ui_statusbanner",
-      "target": "src_ui_statusbanner_suit_label"
+      "target": "src_ui_statusbanner_suit_label",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12044,6 +12476,50 @@
       "confidence_score": 1.0,
       "source": "src_ui_table",
       "target": "src_ui_table_table"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test",
+      "target": "tests_fullgame_test_advance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test",
+      "target": "tests_fullgame_test_lcg",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test",
+      "target": "tests_fullgame_test_outcome",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/fullGame.test.tsx",
+      "source_location": "L44",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_fullgame_test",
+      "target": "tests_fullgame_test_playfullgame",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12140,9 +12616,9 @@
       "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "tests_usegame_test",
-      "target": "tests_usegame_test_advance",
-      "confidence_score": 1.0
+      "target": "tests_usegame_test_advance"
     },
     {
       "relation": "contains",
@@ -12151,9 +12627,9 @@
       "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "tests_usegame_test",
-      "target": "tests_usegame_test_game",
-      "confidence_score": 1.0
+      "target": "tests_usegame_test_game"
     },
     {
       "relation": "contains",
@@ -12162,9 +12638,9 @@
       "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "tests_usegame_test",
-      "target": "tests_usegame_test_drivetoplayphase",
-      "confidence_score": 1.0
+      "target": "tests_usegame_test_drivetoplayphase"
     },
     {
       "relation": "contains",
@@ -12173,9 +12649,9 @@
       "source_location": "L79",
       "weight": 1.0,
       "_origin": "ast",
+      "confidence_score": 1.0,
       "source": "tests_usegame_test",
-      "target": "tests_usegame_test_drivetoheldtrick",
-      "confidence_score": 1.0
+      "target": "tests_usegame_test_drivetoheldtrick"
     },
     {
       "relation": "contains",
@@ -13274,5 +13750,5 @@
       "source_file": "RULES.md"
     }
   ],
-  "built_at_commit": "1048c51fa380c7764539e1a82406b3467dd218d8"
+  "built_at_commit": "abe52d92f8b103b7efd593f8432095e30eb055ab"
 }

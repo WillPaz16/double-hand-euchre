@@ -1372,14 +1372,27 @@ def make_seated_old_timer():
     img = Image.new("RGBA", (SEAT_W, SEAT_H), (0, 0, 0, 0))
     paste(img, composite_sprite(SEAT_W, SEAT_H, parts), 0, 0)
 
-    # The hand, composited after the silhouette so it reads as held in front of him. Each card
-    # is rotated on its own layer — NEAREST keeps the edges hard, as pixel art requires.
-    for ang, dx in zip((-26, -13, 0, 13, 26), (-34, -18, 0, 18, 34)):
+    # The hand, composited after the silhouette so it reads as held in front of him.
+    #
+    # Positions come from ONE pivot rather than from hand-tuned offsets. Each card is rotated
+    # about a point below the hand, and its centre is placed on the circle that pivot defines
+    # — so the splay and the arc are the same fact, and the fan cannot drift out of shape the
+    # way independently-chosen dx/dy inevitably do.
+    #
+    # The previous version listed dx offsets separately from the angles and added a token
+    # `abs(ang) * 0.42` droop. The result splayed nearly the full width of his body and hung
+    # down over his lap: a spread-out deck rather than a hand held up. Same lesson as the belt
+    # that was supposed to be a fan of cards — the numbers have to *mean* the geometry, not
+    # approximate its appearance.
+    pivot_x, pivot_y = SEAT_CX, 196          # below the sprite: a low pivot, as when held
+    radius = 52                              # pivot to card centre
+    for ang in (-19, -9.5, 0, 9.5, 19):
         card = _mini_card_back()
         rot = card.rotate(-ang, expand=True, resample=Image.NEAREST)
-        cx = SEAT_CX + dx - rot.width // 2
-        cy = int(126 + abs(ang) * 0.42)
-        img.paste(rot, (cx, cy), rot)
+        a = math.radians(ang)
+        cx = pivot_x + radius * math.sin(a) - rot.width // 2
+        cy = pivot_y - radius * math.cos(a) - rot.height // 2
+        img.paste(rot, (int(cx), int(cy)), rot)
 
     d = ImageDraw.Draw(img)
     eye_y = SEAT_HEAD_CY - 3

@@ -1,23 +1,23 @@
 # Graph Report - euchre  (2026-08-19)
 
 ## Corpus Check
-- 41 files · ~31,023 words
+- 42 files · ~32,661 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 378 nodes · 789 edges · 19 communities (18 shown, 1 thin omitted)
+- 382 nodes · 796 edges · 20 communities (19 shown, 1 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.55)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `abe52d92`
+- Built from commit: `24741cdc`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - main
 - RULES.md — Two-Handed Euchre Rules Spec
-- types.ts
+- reducer.ts
 - compilerOptions
 - devDependencies
 - rules.ts
@@ -26,36 +26,37 @@
 - Hand B1 (Player B, selected/blind)
 - balance.ts
 - CLAUDE.md
-- useGame.ts
+- types.ts
 - Art assets — spec
-- make_face_card
+- deck.ts
+- generate_art.py
 - Image
 - make_seated_old_timer
-- make_cat_frames
-- generate_art.py
+- _assert_art_clear_of_indices
+- _shift
 
 ## God Nodes (most connected - your core abstractions)
 1. `make_face_card()` - 21 edges
-2. `main()` - 18 edges
+2. `main()` - 19 edges
 3. `otherPlayer()` - 16 edges
 4. `reduce()` - 16 edges
 5. `legalActions()` - 14 edges
-6. `Player` - 13 edges
-7. `Art assets — spec` - 13 edges
+6. `Art assets — spec` - 13 edges
+7. `Player` - 13 edges
 8. `compilerOptions` - 13 edges
 9. `Card` - 12 edges
-10. `ramp()` - 11 edges
+10. `_mix()` - 11 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `playFullGame()` --calls--> `useGame()`  [EXTRACTED]
-  tests/fullGame.test.tsx → src/game/useGame.ts
+- `PlayStateOptions` --references--> `Player`  [EXTRACTED]
+  tests/helpers.ts → shared/engine/types.ts
 - `PlayStateOptions` --references--> `Card`  [EXTRACTED]
   tests/helpers.ts → shared/engine/types.ts
 - `PlayStateOptions` --references--> `Config`  [EXTRACTED]
   tests/helpers.ts → shared/engine/types.ts
 - `PlayStateOptions` --references--> `LonerTier`  [EXTRACTED]
   tests/helpers.ts → shared/engine/types.ts
-- `PlayStateOptions` --references--> `Player`  [EXTRACTED]
+- `PlayStateOptions` --references--> `Suit`  [EXTRACTED]
   tests/helpers.ts → shared/engine/types.ts
 
 ## Import Cycles
@@ -66,19 +67,19 @@
 - **Fixed Trick Rotation Ring (Four Hands)** — rules_trick_rotation_ring, rules_hand_a1, rules_hand_b1, rules_hand_a2, rules_hand_b2 [EXTRACTED 1.00]
 - **Config-Only V1 Defaults** — rules_stick_the_dealer, rules_sequential_first_refusal, rules_blind_hand_reveal, rules_dealer_alternation, rules_misdeal_conditions, rules_config_ts [INFERRED 0.85]
 
-## Communities (19 total, 1 thin omitted)
+## Communities (20 total, 1 thin omitted)
 
 ### Community 0 - "main"
-Cohesion: 0.14
-Nodes (22): main(), make_card_back(), make_fireplace(), make_floorboards(), make_shelf(), make_snowfall(), make_table_felt(), make_wall_texture() (+14 more)
+Cohesion: 0.13
+Nodes (24): main(), make_card_back(), make_fireplace(), make_floorboards(), make_shelf(), make_snowfall(), make_sprite_sheet(), make_table_felt() (+16 more)
 
 ### Community 1 - "RULES.md — Two-Handed Euchre Rules Spec"
 Cohesion: 0.12
 Nodes (24): §3 Bidding (standard, on/after the upcard), Blind Hand Reveal Default, Blind-Trump Loner (6 points), config.ts Game-to-10 Constant, Dealer Alternation Default, Deferred Variant Rules ('few crazy rules'), RULES.md — Two-Handed Euchre Rules Spec, Full-Blind Loner (8 points) (+16 more)
 
-### Community 2 - "types.ts"
-Cohesion: 0.11
-Nodes (49): outcomes, pick(), playRandomDeal(), seededRng(), TERMINAL_PHASES, DEFAULT_CONFIG, deal, fullDeck() (+41 more)
+### Community 2 - "reducer.ts"
+Cohesion: 0.15
+Nodes (35): outcomes, pick(), playRandomDeal(), seededRng(), TERMINAL_PHASES, DEFAULT_CONFIG, actingHand(), handCards() (+27 more)
 
 ### Community 3 - "compilerOptions"
 Cohesion: 0.09
@@ -108,16 +109,20 @@ Nodes (3): Hand B1 (Player B, selected/blind), Hand B2 (Player B, selected/blind
 Cohesion: 0.32
 Nodes (6): aDealsFirst, bDealsFirst, PLAYERS, playGame(), run(), whoseTurn()
 
-### Community 11 - "useGame.ts"
-Cohesion: 0.07
-Nodes (45): Action, PlayerView, App(), BOT, CompletedTrick, freshSeed(), HUMAN, TRICK_HOLD_MS (+37 more)
+### Community 11 - "types.ts"
+Cohesion: 0.06
+Nodes (52): Action, GameState, HandRole, Phase, Player, PlayerView, TrickCard, DEAL_OVER_PHASES (+44 more)
 
 ### Community 12 - "Art assets — spec"
-Cohesion: 0.14
-Nodes (13): Animation convention, Art assets — spec, Audio (Phase 2c), Cards, Environment palette, Environment shading — `ramp()` (Phase 2d), Layout budget — asserted, not eyeballed, Living things (Phase 2d.3) (+5 more)
+Cohesion: 0.12
+Nodes (15): Animation convention, Art assets — spec, Audio (Phase 2c), Cards, Environment palette, Environment shading — `ramp()` (Phase 2d), Layout budget — asserted, not eyeballed, Lighting — `light_from()` (Phase 2d.5) (+7 more)
 
-### Community 15 - "make_face_card"
-Cohesion: 0.16
+### Community 13 - "deck.ts"
+Cohesion: 0.42
+Nodes (7): deal, fullDeck(), RANKS, seededRng(), shuffledDeck(), SUITS, PlayerHands
+
+### Community 15 - "generate_art.py"
+Cohesion: 0.15
 Nodes (18): _arm(), _collar(), draw_face(), _ellipse(), _fringe(), _hand(), _head(), _hem_trim() (+10 more)
 
 ### Community 16 - "Image"
@@ -125,35 +130,35 @@ Cohesion: 0.21
 Nodes (17): body_color(), draw_card_frame(), draw_glyph(), draw_old_timer_face(), make_number_card(), make_old_timer_portrait(), make_scoreboard_card(), paste() (+9 more)
 
 ### Community 17 - "make_seated_old_timer"
-Cohesion: 0.17
-Nodes (13): composite_sprite(), darken(), _flame(), make_fire_frames(), make_seated_old_timer(), _mini_card_back(), A small card back for the seated figure's hand. Uses the real card-back palette…, The opponent, seated in the room — same character as the scoreboard portrait… (+5 more)
+Cohesion: 0.12
+Nodes (17): composite_sprite(), contact_shadow(), darken(), _flame(), make_cat_frames(), make_fire_frames(), make_seated_old_timer(), _mini_card_back() (+9 more)
 
-### Community 18 - "make_cat_frames"
+### Community 18 - "_assert_art_clear_of_indices"
 Cohesion: 0.50
-Nodes (4): contact_shadow(), make_cat_frames(), A cat asleep by the fire, two frames of slow breathing. Two frames is enough…, A stepped dark ellipse to sit under an object so it reads as resting on a…
+Nodes (4): _assert_art_clear_of_indices(), _index_boxes(), The two rectangles paste_corners() reserves — kept in sync with it by deriving…, Guardrail: centred artwork must never intrude into a reserved corner index box.…
 
-### Community 19 - "generate_art.py"
-Cohesion: 0.14
-Nodes (9): _assert_art_clear_of_indices(), _clamp(), _index_boxes(), make_sprite_sheet(), Paste equal-sized frames into one horizontal strip for CSS steps() animation.…, The two rectangles paste_corners() reserves — kept in sync with it by deriving…, Guardrail: centred artwork must never intrude into a reserved corner index box.…, Move a colour toward white (amount > 0) or black (amount < 0), with a hue… (+1 more)
+### Community 19 - "_shift"
+Cohesion: 0.40
+Nodes (5): _clamp(), light_from(), Relight a finished sprite directionally, as a post-process. **The measurement…, Move a colour toward white (amount > 0) or black (amount < 0), with a hue…, _shift()
 
 ## Knowledge Gaps
-- **82 isolated node(s):** `name`, `private`, `type`, `test`, `test:watch` (+77 more)
+- **83 isolated node(s):** `Palette — cabin by the fire`, `Cards`, `Layout budget — asserted, not eyeballed`, `Environment shading — `ramp()` (Phase 2d)`, `Environment palette` (+78 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Player` connect `types.ts` to `balance.ts`, `useGame.ts`?**
+- **Why does `Player` connect `types.ts` to `balance.ts`, `reducer.ts`, `deck.ts`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **What connects `name`, `private`, `type` to the rest of the system?**
-  _82 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Palette — cabin by the fire`, `Cards`, `Layout budget — asserted, not eyeballed` to the rest of the system?**
+  _83 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `main` be split into smaller, more focused modules?**
-  _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.13043478260869565 - nodes in this community are weakly interconnected._
 - **Should `RULES.md — Two-Handed Euchre Rules Spec` be split into smaller, more focused modules?**
   _Cohesion score 0.11956521739130435 - nodes in this community are weakly interconnected._
-- **Should `types.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.10790960451977401 - nodes in this community are weakly interconnected._
+- **Should `reducer.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.14634146341463414 - nodes in this community are weakly interconnected._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.09090909090909091 - nodes in this community are weakly interconnected._
 - **Should `devDependencies` be split into smaller, more focused modules?**

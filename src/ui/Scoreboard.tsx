@@ -28,19 +28,23 @@ export function Scoreboard({ view }: { view: PlayerView }) {
   return (
     <div className="scoreboard">
       <div className={`score-slot${view.dealer === HUMAN ? ' is-dealer' : ''}`}>
-        <span className="score-label">You</span>
+        <div className="score-text">
+          <span className="score-label">You</span>
+          <span className="score-number">{view.gameScore[HUMAN]}</span>
+        </div>
         <ScorePair player={HUMAN} score={view.gameScore[HUMAN]} />
-        <span className="score-number">{view.gameScore[HUMAN]}</span>
       </div>
       <div className={`score-slot${view.dealer === BOT ? ' is-dealer' : ''}`}>
+        <ScorePair player={BOT} score={view.gameScore[BOT]} />
+        <div className="score-text">
+          <span className="score-label">Old-Timer</span>
+          <span className="score-number">{view.gameScore[BOT]}</span>
+        </div>
         <img
           className="opponent-portrait"
           src={`/art/portraits/old_timer_${expression}.png`}
           alt="Old-Timer"
         />
-        <span className="score-label">Old-Timer</span>
-        <ScorePair player={BOT} score={view.gameScore[BOT]} />
-        <span className="score-number">{view.gameScore[BOT]}</span>
       </div>
     </div>
   );
