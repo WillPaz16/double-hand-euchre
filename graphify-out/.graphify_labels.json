@@ -8,14 +8,15 @@
   "6": "generate_audio.py",
   "7": "Hand A1 (Player A, selected/blind)",
   "8": "Hand B1 (Player B, selected/blind)",
-  "9": "balance.ts",
+  "9": "Table.tsx",
   "10": "CLAUDE.md",
-  "11": "useGame.ts",
+  "11": "Game.tsx",
   "12": "Art assets — spec",
+  "13": "make_cat_frames",
   "14": "vite.config.ts",
   "15": "generate_art.py",
   "16": "Image",
   "17": "make_seated_old_timer",
-  "18": "_assert_art_clear_of_indices",
+  "18": "deck.ts",
   "19": "_shift"
 }

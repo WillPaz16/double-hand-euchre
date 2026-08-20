@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 import type { Action, Card as CardType, PlayerView } from '../../shared/engine/types.ts';
 import { Card } from './Card.tsx';
-import { BID_PHASES } from './BidPanel.tsx';
 
 /** The pickup motion (2e.5): a hand travels from ITS SEAT into the tray, rather than the
  *  tray just appearing — "like I'm physically picking them up." Replaces the earlier
@@ -85,15 +84,12 @@ function cardsEqual(a: CardType, b: CardType): boolean {
  *  hide the rest of the hand. `legal` is already scoped to the human player, so a non-empty
  *  card-action list here means it's genuinely their turn.
  *
- *  During bidding, the tray also shows your selected hand READ-ONLY once it's revealed — "like
- *  regular euchre", where you pick your cards up and look at them before ordering up. This is
- *  purely a rendering choice: `redact()` already exposes `ownSelectedHand` once
- *  `selectedHandsRevealed` is set (RULES.md §2), the engine has never hidden it during
- *  bidding. Gated to BID_PHASES specifically, not to "whenever ownSelectedHand is populated" —
- *  it stays populated through the whole `play` phase too (selectedHandsRevealed doesn't reset
- *  per-trick), and during play the seat/tray "picking up your hand" model (Table.tsx) owns
- *  that display. Showing it here as well would duplicate it and contradict the seat being
- *  empty only while a hand is actually in play. */
+ *  During bidding your selected hand is visible too ("like regular euchre" — you pick your
+ *  cards up and look at them before ordering up), but that's rendered at the SEAT now
+ *  (Table.tsx, `visibleCards`) rather than a second time here — "the hands should be on the
+ *  table" was the whole point, and a duplicate read-only strip in the tray just repeated what
+ *  the seat already shows, in the wrong physical position for it. This component now only
+ *  ever renders the ACTING hand. */
 export function HandTray({
   view,
   legal,
@@ -144,19 +140,6 @@ export function HandTray({
             );
           })}
         </PickupTray>
-      </div>
-    );
-  }
-
-  if (BID_PHASES.has(view.phase) && view.ownSelectedHand) {
-    return (
-      <div className="hand-tray">
-        <div className="hand-tray-label">Your hand</div>
-        <div className="hand-tray-cards">
-          {view.ownSelectedHand.map((card, i) => (
-            <Card key={i} card={card} dimmed />
-          ))}
-        </div>
       </div>
     );
   }

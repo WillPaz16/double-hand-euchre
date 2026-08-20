@@ -1,4 +1,4 @@
-import type { HandId, PlayerView } from '../../shared/engine/types.ts';
+import type { Card as CardType, HandId, PlayerView } from '../../shared/engine/types.ts';
 import { HUMAN, BOT } from '../game/useGame.ts';
 import type { CompletedTrick } from '../game/useGame.ts';
 import { Card, CardBack } from './Card.tsx';
@@ -45,6 +45,24 @@ function sameHand(a: HandId, b: HandId): boolean {
 
 function seatOf(hand: HandId): Seat {
   return SEATS.find((s) => sameHand(s.hand, hand))?.at ?? 'nw';
+}
+
+/** The hand's own cards, if this player is currently allowed to see them face-up on the
+ *  table — null if they should stay as anonymous backs.
+ *
+ *  For your OWN hands this mirrors `redact()`: `ownSelectedHand` once the selection windows
+ *  resolve, `ownBlindHand` only once it becomes the acting hand for the first time (RULES.md
+ *  §6 — a hand is only ever visible to its owner while it's on the clock, or afterward via
+ *  the reveal below). For the Old-Timer's hands this is null all through bidding and play —
+ *  `opponentSelectedHand`/`opponentBlindHand` only populate at hand_complete/game_over, which
+ *  is exactly RULES.md §8's "blind hand revealed to both players at the end of each deal."
+ *  Reusing those same view fields means the table simply falls out already correct at that
+ *  point: every seat shows real cards with no extra logic here. */
+function visibleCards(view: PlayerView, hand: HandId): CardType[] | null {
+  if (hand.player === HUMAN) {
+    return hand.role === 'selected' ? view.ownSelectedHand : view.ownBlindHand;
+  }
+  return hand.role === 'selected' ? view.opponentSelectedHand : view.opponentBlindHand;
 }
 
 /** Every active hand plays exactly one card per trick, so its remaining count is always
@@ -120,7 +138,19 @@ export function Table({
             <div className={`seat-fan${acting ? ' is-empty' : ''}`} data-count={count}>
               {acting
                 ? null
-                : Array.from({ length: count }).map((_, i) => <CardBack key={i} />)}
+                : (() => {
+                    // Once a hand's contents are visible, show it face-up ON THE TABLE —
+                    // "I want the hands to be on the table" — rather than an anonymous fan of
+                    // backs. Only ever the exact cards remaining, so a hand shrinks correctly
+                    // as it's played down; visibleCards() is null for anything not currently
+                    // allowed to be seen, which keeps every information-hiding rule in
+                    // RULES.md exactly as strict as it already was.
+                    const cards = visibleCards(view, hand);
+                    if (cards) {
+                      return cards.map((card, i) => <Card key={i} card={card} />);
+                    }
+                    return Array.from({ length: count }).map((_, i) => <CardBack key={i} />);
+                  })()}
             </div>
             {/* The same information as the fan, as a numeral. Hidden everywhere except lean
                 mode, where four fans plus the felt plus the tray genuinely do not fit in

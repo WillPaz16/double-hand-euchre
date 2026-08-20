@@ -63,6 +63,18 @@ PIP_FILL_BLACK = (72, 54, 42, 255)  # a "soot brown" — dark like ink, but visi
 # the INK outline. Reusing INK as both fill and outline made clubs/spades disappear into their
 # own outline entirely; text (which is never outlined) can stay true black.
 
+# Per-suit garment colours (Phase 2e follow-up). body_color() used to return only two values —
+# RED for hearts/diamonds, PIP_FILL_BLACK for clubs/spades — which meant a King of Spades and
+# a King of Clubs (or a King of Hearts and a King of Diamonds) were IDENTICAL illustrations
+# apart from a single small corner pip. That's fine on a real deck, where suit colour has
+# always only meant "red or black" and shape carries the rest — but this deck draws large
+# character illustrations whose garment IS most of the card's visual area, and readable at a
+# glance in the middle of a hand matters more here than fidelity to a two-colour convention.
+# Reported directly: players couldn't tell spade and club face cards apart. All four suits now
+# get their own hue, not just the two colour-pairs.
+DIAMOND_BODY = (196, 120, 40, 255)  # warm amber/rust — distinct from hearts' red, still warm
+CLUB_BODY = (58, 96, 64, 255)       # deep forest green — distinct from spades' near-black brown
+
 SUITS = ["clubs", "diamonds", "hearts", "spades"]
 RANKS = ["9", "10", "J", "Q", "K", "A"]
 RED_SUITS = {"diamonds", "hearts"}
@@ -257,8 +269,14 @@ def text_color(suit: str):
 
 def body_color(suit: str):
     """For anything outlined (pips, garments) — needs to differ from the INK outline itself,
-    which pure black/INK does not."""
-    return RED if suit in RED_SUITS else PIP_FILL_BLACK
+    which pure black/INK does not. One colour per suit (see DIAMOND_BODY/CLUB_BODY above), not
+    per colour-pair — the garment is the biggest legible signal a face card has."""
+    return {
+        "hearts": RED,
+        "diamonds": DIAMOND_BODY,
+        "spades": PIP_FILL_BLACK,
+        "clubs": CLUB_BODY,
+    }[suit]
 
 
 # --- Layout / collision budget ----------------------------------------------------------- #
@@ -836,26 +854,30 @@ def make_old_timer_portrait(expression: str) -> Image.Image:
     return card
 
 
-# --- Scoreboard cards (Phase 2e.6) -------------------------------------------------------- #
+# --- Scoreboard cards (Phase 2e.6, pip grid corrected in 2e.7) --------------------------- #
 # The real euchre 4-and-6 scoring ritual: a 4 and a 6 of a chosen suit, and the score at any
 # moment is the SUM OF EXPOSED PIPS across both — you raise the 4 to show 1-4, then once it
 # reads a full 4 you start raising the 6 to carry the rest, up to a full 10.
 #
-# That constraint is what fixed the layout: pips need to be revealable ONE AT A TIME, so they
-# sit in a SINGLE vertical column (not the traditional two-column grid — see the "corrected
-# from" note below) with a sliding cover in front. `SCORE_PIP_Y0/Y1` mark where that column
-# starts and ends; `src/ui/Scoreboard.tsx` computes the SAME boundary fractions in TS to size
-# the cover, so the two files must be read together — same cross-file coupling pattern as
-# TRICK_HOLD_MS between useGame.ts and Table.tsx.
+# **This went through two layouts.** The first used a single vertical column of pips, on the
+# reasoning that a real 2-column grid can only reveal a whole row (2 pips) at a time and a
+# game to 10 spends most of its life on 1-point hands. That was correct about the constraint
+# and wrong about the fix: a single column of 4 or 6 identical pips stacked in a line doesn't
+# read as a playing card at all, real 4s and 6s are never drawn that way, and it was reported
+# back as looking wrong on sight, before any reveal math was even in question.
 #
-# **Corrected from an earlier version**, which used the traditional 2x2/2x3 pip GRID (a real
-# card's actual layout) with the UI sliding the whole 6 card sideways out from behind the 4.
-# That grid can only reveal pips two at a time (a whole row), so it could never represent an
-# odd score — and a game to 10 spends most of its life on 1-point hands. Sum-of-exposed-pips
-# needs single-pip granularity, which only a single column can give losslessly.
+# The actual fix keeps the traditional 2-column grid (real card layout, matches the reference
+# photos) and gets single-pip granularity a different way: the cover reveals in READING ORDER
+# — left-to-right within a row, top row before the next — so an odd score exposes the left
+# pip of a row while the right pip of that same row stays covered. `src/ui/Scoreboard.tsx`
+# turns `revealed`/`rows` into a clip-path polygon that stops exactly at that boundary; the
+# row geometry below (`SCORE_PIP_Y0/Y1`, two columns, `rows = count // 2`) is what the TS
+# clip-path math is computed against, so the two files must be read together — same
+# cross-file coupling pattern as TRICK_HOLD_MS between useGame.ts and Table.tsx.
 
 SCORE_CARD_W, SCORE_CARD_H = 60, 84
-SCORE_PIP_Y0, SCORE_PIP_Y1 = 6, 78  # pip column bounds — mirrored in Scoreboard.tsx
+SCORE_PIP_Y0, SCORE_PIP_Y1 = 6, 78  # pip GRID bounds — mirrored in Scoreboard.tsx
+SCORE_PIP_COLS = (0.30, 0.70)       # column centres, as a fraction of card width
 
 
 def _score_card_frame(draw: ImageDraw.ImageDraw, w: int, h: int) -> None:
@@ -872,22 +894,23 @@ def make_scoreboard_card(rank: str, suit: str) -> Image.Image:
 
     body = body_color(suit)
     count = 4 if rank == "4" else 6
-    # Smaller pips for the 6-column than the 4-column — at equal spacing (Y1-Y0)/count, six
-    # pips packed into the same band sit closer together than four do, and an unchanged pip
-    # size would overlap them.
-    pip_size = 11 if count == 4 else 9
+    rows = count // 2
+    # Smaller pips for the 6-card's three rows than the 4-card's two — at equal row spacing,
+    # three rows packed into the same band sit closer together than two do, and an unchanged
+    # pip size would overlap them.
+    pip_size = 12 if count == 4 else 10
     band = SCORE_PIP_Y1 - SCORE_PIP_Y0
-    for i in range(count):
-        # Centre of the i-th pip's slot, top to bottom — see Scoreboard.tsx for why this
-        # exact formula (not just visual placement, but the reveal-boundary math too).
-        fy = (SCORE_PIP_Y0 + (i + 0.5) * band / count) / h
-        sprite = pip_sprite(suit, pip_size, body, outline_px=1, shade_depth=1)
-        paste(card, sprite, w * 0.5 - pip_size / 2, h * fy - pip_size / 2)
+    for row in range(rows):
+        # Centre of this row's slot, top to bottom.
+        fy = (SCORE_PIP_Y0 + (row + 0.5) * band / rows) / h
+        for fx in SCORE_PIP_COLS:
+            sprite = pip_sprite(suit, pip_size, body, outline_px=1, shade_depth=1)
+            paste(card, sprite, w * fx - pip_size / 2, h * fy - pip_size / 2)
 
     text = text_color(suit)
-    # Corners, clear of the centred pip column horizontally regardless of vertical overlap.
-    # scale=2, matching PX: a scale=1 glyph draws 1-screen-pixel strokes, which is exactly the
-    # detail the 2x grid snap discards — it survived unnoticed while scale=1 was still legal
+    # Corners, clear of the pip grid horizontally regardless of vertical overlap. scale=2,
+    # matching PX: a scale=1 glyph draws 1-screen-pixel strokes, which is exactly the detail
+    # the 2x grid snap discards — it survived unnoticed while scale=1 was still legal
     # (pre-2e.1), but after the pixel-grid pass it collapsed into an unreadable smear.
     for x, y in ((2, 2), (w - 18, h - 20)):
         gdraw = ImageDraw.Draw(card)

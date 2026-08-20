@@ -8,7 +8,10 @@ html, body, #root {
 }
 
 body {
-  font-family: system-ui, sans-serif;
+  /* Pixel-esc UI font (self-hosted via @fontsource, no CDN — see main.tsx). Silkscreen over
+     the more famous Press Start 2P: it's built to stay legible at small sizes, and this UI
+     carries real sentences (status banner, bid button labels), not just headline numerals. */
+  font-family: 'Silkscreen', system-ui, sans-serif;
   background: #1a1410 url('/art/wall_texture.png');
   image-rendering: pixelated;
   color: #f0e6d6;
@@ -361,9 +364,6 @@ body {
     width: 42px;
     height: 59px;
   }
-  .score-card-cover-art {
-    height: 59px;
-  }
 }
 /* Laid out as a ROW. Stacked (portrait over label over cards over numeral) this block was
    208px tall at desktop — as much vertical space as the table itself had, for two numbers.
@@ -407,9 +407,13 @@ body {
   font-weight: 700;
   color: #ffd54a;
 }
-/* The 4-and-6 card scoring ritual (2e.6): two cards side by side, each a pip column behind a
-   sliding cover — the score IS the sum of exposed pips, not a decorative approximation of it.
-   The numeral is still what disambiguates at a glance, but the cards are now exact. */
+/* The 4-and-6 card scoring ritual (2e.7): a real 4 and a real 6, traditional pip grid, each
+   with a real card-back physically covering it and sliding away as the score rises — matching
+   the reference photos, not an abstract "reveal" bar. The numeral is still what disambiguates
+   at a glance, but the cards are exact: the covered region is a `clip-path` polygon computed
+   in Scoreboard.tsx from the SAME row geometry the generator placed the pips against, so the
+   edge always lands between two pips (or between the two pips of one row, for an odd score),
+   never mid-pip. */
 .score-pair {
   display: flex;
   gap: 4px;
@@ -426,31 +430,13 @@ body {
   height: 100%;
   image-rendering: pixelated;
 }
-/* Bottom-anchored: as `height` shrinks (score rising), the covered band recedes from the
-   BOTTOM, revealing pips top-down — matching the boundary each pip is centred against in
-   art/generate_art.py's SCORE_PIP_Y0/Y1, which is why the edge always lands in the gap
-   between two pips rather than slicing through one. */
 .score-card-cover {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  transition: height 350ms ease-out;
-}
-/* Full card height regardless of the wrapper's clipped height, and bottom-anchored inside
-   it too — so shrinking the wrapper always reveals the cover's OWN top edge first, the same
-   direction the pips underneath reveal in, rather than sliding the art out of registration
-   with its wrapper. */
-.score-card-cover-art {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 84px;
+  inset: 0;
   background-image: url('/art/card_back.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
+  transition: clip-path 350ms ease-out;
 }
 
 .status-banner {
@@ -692,31 +678,47 @@ body {
   align-items: flex-end;
   height: 46px;
 }
-.seat-fan .card-back {
+.seat-fan .card-back,
+.seat-fan .card-face {
   width: 25px;
   height: 35px;
   transform-origin: 50% 190%;
   margin-left: -15px;
 }
-.seat-fan .card-back:first-child {
+.seat-fan .card-back:first-child,
+.seat-fan .card-face:first-child {
   margin-left: 0;
 }
 /* Five is the maximum and the common case; the shorter fans are narrower arcs of the same
    curve so the hand never appears to change shape as it is played out. */
-.seat-fan[data-count='5'] .card-back:nth-child(1) { transform: rotate(-16deg); }
-.seat-fan[data-count='5'] .card-back:nth-child(2) { transform: rotate(-8deg); }
-.seat-fan[data-count='5'] .card-back:nth-child(3) { transform: rotate(0deg); }
-.seat-fan[data-count='5'] .card-back:nth-child(4) { transform: rotate(8deg); }
-.seat-fan[data-count='5'] .card-back:nth-child(5) { transform: rotate(16deg); }
-.seat-fan[data-count='4'] .card-back:nth-child(1) { transform: rotate(-13deg); }
-.seat-fan[data-count='4'] .card-back:nth-child(2) { transform: rotate(-4deg); }
-.seat-fan[data-count='4'] .card-back:nth-child(3) { transform: rotate(4deg); }
-.seat-fan[data-count='4'] .card-back:nth-child(4) { transform: rotate(13deg); }
-.seat-fan[data-count='3'] .card-back:nth-child(1) { transform: rotate(-10deg); }
-.seat-fan[data-count='3'] .card-back:nth-child(2) { transform: rotate(0deg); }
-.seat-fan[data-count='3'] .card-back:nth-child(3) { transform: rotate(10deg); }
-.seat-fan[data-count='2'] .card-back:nth-child(1) { transform: rotate(-6deg); }
-.seat-fan[data-count='2'] .card-back:nth-child(2) { transform: rotate(6deg); }
+.seat-fan[data-count='5'] .card-back:nth-child(1),
+.seat-fan[data-count='5'] .card-face:nth-child(1) { transform: rotate(-16deg); }
+.seat-fan[data-count='5'] .card-back:nth-child(2),
+.seat-fan[data-count='5'] .card-face:nth-child(2) { transform: rotate(-8deg); }
+.seat-fan[data-count='5'] .card-back:nth-child(3),
+.seat-fan[data-count='5'] .card-face:nth-child(3) { transform: rotate(0deg); }
+.seat-fan[data-count='5'] .card-back:nth-child(4),
+.seat-fan[data-count='5'] .card-face:nth-child(4) { transform: rotate(8deg); }
+.seat-fan[data-count='5'] .card-back:nth-child(5),
+.seat-fan[data-count='5'] .card-face:nth-child(5) { transform: rotate(16deg); }
+.seat-fan[data-count='4'] .card-back:nth-child(1),
+.seat-fan[data-count='4'] .card-face:nth-child(1) { transform: rotate(-13deg); }
+.seat-fan[data-count='4'] .card-back:nth-child(2),
+.seat-fan[data-count='4'] .card-face:nth-child(2) { transform: rotate(-4deg); }
+.seat-fan[data-count='4'] .card-back:nth-child(3),
+.seat-fan[data-count='4'] .card-face:nth-child(3) { transform: rotate(4deg); }
+.seat-fan[data-count='4'] .card-back:nth-child(4),
+.seat-fan[data-count='4'] .card-face:nth-child(4) { transform: rotate(13deg); }
+.seat-fan[data-count='3'] .card-back:nth-child(1),
+.seat-fan[data-count='3'] .card-face:nth-child(1) { transform: rotate(-10deg); }
+.seat-fan[data-count='3'] .card-back:nth-child(2),
+.seat-fan[data-count='3'] .card-face:nth-child(2) { transform: rotate(0deg); }
+.seat-fan[data-count='3'] .card-back:nth-child(3),
+.seat-fan[data-count='3'] .card-face:nth-child(3) { transform: rotate(10deg); }
+.seat-fan[data-count='2'] .card-back:nth-child(1),
+.seat-fan[data-count='2'] .card-face:nth-child(1) { transform: rotate(-6deg); }
+.seat-fan[data-count='2'] .card-back:nth-child(2),
+.seat-fan[data-count='2'] .card-face:nth-child(2) { transform: rotate(6deg); }
 
 /* Unlike the round-table version, all four seats are structurally the same now — two
    left/right pairs, north and south — so there is no rotated "faces the table sideways"
@@ -795,14 +797,20 @@ body {
    animates to its OWN resting rotation, so the deal ends in the arc rather than snapping into
    it — hence the per-count keyframes being avoided in favour of animating only opacity and a
    translation, composed on top of the rotation the element already carries. */
-.seat-fan .card-back {
+.seat-fan .card-back,
+.seat-fan .card-face {
   animation: deal-in 300ms ease-out both;
 }
-.seat-fan .card-back:nth-child(1) { animation-delay: 0ms; }
-.seat-fan .card-back:nth-child(2) { animation-delay: 55ms; }
-.seat-fan .card-back:nth-child(3) { animation-delay: 110ms; }
-.seat-fan .card-back:nth-child(4) { animation-delay: 165ms; }
-.seat-fan .card-back:nth-child(5) { animation-delay: 220ms; }
+.seat-fan .card-back:nth-child(1),
+.seat-fan .card-face:nth-child(1) { animation-delay: 0ms; }
+.seat-fan .card-back:nth-child(2),
+.seat-fan .card-face:nth-child(2) { animation-delay: 55ms; }
+.seat-fan .card-back:nth-child(3),
+.seat-fan .card-face:nth-child(3) { animation-delay: 110ms; }
+.seat-fan .card-back:nth-child(4),
+.seat-fan .card-face:nth-child(4) { animation-delay: 165ms; }
+.seat-fan .card-back:nth-child(5),
+.seat-fan .card-face:nth-child(5) { animation-delay: 220ms; }
 @keyframes deal-in {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -816,7 +824,8 @@ body {
   .trick-card.is-sweeping.sweep-up,
   .trick-card.is-sweeping.is-winner.sweep-down,
   .trick-card.is-sweeping.is-winner.sweep-up,
-  .seat-fan .card-back { animation: none; }
+  .seat-fan .card-back,
+  .seat-fan .card-face { animation: none; }
 }
 
 .bid-panel {
@@ -838,6 +847,16 @@ body {
 }
 .bid-button:active {
   background: #4a3524;
+}
+.bid-panel-prompt {
+  width: 100%;
+  text-align: center;
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin-bottom: 0.1rem;
+}
+.bid-button-back {
+  opacity: 0.7;
 }
 
 .hand-tray {
@@ -1043,9 +1062,6 @@ body {
   }
   .score-card-slot {
     width: 30px;
-    height: 42px;
-  }
-  .score-card-cover-art {
     height: 42px;
   }
 }
