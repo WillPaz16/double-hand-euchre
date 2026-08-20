@@ -2,6 +2,8 @@ import type { Card as CardType, HandId, PlayerView } from '../../shared/engine/t
 import { HUMAN, BOT } from '../game/useGame.ts';
 import type { CompletedTrick } from '../game/useGame.ts';
 import { Card, CardBack } from './Card.tsx';
+import { UpcardWheel } from './UpcardWheel.tsx';
+import { useUpcardReveal } from '../game/useUpcardReveal.ts';
 
 /** The winning card is highlighted for this long before everything sweeps away.
  *
@@ -110,6 +112,7 @@ export function Table({
   // also tells the player who took it without any extra text.
   const trick = completedTrick ? completedTrick.cards : view.currentTrick;
   const sweeping = completedTrick !== null;
+  const wheelSpinning = useUpcardReveal(view);
 
   return (
     <div className="table-area">
@@ -171,7 +174,14 @@ export function Table({
         {view.upcard && KITTY_PHASES.has(view.phase) && (
           <div className="table-kitty">
             <CardBack />
-            <Card card={view.upcard} className="kitty-upcard" />
+            {/* The one genuinely random reveal in the game gets a randomizer animation; naming
+                trump later gets a firm stamp instead, since a wheel would misrepresent a
+                choice as chance (Phase 2 design spec §8). */}
+            {wheelSpinning ? (
+              <UpcardWheel suit={view.upcard.suit} durationMs={500} />
+            ) : (
+              <Card card={view.upcard} className="kitty-upcard" />
+            )}
           </div>
         )}
 

@@ -6,6 +6,7 @@ import { StatusBanner } from './StatusBanner.tsx';
 import { Table } from './Table.tsx';
 import { BidPanel } from './BidPanel.tsx';
 import { HandTray } from './HandTray.tsx';
+import { LonerDim, LonerStamp } from './LonerFx.tsx';
 
 export function Game() {
   const { view, legal, play, completedTrick, frozen, restart } = useGame();
@@ -14,6 +15,11 @@ export function Game() {
   return (
     <>
       <SceneLayer />
+      {/* Sits above the scene but below the game content (z-index between SceneLayer's -1
+          and #root's 1) — it dims the room and the wall, never the table or the cards, which
+          must stay perfectly readable regardless of which loner tier is in play. */}
+      <LonerDim view={view} />
+      <LonerStamp view={view} />
       <div className="game-root">
       <Scoreboard view={view} />
       <StatusBanner view={view} onRestart={restart} />

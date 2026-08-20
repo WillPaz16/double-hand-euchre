@@ -55,14 +55,40 @@ export function BidPanel({
   // the trump choice locally (component state, not engine state — the engine still only ever
   // sees one action) and asks the alone question as its own screen.
   const [pending, setPending] = useState<PendingTrump | null>(null);
+  // The biggest bet in the game — zero information, for the whole hand, no way back once
+  // committed (RULES.md §2: a declaration can't be revisited). The loner ladder's design
+  // spec calls for this one specifically to "demand a deliberate confirm"; the other two
+  // tiers still see SOMETHING (their hand, or the upcard) before committing, so only this one
+  // gets a second gate.
+  const [confirmingFullBlind, setConfirmingFullBlind] = useState(false);
 
   // Cleared whenever the phase moves on, so a stale staged choice from a finished window
   // can never leak into the next one.
   useEffect(() => {
     setPending(null);
+    setConfirmingFullBlind(false);
   }, [view.phase]);
 
   if (!BID_PHASES.has(view.phase) || legal.length === 0) return null;
+
+  if (confirmingFullBlind) {
+    const declare = legal.find((a) => a.type === 'DECLARE_FULL_BLIND_LONER');
+    if (!declare) return null;
+    return (
+      <div className="bid-panel">
+        <div className="bid-panel-prompt">
+          You won't see your hand or the upcard — nothing — until the deal is over. Go full
+          blind for 8 points?
+        </div>
+        <button className="bid-button bid-button-danger" onClick={() => play(declare)}>
+          Yes, go blind
+        </button>
+        <button className="bid-button bid-button-back" onClick={() => setConfirmingFullBlind(false)}>
+          Back
+        </button>
+      </div>
+    );
+  }
 
   if (pending) {
     const withPartner = legal.find(
@@ -119,6 +145,7 @@ export function BidPanel({
           onClick={() => {
             if (a.type === 'ORDER_UP') setPending({ type: 'ORDER_UP' });
             else if (a.type === 'NAME_TRUMP') setPending({ type: 'NAME_TRUMP', suit: a.suit });
+            else if (a.type === 'DECLARE_FULL_BLIND_LONER') setConfirmingFullBlind(true);
             else play(a);
           }}
         >

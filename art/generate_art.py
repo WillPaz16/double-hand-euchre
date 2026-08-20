@@ -921,6 +921,39 @@ def make_scoreboard_card(rank: str, suit: str) -> Image.Image:
     return card
 
 
+def make_suit_icon(suit: str, size=40) -> Image.Image:
+    """A standalone suit pip, for the upcard reveal wheel (Phase 2e.8) — the spec calls for
+    "four suits blur past and clack onto the upcard's suit", which needs a suit on its own,
+    not stamped onto a full card. Reuses `pip_sprite()` exactly as the card corners do, so it
+    is guaranteed to be the same shape/shading as the pip a player already reads on every
+    card — no second suit-drawing code path to keep in sync."""
+    sprite, _pad = pip_sprite(suit, size, body_color(suit), outline_px=2, shade_depth=2)
+    sprite = snap_to_pixel_grid(sprite)
+    _assert_pixel_grid(sprite, label=f"suit icon {suit}")
+    return sprite
+
+
+def make_app_icon(size: int) -> Image.Image:
+    """PWA/favicon icon (Phase 2e.9) — a spade pip on a warm wood roundel, generated the same
+    deterministic way as everything else rather than hand-drawn or AI-generated. Spades over
+    the other three suits for no rules reason, purely as a single, instantly-legible mark at
+    icon sizes — a full illustrated face card or the felt/cabin scene would be noise at
+    48x48. Drawn at a fixed 256px working resolution and resized down, since pip_sprite's
+    outline/shade math assumes real pixel counts, not icon-scale slivers.
+    """
+    WORK = 256
+    img = Image.new("RGBA", (WORK, WORK), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    draw.ellipse((4, 4, WORK - 4, WORK - 4), fill=WOOD_DARK)
+    draw.ellipse((10, 10, WORK - 10, WORK - 10), outline=GOLD, width=4)
+    pip_size = 156
+    pip, pad = pip_sprite("spades", pip_size, GOLD, outline_px=4, shade_depth=2)
+    paste(img, (pip, pad), WORK / 2 - pip_size / 2, WORK / 2 - pip_size / 2)
+    if size != WORK:
+        img = img.resize((size, size), Image.LANCZOS)
+    return img
+
+
 def make_card_back() -> Image.Image:
     img = Image.new("RGBA", (CARD_W, CARD_H), WOOD_DARK)
     draw = ImageDraw.Draw(img)
@@ -1592,6 +1625,14 @@ def main() -> None:
             os.path.join(portraits_dir, f"old_timer_{expression}.png")
         )
 
+    for icon_size in (32, 192, 512):
+        make_app_icon(icon_size).save(os.path.join(OUT_ROOT, f"icon-{icon_size}.png"))
+
+    suits_dir = os.path.join(OUT_ROOT, "suits")
+    os.makedirs(suits_dir, exist_ok=True)
+    for suit in SUITS:
+        make_suit_icon(suit).save(os.path.join(suits_dir, f"{suit}.png"))
+
     # Only the suits SCORE_SUIT actually assigns (src/ui/Scoreboard.tsx: A -> hearts,
     # B -> spades) get scoreboard cards — generating all four was dead weight, since each
     # player's suit is currently fixed, not a real choice yet (see that file's comment). If
@@ -1605,7 +1646,7 @@ def main() -> None:
 
     print(
         f"Generated {len(SUITS) * len(RANKS)} card faces + card back + table felt "
-        f"+ 3 Old-Timer portraits + {len(SCOREBOARD_SUITS) * 2} scoreboard cards -> {OUT_ROOT}"
+        f"+ 3 Old-Timer portraits + {len(SUITS)} suit icons + {len(SCOREBOARD_SUITS) * 2} scoreboard cards -> {OUT_ROOT}"
     )
 
 

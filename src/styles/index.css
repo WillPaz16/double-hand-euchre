@@ -328,6 +328,140 @@ body {
   z-index: 1;
 }
 
+/* --- Title screen (Phase 2e.9) ---------------------------------------------------------- */
+.title-screen {
+  /* No z-index of its own needed — it's a child of #root, which already sits above the
+     SceneLayer's fixed -1. */
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  text-align: center;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+}
+.title-heading {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.4;
+  color: #ffd54a;
+  text-shadow:
+    0 0 14px rgba(255, 213, 74, 0.45),
+    0 3px 0 #2a1a10;
+  max-width: 20ch;
+}
+.title-tagline {
+  margin: 0;
+  max-width: 32ch;
+  font-size: 0.8rem;
+  opacity: 0.8;
+  line-height: 1.6;
+}
+.title-play-button {
+  font-family: inherit;
+  font-size: 1.1rem;
+  padding: 0.9rem 2.2rem;
+  border-radius: 10px;
+  border: 2px solid #ffd54a;
+  background: #3a2a1a;
+  color: #ffd54a;
+  cursor: pointer;
+  touch-action: manipulation;
+  box-shadow: 0 0 16px rgba(255, 213, 74, 0.25);
+}
+.title-play-button:active {
+  background: #4a3524;
+}
+.title-mute-toggle {
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #7a5a3a;
+  background: transparent;
+  color: #f0e6d6;
+  opacity: 0.75;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* --- The loner ladder (Phase 2e.8) ------------------------------------------------------ */
+/* `LonerDim` sits between the scene (-1) and the game content (1), so it darkens the room
+   and the wall without ever touching the table or the cards — those must read perfectly no
+   matter which tier is in play. `pointer-events: none` throughout: purely atmospheric. */
+.loner-dim {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 900ms ease-in-out;
+}
+/* blind_hand: a real loss of footing (you're playing without having looked at your own
+   cards), so the room dims — but the fire and window stay legible, this is a shift in mood,
+   not a blackout. */
+.loner-dim-blind_hand {
+  background: rgba(8, 5, 3, 0.5);
+}
+/* full_blind: zero information in, so the room gives back zero light except the one thing
+   that's ALWAYS warm in this cabin — "drops to firelight only". A near-black field plus a
+   dim, sourceless warm glow (not anchored to the hearth's screen position, since this has to
+   read the same whether or not the hearth is even rendered at this viewport). */
+.loner-dim-full_blind {
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 65%, rgba(255, 140, 60, 0.05), rgba(0, 0, 0, 0) 70%),
+    rgba(5, 3, 2, 0.82);
+}
+
+/* The declaration flourish — a one-shot stamp, centred over everything, that fades on its
+   own. Escalates with the tier: standard is a firm red stamp; blind_hand cools toward the
+   dim it's about to start; full_blind is the biggest flourish, matching the biggest bet. */
+.loner-stamp {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  text-align: center;
+  padding: 1rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  animation: loner-stamp-in 900ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+.loner-stamp-standard {
+  color: #ff6b5a;
+  text-shadow:
+    0 0 12px rgba(255, 90, 70, 0.9),
+    0 0 28px rgba(255, 90, 70, 0.5);
+}
+.loner-stamp-blind_hand {
+  color: #9db8e0;
+  text-shadow:
+    0 0 12px rgba(120, 158, 205, 0.85),
+    0 0 30px rgba(120, 158, 205, 0.5);
+}
+.loner-stamp-full_blind {
+  font-size: 1.7rem;
+  color: #fff2d8;
+  text-shadow:
+    0 0 16px rgba(255, 200, 120, 0.95),
+    0 0 40px rgba(255, 150, 60, 0.6);
+}
+@keyframes loner-stamp-in {
+  0% { opacity: 0; transform: scale(1.6); }
+  30% { opacity: 1; transform: scale(0.94); }
+  42% { transform: scale(1.04); }
+  55%, 78% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loner-stamp { animation: none; opacity: 0; }
+  .loner-dim { transition: none; }
+}
+
 /* --- Phase 2a placeholder styling — no art yet, just legible and responsive. --- */
 
 .game-root {
@@ -575,6 +709,55 @@ body {
   top: 16px;
   transform: rotate(12deg);
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+}
+
+/* The upcard reveal wheel (Phase 2e.8) — occupies the same spot the real upcard lands in, so
+   nothing shifts when the wheel stops and the actual card takes over. Frames are stacked
+   (position: absolute, all at inset 0) and each is invisible except during its own
+   `animation-delay` slice — a sequential reveal built entirely from timing, no JS interval. */
+.upcard-wheel {
+  position: absolute;
+  left: 26px;
+  top: 16px;
+  width: 70px;
+  height: 70px;
+}
+.upcard-wheel-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  opacity: 0;
+  animation-name: wheel-flash;
+  animation-timing-function: steps(1, end);
+  animation-fill-mode: both;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+}
+@keyframes wheel-flash {
+  0% { opacity: 1; transform: scale(1); }
+  99.9% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; }
+}
+/* The clack: the last frame is the real suit, and it HOLDS instead of fading — plus a small
+   overshoot pop so the landing reads as physical rather than the spin just quietly stopping. */
+.upcard-wheel-frame.is-final {
+  animation-name: wheel-land;
+}
+@keyframes wheel-land {
+  0% { opacity: 1; transform: scale(1); }
+  60% { opacity: 1; transform: scale(1.3); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .upcard-wheel-frame {
+    animation: none;
+    opacity: 0;
+  }
+  .upcard-wheel-frame.is-final {
+    opacity: 1;
+  }
 }
 .trick-empty {
   position: absolute;
@@ -857,6 +1040,13 @@ body {
 }
 .bid-button-back {
   opacity: 0.7;
+}
+.bid-button-danger {
+  border-color: #ff6b5a;
+  background: #4a1c16;
+}
+.bid-button-danger:active {
+  background: #5c231b;
 }
 
 .hand-tray {

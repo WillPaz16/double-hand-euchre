@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { PlayerView } from '../../shared/engine/types.ts';
+import { isMuted } from './audioSettings.ts';
 
 const SOUND_FILES = {
   cardPlay: '/audio/card_play.wav',
@@ -28,6 +29,7 @@ function useSoundBank() {
 }
 
 function play(bank: Record<SoundName, HTMLAudioElement>, name: SoundName) {
+  if (isMuted()) return;
   const audio = bank[name];
   audio.currentTime = 0;
   // Autoplay can reject before the player's first interaction (e.g. a very early bot move on
