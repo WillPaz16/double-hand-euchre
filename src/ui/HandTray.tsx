@@ -157,8 +157,13 @@ export function HandTray({
       <div className="hand-tray">
         <div className="hand-tray-label">Your hand</div>
         <PickupTray trayKey={trayKey}>
+          {/* No `dimmed` here — that prop means "not a legal play right now" (see the
+              play-phase branch above, where SOME cards are clickable and others aren't). None
+              of these cards are ever clickable; bidding actions live in BidPanel, not here.
+              Dimming all five for a reason that doesn't apply just made your own hand harder
+              to read at the exact moment you picked it up specifically to read it. */}
           {view.ownSelectedHand.map((card, i) => (
-            <Card key={i} card={card} dimmed />
+            <Card key={i} card={card} />
           ))}
         </PickupTray>
       </div>
