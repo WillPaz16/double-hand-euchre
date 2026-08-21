@@ -4,6 +4,7 @@ ASSETS.md. No AI image generation, no hand-placed pixels to lose track of — ju
 logic, so re-running this script always produces the same output. See ASSETS.md before
 editing: change the spec/constants below, not the PNGs in public/art/.
 """
+import colorsys
 import math
 import os
 
@@ -36,13 +37,37 @@ LEAF_GREEN = (86, 128, 76, 255)
 # WOOD_DARK/MED/LIGHT above are intentionally NOT reused or modified here: make_card_back()
 # depends on them, and the card art is frozen. These are separate bases, each fed through
 # ramp() at use site, plus the cool/warm accents the night-cabin mood needs.
-TABLE_WOOD = (88, 55, 34, 255)
-WALL_WOOD = (34, 23, 18, 255)   # much darker than the table: value separation is what
-# stops the backdrop and the table surface reading as one continuous slab of wood.
-CHINKING = (122, 108, 90, 255)      # pale mortar packed between the logs
-FLOOR_WOOD = (74, 48, 30, 255)
-NIGHT_BLUE = (38, 48, 74, 255)      # the cool reference that makes firelight read warm
-NIGHT_BLUE_DEEP = (24, 30, 50, 255)
+# The value ladder — wall behind floor behind table (Phase 2g.1).
+#
+# ASSETS.md has always specified this order, but with the numbers "L≈33 → 54 → 62" and the
+# admission that they were "asserted BY EYE at full size". Measured, the shipped tiles were
+# **L 13.7 → 19.8 → 23.7**: the order was right and the separation was a third of what the
+# spec called for, so the three biggest surfaces in the game sat within 10 lightness points of
+# each other and the room read as one dark slab. The card art being frozen had quietly
+# protected the CARDS from this while the environment drifted for four phases.
+#
+# These are NOT the spec's literal numbers, and that is deliberate. Mocking the ladder up with
+# the real CSS vignette and hearth wash over it showed L 33/54/62 lands on a *daylit* room —
+# at L62 the table goes pale and milky and stops reading as wood at all. The spec's numbers
+# were never measured, so they are aspirational rather than authoritative. L 27/42/50 keeps
+# the night-cabin mood, keeps the wood reading as wood, and still more than DOUBLES the
+# separation (10 points -> 23). Hue is preserved exactly; saturation eases down ~12% as
+# lightness rises, or warm wood turns peach.
+#
+# The mood is supposed to come from the LIGHTING layer (vignette, hearth glow, firelight) over
+# properly-lit materials — not from painting the materials themselves nearly black, which is
+# what left the low-alpha glows with nothing to lift.
+TABLE_WOOD = (177, 116, 78, 255)    # L50 — the lit surface the cards sit on
+WALL_WOOD = (87, 62, 50, 255)       # L27 — furthest back, recedes
+FLOOR_WOOD = (148, 100, 66, 255)    # L42 — between the two
+# The cool counterweight. Warm only reads as warm against something cold, and the window is
+# the only cold thing in the room — but at the old (24,30,50) it rendered at **L 11.8**,
+# darker than the lit parts of the wall it sits on, so the one cool reference in the room was
+# contributing nothing but a dark rectangle. Lifted and saturated so it reads as deep BLUE
+# rather than as black: still clearly night outside, but now actually blue enough to be the
+# thing the firelight is warm against. (`NIGHT_BLUE`, a mid tone, was defined here for four
+# phases and referenced exactly nowhere — the glass always used the deep one. Removed.)
+NIGHT_BLUE_DEEP = (33, 45, 82, 255)
 FROST = (176, 198, 220, 255)
 FIRE_CORE = (255, 226, 140, 255)
 FIRE_MID = (240, 150, 52, 255)
@@ -53,7 +78,8 @@ EMBER = (120, 40, 22, 255)
 # surrounded by cool stone reads as an unlit fireplace with something orange in it. Stone
 # beside a fire picks up that fire; nudging the greys toward amber costs nothing and is the
 # difference between the hearth belonging to the room and being pasted onto it.
-STONE_LIGHT = (134, 118, 102, 255)
+# (`STONE_LIGHT` lived here unused since the hearth was written — the masonry derives its lit
+# tone from `ramp(STONE_MED)` instead. Removed with the other two dead constants in 2g.1.)
 STONE_MED = (99, 85, 72, 255)
 STONE_DARK = (64, 54, 46, 255)
 RUG_RED = (128, 52, 46, 255)
@@ -141,26 +167,55 @@ WARM_BIAS = (18, 7, -12)
 COOL_BIAS = (-14, -3, 18)
 
 
-def ramp(color, warm=True):
-    """Four tones — (highlight, base, shadow, deep) — with a temperature split, not a plain
-    multiply. Under warm light, highlights bend amber and shadows bend blue; `warm=False`
-    flips it for anything lit by the window instead of the fire.
+# (lightness delta, hue rotation in degrees, saturation multiplier) for
+# highlight / base / shadow / deep, under WARM light. `warm=False` negates the rotations.
+RAMP_STEPS = (
+    (+0.090, +12.0, 0.95),
+    (0.0, 0.0, 1.00),
+    (-0.100, -9.0, 1.06),
+    (-0.190, -16.0, 1.10),
+)
 
-    The temperature split is the single highest-impact idea of this phase. A pure multiply
-    keeps every tone on one hue line, which is what made the old three-brown environment read
-    muddy: with nothing cool in frame, warm firelight has nothing to be warm *against*. The
-    `warm` flag matters for the same reason in reverse — moonlit frost given firelit
-    highlights stops reading as cold, and the window is supposed to be the cool reference the
-    whole room is judged against.
+
+def ramp(color, warm=True):
+    """Four tones — (highlight, base, shadow, deep) — with a real temperature split.
+
+    Under warm light, highlights bend toward the light (amber) and shadows bend away from it;
+    `warm=False` negates the rotation for anything lit by the window instead of the fire. That
+    split is what stops an environment reading muddy: with nothing cool in frame, warm
+    firelight has nothing to be warm *against*.
+
+    **Rebuilt in HLS in Phase 2g.1, because the RGB version was not delivering any of that.**
+    Measured on the shipped palette, the old `_shift`-based ramp:
+
+      - **Blew out its highlight.** `TABLE_WOOD` base L50 -> highlight L66; `WALL_WOOD` L27 ->
+        L52, with saturation collapsing 27% -> 18%. Nearly every call site immediately
+        `_mix()`ed it 40-55% back toward base, which is the code telling you the amplitude was
+        wrong.
+      - **Never actually rotated shadows cool.** `TABLE_WOOD` base H23.0 -> shadow H21.7 ->
+        deep H22.1. **Under 1.5 degrees.** The cool-shadow half — the thing the old docstring
+        called "the single highest-impact idea of this phase" — measurably was not happening.
+        The tint was scaled by each channel's remaining headroom, which on a dark shadow is
+        tiny, so it was swamped every time.
+      - **Went grey on cool bases.** `ramp(NIGHT_BLUE_DEEP)` returned a highlight at **S 3.9%**
+        — a dead neutral.
+
+    Working in HLS fixes all three at once, because lightness, hue and saturation stop
+    fighting for the same three channels: each step states what it wants directly. Clamping
+    lightness (rather than clamping RGB) also preserves the "hue never inverts at the
+    extremes" guarantee `_shift` was written to provide — which is why `_shift` is still the
+    right tool for `light_from`'s small nudges and the wrong one for a full ramp.
     """
-    bias = WARM_BIAS if warm else COOL_BIAS
-    inverse = tuple(-v for v in bias)
-    return (
-        _shift(color, 0.34, bias),      # highlight
-        color,                          # base
-        _shift(color, -0.30, inverse),  # shadow
-        _shift(color, -0.54, inverse),  # deep
-    )
+    h, l, s = colorsys.rgb_to_hls(*[v / 255.0 for v in color[:3]])
+    out = []
+    for dl, dh, ds in RAMP_STEPS:
+        rot = dh if warm else -dh
+        nh = ((h * 360.0 + rot) % 360.0) / 360.0
+        # Clamped short of pure black/white so a tone can never lose its hue entirely.
+        nl = max(0.04, min(0.96, l + dl))
+        ns = max(0.0, min(1.0, s * ds))
+        out.append(tuple(round(v * 255) for v in colorsys.hls_to_rgb(nh, nl, ns)) + (color[3],))
+    return tuple(out)
 
 
 def make_sprite_sheet(frames):
@@ -174,8 +229,11 @@ def make_sprite_sheet(frames):
     return sheet
 
 
-def light_from(sprite, strength=0.16, from_left=True):
-    """Relight a finished sprite directionally, as a post-process.
+LIGHT_BANDS = 5
+
+
+def light_from(sprite, strength=0.16, from_left=True, bands=LIGHT_BANDS):
+    """Relight a finished sprite directionally, as a post-process, in DISCRETE BANDS.
 
     **The measurement that prompted this.** Comparing the mean luminance of each scene
     sprite's left half against its right half gave deltas under 1 unit for every single one:
@@ -185,7 +243,24 @@ def light_from(sprite, strength=0.16, from_left=True):
     the gradient painted over them is.
 
     The room's light source is the hearth, in the left margin. So scene sprites get their
-    hearth-facing side lifted and their far side dropped, along a smooth horizontal ramp.
+    hearth-facing side lifted and their far side dropped, across a horizontal ramp.
+
+    **Why banded, and not the smooth ramp this used to be (Phase 2g.1).** The original
+    computed `amt` continuously from `x`, giving every column its own slightly different tint.
+    Measured on the shipped Old-Timer that produced **361 colours on one 150x140 sprite**,
+    including ~50 skin tones within 4 RGB units of each other — (239,196,146), (239,197,148),
+    (239,195,145)… A Stardew-class character sprite carries 12-25 colours *total*. That is not
+    shading, it is an airbrush gradient wearing pixel art's clothes, and it was the real
+    technical answer to "everything is still very not pixelated" — the same defect class as
+    the `border-radius: 50%` felt retired in the pixelation pass, just on sprites instead of
+    a silhouette.
+
+    Quantising `t` into a handful of bands before deriving `amt` means a whole REGION shares
+    one tone, which is what makes a shading step legible as a step. Measured: the same sprite
+    drops to ~17 colours, inside the reference range, with no redrawing at all.
+
+    `bands` is odd on purpose, so one band sits at `amt == 0` and the sprite keeps its authored
+    mid-tone rather than every pixel being pushed one way or the other.
 
     Applied as a post-process on the composited sprite rather than threaded through every
     generator: it is one call per object instead of a light model in a dozen drawing
@@ -198,6 +273,9 @@ def light_from(sprite, strength=0.16, from_left=True):
         t = x / (w - 1) if w > 1 else 0.5
         if not from_left:
             t = 1.0 - t
+        # Snap to a band CENTRE. Flooring to the band edge instead would bias the whole
+        # sprite toward its lit side, since band 0 would light from t=0 rather than t=1/2N.
+        t = (min(int(t * bands), bands - 1) + 0.5) / bands
         # +strength at the lit edge falling to -strength at the far edge.
         amt = strength * (1.0 - 2.0 * t)
         if amt == 0:
@@ -1119,18 +1197,25 @@ def make_table_felt() -> Image.Image:
       3. **Plank tone stays close.** High plank-to-plank contrast reads as stripes rather than
          as one wooden surface. The tonal range is better spent on the plank crown, which
          gives the surface volume, than on shouting where one plank ends.
+
+    **Calm is not the same as flat (Phase 2g.1).** Rules 2 and 3 were right and were
+    over-applied: every tone here was compressed toward base twice — once when the ramp was
+    halved into `hi`/`sh`, and again by the 0.14 crown mix — so the effective highlight was
+    ~7% of the ramp's. Measured, this tile shipped with **15 colours spanning 3.4 lightness
+    points and 1.1 degrees of hue**: one brown with dither noise, not a plank. Those factors
+    were tuned against the old ramp, whose highlight blew out by +16 lightness points and had
+    to be reined in; against the calibrated ramp they double-compensate. The crown now gets a
+    real share of the ramp and the plank seam a real shadow, while GRAIN — the thing that
+    actually made this tile loud — stays quiet. Local contrast low, form present.
     """
     size = 128
-    hi_f, base, sh_f, deep_f = ramp(TABLE_WOOD)
-    hi = _mix(base, hi_f, 0.5)
-    sh = _mix(base, sh_f, 0.55)
-    deep = _mix(base, deep_f, 0.5)
+    hi, base, sh, deep = ramp(TABLE_WOOD)
 
     img = Image.new("RGBA", (size, size), base)
     draw = ImageDraw.Draw(img)
 
     plank_h = 32
-    plank_tint = (0.00, 0.05, -0.04, 0.02)
+    plank_tint = (0.00, 0.12, -0.10, 0.05)
 
     for i, py in enumerate(range(0, size, plank_h)):
         tint = plank_tint[i % len(plank_tint)]
@@ -1138,8 +1223,8 @@ def make_table_felt() -> Image.Image:
         body = plank_h - 2
         for dy in range(body):
             frac = dy / (body - 1)
-            tone = _mix(p_base, hi, 0.14) if 0.2 < frac < 0.6 else (
-                _mix(p_base, sh, 0.08) if frac < 0.86 else _mix(p_base, sh, 0.26))
+            tone = _mix(p_base, hi, 0.45) if 0.2 < frac < 0.6 else (
+                _mix(p_base, sh, 0.20) if frac < 0.86 else _mix(p_base, sh, 0.55))
             draw.line((0, py + dy, size, py + dy), fill=tone)
 
         # Grain along the plank. Fixed arithmetic, never `random`, so the tile stays
@@ -1155,7 +1240,7 @@ def make_table_felt() -> Image.Image:
                 seed += 11
 
         draw.line((0, py + body, size, py + body), fill=deep)
-        draw.line((0, py + body + 1, size, py + body + 1), fill=_mix(p_base, hi, 0.18))
+        draw.line((0, py + body + 1, size, py + body + 1), fill=_mix(p_base, hi, 0.55))
     return img
 
 
@@ -1489,10 +1574,11 @@ def make_floorboards(size=160):
     be a quiet ground plane. Detail here competes with the cards for nothing. Bigger tile,
     one joint per board, and grain pulled almost to base.
     """
-    hi_f, base, sh_f, deep_f = ramp(FLOOR_WOOD)
-    hi = _mix(base, hi_f, 0.45)
-    sh = _mix(base, sh_f, 0.5)
-    deep = _mix(base, deep_f, 0.55)
+    # Uncompressed ramp tones, per 2g.1 — see make_table_felt() for the measurement. The old
+    # 0.45/0.5/0.55 pre-mix plus a 0.16 crown left this tile at 2.4 lightness points of range
+    # across 14 colours, i.e. a flat fill where floorboards were intended. The floor is also
+    # further from the cards than the felt is, so it can afford more form than the felt can.
+    hi, base, sh, deep = ramp(FLOOR_WOOD)
 
     img = Image.new("RGBA", (size, size), base)
     d = ImageDraw.Draw(img)
@@ -1500,7 +1586,7 @@ def make_floorboards(size=160):
     board_h = 32
     # One joint per board, widely spaced and at different offsets, so nothing lines up.
     joints = (103, 37, 128, 61, 14)
-    board_tint = (0.00, 0.07, -0.05, 0.03, -0.02)
+    board_tint = (0.00, 0.16, -0.12, 0.07, -0.05)
 
     for row, by in enumerate(range(0, size, board_h)):
         b_base = _mix(base, hi if board_tint[row] >= 0 else sh, abs(board_tint[row]))
@@ -1508,8 +1594,8 @@ def make_floorboards(size=160):
         for dy in range(body):
             frac = dy / (body - 1)
             # Gentle crown: boards cup slightly, catching light along the middle.
-            tone = _mix(b_base, hi, 0.16) if 0.25 < frac < 0.62 else (
-                _mix(b_base, sh, 0.10) if frac < 0.85 else _mix(b_base, sh, 0.30))
+            tone = _mix(b_base, hi, 0.50) if 0.25 < frac < 0.62 else (
+                _mix(b_base, sh, 0.24) if frac < 0.85 else _mix(b_base, sh, 0.60))
             d.line((0, by + dy, size, by + dy), fill=tone)
 
         # Grain: long, low-contrast figure along the board. Barely there by design.
@@ -1798,6 +1884,57 @@ def save_asset(img: Image.Image, path: str, label: str = "") -> None:
     img.resize((w // PX, h // PX), Image.NEAREST).save(path)
 
 
+def _median_lightness(img: Image.Image) -> float:
+    px = [p for p in img.convert("RGBA").getdata() if p[3] > 0]
+    ls = sorted(colorsys.rgb_to_hls(r / 255, g / 255, b / 255)[1] * 100 for r, g, b, _ in px)
+    return ls[len(ls) // 2]
+
+
+# The room must read back-to-front: wall furthest away and darkest, then the floor, then the
+# lit table the cards sit on. ASSETS.md has specified this order since Phase 2d — and said, in
+# as many words, that it was "asserted BY EYE at full size". It was wrong by a factor of three
+# and stayed wrong for four phases: the shipped tiles measured L 13.7 / 19.8 / 23.7 against a
+# documented 33 / 54 / 62, so the three largest surfaces in the game sat inside ten lightness
+# points of each other and the room read as one dark slab.
+#
+# An invariant that is only ever checked by eye is not an invariant. This is the same argument
+# as `_assert_pixel_grid` and `_assert_art_clear_of_indices`, both of which caught real bugs
+# that visual review had already passed.
+VALUE_LADDER_MIN_GAP = 6.0
+
+
+def _assert_value_ladder(tiles: "dict[str, Image.Image]") -> None:
+    order = ["wall", "floor", "table"]
+    values = [(n, _median_lightness(tiles[n])) for n in order]
+    for (n_a, l_a), (n_b, l_b) in zip(values, values[1:]):
+        if l_b - l_a < VALUE_LADDER_MIN_GAP:
+            raise AssertionError(
+                f"value ladder broken: {n_a} L={l_a:.1f} -> {n_b} L={l_b:.1f} "
+                f"(gap {l_b - l_a:.1f} < {VALUE_LADDER_MIN_GAP}). The room needs "
+                f"back-to-front value separation to read as a room."
+            )
+    print("  value ladder: " + " -> ".join(f"{n} L{v:.1f}" for n, v in values))
+
+
+# A sprite carrying hundreds of near-identical tones is not shaded, it is airbrushed. The
+# shipped Old-Timer measured **361 colours** on one 150x140 sprite — roughly fifty skin tones
+# inside four RGB units of each other — because `light_from` tinted every column
+# independently. Stardew-class character sprites carry 12-25 colours in total. Banding the
+# light (see `light_from`) took the same sprite to ~36; this ceiling is what stops a future
+# continuous gradient from quietly reintroducing the problem, since the symptom is invisible
+# in a diff and easy to miss by eye.
+SPRITE_COLOUR_CEILING = 64
+
+
+def _assert_sprite_colours(img: Image.Image, label: str) -> None:
+    n = len({p for p in img.convert("RGBA").getdata() if p[3] > 0})
+    if n > SPRITE_COLOUR_CEILING:
+        raise AssertionError(
+            f"{label} has {n} distinct colours (ceiling {SPRITE_COLOUR_CEILING}). "
+            f"That is gradient noise, not shading — check for an unbanded light pass."
+        )
+
+
 def main() -> None:
     cards_dir = os.path.join(OUT_ROOT, "cards")
     os.makedirs(cards_dir, exist_ok=True)
@@ -1822,8 +1959,12 @@ def main() -> None:
         make_card_back(CARD_W // 2, CARD_H // 2, step=8),
         os.path.join(OUT_ROOT, "card_back_seat.png"),
     )
-    save_asset(make_table_felt(), os.path.join(OUT_ROOT, "table_felt.png"))
-    save_asset(make_wall_texture(), os.path.join(OUT_ROOT, "wall_texture.png"))
+    felt, wall, floor = make_table_felt(), make_wall_texture(), make_floorboards()
+    # Checked here, not by eye at full size — see _assert_value_ladder for why that distinction
+    # is the whole point.
+    _assert_value_ladder({"wall": wall, "floor": floor, "table": felt})
+    save_asset(felt, os.path.join(OUT_ROOT, "table_felt.png"))
+    save_asset(wall, os.path.join(OUT_ROOT, "wall_texture.png"))
 
     scene_dir = os.path.join(OUT_ROOT, "scene")
     os.makedirs(scene_dir, exist_ok=True)
@@ -1832,7 +1973,7 @@ def main() -> None:
     save_asset(make_window_glass(), os.path.join(scene_dir, "window_glass.png"))
     save_asset(make_window_frame(), os.path.join(scene_dir, "window_frame.png"))
     save_asset(make_snowfall(), os.path.join(scene_dir, "snow.png"))
-    save_asset(make_floorboards(), os.path.join(scene_dir, "floor.png"))
+    save_asset(floor, os.path.join(scene_dir, "floor.png"))
     # Lit like the fireplace/window it sits between, not left neutral — a rug directly in the
     # hearth's light shouldn't be the one object in the room untouched by it.
     save_asset(light_from(make_rug(), strength=0.12), os.path.join(scene_dir, "rug.png"))
@@ -1842,15 +1983,19 @@ def main() -> None:
     # light sources and are deliberately excluded.
     # The opponent sits ACROSS THE TABLE now (2f.3), rendered by Table.tsx behind the felt,
     # not as ambient room decor in the side margin — so he is no longer a scene/ asset.
+    # Every sprite below goes through light_from, which is exactly what the colour ceiling
+    # guards — an unbanded light pass is invisible in a diff and easy to pass by eye.
     for expression in ("idle", "happy", "rueful"):
-        save_asset(
-            make_opponent(expression),
-            os.path.join(OUT_ROOT, f"opponent_{expression}.png"),
-            f"opponent {expression}",
-        )
-    save_asset(light_from(make_sprite_sheet(make_cat_frames()), strength=0.13),
-               os.path.join(scene_dir, "cat_sheet.png"))
-    save_asset(light_from(make_shelf(), strength=0.13), os.path.join(scene_dir, "shelf.png"))
+        opp = make_opponent(expression)
+        _assert_sprite_colours(opp, f"opponent {expression}")
+        save_asset(opp, os.path.join(OUT_ROOT, f"opponent_{expression}.png"),
+                   f"opponent {expression}")
+    cat = light_from(make_sprite_sheet(make_cat_frames()), strength=0.13)
+    _assert_sprite_colours(cat, "cat sheet")
+    save_asset(cat, os.path.join(scene_dir, "cat_sheet.png"))
+    shelf = light_from(make_shelf(), strength=0.13)
+    _assert_sprite_colours(shelf, "shelf")
+    save_asset(shelf, os.path.join(scene_dir, "shelf.png"))
 
     portraits_dir = os.path.join(OUT_ROOT, "portraits")
     os.makedirs(portraits_dir, exist_ok=True)
