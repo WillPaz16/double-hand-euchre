@@ -52,7 +52,7 @@ body {
   font-family: 'Silkscreen', system-ui, sans-serif;
   background: #1a1410 url('/art/wall_texture.png');
   /* Tiles scale with --px like everything else. They used to be drawn at their own file size
-     forever, so at 2400px wide the "logs" thinned into slats — the room got relatively
+     forever, so at 2400px wide the "logs thinned into slats — the room got relatively
      smaller the bigger your screen was. */
   background-size: calc(64px * var(--px));
   image-rendering: pixelated;
@@ -64,7 +64,7 @@ body {
 /* All ambient decoration lives in <SceneLayer>, not on `body`, so that lean mode can remove
    the entire layer with one rule and be certain nothing playable went with it. The hearth
    glow used to be a body::before pseudo-element; consolidating it here keeps the "scenery is
-   one removable thing" contract honest as more objects get added in 2d.2. */
+   one removable thing contract honest as more objects get added in 2d.2. */
 .scene-layer {
   position: fixed;
   inset: 0;
@@ -166,7 +166,7 @@ body {
    object is anchored to a viewport EDGE at an `au * --px` inset, not to the table's width.
 
    That is the actual fix for a bug this file has now produced twice. The gate was 1240, then
-   1000, each time derived from "the table's cap plus margins" — and each time the table was
+   1000, each time derived from "the table's cap plus margins — and each time the table was
    later resized without the scenery math being updated, so the number outlived its own
    reasoning. Measured at 1010px before this change: the fireplace hung 25px off the left
    edge, the shelf 19px, the cat 13px, the seated figure 25px off the right. The gate was
@@ -295,33 +295,19 @@ body {
   );
 }
 /* --- Living things (2d.3) -------------------------------------------------------------- */
-/* All width-gated with the rest of the side scenery: same scarce resource, same 1000px rule. */
-.scene-seated,
+/* All width-gated with the rest of the side scenery: same scarce resource, same 720px rule.
+   The Old-Timer is NOT in this list any more — he is not room decor, he is the person you are
+   playing, and he now lives in Table.tsx across the table (2f.3). */
 .scene-cat,
 .scene-shelf {
   display: none;
 }
 @media (min-width: 720px) {
-  .scene-seated,
   .scene-cat,
   .scene-shelf {
     display: block;
     position: absolute;
     image-rendering: pixelated;
-  }
-  /* The opponent, seated in the right margin below the window and resting on the floor.
-     Intent was "across the table"; the table spans its container's full width with the
-     scoreboard and status banner filling the band above it, so there is no across-the-table
-     space without restructuring the UI and risking the mobile height budgets. He sits at the
-     side of the table instead — still a person in the room, just not opposite you. */
-  .scene-seated {
-    right: calc(6px * var(--px));
-    bottom: calc(34% - 17px * var(--px));
-    width: calc(70px * var(--px));
-    height: calc(98px * var(--px));
-    background-image: url('/art/scene/seated_old_timer.png');
-    background-size: 100% 100%;
-    animation: seated-breathe 5.5s ease-in-out infinite;
   }
   /* Curled on the floor by the hearth, where a cat would actually be. */
   .scene-cat {
@@ -354,10 +340,15 @@ body {
   to { transform: translateX(calc(-52px * var(--px))); }
 }
 /* A barely-perceptible settle, so he is not a decal. Deliberately tiny and slow — a seated
-   person at rest shifts, they do not bob. */
+   person at rest shifts, they do not bob.
+
+   Composes the centring translate rather than replacing it: the element is centred with
+   `translateX(-50%)`, and a keyframe that set a bare `translateY` would silently drop that
+   and slam him half a sprite-width to the right for the whole animation. Same class of bug as
+   the trick cards' keyframes, which compose `--rot` the same way. */
 @keyframes seated-breathe {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-1px); }
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(calc(-1px * var(--px))); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -365,7 +356,7 @@ body {
   .scene-firelight,
   .scene-snow,
   .scene-cat-strip,
-  .scene-seated { animation: none; }
+  .table-opponent { animation: none; }
 }
 
 /* Lean mode: short viewports (landscape phone) are already at 100% of their height budget,
@@ -532,17 +523,35 @@ body {
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
 
+/* In the flow by default. On a phone there is no horizontal room beside the status text, and
+   overlaying it there put "YOU (DEALER) straight through "TURNED DOWN: SPADES". */
 .scoreboard {
   display: flex;
-  gap: 2rem;
-  justify-content: center;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
   padding-top: 0.25rem;
+}
+/* Wide enough for the corners to be genuinely clear of the centred status text: pulled out of
+   the flow, it stops costing a full horizontal band of height — height the opponent needs to
+   sit across the table at a believable size. In the corners it also reads as a tally kept on
+   the wall, which is nearer to how you'd actually score this game. */
+@media (min-width: 900px) {
+  .scoreboard {
+    position: absolute;
+    top: max(0.25rem, env(safe-area-inset-top));
+    left: 0.5rem;
+    right: 0.5rem;
+    z-index: 4;
+    padding-top: 0;
+    pointer-events: none;
+  }
 }
 /* At 375px the two slots plus the portrait measured wider than the viewport and the
    Old-Timer's half was cut off by the right edge. */
 @media (max-width: 560px) {
   .scoreboard {
-    /* Was overflowing at 390px — "You" clipped at left: -4px on a current iPhone. The score
+    /* Was overflowing at 390px — "You clipped at left: -4px on a current iPhone. The score
        cards now scale down with --px, so this only has to stop the flex row from being
        squeezed past its own text. */
     gap: 0.5rem;
@@ -603,7 +612,7 @@ body {
 }
 /* The 4-and-6 card scoring ritual (2e.7): a real 4 and a real 6, traditional pip grid, each
    with a real card-back physically covering it and sliding away as the score rises — matching
-   the reference photos, not an abstract "reveal" bar. The numeral is still what disambiguates
+   the reference photos, not an abstract "reveal bar. The numeral is still what disambiguates
    at a glance, but the cards are exact: the covered region is a `clip-path` polygon computed
    in Scoreboard.tsx from the SAME row geometry the generator placed the pips against, so the
    edge always lands between two pips (or between the two pips of one row, for an odd score),
@@ -658,14 +667,14 @@ body {
    THE TABLE  (rebuilt, Phase 2e)
 
    What this replaced, and why. The table used to be a full-width flex panel with a 2x2 grid
-   of labelled seat boxes stacked above a dashed "trick area" rectangle. It was a UI panel
+   of labelled seat boxes stacked above a dashed "trick area rectangle. It was a UI panel
    wearing a wood texture, and three separate problems all traced back to that one fact:
 
      - It spanned its container, so there were no side margins. The whole scene layer had to
        be gated at 1240px to have somewhere to live, which meant that on a phone — the primary
        target — the entire room was `display: none`. Every scenery asset built in 2d.2 and
        2d.3 was invisible to most players.
-     - The seated Old-Timer could not sit "across the table" as designed, because there was no
+     - The seated Old-Timer could not sit "across the table as designed, because there was no
        across-the-table space. He was parked in the side margin instead.
      - The rug was dropped for the same reason: anything under the table was fully occluded.
 
@@ -677,24 +686,52 @@ body {
    you read four text labels to recover a relationship the table can simply show.
    ============================================================================ */
 
+/* The Old-Timer sits across the table. He is absolutely positioned and painted BELOW both
+   the felt and the card fans, so the table occludes his chest — that occlusion is the whole
+   trick: it is what says "behind the table rather than "pasted above it", and it is why the
+   sprite only needs to be head and shoulders.
+
+   `padding-top` reserves the band his head occupies ABOVE the fans. Without it he would
+   overflow upward into the status banner; with it, the grid's own rows start below him. */
+/* A barely-perceptible settle so he is not a decal. Deliberately tiny and slow — a seated
+   person at rest shifts, they do not bob. */
+.table-opponent {
+  position: absolute;
+  animation: seated-breathe 5.5s ease-in-out infinite;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(150px * var(--px));
+  height: calc(140px * var(--px));
+  image-rendering: pixelated;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .table-area {
   flex: 1;
   min-height: 0;
   position: relative;
+  /* Reserves the band his head occupies ABOVE the fans, and is tuned so the felt's top edge
+     lands INSIDE his sprite rather than below it — a gap there would leave his chest's bottom
+     edge visible, floating, which reads as a cardboard cut-out instead of a person behind a
+     table. The occlusion is doing the perspective work here, so it has to actually overlap. */
+  padding-top: calc(80px * var(--px));
   display: grid;
   /* Two-sided (2e.4): the Old-Timer's two hands sit north, yours sit south, left/right split
      by which hand — "opponent across from me, both my hands in front of me, both of theirs
-     in front of them." The earlier round-table layout put a seat in each of the four grid
+     in front of them. The earlier round-table layout put a seat in each of the four grid
      corners (n/e/s/w) so partner-hands (A1/A2, B1/B2) faced each other, which models the
      underlying 4-seat game faithfully but isn't how the two of you actually sit down
      together. Dropping the side columns entirely also gives the felt back the width they
      used to take. */
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
-  /* Ceiling on the whole block, so a very tall window cannot open a gap between the felt and
-     the seats: the felt stops growing at its max-width, and without this the extra height
-     would go into the centre row and push the hands off the rim again. */
-  max-height: 560px;
+  /* No max-height. It existed to stop a tall window opening a gap between the felt and the
+     seats — but the felt now `align-self: stretch`es into its row, so it grows with the row
+     and the gap it guarded against cannot form. Left in place it was a straitjacket rather
+     than a ceiling: on an 812px phone it pinned the table to 320px and left ~500px of empty
+     floor below the tray. */
   grid-template-areas:
     'nw ne'
     't  t'
@@ -715,18 +752,32 @@ body {
 .table-top {
   grid-area: t;
   position: relative;
-  /* Fills its row and derives its width from that. Sizing the felt independently of its row
-     once let it claim more height than the row had; grid does not overlap items, so the seats
-     above and below were squeezed into slivers and their fans spilled *under* the felt (which
-     is positioned, so it paints over static siblings) and vanished. */
-  height: 100%;
+  /* Above the opponent (0), below the fans (2). */
+  z-index: 1;
+  /* `align-self: stretch`, not `height: 100%`. Under `align-items: center` the felt was sized
+     to its own content and `height: 100%` never resolved against the row, so it sat at 223px
+     inside a 288px row and the trick could not fit on it. Stretching makes the row's height
+     the felt's height by definition, and `aspect-ratio` derives the width from that. */
+  align-self: stretch;
+  justify-self: center;
   width: auto;
   /* Wider cap than the round-table version: with no side columns competing for width, the
      felt can use more of it. Aspect ratio widened to match — a felt this much wider than it
      is tall reads as a table two people sit at across its long side, not a card table seen
      dead-on. */
-  max-width: min(560px, 92vw);
-  aspect-ratio: 1.7;
+  max-width: min(560px, 96vw);
+  /* The felt has to hold two ROWS of played cards (2 x 70au) plus margin, so its HEIGHT is
+     the binding constraint and its width is free. Wider than tall also reads correctly: two
+     people sit at this table across its long side.
+
+     1.6, not wider. Desktop is width-rich and height-poor — at --px 2 every band above and
+     below the felt doubles while a 900px laptop is nowhere near double an 812px phone, so the
+     felt is smaller at desktop than on a phone and widening it is tempting. Measured: at 1.9
+     the trick no longer fits on the table (worst corner 1.09-1.13 vs 0.92 here), because the
+     ellipse's usable height falls away toward the sides. A table the trick sits ON beats a
+     table that merely looks bigger. Desktop's vertical density is real and stays open for
+     2f.4/2f.5, where the felt becomes actual art and the stage gets composed as a whole. */
+  aspect-ratio: 1.6;
   /* Still round: a table seen from above, with hands at its north and south edges rather than
      all four. The ellipse shape doesn't depend on how many sides have seats. */
   border-radius: 50%;
@@ -836,23 +887,40 @@ body {
 /* Each card sits on its own seat's side of the centre, overlapping into the middle. That is
    how a trick looks on a real table, and it means position alone says who played what — the
    old row of four cards each needed a text label underneath to convey the same thing. */
+/* Positioned as a FRACTION OF THE FELT, via `left`/`top` percentages (which resolve against
+   the felt, unlike translate percentages, which resolve against the card). The offsets used
+   to be bare pixels — ±62/±58, hand-tuned for a felt that has since been resized twice, plus
+   a second hand-tuned copy in a media query. Measured before this change: every played card
+   sat at 1.75x the felt's own radius, i.e. entirely off the table. Percentages cannot go
+   stale when the felt changes size, which is the same lesson as the scenery gate. */
 .trick-card {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  --tx: 0px;
-  --ty: 0px;
+  --x: 50%;
+  --y: 50%;
   --rot: 0deg;
-  transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot));
+  left: var(--x);
+  top: var(--y);
+  transform: translate(-50%, -50%) rotate(var(--rot));
 }
 /* Four positions, split left/right within each side rather than around a compass ring —
    matches the two-sided seats below. Spread wide enough that the four read as four hands
    rather than as a pile: at half these offsets the cards overlapped so heavily that position
    stopped carrying the information it exists to carry. */
-.trick-card.at-sw { --tx: -62px; --ty: 58px; --rot: -5deg; }
-.trick-card.at-se { --tx: 62px; --ty: 58px; --rot: 5deg; }
-.trick-card.at-nw { --tx: -62px; --ty: -58px; --rot: -3deg; }
-.trick-card.at-ne { --tx: 62px; --ty: -58px; --rot: 3deg; }
+/* Tuned against the ELLIPSE, not the bounding box — a rotated card's far corner is what
+   actually clips, and the rim curves away fastest exactly where these sit. Verify with
+   animations frozen: measuring mid-`card-play-in` reads a card 54px low and reports a
+   spurious overflow.
+
+   The two rows overlap heavily on purpose. A 2x2 of full-size cards needs two card-heights
+   (280px at --px 2) and the felt is ~215px tall on a 900px laptop, so a spread grid simply
+   cannot sit on the table there — the cards hung off the rim. Overlapping is also what a real
+   trick looks like: four cards thrown into the middle, each covering the last, with only the
+   rank corner of the earlier ones showing. Position still says who played what, which is the
+   whole reason they are placed by seat. */
+.trick-card.at-nw { --x: 38%; --y: 42%; --rot: -3deg; }
+.trick-card.at-ne { --x: 62%; --y: 42%; --rot: 3deg; }
+.trick-card.at-sw { --x: 38%; --y: 58%; --rot: -5deg; }
+.trick-card.at-se { --x: 62%; --y: 58%; --rot: 5deg; }
 
 /* --- Seats ---------------------------------------------------------------------------- */
 .seat-nw { grid-area: nw; justify-self: end; }
@@ -861,6 +929,8 @@ body {
 .seat-se { grid-area: se; justify-self: start; }
 
 .seat {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -875,16 +945,37 @@ body {
   border-radius: 8px;
   border: 1px dashed rgba(255, 213, 74, 0.35);
 }
+/* His labels sit BELOW his cards, yours above yours — both read as captions on the near side
+   of the hand they name. Above, they printed straight across his chin and moustache once he
+   was actually sitting there.
+
+   Placed AFTER `.seat` deliberately: `.seat-nw` and `.seat` are both single-class selectors,
+   so specificity ties and source order is what decides. Written above `.seat` it silently did
+   nothing. */
+.seat-nw,
+.seat-ne {
+  flex-direction: column-reverse;
+}
+
 .seat.acting {
   border-color: #ffd54a;
   box-shadow: 0 0 10px rgba(255, 213, 74, 0.4);
   background: rgba(255, 213, 74, 0.06);
 }
+/* Out of flow. As a flex row each label cost the seat a text line, and with four seats that
+   was ~48px taken straight off the felt's height — which is the one dimension the trick
+   actually needs. Positioned, they caption the fan without charging it rent. */
 .seat-label {
+  position: absolute;
   font-size: 0.7rem;
   opacity: 0.75;
   white-space: nowrap;
+  pointer-events: none;
 }
+.seat-sw .seat-label,
+.seat-se .seat-label { bottom: 100%; }
+.seat-nw .seat-label,
+.seat-ne .seat-label { top: 100%; }
 .seat-label-short {
   display: none;
   font-size: 0.6rem;
@@ -922,9 +1013,10 @@ body {
 .seat-fan {
   display: flex;
   align-items: flex-end;
-  /* Sized for the 35au backs plus the arc's overhang (rotated cards spill ~10au past their
-     layout box at the outer angles, which used to collide with the hand tray). */
-  height: calc(46px * var(--px));
+  /* Sized for the 35au backs plus the arc's overhang (rotated cards spill past their layout
+     box at the outer angles, which used to collide with the hand tray). Kept tight: every au
+     here comes straight out of the felt, which has to hold two rows of played cards. */
+  height: calc(40px * var(--px));
 }
 /* Backs use the 25x35 seat asset; faces only ever appear at the end-of-deal reveal, where
    nothing competes for the space, so they use the deck's own 50x70 art. Both integer. */
@@ -989,27 +1081,28 @@ body {
 /* --- Card motion (2d.4) ---------------------------------------------------------------- */
 /* Cards previously teleported between states. These are entrance/exit animations on elements
    already in the DOM rather than FLIP/shared-element transitions: the hand tray is always
-   below the trick area, so "arrives from below" is directionally true without measuring a
+   below the trick area, so "arrives from below is directionally true without measuring a
    source rect, and it needs no animation library. The architecture doc names Framer Motion
    for this; it stayed unused because these three effects don't need cross-container tweening
    and it is ~50KB against an offline-capable PWA.
    
-   Every keyframe below composes the seat offset through the same `--tx/--ty/--rot` custom
-   properties the static rule uses. A keyframe that set a bare `transform` would silently drop
-   the card back to the centre of the table for the duration of its animation — which is
-   exactly what happened the first time these were carried over from the old row layout. */
+   Every keyframe below re-states the centring translate and `--rot`. A keyframe that set a
+   bare `transform` would silently drop both — the card would snap to the felt's centre,
+   unrotated, for the duration of its animation. That happened the first time these were
+   carried over from the old row layout. The seat OFFSET is no longer part of the transform at
+   all: it lives in `left`/`top` as a percentage of the felt, so it survives every animation
+   for free rather than having to be threaded through each keyframe. */
 .trick-card {
   animation: card-play-in 260ms cubic-bezier(0.22, 0.9, 0.3, 1.1) both;
 }
 @keyframes card-play-in {
   from {
-    transform: translate(-50%, -50%) translate(var(--tx), calc(var(--ty) + 54px))
+    transform: translate(-50%, -50%) translateY(calc(27px * var(--px)))
       rotate(var(--rot)) scale(0.86);
     opacity: 0;
   }
   to {
-    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot))
-      scale(1);
+    transform: translate(-50%, -50%) rotate(var(--rot)) scale(1);
     opacity: 1;
   }
 }
@@ -1021,9 +1114,9 @@ body {
   z-index: 2;
 }
 @keyframes winner-pop {
-  0% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); }
-  40% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1.14); }
-  100% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); }
+  0% { transform: translate(-50%, -50%) rotate(var(--rot)) scale(1); }
+  40% { transform: translate(-50%, -50%) rotate(var(--rot)) scale(1.14); }
+  100% { transform: translate(-50%, -50%) rotate(var(--rot)) scale(1); }
 }
 .trick-card.is-sweeping {
   animation: sweep-down 620ms ease-in both;
@@ -1042,12 +1135,12 @@ body {
 }
 /* The sweep travels toward the winner's side of the table — south for you, north for him. */
 @keyframes sweep-down {
-  from { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); opacity: 1; }
-  to   { transform: translate(-50%, -50%) translate(var(--tx), calc(var(--ty) + 150px)) rotate(var(--rot)) scale(0.7); opacity: 0; }
+  from { transform: translate(-50%, -50%) rotate(var(--rot)) scale(1); opacity: 1; }
+  to   { transform: translate(-50%, -50%) translateY(calc(75px * var(--px))) rotate(var(--rot)) scale(0.7); opacity: 0; }
 }
 @keyframes sweep-up {
-  from { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); opacity: 1; }
-  to   { transform: translate(-50%, -50%) translate(var(--tx), calc(var(--ty) - 150px)) rotate(var(--rot)) scale(0.7); opacity: 0; }
+  from { transform: translate(-50%, -50%) rotate(var(--rot)) scale(1); opacity: 1; }
+  to   { transform: translate(-50%, -50%) translateY(calc(-75px * var(--px))) rotate(var(--rot)) scale(0.7); opacity: 0; }
 }
 
 /* The deal: the fan builds up card by card rather than appearing all at once. Each card
@@ -1164,12 +1257,12 @@ body {
 .hand-tray-cards .card-face:nth-child(4) { transform: rotate(3deg); }
 .hand-tray-cards .card-face:nth-child(5) { transform: rotate(6deg); }
 /* Lifting the card you are about to play out of the arc is the affordance that says "this
-   one is playable" as directly as the glow does. */
+   one is playable as directly as the glow does. */
 .hand-tray-cards .card-face.highlighted:hover {
   transform: translateY(-10px) rotate(0deg);
 }
 /* Generated pixel-art cards — native 100x140, displayed 1:1 so pixels stay crisp (the
-   "hybrid fixed-grid" approach from the Phase 2 design spec). Every other size below is a
+   "hybrid fixed-grid approach from the Phase 2 design spec). Every other size below is a
    whole-number fraction of native, never an arbitrary in-between. */
 .card-face,
 .card-back {
@@ -1299,10 +1392,6 @@ body {
   /* Half-size cards mean half-size everything the table positions by hand. The seat offsets
      and the felt are all expressed against the 100x140 card, so they scale together or the
      played cards drift off the felt. */
-  .trick-card.at-sw { --tx: -40px; --ty: 34px; }
-  .trick-card.at-se { --tx: 40px; --ty: 34px; }
-  .trick-card.at-nw { --tx: -40px; --ty: -34px; }
-  .trick-card.at-ne { --tx: 40px; --ty: -34px; }
   .seat-label {
     font-size: 0.6rem;
   }

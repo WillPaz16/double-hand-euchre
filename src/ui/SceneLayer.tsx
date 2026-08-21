@@ -42,14 +42,15 @@ export function SceneLayer() {
         <div className="scene-window-frame" />
         <div className="scene-moonlight" />
       </div>
-      {/* Living things. The cat and the seated figure both rest on the floor plane added in
-          the 2d.2 follow-up — without that ground they would float exactly the way the
-          fireplace originally did. */}
+      {/* Living things. The cat rests on the floor plane added in the 2d.2 follow-up —
+          without that ground it would float exactly the way the fireplace originally did.
+          The Old-Timer used to be here too, parked in the right margin, while his two card
+          fans sat at the top of the table — 538px and 226px away from his own hands. He now
+          lives in Table.tsx, across the table where his hands are (2f.3). */}
       <div className="scene-shelf" />
       <div className="scene-cat">
         <div className="scene-cat-strip" />
       </div>
-      <div className="scene-seated" />
 
       <div className="scene-hearth-glow" />
       <div className="scene-vignette" />

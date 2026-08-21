@@ -4,6 +4,7 @@ import type { CompletedTrick } from '../game/useGame.ts';
 import { Card, CardBack } from './Card.tsx';
 import { UpcardWheel } from './UpcardWheel.tsx';
 import { useUpcardReveal } from '../game/useUpcardReveal.ts';
+import { useOpponentExpression } from '../game/useOpponentExpression.ts';
 
 /** The winning card is highlighted for this long before everything sweeps away.
  *
@@ -97,10 +98,12 @@ function remainingInHand(view: PlayerView, hand: HandId): number {
   return Math.max(0, 5 - view.trickNumber - (playedThisTrick ? 1 : 0));
 }
 
+/** Who a seat belongs to is now shown by POSITION — your hands are in front of you, his are
+ *  in front of him, and he is visibly sitting there (2f.3). So the label only has to
+ *  disambiguate WHICH of the two hands it is. The full "Old-Timer — Hand 1" printed straight
+ *  across his chest once he was actually on the table. */
 function seatLabel(hand: HandId): string {
-  const who = hand.player === HUMAN ? 'You' : 'Old-Timer';
-  const which = hand.role === 'selected' ? 'Hand 1' : 'Hand 2';
-  return `${who} — ${which}`;
+  return hand.role === 'selected' ? 'Hand 1' : 'Hand 2';
 }
 
 /** The rim marker's label. "Old-Timer — Hand 1" wraps to four lines in a chip a few
@@ -135,9 +138,22 @@ export function Table({
   const trick = completedTrick ? completedTrick.cards : view.currentTrick;
   const sweeping = completedTrick !== null;
   const wheelSpinning = useUpcardReveal(view);
+  const expression = useOpponentExpression(view);
 
   return (
     <div className="table-area">
+      {/* The Old-Timer, ACROSS the table (2f.3). He is the first child and painted lowest, so
+          the felt and his own card fans occlude his chest — which is exactly what sitting
+          opposite someone looks like, and is also why the sprite only has to be head and
+          shoulders. He previously lived in <SceneLayer> in the room's right margin, 538px
+          and 226px from the two card fans that are supposed to be his. */}
+      <img
+        className="table-opponent"
+        src={`/art/opponent_${expression}.png`}
+        alt=""
+        aria-hidden="true"
+        draggable={false}
+      />
       {SEATS.map(({ hand, at }) => {
         const acting = view.actingHand ? sameHand(view.actingHand, hand) : false;
         const count = remainingInHand(view, hand);

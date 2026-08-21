@@ -58,6 +58,29 @@ in a 100×140 file and calling it "1:1 native". Verified before the change — 2
 portrait assets were byte-identical after halving and restoring, so moving to true resolution
 cost nothing at all.
 
+## Regenerating: use Python 3.11
+
+`generate_art.py` needs Pillow, which on this machine is installed for **3.11 only**. Bare
+`python3` may resolve to a different interpreter depending on PATH order and will fail with
+`ModuleNotFoundError: No module named 'PIL'`. If that happens it is not a code problem:
+
+```
+/Library/Frameworks/Python.framework/Versions/3.11/bin/python3 art/generate_art.py
+```
+
+**And check determinism on PIXELS, not file bytes.** The generator is deterministic in what it
+draws, but Pillow versions encode PNGs differently — regenerating identical images under a
+different Pillow rewrote every card 40 bytes smaller with a `getbbox()` diff of `None`. So a
+`md5` sweep over the files reports a false failure the moment the interpreter changes:
+
+```python
+Image.open(p).convert('RGBA').tobytes()   # compare this
+```
+
+Worth being precise about, because "re-running produces identical output" is one of this
+project's standing guarantees, and a guarantee that silently depends on which interpreter
+happens to be first on PATH is not one.
+
 ## Palette — cabin by the fire
 
 | Name | Hex | Use |

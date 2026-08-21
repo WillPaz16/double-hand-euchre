@@ -854,6 +854,119 @@ def make_old_timer_portrait(expression: str) -> Image.Image:
     return card
 
 
+# --- The opponent, across the table (Phase 2f.3) ------------------------------------------ #
+# Replaces `make_seated_old_timer()`, which drew a whole tiny person parked in the RIGHT
+# MARGIN of the room while his two card fans sat at the top of the table. Measured at
+# 1400x900: his body rendered 538px right of and 226px below his own cards. Nobody would
+# design that — it is what happens when the seating is changed (2e.4 moved his hands to the
+# north edge) and the sprite that depended on it is not re-checked.
+#
+# **On scale.** Physical scale, taking the card as ruler (89mm / 70au => 1au ~ 1.27mm), would
+# make a head 181au — 2.6 card-heights — and shoulders 354au. That is photographically right
+# and stylistically wrong: no pixel card game frames a person that way, and at --px 2 the head
+# alone would eat 40% of a 900px viewport. So this is a DELIBERATE stylised ratio, stated here
+# so the next person does not have to reverse-engineer it: **head ~= one card-height.** That
+# reads unmistakably as a person sitting across from you while leaving the table its space.
+# The previous figure's real failing was not that it disagreed with physics; it was that it
+# was tiny, in the wrong place, and severed from its own hands.
+#
+# Drawn head-and-shoulders only. He is composited BEHIND the felt and behind his own card
+# fans, so his chest and arms are occluded by the table exactly as they would be if you were
+# sitting opposite him — which also means the sprite never has to solve for the space it
+# doesn't have.
+
+OPP_W, OPP_H = 300, 280          # file px; halved to 150x140 au by save_asset()
+OPP_CX = OPP_W // 2
+OPP_HEAD_CY = 92
+OPP_HEAD_RX, OPP_HEAD_RY = 62, 66
+
+
+def _opponent_parts():
+    """Head, hat and shoulders at across-the-table size. Same visual language as the portrait
+    (`_old_timer_parts`) — same flannel, same trapper hat, same moustache — deliberately
+    redrawn at this size rather than scaled up from the 55x65au portrait, because scaling
+    pixel art is the one thing this project forbids."""
+    hy = OPP_HEAD_CY
+    return [
+        # Shoulders/chest, running off the bottom of the canvas — the felt crops it.
+        (_poly([
+            (OPP_CX - 96, hy + 74), (OPP_CX - 62, hy + 52), (OPP_CX + 62, hy + 52),
+            (OPP_CX + 96, hy + 74), (OPP_CX + 112, OPP_H), (OPP_CX - 112, OPP_H),
+        ]), FLANNEL_RED),
+        # A darker placket so the chest is not one flat red mass at this size.
+        (_poly([
+            (OPP_CX - 12, hy + 56), (OPP_CX + 12, hy + 56),
+            (OPP_CX + 16, OPP_H), (OPP_CX - 16, OPP_H),
+        ]), BOOT_DARK),
+        # Neck, behind the head so the jaw reads as sitting on it.
+        (_poly([
+            (OPP_CX - 26, hy + 34), (OPP_CX + 26, hy + 34),
+            (OPP_CX + 30, hy + 60), (OPP_CX - 30, hy + 60),
+        ]), SKIN),
+        (_ellipse(OPP_CX - OPP_HEAD_RX, hy - OPP_HEAD_RY,
+                  OPP_CX + OPP_HEAD_RX, hy + OPP_HEAD_RY), SKIN),
+        # Moustache, before the hat so the brim can overlap the hairline.
+        (_poly([
+            (OPP_CX - 48, hy + 20), (OPP_CX - 10, hy + 10), (OPP_CX, hy + 17),
+            (OPP_CX + 10, hy + 10), (OPP_CX + 48, hy + 20),
+            (OPP_CX + 38, hy + 34), (OPP_CX, hy + 25), (OPP_CX - 38, hy + 34),
+        ]), BEARD_GRAY),
+        # Trapper hat. Crown kept well clear of the brow line (drawn at hy-24 in the face pass)
+        # — the portrait once had the brim landing exactly on the eyebrows and every
+        # expression collapsed into a single grey stripe.
+        (_poly([
+            (OPP_CX - 58, hy - 52), (OPP_CX - 58, hy - 80), (OPP_CX, hy - 96),
+            (OPP_CX + 58, hy - 80), (OPP_CX + 58, hy - 52),
+        ]), FLANNEL_RED),
+        (_ellipse(OPP_CX - 72, hy - 48, OPP_CX - 38, hy - 4), HAT_FUR),
+        (_ellipse(OPP_CX + 38, hy - 48, OPP_CX + 72, hy - 4), HAT_FUR),
+        (_poly([
+            (OPP_CX - 60, hy - 58), (OPP_CX + 60, hy - 58),
+            (OPP_CX + 60, hy - 44), (OPP_CX - 60, hy - 44),
+        ]), HAT_FUR),
+    ]
+
+
+def draw_opponent_face(img: Image.Image, expression: str) -> None:
+    """Same three states the portrait has, at this size. Reuses `useOpponentExpression`'s
+    existing idle/happy/rueful contract — no new game state."""
+    d = ImageDraw.Draw(img)
+    hy = OPP_HEAD_CY
+    eye_y = hy - 8
+
+    for side in (-1, 1):
+        ex = OPP_CX + side * 24
+        if expression == "happy":
+            d.arc((ex - 10, eye_y - 8, ex + 10, eye_y + 12), start=200, end=340, fill=INK, width=4)
+        else:
+            d.ellipse((ex - 8, eye_y - 10, ex + 8, eye_y + 10), fill=INK)
+            d.rectangle((ex - 6, eye_y - 8, ex - 2, eye_y - 4), fill=(255, 255, 255, 255))
+
+    by = eye_y - 24
+    for side in (-1, 1):
+        x_out, x_in = OPP_CX + side * 42, OPP_CX + side * 12
+        if expression == "rueful":
+            d.line((x_out, by - 8, x_in, by + 4), fill=BEARD_GRAY, width=6)
+        elif expression == "happy":
+            d.line((x_out, by + 2, x_in, by - 6), fill=BEARD_GRAY, width=6)
+        else:
+            d.line((x_out, by, x_in, by), fill=BEARD_GRAY, width=6)
+
+    my = hy + 40
+    if expression == "happy":
+        d.arc((OPP_CX - 20, my - 10, OPP_CX + 20, my + 14), start=15, end=165, fill=INK, width=4)
+    elif expression == "rueful":
+        d.arc((OPP_CX - 16, my, OPP_CX + 16, my + 18), start=200, end=340, fill=INK, width=4)
+
+
+def make_opponent(expression: str) -> Image.Image:
+    img = Image.new("RGBA", (OPP_W, OPP_H), (0, 0, 0, 0))
+    paste(img, composite_sprite(OPP_W, OPP_H, _opponent_parts(), outline_px=4, pad=6), 0, 0)
+    draw_opponent_face(img, expression)
+    # Lit from the hearth like everything else in the room (see light_from's docstring).
+    return light_from(img, strength=0.14)
+
+
 # --- Scoreboard cards (Phase 2e.6, pip grid corrected in 2e.7) --------------------------- #
 # The real euchre 4-and-6 scoring ritual: a 4 and a 6 of a chosen suit, and the score at any
 # moment is the SUM OF EXPOSED PIPS across both — you raise the 4 to show 1-4, then once it
@@ -1662,7 +1775,14 @@ def main() -> None:
     # rather than inside each generator so the light model is stated once, in one place, and
     # so it demonstrably cannot reach the card art. The fireplace and the window are their own
     # light sources and are deliberately excluded.
-    save_asset(light_from(make_seated_old_timer()), os.path.join(scene_dir, "seated_old_timer.png"))
+    # The opponent sits ACROSS THE TABLE now (2f.3), rendered by Table.tsx behind the felt,
+    # not as ambient room decor in the side margin — so he is no longer a scene/ asset.
+    for expression in ("idle", "happy", "rueful"):
+        save_asset(
+            make_opponent(expression),
+            os.path.join(OUT_ROOT, f"opponent_{expression}.png"),
+            f"opponent {expression}",
+        )
     save_asset(light_from(make_sprite_sheet(make_cat_frames()), strength=0.13),
                os.path.join(scene_dir, "cat_sheet.png"))
     save_asset(light_from(make_shelf(), strength=0.13), os.path.join(scene_dir, "shelf.png"))

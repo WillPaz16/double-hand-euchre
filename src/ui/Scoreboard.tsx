@@ -1,6 +1,5 @@
 import type { Player, PlayerView, Suit } from '../../shared/engine/types.ts';
 import { HUMAN, BOT } from '../game/useGame.ts';
-import { useOpponentExpression } from '../game/useOpponentExpression.ts';
 
 // Each player's scoring suit — a fixed choice for now (real euchre lets a player pick their
 // own suit for this; that becomes a settings option later, not part of the core rules).
@@ -82,8 +81,11 @@ function ScorePair({ player, score }: { player: Player; score: number }) {
   );
 }
 
+/** No portrait here any more. It was the Old-Timer's face in the corner of the scoreboard,
+ *  which made sense while he was absent from the table — but he now sits across it (2f.3,
+ *  Table.tsx), reacting with the same `useOpponentExpression` states, so the portrait was
+ *  literally a second copy of the same man on the same screen. */
 export function Scoreboard({ view }: { view: PlayerView }) {
-  const expression = useOpponentExpression(view);
   return (
     <div className="scoreboard">
       <div className={`score-slot${view.dealer === HUMAN ? ' is-dealer' : ''}`}>
@@ -99,11 +101,7 @@ export function Scoreboard({ view }: { view: PlayerView }) {
           <span className="score-label">Old-Timer</span>
           <span className="score-number">{view.gameScore[BOT]}</span>
         </div>
-        <img
-          className="opponent-portrait"
-          src={`/art/portraits/old_timer_${expression}.png`}
-          alt="Old-Timer"
-        />
+
       </div>
     </div>
   );
