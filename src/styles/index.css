@@ -213,13 +213,27 @@ body {
      percentage leaves a visible gap and the table reads as floating above the rug rather
      than resting on it. Fixing this properly means giving the floor plane and the game
      content a shared vertical reference, which is a bigger structural change than this pass
-     — noted here rather than shipped quietly wrong on portrait. 30%, not 22%, is a
-     middle-ground tuned to keep the gap small at both ends of the viewport range actually
-     shipped, not a real fix for the underlying coordinate mismatch. */
-  bottom: 30%;
+     — noted here rather than shipped quietly wrong on portrait. It is a middle-ground tuned
+     to keep the gap small at both ends of the viewport range actually shipped, not a real fix
+     for the underlying coordinate mismatch.
+
+     **2g.4 addendum.** That mismatch is still unfixed, but it turned out to be masking a much
+     more basic problem: measured at 1280x860, the rug's rect sat ENTIRELY inside the table's
+     — 480-800 against the table's 360-920 — so 100% of it was occluded, and it had never once
+     been visible at desktop since it shipped in 2f.5. A rug is meant to be bigger than the
+     furniture standing on it. At 340 au wide it now extends well past the felt on both sides,
+     which also makes it robust to the coordinate drift above rather than dependent on getting
+     that exactly right.
+
+     WIDE AND SHALLOW (340x70 au), not square. The first attempt at this was 340x150 and it
+     rose 230px above the floor line into the WALL zone, reading as a red panel hung behind
+     the table rather than as anything on the ground. A floor seen at this angle compresses
+     vertically; the rug has to compress with it. Anchored to the floor line itself — the same
+     34% the floor plane uses — so it cannot drift off the surface it is supposed to lie on. */
+  bottom: calc(34% - 70px * var(--px));
   transform: translateX(-50%);
-  width: calc(160px * var(--px));
-  height: calc(68px * var(--px));
+  width: calc(340px * var(--px));
+  height: calc(70px * var(--px));
   background-image: url('/art/scene/rug.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
@@ -382,12 +396,13 @@ body {
   position: absolute;
   image-rendering: pixelated;
 }
-/* Curled on the floor by the hearth, where a cat would actually be. */
+/* Curled on the floor by the hearth, where a cat would actually be. Enlarged 26x18 -> 44x28 au
+   in 2g.4; at the old size he was half a card wide and read as a smudge on the boards. */
 .scene-cat {
   left: calc(20px * var(--px));
-  bottom: calc(34% - 23px * var(--px));
-  width: calc(26px * var(--px));
-  height: calc(18px * var(--px));
+  bottom: calc(34% - 30px * var(--px));
+  width: calc(44px * var(--px));
+  height: calc(28px * var(--px));
   overflow: hidden;
 }
 .scene-shelf {
@@ -399,8 +414,8 @@ body {
   background-size: 100% 100%;
 }
 .scene-cat-strip {
-  width: calc(52px * var(--px));   /* 2 frames x 26au */
-  height: calc(18px * var(--px));
+  width: calc(88px * var(--px));   /* 2 frames x 44au */
+  height: calc(28px * var(--px));
   background-image: url('/art/scene/cat_sheet.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
@@ -409,7 +424,73 @@ body {
   animation: cat-breathe 3.4s steps(2) infinite;
 }
 @keyframes cat-breathe {
-  to { transform: translateX(calc(-52px * var(--px))); }
+  to { transform: translateX(calc(-88px * var(--px))); }
+}
+
+/* --- Wall and floor furniture (2g.4) ---------------------------------------------------- */
+/* All anchored to a VIEWPORT EDGE, never to the table or to each other. Every stale-geometry
+   bug this file has shipped — the 1240px gate, the 1000px gate, the 760px scenery math — came
+   from deriving a position from some other element's size at the time of writing. An edge
+   does not change size. */
+.scene-picture,
+.scene-clock,
+.scene-antlers,
+.scene-coat-hooks,
+.scene-woodpile {
+  display: block;
+  position: absolute;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+/* Anchored to the TOP edge, not measured up from the floor. Everything on this wall is hung
+   from above in reality, and more practically: the free wall is defined by what the table and
+   the opponent occupy, and both of those grow downward from the top of the play area.
+   Measuring up from the floor line put the first attempt's clock squarely behind the
+   opponent's card fan and its antlers poking out of his hands like a houseplant.
+
+   The two genuinely free regions at every viewport, measured: ABOVE THE HEARTH (its sprite
+   tops out well below the ceiling) and the RIGHT GAP between the opponent's fan and the
+   window. The opponent's head sits in the space between them, which is why nothing is
+   centred — he is the composition's middle, and hanging a picture behind his head would be
+   fighting him for the same spot. */
+.scene-picture {
+  left: calc(95px * var(--px));
+  top: calc(22px * var(--px));
+  width: calc(48px * var(--px));
+  height: calc(36px * var(--px));
+  background-image: url('/art/scene/picture.png');
+}
+.scene-clock {
+  right: calc(148px * var(--px));
+  top: calc(22px * var(--px));
+  width: calc(40px * var(--px));
+  height: calc(40px * var(--px));
+  background-image: url('/art/scene/clock.png');
+}
+.scene-antlers {
+  right: calc(143px * var(--px));
+  top: calc(75px * var(--px));
+  width: calc(60px * var(--px));
+  height: calc(40px * var(--px));
+  background-image: url('/art/scene/antlers.png');
+}
+/* Tucked into the narrow strip between the hearth and the table's left edge. Partly occluded
+   by the felt, which is correct rather than a defect — it sits further back in the room, and
+   the scene layer's z-index -1 gives that for free. */
+.scene-coat-hooks {
+  left: calc(160px * var(--px));
+  top: calc(86px * var(--px));
+  width: calc(42px * var(--px));
+  height: calc(54px * var(--px));
+  background-image: url('/art/scene/coat_hooks.png');
+}
+/* On the floor beside the hearth, where the fire's fuel comes from. */
+.scene-woodpile {
+  left: calc(112px * var(--px));
+  bottom: calc(34% - 34px * var(--px));
+  width: calc(52px * var(--px));
+  height: calc(32px * var(--px));
+  background-image: url('/art/scene/woodpile.png');
 }
 /* A barely-perceptible settle, so he is not a decal. Deliberately tiny and slow — a seated
    person at rest shifts, they do not bob.

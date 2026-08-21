@@ -84,6 +84,15 @@ STONE_MED = (99, 85, 72, 255)
 STONE_DARK = (64, 54, 46, 255)
 RUG_RED = (128, 52, 46, 255)
 RUG_CREAM = (198, 172, 132, 255)
+# Two colours added with the wall furniture (2g.4), and chosen as much for WHERE THEY SIT IN
+# HUE as for what they are. Audited, 33 of the palette's 41 constants lived inside a single
+# 42-degree warm arc (2.7-44.9 deg) with three dead zones — nothing between 45 and 108 deg, and
+# no purple/magenta at all — which is the palette-level reason the room read monotone no
+# matter how the values were tuned. A daylit picture and a hung coat are the two objects that
+# can carry cool mid-hues without contradicting a firelit night cabin, because one is a
+# painting of somewhere else and the other is cloth.
+PICTURE_SKY = (108, 156, 190, 255)   # H201 — the room's only mid-blue
+COAT_GREEN = (68, 96, 78, 255)       # H147 — lands squarely in the 45-108 deg dead zone
 
 PIP_FILL_BLACK = (72, 54, 42, 255)  # a "soot brown" — dark like ink, but visibly distinct from
 # the INK outline. Reusing INK as both fill and outline made clubs/spades disappear into their
@@ -1768,7 +1777,7 @@ def make_seated_old_timer():
     return img
 
 
-def make_cat_frames(count=2, w=52, h=36):
+def make_cat_frames(count=2, w=88, h=56):
     """A cat asleep by the fire, two frames of slow breathing.
 
     Two frames is enough because the motion is a swell, not a gait — the body rises a pixel.
@@ -1776,30 +1785,46 @@ def make_cat_frames(count=2, w=52, h=36):
 
     Carries a contact shadow. Brown fur on a brown floor with no shadow read as a smudge, and
     `contact_shadow()` had sat unused since 2d.1 built it — this is its first real consumer.
+
+    **Enlarged in 2g.4.** At 26x18 au this was half a card wide and a quarter of one tall —
+    Phase 2f's own audit put the error at roughly 14x against a real curled cat, and it read
+    as a brown smudge on the floorboards rather than as an animal. Now 44x28 au: about as wide
+    as a playing card, which is still stylised but is at least in the same world as the rest of
+    the room. Geometry below is proportional so the next resize is one number, not a hunt.
     """
     frames = []
-    shadow = contact_shadow(44, 9, max_alpha=118)
+    shadow = contact_shadow(round(w * 0.85), round(h * 0.16), max_alpha=118)
     for i in range(count):
         img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-        img.paste(shadow, (5, h - 10), shadow)
+        img.paste(shadow, (round(w * 0.1), h - round(h * 0.18)), shadow)
         rise = i
-        body_top = 14 - rise
+        body_top = round(h * 0.39) - rise
+        ear = round(h * 0.33)
         parts = [
-            (_ellipse(6, body_top, w - 14, h - 6), HAIR_BROWN),
-            (_ellipse(w - 26, body_top - 5, w - 4, h - 12), HAIR_BROWN),
-            (_poly([(w - 22, body_top - 4), (w - 17, body_top - 12), (w - 13, body_top - 3)]), HAIR_BROWN),
-            (_poly([(w - 11, body_top - 4), (w - 6, body_top - 12), (w - 3, body_top - 3)]), HAIR_BROWN),
-            (_ellipse(2, h - 16, 22, h - 8), HAIR_BROWN),
+            (_ellipse(round(w * 0.11), body_top, w - round(w * 0.16), h - round(h * 0.17)),
+             HAIR_BROWN),
+            (_ellipse(w - round(w * 0.30), body_top - round(h * 0.14),
+                      w - round(w * 0.05), h - round(h * 0.33)), HAIR_BROWN),
+            (_poly([(w - round(w * 0.25), body_top - round(h * 0.11)),
+                    (w - round(w * 0.20), body_top - ear),
+                    (w - round(w * 0.15), body_top - round(h * 0.08))]), HAIR_BROWN),
+            (_poly([(w - round(w * 0.13), body_top - round(h * 0.11)),
+                    (w - round(w * 0.07), body_top - ear),
+                    (w - round(w * 0.03), body_top - round(h * 0.08))]), HAIR_BROWN),
+            (_ellipse(round(w * 0.03), h - round(h * 0.44), round(w * 0.25), h - round(h * 0.22)),
+             HAIR_BROWN),
         ]
         paste(img, composite_sprite(w, h, parts), 0, 0)
         d = ImageDraw.Draw(img)
-        for ex in (w - 20, w - 11):
-            d.line((ex, body_top + 4, ex + 4, body_top + 4), fill=INK)
+        # Closed eyes — two short lines. He is asleep; that is the whole character note.
+        for ex in (w - round(w * 0.23), w - round(w * 0.13)):
+            d.line((ex, body_top + round(h * 0.11), ex + round(w * 0.07), body_top + round(h * 0.11)),
+                   fill=INK, width=2)
         frames.append(img)
     return frames
 
 
-def make_rug(w=320, h=136) -> Image.Image:
+def make_rug(w=680, h=140) -> Image.Image:
     """A woven rug on the floor beneath the table's near edge (Phase 2f.5).
 
     Deferred since 2d.2 for a reason that no longer holds: the table used to span its
@@ -1877,6 +1902,184 @@ def make_shelf(w=120, h=64):
     d.rectangle((lx + 3, plank_y - 24, lx + 15, plank_y - 8), fill=_mix(FIRE_MID, PARCHMENT, 0.35))
     d.rectangle((lx + 5, plank_y - 22, lx + 13, plank_y - 10), fill=FIRE_CORE)
     d.rectangle((lx + 6, plank_y - 32, lx + 12, plank_y - 28), fill=deep)
+    return img
+
+
+# --- Wall and floor furniture (Phase 2g.4) ------------------------------------------------ #
+# Measured before building any of this: at 1280x860 the span from the fireplace's right edge
+# (x=320) to the window's left edge (x=1000) carried NOTHING but the opponent's head. That is
+# 680px — 53% of the viewport's width — of bare log wall, in a game whose venue is the whole
+# point. The room had a hearth, a window and a shelf, and was otherwise unfurnished.
+#
+# These are PLACED objects, not tiles, so per ASSETS.md rule 10 they are explicitly exempt
+# from "no point features" and "model the material, don't decorate" — those rules exist to
+# stop a repeating tile betraying its grid, and none of these repeat. Distinctive one-off
+# detail is exactly what they are for.
+#
+# Every canvas divides by PX * CHUNK_ENV so it can wear the coarse grid with the rest of the
+# room.
+
+
+def make_framed_picture(w=96, h=72):
+    """A small framed landscape — the most literal reading of "art on walls".
+
+    Deliberately a DAYLIT scene: the one window in this room shows night, so a sunlit picture
+    is the only warm-and-bright note available, and it gives the palette somewhere to put the
+    greens and mid-blues that the environment's 42-degree warm arc otherwise has no room for.
+    """
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    f_hi, f_base, f_sh, f_deep = ramp(TABLE_WOOD)
+
+    d.rectangle((0, 0, w - 1, h - 1), fill=f_base)
+    d.rectangle((0, 0, w - 1, 1), fill=f_hi)
+    d.rectangle((0, h - 2, w - 1, h - 1), fill=f_deep)
+
+    # The painted field, inset inside the moulding.
+    m = 8
+    sky_hi, sky, sky_sh, _ = ramp(PICTURE_SKY, warm=False)
+    d.rectangle((m, m, w - m - 1, h - m - 1), fill=sky)
+    d.rectangle((m, m, w - m - 1, m + 8), fill=sky_hi)
+
+    horizon = h - m - 20
+    hill_hi, hill, hill_sh, hill_deep = ramp(LEAF_GREEN)
+    # Two overlapping hills, the far one lighter, so the little scene has depth of its own.
+    d.polygon([(m, horizon + 6), (m + 26, horizon - 12), (m + 54, horizon + 6)], fill=hill_hi)
+    d.polygon([(m + 30, horizon + 8), (m + 58, horizon - 14), (w - m - 1, horizon + 8)], fill=hill)
+    d.rectangle((m, horizon + 6, w - m - 1, h - m - 1), fill=hill_sh)
+    d.line((m, horizon + 6, w - m - 1, horizon + 6), fill=hill_deep)
+    # A low sun, the warm note the night room never gets.
+    d.ellipse((m + 60, m + 8, m + 60 + 12, m + 20), fill=FIRE_CORE)
+    return img
+
+
+def make_antlers(w=120, h=80):
+    """A mounted rack on a wooden plaque. Cabin shorthand, and the one object in the room with
+    a genuinely irregular silhouette — every other thing here is a rectangle or an ellipse."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    p_hi, p_base, p_sh, p_deep = ramp(TABLE_WOOD)
+    b_hi, bone, b_sh, b_deep = ramp(BEARD_GRAY)
+
+    # Shield-shaped plaque. Wide, not narrow: the first pass made it ±22px against a rack
+    # spanning ±50 and it read unmistakably as a plant pot with a dead twig in it. A mount
+    # has to look like it could actually carry the thing bolted to it.
+    cx, py = w // 2, h - 26
+    d.polygon([(cx - 34, py), (cx + 34, py), (cx + 28, h - 5), (cx, h - 1), (cx - 28, h - 5)],
+              fill=p_base)
+    d.line((cx - 34, py, cx + 34, py), fill=p_hi)
+    d.polygon([(cx - 27, py + 3), (cx + 27, py + 3), (cx + 22, h - 9), (cx, h - 6),
+               (cx - 22, h - 9)], fill=p_sh)
+    d.polygon([(cx - 8, py + 2), (cx + 8, py + 2), (cx + 6, py + 12), (cx - 6, py + 12)],
+              fill=p_deep)
+
+    for side in (-1, 1):
+        # Main beam, sweeping up and out.
+        beam = [(cx + side * 4, py), (cx + side * 16, py - 18), (cx + side * 30, py - 30),
+                (cx + side * 46, py - 34)]
+        for (x0, y0), (x1, y1) in zip(beam, beam[1:]):
+            d.line((x0, y0, x1, y1), fill=bone, width=5)
+        # Tines off the beam.
+        for (bx, by), (tx, ty) in (((cx + side * 16, py - 18), (cx + side * 12, py - 40)),
+                                   ((cx + side * 30, py - 30), (cx + side * 30, py - 52)),
+                                   ((cx + side * 42, py - 33), (cx + side * 50, py - 50))):
+            d.line((bx, by, tx, ty), fill=bone, width=4)
+            d.line((tx, ty, tx + side, ty - 2), fill=b_hi, width=3)
+        d.line((cx + side * 4, py, cx + side * 16, py - 18), fill=b_sh, width=2)
+    return img
+
+
+def make_wall_clock(size=80):
+    """A round wall clock. Reads instantly at a glance and is the only circle on the wall.
+
+    Hands sit at roughly ten-past-ten — the arrangement every clock in every advert uses,
+    because it is symmetric, keeps both hands clear of each other, and never reads as an
+    accident of where the hands happened to stop."""
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    c_hi, case, c_sh, c_deep = ramp(TABLE_WOOD)
+    r = size // 2 - 1
+    cx = cy = size // 2
+
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=case)
+    d.arc((cx - r, cy - r, cx + r, cy + r), 200, 340, fill=c_hi, width=2)
+    d.arc((cx - r, cy - r, cx + r, cy + r), 20, 160, fill=c_deep, width=2)
+    fr = r - 6
+    d.ellipse((cx - fr, cy - fr, cx + fr, cy + fr), fill=PARCHMENT)
+    d.ellipse((cx - fr, cy - fr, cx + fr, cy + fr), outline=c_deep, width=1)
+
+    # Only the four quarter marks. Twelve ticks was the first attempt and at this size the
+    # coarse grid turned them into an even speckled ring — detail that averages out to noise
+    # is worse than no detail, because it costs contrast and buys nothing readable.
+    for tick in range(4):
+        a = math.radians(tick * 90 - 90)
+        r0 = fr - 10
+        d.line((cx + r0 * math.cos(a), cy + r0 * math.sin(a),
+                cx + (fr - 3) * math.cos(a), cy + (fr - 3) * math.sin(a)), fill=INK, width=4)
+
+    # Screen angles: 12 o'clock is -90deg. Ten-past-ten puts the minute hand at the 2 (-30deg)
+    # and the hour hand at the 10 (-150deg) — a V opening upward. The first attempt used -62
+    # and 118, which are 180 apart, so the two hands drew one straight line through the centre
+    # and the clock read as a blank disc with a slash across it.
+    for ang, length in ((-30, fr - 7), (-150, fr - 14)):
+        a = math.radians(ang)
+        d.line((cx, cy, cx + length * math.cos(a), cy + length * math.sin(a)), fill=INK, width=3)
+    d.ellipse((cx - 3, cy - 3, cx + 3, cy + 3), fill=INK)
+    return img
+
+
+def make_coat_hooks(w=84, h=108):
+    """A hook rail with a coat hung on it. The one object here that implies a PERSON — someone
+    came in out of the snow and hung their coat up — which is a different kind of warmth from
+    the fire, and cheap to state."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    r_hi, rail, r_sh, r_deep = ramp(TABLE_WOOD)
+    c_hi, coat, c_sh, c_deep = ramp(COAT_GREEN)
+
+    d.rectangle((0, 0, w - 1, 9), fill=rail)
+    d.line((0, 0, w - 1, 0), fill=r_hi)
+    d.line((0, 9, w - 1, 9), fill=r_deep)
+    for hx in (14, w // 2, w - 15):
+        d.rectangle((hx - 2, 9, hx + 2, 16), fill=r_sh)
+        d.rectangle((hx - 4, 14, hx + 4, 17), fill=r_deep)
+
+    # The coat, hanging from the middle hook: shoulders, body, two sleeves.
+    cx, top = w // 2, 15
+    d.polygon([(cx - 6, top), (cx + 6, top), (cx + 26, top + 20), (cx + 22, top + 30),
+               (cx + 14, top + 24), (cx + 15, h - 6), (cx - 15, h - 6), (cx - 14, top + 24),
+               (cx - 22, top + 30), (cx - 26, top + 20)], fill=coat)
+    d.polygon([(cx - 6, top), (cx + 1, top), (cx + 1, h - 6), (cx - 5, h - 6)], fill=c_sh)
+    d.line((cx - 26, top + 20, cx - 6, top), fill=c_hi, width=2)
+    d.line((cx + 6, top, cx + 26, top + 20), fill=c_deep, width=2)
+    for by in (top + 34, top + 50, top + 66):
+        d.rectangle((cx - 3, by, cx - 1, by + 2), fill=GOLD)
+    return img
+
+
+def make_woodpile(w=104, h=64):
+    """Split logs stacked beside the hearth — where the fire's fuel visibly comes from.
+
+    Log ENDS face the room, so this is a grid of circles in a rough stack rather than a row of
+    cylinders; that is both what a real woodpile looks like from the front and much easier to
+    read at this size."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    b_hi, bark, b_sh, b_deep = ramp(WOOD_MED)
+    f_hi, face, f_sh, _ = ramp(PARCHMENT_SHADOW)
+
+    rows = ((6, 5), (13, 4), (20, 3), (27, 2))
+    r = 11
+    for row, (inset, count) in enumerate(rows):
+        y = h - 8 - row * (r + 3)
+        for i in range(count):
+            x = inset + i * (r * 2 + 2)
+            d.ellipse((x, y - r, x + r * 2, y + r), fill=bark)
+            d.ellipse((x + 2, y - r + 2, x + r * 2 - 2, y + r - 2), fill=face)
+            # Growth rings, and a split — enough to say "cut log" and no more.
+            d.ellipse((x + 5, y - r + 5, x + r * 2 - 5, y + r - 5), outline=f_sh, width=1)
+            d.line((x + r, y - r + 3, x + r, y + r - 3), fill=f_sh)
+            d.arc((x, y - r, x + r * 2, y + r), 200, 340, fill=b_hi, width=1)
     return img
 
 
@@ -2051,6 +2254,20 @@ def main() -> None:
     shelf = light_from(make_shelf(), strength=0.13)
     _assert_sprite_colours(shelf, "shelf")
     save_asset(shelf, os.path.join(scene_dir, "shelf.png"), chunk=CHUNK_ENV)
+
+    # Wall and floor furniture (2g.4). Same hearth-side lighting as everything else in the
+    # room, at the same modest strengths — an object that skips light_from is the one that
+    # gives away that the room's light is painted rather than modelled.
+    for name, sprite in (
+        ("picture", make_framed_picture()),
+        ("antlers", make_antlers()),
+        ("clock", make_wall_clock()),
+        ("coat_hooks", make_coat_hooks()),
+        ("woodpile", make_woodpile()),
+    ):
+        lit = light_from(sprite, strength=0.13)
+        _assert_sprite_colours(lit, name)
+        save_asset(lit, os.path.join(scene_dir, f"{name}.png"), name, chunk=CHUNK_ENV)
 
     portraits_dir = os.path.join(OUT_ROOT, "portraits")
     os.makedirs(portraits_dir, exist_ok=True)

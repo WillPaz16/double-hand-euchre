@@ -49,6 +49,23 @@ export function SceneLayer() {
         <div className="scene-window-frame" />
         <div className="scene-moonlight" />
       </div>
+      {/* Wall and floor furniture (2g.4). Measured before building any of it: the span between
+          the fireplace's right edge and the window's left edge — 53% of the viewport's width —
+          carried nothing at all but the opponent's head. A venue that is the whole point of
+          the art direction was three objects and a lot of bare log.
+
+          Anchored to the two WALL EDGES rather than to the table, following the same rule
+          2f.2 established when it removed the last `min-width` gate: anything positioned
+          relative to another element's size goes stale the moment that element changes, and
+          this file has already shipped that bug three times. The clock and picture hang left
+          of centre, the antlers and coat right, so the opponent's head sits in a deliberate
+          gap rather than competing with anything. */}
+      <div className="scene-picture" />
+      <div className="scene-clock" />
+      <div className="scene-antlers" />
+      <div className="scene-coat-hooks" />
+      <div className="scene-woodpile" />
+
       {/* Living things. The cat rests on the floor plane added in the 2d.2 follow-up —
           without that ground it would float exactly the way the fireplace originally did.
           The Old-Timer used to be here too, parked in the right margin, while his two card
