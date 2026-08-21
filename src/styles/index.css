@@ -98,29 +98,70 @@ body {
    mostly cropped out of view but the glow it casts still reads as coming from that corner,
    which is the more honest failure mode: a light with no visible source at all, which is
    what the old bottom-centre default amounted to. */
+/* STEPPED, not smooth (Phase 2g.2). Every light in this room was a continuous CSS gradient
+   painted over pixel art — the same contradiction as the `border-radius: 50%` felt and the
+   unbanded `light_from()` sprite shading, and the last place it survived. §11's "NEXT"
+   list has carried "hearth glow and vignette become banded/dithered instead of smooth
+   falloff" since Phase 2e and it was never shipped; this is that.
+
+   The technique is a plain `radial-gradient` with PAIRED stops — each alpha repeated at the
+   band's start and end position, so the change between bands lands on a hard edge instead of
+   a ramp. Concentric hard-edged bands are what a pixel artist draws when they render a glow,
+   and they cost exactly the same as the smooth version to composite. */
 .scene-hearth-glow {
   position: absolute;
   inset: 0;
   background:
     radial-gradient(
       ellipse 55% 60% at 8% 72%,
-      rgba(255, 146, 62, 0.20),
-      rgba(255, 140, 60, 0) 72%
+      rgba(255, 146, 62, 0.2) 0%, rgba(255, 146, 62, 0.2) 18%,
+      rgba(255, 146, 62, 0.14) 18%, rgba(255, 146, 62, 0.14) 32%,
+      rgba(255, 146, 62, 0.084) 32%, rgba(255, 146, 62, 0.084) 45%,
+      rgba(255, 146, 62, 0.036) 45%, rgba(255, 146, 62, 0.036) 56%,
+      rgba(255, 146, 62, 0) 56%
     ),
     /* The non-repeating field: broad, low-alpha, deliberately off-centre so it never lines
        up with the tile grid or with the table's own symmetry. */
-    radial-gradient(ellipse 45% 50% at 30% 92%, rgba(255, 168, 88, 0.09), rgba(0, 0, 0, 0) 70%),
-    radial-gradient(ellipse 50% 55% at 93% 26%, rgba(120, 158, 205, 0.09), rgba(0, 0, 0, 0) 70%),
-    radial-gradient(ellipse 80% 45% at 66% 6%, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0) 75%);
+    radial-gradient(
+      ellipse 45% 50% at 30% 92%,
+      rgba(255, 168, 88, 0.09) 0%, rgba(255, 168, 88, 0.09) 18%,
+      rgba(255, 168, 88, 0.063) 18%, rgba(255, 168, 88, 0.063) 32%,
+      rgba(255, 168, 88, 0.038) 32%, rgba(255, 168, 88, 0.038) 43%,
+      rgba(255, 168, 88, 0.016) 43%, rgba(255, 168, 88, 0.016) 55%,
+      rgba(255, 168, 88, 0) 55%
+    ),
+    radial-gradient(
+      ellipse 50% 55% at 93% 26%,
+      rgba(120, 158, 205, 0.09) 0%, rgba(120, 158, 205, 0.09) 18%,
+      rgba(120, 158, 205, 0.063) 18%, rgba(120, 158, 205, 0.063) 32%,
+      rgba(120, 158, 205, 0.038) 32%, rgba(120, 158, 205, 0.038) 43%,
+      rgba(120, 158, 205, 0.016) 43%, rgba(120, 158, 205, 0.016) 55%,
+      rgba(120, 158, 205, 0) 55%
+    ),
+    radial-gradient(
+      ellipse 80% 45% at 66% 6%,
+      rgba(0, 0, 0, 0.26) 0%, rgba(0, 0, 0, 0.26) 19%,
+      rgba(0, 0, 0, 0.182) 19%, rgba(0, 0, 0, 0.182) 34%,
+      rgba(0, 0, 0, 0.109) 34%, rgba(0, 0, 0, 0.109) 46%,
+      rgba(0, 0, 0, 0.047) 46%, rgba(0, 0, 0, 0.047) 58%,
+      rgba(0, 0, 0, 0) 58%
+    );
   animation: hearth-glow 5s ease-in-out infinite;
 }
 .scene-vignette {
   position: absolute;
   inset: 0;
+  /* Banded like the glows above, and REACHED BACK from 0.42 to 0.3 (2g.3): at full strength
+     this darkened hardest exactly at the left and right edges — which is where the hearth and
+     the window live. The one element whose job is to frame the light was smothering both
+     sources it was framing. */
   background: radial-gradient(
     ellipse 85% 70% at 50% 45%,
-    rgba(0, 0, 0, 0) 45%,
-    rgba(0, 0, 0, 0.42) 100%
+    rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 52%,
+    rgba(0, 0, 0, 0.07) 52%, rgba(0, 0, 0, 0.07) 66%,
+    rgba(0, 0, 0, 0.15) 66%, rgba(0, 0, 0, 0.15) 79%,
+    rgba(0, 0, 0, 0.23) 79%, rgba(0, 0, 0, 0.23) 90%,
+    rgba(0, 0, 0, 0.3) 90%
   );
 }
 @keyframes hearth-glow {
@@ -211,7 +252,7 @@ body {
   left: calc(6px * var(--px));
   bottom: calc(34% - 3px * var(--px));
   width: calc(154px * var(--px));
-  height: calc(205px * var(--px));
+  height: calc(206px * var(--px));
   background-image: url('/art/scene/fireplace.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
@@ -220,7 +261,7 @@ body {
   right: calc(8px * var(--px));
   top: 10%;
   width: calc(132px * var(--px));
-  height: calc(161px * var(--px));
+  height: calc(162px * var(--px));
 }
 
 /* One frame's window onto the strip; the strip slides behind it. Repositioned for the 2.2x
@@ -233,24 +274,25 @@ body {
   position: absolute;
   left: calc(60px * var(--px));
   top: calc(155px * var(--px));
-  width: calc(33px * var(--px));
-  height: calc(29px * var(--px));
+  width: calc(34px * var(--px));
+  height: calc(30px * var(--px));
   overflow: hidden;
 }
 .scene-fire-strip {
-  width: calc(132px * var(--px));   /* 4 frames x 33au */
-  height: calc(29px * var(--px));
+  width: calc(136px * var(--px));   /* 4 frames x 34au */
+  height: calc(30px * var(--px));
   background-image: url('/art/scene/fire_sheet.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
   animation: fire-flicker 0.5s steps(4) infinite;
 }
 @keyframes fire-flicker {
-  to { transform: translateX(calc(-132px * var(--px))); }
+  to { transform: translateX(calc(-136px * var(--px))); }
 }
 /* The light the fire throws into the room. Pulses out of phase with the flame loop so the
-   two never lock into an obvious rhythm. Scaled roughly with the 2.2x bigger hearth (2f.4) —
-   "roughly" is fine for a soft radial blur in a way it wouldn't be for a hard sprite edge. */
+   two never lock into an obvious rhythm. Scaled roughly with the 2.2x bigger hearth (2f.4).
+   Banded in 2g.2 like every other light in the room — the "roughly is fine for a soft radial
+   blur" note that used to sit here stopped applying the moment it stopped being a blur. */
 .scene-firelight {
   position: absolute;
   left: -260px;
@@ -259,8 +301,11 @@ body {
   height: 500px;
   background: radial-gradient(
     ellipse 50% 50% at 42% 55%,
-    rgba(255, 150, 60, 0.22),
-    rgba(255, 150, 60, 0) 70%
+    rgba(255, 150, 60, 0.26) 0%, rgba(255, 150, 60, 0.26) 17%,
+    rgba(255, 150, 60, 0.18) 17%, rgba(255, 150, 60, 0.18) 31%,
+    rgba(255, 150, 60, 0.11) 31%, rgba(255, 150, 60, 0.11) 44%,
+    rgba(255, 150, 60, 0.05) 44%, rgba(255, 150, 60, 0.05) 56%,
+    rgba(255, 150, 60, 0) 56%
   );
   animation: firelight-pulse 2.3s ease-in-out infinite;
 }
@@ -315,8 +360,10 @@ body {
   height: 300px;
   background: radial-gradient(
     ellipse 45% 45% at 62% 40%,
-    rgba(150, 190, 235, 0.13),
-    rgba(150, 190, 235, 0) 70%
+    rgba(150, 190, 235, 0.17) 0%, rgba(150, 190, 235, 0.17) 20%,
+    rgba(150, 190, 235, 0.11) 20%, rgba(150, 190, 235, 0.11) 36%,
+    rgba(150, 190, 235, 0.055) 36%, rgba(150, 190, 235, 0.055) 52%,
+    rgba(150, 190, 235, 0) 52%
   );
 }
 /* --- Living things (2d.3) -------------------------------------------------------------- */
@@ -335,20 +382,20 @@ body {
   left: calc(20px * var(--px));
   bottom: calc(34% - 23px * var(--px));
   width: calc(26px * var(--px));
-  height: calc(17px * var(--px));
+  height: calc(18px * var(--px));
   overflow: hidden;
 }
 .scene-shelf {
   left: calc(10px * var(--px));
   bottom: calc(34% + 113px * var(--px));
-  width: calc(59px * var(--px));
-  height: calc(31px * var(--px));
+  width: calc(60px * var(--px));
+  height: calc(32px * var(--px));
   background-image: url('/art/scene/shelf.png');
   background-size: 100% 100%;
 }
 .scene-cat-strip {
   width: calc(52px * var(--px));   /* 2 frames x 26au */
-  height: calc(17px * var(--px));
+  height: calc(18px * var(--px));
   background-image: url('/art/scene/cat_sheet.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
@@ -430,7 +477,7 @@ body {
   font-family: inherit;
   font-size: 1.1rem;
   padding: 0.9rem 2.2rem;
-  border-radius: 10px;
+  border-radius: 0;
   border: 2px solid #ffd54a;
   background: #3a2a1a;
   color: #ffd54a;
@@ -445,7 +492,7 @@ body {
   font-family: inherit;
   font-size: 0.75rem;
   padding: 0.4rem 0.9rem;
-  border-radius: 8px;
+  border-radius: 0;
   border: 1px solid #7a5a3a;
   background: transparent;
   color: #f0e6d6;
@@ -609,12 +656,12 @@ body {
    Sized up from an earlier 55x65 for legibility once the hat/eyebrow overlap bug (see
    generate_art.py, _old_timer_parts) was fixed and the face was actually worth showing. */
 .opponent-portrait {
-  width: calc(55px * var(--px));
-  height: calc(65px * var(--px));
+  width: calc(56px * var(--px));
+  height: calc(66px * var(--px));
   image-rendering: pixelated;
   object-fit: cover;
   object-position: top;
-  border-radius: 6px;
+  border-radius: 0;
 }
 .score-label {
   font-size: 0.85rem;
@@ -890,7 +937,7 @@ body {
   width: 6%;
   height: 14%;
   background: #2a1a10;
-  border-radius: 0 0 3px 3px;
+  border-radius: 0;
 }
 .table-leg-l { left: 20%; }
 .table-leg-r { right: 20%; }
@@ -925,7 +972,7 @@ body {
   left: calc(13px * var(--px));
   top: calc(8px * var(--px));
   transform: rotate(12deg);
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 calc(2px * var(--px)) 0 rgba(0, 0, 0, 0.5));
 }
 
 /* The upcard reveal wheel (Phase 2e.8) — occupies the same spot the real upcard lands in, so
@@ -950,7 +997,7 @@ body {
   animation-name: wheel-flash;
   animation-timing-function: steps(1, end);
   animation-fill-mode: both;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 calc(2px * var(--px)) 0 rgba(0, 0, 0, 0.5));
 }
 @keyframes wheel-flash {
   0% { opacity: 1; transform: scale(1); }
@@ -1037,13 +1084,13 @@ body {
   align-items: center;
   gap: 0.2rem;
   padding: 0.25rem 0.4rem;
-  border-radius: 10px;
+  border-radius: 0;
   border: 1px solid transparent;
 }
 /* The empty seat keeps its footprint so nothing reflows when a hand is picked up. */
 .seat-fan.is-empty {
   width: calc(70px * var(--px));
-  border-radius: 8px;
+  border-radius: 0;
   border: 1px dashed rgba(255, 213, 74, 0.35);
 }
 /* His labels sit BELOW his cards, yours above yours — both read as captions on the near side
@@ -1208,7 +1255,9 @@ body {
   }
 }
 .trick-card.is-winner .card-face img {
-  filter: drop-shadow(0 0 5px #ffd54a) drop-shadow(0 0 2px #ffd54a);
+  filter:
+    drop-shadow(calc(2px * var(--px)) 0 0 #ffd54a) drop-shadow(calc(-2px * var(--px)) 0 0 #ffd54a)
+    drop-shadow(0 calc(2px * var(--px)) 0 #ffd54a) drop-shadow(0 calc(-2px * var(--px)) 0 #ffd54a);
 }
 .trick-card.is-winner {
   animation: winner-pop 500ms ease-out;
@@ -1295,7 +1344,7 @@ body {
   font-family: inherit;
   font-size: 0.95rem;
   padding: 0.6rem 1rem;
-  border-radius: 8px;
+  border-radius: 0;
   border: 2px solid #7a5a3a;
   background: #3a2a1a;
   color: #f0e6d6;
@@ -1407,7 +1456,9 @@ body {
   cursor: pointer;
 }
 .card-face.highlighted img {
-  filter: drop-shadow(0 0 3px #ffd54a) drop-shadow(0 0 1px #ffd54a);
+  filter:
+    drop-shadow(calc(1px * var(--px)) 0 0 #ffd54a) drop-shadow(calc(-1px * var(--px)) 0 0 #ffd54a)
+    drop-shadow(0 calc(1px * var(--px)) 0 #ffd54a) drop-shadow(0 calc(-1px * var(--px)) 0 #ffd54a);
 }
 .card-face.dimmed img {
   opacity: 0.4;
@@ -1482,7 +1533,7 @@ body {
        the felt and a card face. */
     z-index: 3;
     padding: 1px 4px;
-    border-radius: 6px;
+    border-radius: 0;
     background: rgba(16, 11, 8, 0.72);
   }
   /* Corners of the felt, matching the two-sided nw/ne/sw/se seating directly — no rotation

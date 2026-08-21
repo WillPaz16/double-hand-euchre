@@ -854,7 +854,7 @@ def make_face_card(rank: str, suit: str) -> Image.Image:
 FLANNEL_RED = (140, 46, 40, 255)
 HAT_FUR = (222, 210, 190, 255)
 
-PORTRAIT_W, PORTRAIT_H = 110, 130
+PORTRAIT_W, PORTRAIT_H = 112, 132
 OT_CX = PORTRAIT_W // 2
 OT_HEAD_CY = 58
 OT_HEAD_RX, OT_HEAD_RY = 26, 27
@@ -1215,7 +1215,7 @@ def make_table_felt() -> Image.Image:
     draw = ImageDraw.Draw(img)
 
     plank_h = 32
-    plank_tint = (0.00, 0.12, -0.10, 0.05)
+    plank_tint = (0.00, 0.08, -0.07, 0.04)
 
     for i, py in enumerate(range(0, size, plank_h)):
         tint = plank_tint[i % len(plank_tint)]
@@ -1223,8 +1223,13 @@ def make_table_felt() -> Image.Image:
         body = plank_h - 2
         for dy in range(body):
             frac = dy / (body - 1)
-            tone = _mix(p_base, hi, 0.45) if 0.2 < frac < 0.6 else (
-                _mix(p_base, sh, 0.20) if frac < 0.86 else _mix(p_base, sh, 0.55))
+            # Retuned once the coarse grid landed (2g.2). At chunk=2 each tonal step is a 2px
+            # band rather than a 1px one, so the same mix factors read roughly twice as loud —
+            # the first pass at 0.45/0.55 turned the felt into horizontal stripes directly
+            # under the cards, which is the exact "calm centre" failure this tile was rebuilt
+            # to fix in the first place. Form, not stripes.
+            tone = _mix(p_base, hi, 0.26) if 0.2 < frac < 0.6 else (
+                _mix(p_base, sh, 0.13) if frac < 0.86 else _mix(p_base, sh, 0.34))
             draw.line((0, py + dy, size, py + dy), fill=tone)
 
         # Grain along the plank. Fixed arithmetic, never `random`, so the tile stays
@@ -1239,8 +1244,8 @@ def make_table_felt() -> Image.Image:
                 x += dash + 9 + (seed % 7)
                 seed += 11
 
-        draw.line((0, py + body, size, py + body), fill=deep)
-        draw.line((0, py + body + 1, size, py + body + 1), fill=_mix(p_base, hi, 0.55))
+        draw.line((0, py + body, size, py + body), fill=_mix(base, deep, 0.55))
+        draw.line((0, py + body + 1, size, py + body + 1), fill=_mix(p_base, hi, 0.32))
     return img
 
 
@@ -1347,7 +1352,7 @@ def _flame(draw, cx, base_y, w, h, sway, color, phase):
     draw.polygon(left + right[::-1], fill=color)
 
 
-def make_fire_frames(count=4, w=66, h=58):
+def make_fire_frames(count=4, w=68, h=60):
     """Animation frames for the hearth fire. Deterministic: each frame is a pure function of
     its index, no randomness, so regeneration is byte-identical.
 
@@ -1381,7 +1386,7 @@ def make_fire_frames(count=4, w=66, h=58):
     return frames
 
 
-def make_fireplace(w=308, h=410):
+def make_fireplace(w=308, h=412):
     """Stone hearth surround with a firebox opening and a timber mantel.
 
     Sized at 2.2x its original 140x186 (Phase 2f.4) — the original was measured against a
@@ -1474,7 +1479,7 @@ def make_fireplace(w=308, h=410):
 
 # 2.2x the original 120x146 (Phase 2f.4), same stylised-not-physical scale reasoning as the
 # fireplace above — sized to match the opponent's departure from realism, not physics.
-WINDOW_W, WINDOW_H = 264, 322
+WINDOW_W, WINDOW_H = 264, 324
 
 
 def make_window_glass(w=WINDOW_W, h=WINDOW_H):
@@ -1745,7 +1750,7 @@ def make_seated_old_timer():
     return img
 
 
-def make_cat_frames(count=2, w=52, h=34):
+def make_cat_frames(count=2, w=52, h=36):
     """A cat asleep by the fire, two frames of slow breathing.
 
     Two frames is enough because the motion is a swell, not a gait — the body rises a pixel.
@@ -1823,7 +1828,7 @@ def make_rug(w=320, h=136) -> Image.Image:
     return img
 
 
-def make_shelf(w=118, h=62):
+def make_shelf(w=120, h=64):
     """A wall shelf with clutter — jars, books, a lantern. Placed once, never tiled, so unlike
     the wall texture it may carry all the distinctive point detail it likes."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
@@ -1876,10 +1881,30 @@ def make_shelf(w=118, h=62):
 # it — the room read as higher-resolution than the game. One grid, one unit, one rule.
 
 
-def save_asset(img: Image.Image, path: str, label: str = "") -> None:
-    """Snap to the PX grid, prove it, halve to true resolution, write."""
-    img = snap_to_pixel_grid(img)
-    _assert_pixel_grid(img, label=label or os.path.basename(path))
+# How many art pixels wide a drawn feature must be, per asset class. `chunk=1` keeps the
+# original grid; `chunk=2` means the smallest possible detail in the saved file is a 2x2
+# block, which at --px 2 renders as **4 screen pixels** — the apparent pixel size the
+# Stardew/Pokemon references actually use. This game shipped at 2, which is the literal
+# measurement behind "it doesn't look pixelated": the art was correct, and simply too fine.
+#
+# CARDS DELIBERATELY STAY AT chunk=1. A rank index and a suit pip have to stay readable at the
+# 25x35 seat size, and there is no room to spend half the available resolution there. That is
+# not an inconsistency — ASSETS.md already states "a smaller card is different ART, not the
+# same art scaled down", and the same logic applies to how coarse a grid each class can wear.
+#
+# ORDERING MATTERS, and it is the opposite of the intuitive one. Coarsening BEFORE the
+# shading is quantised makes things worse, not better: test-coarsening the pre-2g.1 Old-Timer
+# dropped him only 361 -> 245 colours, because each larger block still carried its own unique
+# tint, so the result was big blocks of subtly-different colour, i.e. visible banding. Quantise
+# the light first (2g.1), then coarsen. Never the reverse.
+CHUNK_ENV = 2
+
+
+def save_asset(img: Image.Image, path: str, label: str = "", chunk: int = 1) -> None:
+    """Snap to the PX*chunk grid, prove it, halve to true resolution, write."""
+    grid = PX * chunk
+    img = snap_to_pixel_grid(img, grid)
+    _assert_pixel_grid(img, grid, label=label or os.path.basename(path))
     w, h = img.size
     img.resize((w // PX, h // PX), Image.NEAREST).save(path)
 
@@ -1963,20 +1988,25 @@ def main() -> None:
     # Checked here, not by eye at full size — see _assert_value_ladder for why that distinction
     # is the whole point.
     _assert_value_ladder({"wall": wall, "floor": floor, "table": felt})
-    save_asset(felt, os.path.join(OUT_ROOT, "table_felt.png"))
-    save_asset(wall, os.path.join(OUT_ROOT, "wall_texture.png"))
+    # chunk=CHUNK_ENV on every environment asset from here down: the room wears a grid twice
+    # as coarse as the cards, which is what puts its apparent pixel at Stardew's size. Cards
+    # keep chunk=1 — see the CHUNK_ENV comment for why that is a decision, not an oversight.
+    save_asset(felt, os.path.join(OUT_ROOT, "table_felt.png"), chunk=CHUNK_ENV)
+    save_asset(wall, os.path.join(OUT_ROOT, "wall_texture.png"), chunk=CHUNK_ENV)
 
     scene_dir = os.path.join(OUT_ROOT, "scene")
     os.makedirs(scene_dir, exist_ok=True)
-    save_asset(make_fireplace(), os.path.join(scene_dir, "fireplace.png"))
-    save_asset(make_sprite_sheet(make_fire_frames()), os.path.join(scene_dir, "fire_sheet.png"))
-    save_asset(make_window_glass(), os.path.join(scene_dir, "window_glass.png"))
-    save_asset(make_window_frame(), os.path.join(scene_dir, "window_frame.png"))
-    save_asset(make_snowfall(), os.path.join(scene_dir, "snow.png"))
-    save_asset(floor, os.path.join(scene_dir, "floor.png"))
+    save_asset(make_fireplace(), os.path.join(scene_dir, "fireplace.png"), chunk=CHUNK_ENV)
+    save_asset(make_sprite_sheet(make_fire_frames()),
+               os.path.join(scene_dir, "fire_sheet.png"), chunk=CHUNK_ENV)
+    save_asset(make_window_glass(), os.path.join(scene_dir, "window_glass.png"), chunk=CHUNK_ENV)
+    save_asset(make_window_frame(), os.path.join(scene_dir, "window_frame.png"), chunk=CHUNK_ENV)
+    save_asset(make_snowfall(), os.path.join(scene_dir, "snow.png"), chunk=CHUNK_ENV)
+    save_asset(floor, os.path.join(scene_dir, "floor.png"), chunk=CHUNK_ENV)
     # Lit like the fireplace/window it sits between, not left neutral — a rug directly in the
     # hearth's light shouldn't be the one object in the room untouched by it.
-    save_asset(light_from(make_rug(), strength=0.12), os.path.join(scene_dir, "rug.png"))
+    save_asset(light_from(make_rug(), strength=0.12),
+               os.path.join(scene_dir, "rug.png"), chunk=CHUNK_ENV)
     # Everything in the room is lit by the hearth, which sits in the LEFT margin. Applied here
     # rather than inside each generator so the light model is stated once, in one place, and
     # so it demonstrably cannot reach the card art. The fireplace and the window are their own
@@ -1985,6 +2015,13 @@ def main() -> None:
     # not as ambient room decor in the side margin — so he is no longer a scene/ asset.
     # Every sprite below goes through light_from, which is exactly what the colour ceiling
     # guards — an unbanded light pass is invisible in a diff and easy to pass by eye.
+    # The two CHARACTER sprites stay on the fine grid for now, and this is a known,
+    # deliberately-temporary inconsistency rather than an oversight. Coarsening them works
+    # mechanically but mangles the face: the eyes are 8x10 au ellipses, which at chunk=2
+    # become 4x5 blocks and render as diamonds rather than eyes, and the moustache breaks up.
+    # Those features have to be REDRAWN on the coarse grid, not snapped onto it — which is
+    # exactly what 2g.5's character pass is for. Shipping a coarsened broken face in the
+    # meantime would be strictly worse than shipping a fine one.
     for expression in ("idle", "happy", "rueful"):
         opp = make_opponent(expression)
         _assert_sprite_colours(opp, f"opponent {expression}")
@@ -1992,14 +2029,15 @@ def main() -> None:
                    f"opponent {expression}")
     cat = light_from(make_sprite_sheet(make_cat_frames()), strength=0.13)
     _assert_sprite_colours(cat, "cat sheet")
-    save_asset(cat, os.path.join(scene_dir, "cat_sheet.png"))
+    save_asset(cat, os.path.join(scene_dir, "cat_sheet.png"), chunk=CHUNK_ENV)
     shelf = light_from(make_shelf(), strength=0.13)
     _assert_sprite_colours(shelf, "shelf")
-    save_asset(shelf, os.path.join(scene_dir, "shelf.png"))
+    save_asset(shelf, os.path.join(scene_dir, "shelf.png"), chunk=CHUNK_ENV)
 
     portraits_dir = os.path.join(OUT_ROOT, "portraits")
     os.makedirs(portraits_dir, exist_ok=True)
     for expression in ("idle", "happy", "rueful"):
+        # Fine grid, same reason as the opponent above — it is the same face, smaller.
         save_asset(make_old_timer_portrait(expression),
                    os.path.join(portraits_dir, f"old_timer_{expression}.png"),
                    f"portrait {expression}")
