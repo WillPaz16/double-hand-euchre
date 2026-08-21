@@ -22,6 +22,13 @@ export function SceneLayer() {
       {/* The floor. Without a ground plane and a wall/floor junction the room read as props
           pinned to a backdrop; it is also what 2d.3's seated figure and cat will rest on. */}
       <div className="scene-floor" />
+      {/* The rug (2f.5) — sits UNDER the table's near edge on purpose, and needs no coordinate
+          math to get there: it lives in this scene layer at z-index -1, the felt lives in the
+          game layer at z-index 1, so "table on top of rug" falls out of the existing z-order
+          the same way the opponent's chest is already occluded by the felt in front of him.
+          Deferred since 2d.2 because the table used to span its full container, leaving no
+          floor for a rug to occupy — no longer true after the 2f scale rebuild. */}
+      <div className="scene-rug" />
 
       <div className="scene-fireplace">
         {/* Sprite strip animated with transform + steps(): compositor-only. Animating

@@ -1690,6 +1690,53 @@ def make_cat_frames(count=2, w=52, h=34):
     return frames
 
 
+def make_rug(w=320, h=136) -> Image.Image:
+    """A woven rug on the floor beneath the table's near edge (Phase 2f.5).
+
+    Deferred since 2d.2 for a reason that no longer holds: the table used to span its
+    container's full width, so a rug beneath it would have been almost entirely occluded —
+    there was no floor left to put one on. The table is now a bounded object with real floor
+    visible around it (2f rebuild), which is exactly the precondition that was missing.
+
+    Lives in the SCENE layer (z-index -1), not the game layer, deliberately: the felt (z-index
+    1) then naturally overlaps its near edge with no coordinate math required to line them up
+    — "table sits on the rug" falls out of the existing z-order for free, the same way the
+    opponent's chest is occluded by the felt in front of him.
+
+    A flat rectangular weave, not an oval — an oval rug under a round table reads as a second,
+    smaller table; a rectangular one under it reads as a rug the table happens to sit on,
+    which is the actual objects most rooms have.
+    """
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    hi, base, sh, deep = ramp(RUG_RED)
+    cream = _mix(RUG_CREAM, base, 0.15)
+
+    d.rectangle((0, 0, w - 1, h - 1), fill=base)
+    # Woven border: a cream band inset from the edge, then a thin deep line inside that —
+    # the two-band border every real woven rug has, not just a solid-colour rectangle.
+    inset = 10
+    d.rectangle((inset, inset, w - 1 - inset, h - 1 - inset), outline=cream, width=4)
+    d.rectangle((inset + 8, inset + 8, w - 9 - inset, h - 9 - inset), outline=deep, width=2)
+
+    # A soft diagonal weave texture in the field, fixed arithmetic so it stays reproducible.
+    seed = 3
+    for y in range(inset + 14, h - inset - 14, 6):
+        x = -(seed % 12)
+        while x < w:
+            tone = hi if (seed // 5) % 2 else sh
+            d.line((x, y, x + 8, y), fill=_mix(base, tone, 0.35))
+            x += 16
+            seed += 7
+
+    # Fringe along the two short ends, the detail that most reads as "woven rug" rather than
+    # "coloured rectangle".
+    for fx in range(4, w - 4, 7):
+        d.line((fx, 0, fx, 3), fill=cream)
+        d.line((fx, h - 4, fx, h - 1), fill=cream)
+    return img
+
+
 def make_shelf(w=118, h=62):
     """A wall shelf with clutter — jars, books, a lantern. Placed once, never tiled, so unlike
     the wall texture it may carry all the distinctive point detail it likes."""
@@ -1786,6 +1833,9 @@ def main() -> None:
     save_asset(make_window_frame(), os.path.join(scene_dir, "window_frame.png"))
     save_asset(make_snowfall(), os.path.join(scene_dir, "snow.png"))
     save_asset(make_floorboards(), os.path.join(scene_dir, "floor.png"))
+    # Lit like the fireplace/window it sits between, not left neutral — a rug directly in the
+    # hearth's light shouldn't be the one object in the room untouched by it.
+    save_asset(light_from(make_rug(), strength=0.12), os.path.join(scene_dir, "rug.png"))
     # Everything in the room is lit by the hearth, which sits in the LEFT margin. Applied here
     # rather than inside each generator so the light model is stated once, in one place, and
     # so it demonstrably cannot reach the card art. The fireplace and the window are their own

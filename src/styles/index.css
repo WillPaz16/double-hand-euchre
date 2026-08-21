@@ -153,6 +153,33 @@ body {
   box-shadow: inset 0 3px 0 rgba(255, 198, 132, 0.10);
 }
 
+/* The rug (2f.5) — centred under where the table sits, near the TOP of the floor band so it
+   reaches up toward the table's near edge rather than sitting lost in the middle of the
+   floor. Positioned against `.scene-layer` (the full viewport), not nested inside
+   `.scene-floor`, so its own bottom-anchored math stays independent of the floor tile's. */
+.scene-rug {
+  position: absolute;
+  left: 50%;
+  /* KNOWN LIMITATION, not silently accepted: this is a fixed percentage of the VIEWPORT
+     (scene-layer's own coordinate system), while the felt's vertical position comes from
+     `.game-root`'s flex layout — two independent coordinate systems with nothing unifying
+     them. At 1400x900 that lands the rug right under the felt; on a tall narrow phone
+     (375x812), where the felt sits much lower in a much taller centre row, the same
+     percentage leaves a visible gap and the table reads as floating above the rug rather
+     than resting on it. Fixing this properly means giving the floor plane and the game
+     content a shared vertical reference, which is a bigger structural change than this pass
+     — noted here rather than shipped quietly wrong on portrait. 30%, not 22%, is a
+     middle-ground tuned to keep the gap small at both ends of the viewport range actually
+     shipped, not a real fix for the underlying coordinate mismatch. */
+  bottom: 30%;
+  transform: translateX(-50%);
+  width: calc(160px * var(--px));
+  height: calc(68px * var(--px));
+  background-image: url('/art/scene/rug.png');
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+
 /* Side scenery is now GATELESS (Phase 2f.2). It used to be `display: none` below a width
    threshold — 1240, then 1000, then 720, each one derived from some other element's size at
    the time and each one going stale the next time that element was resized. Measured at
@@ -792,11 +819,39 @@ body {
   background-size: calc(64px * var(--px));
   image-rendering: pixelated;
   border: 5px solid #2a1a10;
+  /* The last three layers are a CONTACT SHADOW (2f.5) — "the table stands on the floor" per
+     the phase plan, made visible rather than merely asserted by z-order. Every other shadow
+     in this game is a raster PNG (`contact_shadow()` in the generator, stepped bands rather
+     than a blur, to match the hard-edged pixel-art look). The felt can't use that: its
+     on-screen size is FLUID — `max-width: min(560px, 96vw)` — and a raster shadow baked at
+     one size would have to stretch non-integer to fit any other, which is the exact fault
+     2f.1 spent a whole phase removing. A CSS box-shadow costs nothing to scale to any size,
+     so it's the right tool for the one object in the room that doesn't have a fixed size —
+     the same reasoning that already put the ambient light washes in CSS instead of PNGs.
+     Three stacked layers approximate the generator's stepped-band technique rather than one
+     soft blur, so the shadow still reads as pixel-art-adjacent rather than a foreign glow. */
   box-shadow:
     inset 0 4px 0 rgba(255, 198, 132, 0.13),
     inset 0 -5px 0 rgba(0, 0, 0, 0.36),
-    0 10px 22px rgba(0, 0, 0, 0.55);
+    0 10px 22px rgba(0, 0, 0, 0.55),
+    0 22px 0 -8px rgba(0, 0, 0, 0.32),
+    0 34px 26px -6px rgba(0, 0, 0, 0.42);
 }
+/* Legs (2f.5). Positioned as PERCENTAGES of the felt's own box, not au/--px sizes, because
+   the felt itself is fluid (`max-width: min(560px, 96vw)`) — a fixed-au leg would be exactly
+   the fractional-scale mismatch 2f.1 exists to prevent the moment the felt resized to a width
+   the leg wasn't drawn for. A percentage of the parent has no "wrong size" to be. Same dark
+   wood tone as the felt's own rim (`#2a1a10`) so they read as one object, not an applique. */
+.table-leg {
+  position: absolute;
+  bottom: -8%;
+  width: 6%;
+  height: 14%;
+  background: #2a1a10;
+  border-radius: 0 0 3px 3px;
+}
+.table-leg-l { left: 20%; }
+.table-leg-r { right: 20%; }
 .table-trick {
   position: absolute;
   inset: 0;

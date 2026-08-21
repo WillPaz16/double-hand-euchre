@@ -224,6 +224,14 @@ export function Table({
       })}
 
       <div className="table-top">
+        {/* Legs (2f.5) — the table had none at all: a felt ellipse with a rim, nothing
+            suggesting it was furniture standing on anything. Only the NEAR (south) edge gets
+            them — a top-down ellipse's far edge would have its legs hidden behind the
+            tabletop in any real view of one, the same occlusion logic that already lets the
+            felt hide the opponent's chest. Two, not four: the far pair would be this
+            projection's equivalent of drawing hidden lines. */}
+        <div className="table-leg table-leg-l" />
+        <div className="table-leg table-leg-r" />
         {/* The kitty, with the turned card on top. This used to live in the status banner
             above the table, where a 100x140 card floating on the cabin wall was both the
             single largest consumer of vertical space and a lie about what it is: the upcard

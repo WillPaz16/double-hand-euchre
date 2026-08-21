@@ -52,32 +52,6 @@
   },
   "nodes": [
     {
-      "label": "Action",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L75",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "shared_engine_types_action",
-      "community": 11,
-      "community_name": "fullGame.test.tsx",
-      "norm_label": "action"
-    },
-    {
-      "label": "PendingTrump",
-      "file_type": "code",
-      "source_file": "src/ui/BidPanel.tsx",
-      "source_location": "L39",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "src_ui_bidpanel_pendingtrump",
-      "community": 11,
-      "community_name": "fullGame.test.tsx",
-      "norm_label": "pendingtrump"
-    },
-    {
       "label": "Outcome",
       "file_type": "code",
       "source_file": "tests/fullGame.test.tsx",
@@ -143,6 +117,19 @@
       "norm_label": "expression"
     },
     {
+      "label": "PendingTrump",
+      "file_type": "code",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L39",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "src_ui_bidpanel_pendingtrump",
+      "community": 13,
+      "community_name": "Table.tsx",
+      "norm_label": "pendingtrump"
+    },
+    {
       "label": "Seat",
       "file_type": "code",
       "source_file": "src/ui/Table.tsx",
@@ -167,6 +154,19 @@
       "community": 2,
       "community_name": "types.ts",
       "norm_label": "deal"
+    },
+    {
+      "label": "Action",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L75",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "shared_engine_types_action",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "action"
     },
     {
       "label": "Card",
@@ -299,19 +299,6 @@
       "norm_label": "suit"
     },
     {
-      "label": "TrickCard",
-      "file_type": "code",
-      "source_file": "shared/engine/types.ts",
-      "source_location": "L37",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "id": "shared_engine_types_trickcard",
-      "community": 2,
-      "community_name": "types.ts",
-      "norm_label": "trickcard"
-    },
-    {
       "label": "CompletedTrick",
       "file_type": "code",
       "source_file": "src/game/useGame.ts",
@@ -338,6 +325,19 @@
       "norm_label": "playstateoptions"
     },
     {
+      "label": "TrickCard",
+      "file_type": "code",
+      "source_file": "shared/engine/types.ts",
+      "source_location": "L37",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "id": "shared_engine_types_trickcard",
+      "community": 5,
+      "community_name": "rules.ts",
+      "norm_label": "trickcard"
+    },
+    {
       "label": "SoundName",
       "file_type": "code",
       "source_file": "src/game/useSfx.ts",
@@ -349,30 +349,6 @@
       "community": 9,
       "community_name": "useSfx.ts",
       "norm_label": "soundname"
-    },
-    {
-      "label": "_clamp()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L99",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_clamp",
-      "community": 0,
-      "community_name": "_mix",
-      "norm_label": "_clamp()"
-    },
-    {
-      "label": "light_from()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L177",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_light_from",
-      "community": 0,
-      "community_name": "_mix",
-      "norm_label": "light_from()"
     },
     {
       "label": "make_fireplace()",
@@ -399,10 +375,22 @@
       "norm_label": "make_floorboards()"
     },
     {
-      "label": "make_shelf()",
+      "label": "make_rug()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
       "source_location": "L1693",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_make_rug",
+      "community": 0,
+      "community_name": "_mix",
+      "norm_label": "make_rug()"
+    },
+    {
+      "label": "make_shelf()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1740",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_make_shelf",
@@ -493,42 +481,6 @@
       "community": 0,
       "community_name": "_mix",
       "norm_label": "ramp()"
-    },
-    {
-      "label": "_shift()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L103",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_shift",
-      "community": 0,
-      "community_name": "_mix",
-      "norm_label": "_shift()"
-    },
-    {
-      "label": "BidPanel()",
-      "file_type": "code",
-      "source_file": "src/ui/BidPanel.tsx",
-      "source_location": "L41",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_ui_bidpanel_bidpanel",
-      "community": 11,
-      "community_name": "fullGame.test.tsx",
-      "norm_label": "bidpanel()"
-    },
-    {
-      "label": "label()",
-      "file_type": "code",
-      "source_file": "src/ui/BidPanel.tsx",
-      "source_location": "L11",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_ui_bidpanel_label",
-      "community": 11,
-      "community_name": "fullGame.test.tsx",
-      "norm_label": "label()"
     },
     {
       "label": "advance()",
@@ -637,6 +589,30 @@
       "community": 13,
       "community_name": "Table.tsx",
       "norm_label": "useupcardreveal()"
+    },
+    {
+      "label": "BidPanel()",
+      "file_type": "code",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L41",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_bidpanel_bidpanel",
+      "community": 13,
+      "community_name": "Table.tsx",
+      "norm_label": "bidpanel()"
+    },
+    {
+      "label": "label()",
+      "file_type": "code",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L11",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_ui_bidpanel_label",
+      "community": 13,
+      "community_name": "Table.tsx",
+      "norm_label": "label()"
     },
     {
       "label": "Card()",
@@ -1191,6 +1167,18 @@
       "norm_label": "body_color()"
     },
     {
+      "label": "draw_glyph()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L360",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_draw_glyph",
+      "community": 16,
+      "community_name": "main",
+      "norm_label": "draw_glyph()"
+    },
+    {
       "label": "draw_old_timer_face()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
@@ -1218,7 +1206,7 @@
       "label": "main()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L1754",
+      "source_location": "L1801",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_main",
@@ -1350,7 +1338,7 @@
       "label": "save_asset()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
-      "source_location": "L1746",
+      "source_location": "L1793",
       "_callable": true,
       "_origin": "ast",
       "id": "art_generate_art_save_asset",
@@ -1395,18 +1383,6 @@
       "norm_label": "composite_sprite()"
     },
     {
-      "label": "contact_shadow()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L251",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_contact_shadow",
-      "community": 17,
-      "community_name": "composite_sprite",
-      "norm_label": "contact_shadow()"
-    },
-    {
       "label": "darken()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
@@ -1429,18 +1405,6 @@
       "community": 17,
       "community_name": "composite_sprite",
       "norm_label": "_flame()"
-    },
-    {
-      "label": "make_cat_frames()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L1662",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_make_cat_frames",
-      "community": 17,
-      "community_name": "composite_sprite",
-      "norm_label": "make_cat_frames()"
     },
     {
       "label": "make_fire_frames()",
@@ -1501,18 +1465,6 @@
       "community": 18,
       "community_name": "draw_card_frame",
       "norm_label": "draw_card_frame()"
-    },
-    {
-      "label": "draw_glyph()",
-      "file_type": "code",
-      "source_file": "art/generate_art.py",
-      "source_location": "L360",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "art_generate_art_draw_glyph",
-      "community": 18,
-      "community_name": "draw_card_frame",
-      "norm_label": "draw_glyph()"
     },
     {
       "label": "_score_card_frame()",
@@ -1947,6 +1899,42 @@
       "norm_label": "selecthands()"
     },
     {
+      "label": "_clamp()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L99",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_clamp",
+      "community": 20,
+      "community_name": "light_from",
+      "norm_label": "_clamp()"
+    },
+    {
+      "label": "light_from()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L177",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_light_from",
+      "community": 20,
+      "community_name": "light_from",
+      "norm_label": "light_from()"
+    },
+    {
+      "label": "_shift()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L103",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_shift",
+      "community": 20,
+      "community_name": "light_from",
+      "norm_label": "_shift()"
+    },
+    {
       "label": "make_sprite_sheet()",
       "file_type": "code",
       "source_file": "art/generate_art.py",
@@ -1957,6 +1945,30 @@
       "community": 21,
       "community_name": "make_sprite_sheet",
       "norm_label": "make_sprite_sheet()"
+    },
+    {
+      "label": "contact_shadow()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L251",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_contact_shadow",
+      "community": 22,
+      "community_name": "make_cat_frames",
+      "norm_label": "contact_shadow()"
+    },
+    {
+      "label": "make_cat_frames()",
+      "file_type": "code",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1662",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "art_generate_art_make_cat_frames",
+      "community": 22,
+      "community_name": "make_cat_frames",
+      "norm_label": "make_cat_frames()"
     },
     {
       "label": "bestSuitByTrumpCount()",
@@ -2439,17 +2451,6 @@
       "norm_label": "titlescreen()"
     },
     {
-      "label": "Move a colour toward white (amount > 0) or black (amount < 0), with a hue\u2026",
-      "file_type": "rationale",
-      "source_file": "art/generate_art.py",
-      "source_location": "L104",
-      "_origin": "ast",
-      "id": "art_generate_art_rationale_104",
-      "community": 0,
-      "community_name": "_mix",
-      "norm_label": "move a colour toward white (amount > 0) or black (amount < 0), with a hue..."
-    },
-    {
       "label": "Table surface \u2014 horizontal planks, lit from above. **The calmest surface in the\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
@@ -2549,7 +2550,7 @@
       "norm_label": "tileable floor \u2014 long boards, lit from above, deliberately quiet. judged tiled..."
     },
     {
-      "label": "A wall shelf with clutter \u2014 jars, books, a lantern. Placed once, never tiled,\u2026",
+      "label": "A woven rug on the floor beneath the table's near edge (Phase 2f.5). Deferred\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
       "source_location": "L1694",
@@ -2557,18 +2558,18 @@
       "id": "art_generate_art_rationale_1694",
       "community": 0,
       "community_name": "_mix",
-      "norm_label": "a wall shelf with clutter \u2014 jars, books, a lantern. placed once, never tiled,..."
+      "norm_label": "a woven rug on the floor beneath the table's near edge (phase 2f.5). deferred..."
     },
     {
-      "label": "Relight a finished sprite directionally, as a post-process. **The measurement\u2026",
+      "label": "A wall shelf with clutter \u2014 jars, books, a lantern. Placed once, never tiled,\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
-      "source_location": "L178",
+      "source_location": "L1741",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_178",
+      "id": "art_generate_art_rationale_1741",
       "community": 0,
       "community_name": "_mix",
-      "norm_label": "relight a finished sprite directionally, as a post-process. **the measurement..."
+      "norm_label": "a wall shelf with clutter \u2014 jars, books, a lantern. placed once, never tiled,..."
     },
     {
       "label": "CLAUDE.md",
@@ -2604,39 +2605,6 @@
       "community": 11,
       "community_name": "fullGame.test.tsx",
       "norm_label": "trick_hold_ms"
-    },
-    {
-      "label": "BidPanel.tsx",
-      "file_type": "code",
-      "source_file": "src/ui/BidPanel.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_ui_bidpanel",
-      "community": 11,
-      "community_name": "fullGame.test.tsx",
-      "norm_label": "bidpanel.tsx"
-    },
-    {
-      "label": "BID_PHASES",
-      "file_type": "code",
-      "source_file": "src/ui/BidPanel.tsx",
-      "source_location": "L30",
-      "_origin": "ast",
-      "id": "src_ui_bidpanel_bid_phases",
-      "community": 11,
-      "community_name": "fullGame.test.tsx",
-      "norm_label": "bid_phases"
-    },
-    {
-      "label": "SUIT_LABEL",
-      "file_type": "code",
-      "source_file": "src/ui/BidPanel.tsx",
-      "source_location": "L4",
-      "_origin": "ast",
-      "id": "src_ui_bidpanel_suit_label",
-      "community": 11,
-      "community_name": "fullGame.test.tsx",
-      "norm_label": "suit_label"
     },
     {
       "label": "fullGame.test.tsx",
@@ -2942,6 +2910,39 @@
       "community": 13,
       "community_name": "Table.tsx",
       "norm_label": "useupcardreveal.ts"
+    },
+    {
+      "label": "BidPanel.tsx",
+      "file_type": "code",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_ui_bidpanel",
+      "community": 13,
+      "community_name": "Table.tsx",
+      "norm_label": "bidpanel.tsx"
+    },
+    {
+      "label": "BID_PHASES",
+      "file_type": "code",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "src_ui_bidpanel_bid_phases",
+      "community": 13,
+      "community_name": "Table.tsx",
+      "norm_label": "bid_phases"
+    },
+    {
+      "label": "SUIT_LABEL",
+      "file_type": "code",
+      "source_file": "src/ui/BidPanel.tsx",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "src_ui_bidpanel_suit_label",
+      "community": 13,
+      "community_name": "Table.tsx",
+      "norm_label": "suit_label"
     },
     {
       "label": "Card.tsx",
@@ -3277,9 +3278,9 @@
       "label": "Snap to the PX grid, prove it, halve to true resolution, write.",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
-      "source_location": "L1747",
+      "source_location": "L1794",
       "_origin": "ast",
-      "id": "art_generate_art_rationale_1747",
+      "id": "art_generate_art_rationale_1794",
       "community": 16,
       "community_name": "main",
       "norm_label": "snap to the px grid, prove it, halve to true resolution, write."
@@ -3382,28 +3383,6 @@
       "community": 17,
       "community_name": "composite_sprite",
       "norm_label": "the opponent, seated in the room \u2014 same character as the scoreboard portrait..."
-    },
-    {
-      "label": "A cat asleep by the fire, two frames of slow breathing. Two frames is enough\u2026",
-      "file_type": "rationale",
-      "source_file": "art/generate_art.py",
-      "source_location": "L1663",
-      "_origin": "ast",
-      "id": "art_generate_art_rationale_1663",
-      "community": 17,
-      "community_name": "composite_sprite",
-      "norm_label": "a cat asleep by the fire, two frames of slow breathing. two frames is enough..."
-    },
-    {
-      "label": "A stepped dark ellipse to sit under an object so it reads as resting on a\u2026",
-      "file_type": "rationale",
-      "source_file": "art/generate_art.py",
-      "source_location": "L252",
-      "_origin": "ast",
-      "id": "art_generate_art_rationale_252",
-      "community": 17,
-      "community_name": "composite_sprite",
-      "norm_label": "a stepped dark ellipse to sit under an object so it reads as resting on a..."
     },
     {
       "label": "`parts` is a list of (draw_fn, color) painted in order \u2014 later parts cover\u2026",
@@ -3525,6 +3504,17 @@
       "community": 2,
       "community_name": "types.ts",
       "norm_label": "terminal_phases"
+    },
+    {
+      "label": "bot/index.ts",
+      "file_type": "code",
+      "source_file": "shared/bot/index.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "shared_bot_index",
+      "community": 2,
+      "community_name": "types.ts",
+      "norm_label": "bot/index.ts"
     },
     {
       "label": "config.ts",
@@ -3692,6 +3682,28 @@
       "norm_label": "reducer.test.ts"
     },
     {
+      "label": "Move a colour toward white (amount > 0) or black (amount < 0), with a hue\u2026",
+      "file_type": "rationale",
+      "source_file": "art/generate_art.py",
+      "source_location": "L104",
+      "_origin": "ast",
+      "id": "art_generate_art_rationale_104",
+      "community": 20,
+      "community_name": "light_from",
+      "norm_label": "move a colour toward white (amount > 0) or black (amount < 0), with a hue..."
+    },
+    {
+      "label": "Relight a finished sprite directionally, as a post-process. **The measurement\u2026",
+      "file_type": "rationale",
+      "source_file": "art/generate_art.py",
+      "source_location": "L178",
+      "_origin": "ast",
+      "id": "art_generate_art_rationale_178",
+      "community": 20,
+      "community_name": "light_from",
+      "norm_label": "relight a finished sprite directionally, as a post-process. **the measurement..."
+    },
+    {
       "label": "Paste equal-sized frames into one horizontal strip for CSS steps() animation.\u2026",
       "file_type": "rationale",
       "source_file": "art/generate_art.py",
@@ -3701,6 +3713,28 @@
       "community": 21,
       "community_name": "make_sprite_sheet",
       "norm_label": "paste equal-sized frames into one horizontal strip for css steps() animation...."
+    },
+    {
+      "label": "A cat asleep by the fire, two frames of slow breathing. Two frames is enough\u2026",
+      "file_type": "rationale",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1663",
+      "_origin": "ast",
+      "id": "art_generate_art_rationale_1663",
+      "community": 22,
+      "community_name": "make_cat_frames",
+      "norm_label": "a cat asleep by the fire, two frames of slow breathing. two frames is enough..."
+    },
+    {
+      "label": "A stepped dark ellipse to sit under an object so it reads as resting on a\u2026",
+      "file_type": "rationale",
+      "source_file": "art/generate_art.py",
+      "source_location": "L252",
+      "_origin": "ast",
+      "id": "art_generate_art_rationale_252",
+      "community": 22,
+      "community_name": "make_cat_frames",
+      "norm_label": "a stepped dark ellipse to sit under an object so it reads as resting on a..."
     },
     {
       "label": "tsconfig.json",
@@ -4427,17 +4461,6 @@
       "community": 5,
       "community_name": "rules.ts",
       "norm_label": "suits"
-    },
-    {
-      "label": "bot/index.ts",
-      "file_type": "code",
-      "source_file": "shared/bot/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "shared_bot_index",
-      "community": 5,
-      "community_name": "rules.ts",
-      "norm_label": "bot/index.ts"
     },
     {
       "label": "rules.ts",
@@ -5321,7 +5344,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1760",
+      "source_location": "L1807",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5333,7 +5356,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1760",
+      "source_location": "L1807",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5345,7 +5368,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1761",
+      "source_location": "L1808",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5357,7 +5380,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1763",
+      "source_location": "L1810",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5369,7 +5392,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1778",
+      "source_location": "L1825",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5381,7 +5404,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1779",
+      "source_location": "L1826",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5393,7 +5416,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1783",
+      "source_location": "L1830",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5405,7 +5428,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1784",
+      "source_location": "L1831",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5417,7 +5440,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1784",
+      "source_location": "L1831",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5429,7 +5452,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1785",
+      "source_location": "L1832",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5441,7 +5464,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1786",
+      "source_location": "L1833",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5453,7 +5476,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1787",
+      "source_location": "L1834",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5465,7 +5488,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1788",
+      "source_location": "L1835",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5477,19 +5500,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1797",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "art_generate_art_main",
-      "target": "art_generate_art_make_opponent",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "art/generate_art.py",
-      "source_location": "L1801",
+      "source_location": "L1838",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5501,7 +5512,31 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1801",
+      "source_location": "L1838",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_main",
+      "target": "art_generate_art_make_rug",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1847",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_main",
+      "target": "art_generate_art_make_opponent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1851",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5513,7 +5548,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1803",
+      "source_location": "L1853",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5525,7 +5560,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1808",
+      "source_location": "L1858",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5537,7 +5572,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1815",
+      "source_location": "L1865",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5549,7 +5584,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1820",
+      "source_location": "L1870",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -5561,7 +5596,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1831",
+      "source_location": "L1881",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_main",
@@ -6197,6 +6232,30 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
+      "source_location": "L1712",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_make_rug",
+      "target": "art_generate_art_ramp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1713",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_make_rug",
+      "target": "art_generate_art_mix",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
       "source_location": "L1006",
       "weight": 1.0,
       "_origin": "ast",
@@ -6377,7 +6436,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1698",
+      "source_location": "L1745",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_shelf",
@@ -6389,7 +6448,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1710",
+      "source_location": "L1757",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_shelf",
@@ -6701,7 +6760,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1748",
+      "source_location": "L1795",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_save_asset",
@@ -6713,7 +6772,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1749",
+      "source_location": "L1796",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_save_asset",
@@ -8165,7 +8224,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/ui/Table.tsx",
-      "source_location": "L260",
+      "source_location": "L268",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_ui_table_table",
@@ -11981,7 +12040,7 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1746",
+      "source_location": "L1793",
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_save_asset",
@@ -12069,6 +12128,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_make_opponent",
+      "target": "image",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1693",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_make_rug",
       "target": "image",
       "confidence_score": 1.0
     },
@@ -12558,29 +12629,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art",
+      "target": "art_generate_art_make_rug",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1740",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art",
       "target": "art_generate_art_make_shelf",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "art/generate_art.py",
-      "source_location": "L1746",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "art_generate_art",
-      "target": "art_generate_art_save_asset",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "art/generate_art.py",
-      "source_location": "L1754",
-      "weight": 1.0,
-      "_origin": "ast",
-      "source": "art_generate_art",
-      "target": "art_generate_art_main",
       "confidence_score": 1.0
     },
     {
@@ -12592,6 +12652,28 @@
       "_origin": "ast",
       "source": "art_generate_art",
       "target": "art_generate_art_light_from",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1793",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art",
+      "target": "art_generate_art_save_asset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1801",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art",
+      "target": "art_generate_art_main",
       "confidence_score": 1.0
     },
     {
@@ -15484,18 +15566,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "art_generate_art_rationale_1694",
-      "target": "art_generate_art_make_shelf",
+      "target": "art_generate_art_make_rug",
       "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "art/generate_art.py",
-      "source_location": "L1747",
+      "source_location": "L1741",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "art_generate_art_rationale_1747",
-      "target": "art_generate_art_save_asset",
+      "source": "art_generate_art_rationale_1741",
+      "target": "art_generate_art_make_shelf",
       "confidence_score": 1.0
     },
     {
@@ -15507,6 +15589,17 @@
       "_origin": "ast",
       "source": "art_generate_art_rationale_178",
       "target": "art_generate_art_light_from",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "art/generate_art.py",
+      "source_location": "L1794",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "art_generate_art_rationale_1794",
+      "target": "art_generate_art_save_asset",
       "confidence_score": 1.0
     },
     {
@@ -16298,5 +16391,5 @@
       "source_file": "RULES.md"
     }
   ],
-  "built_at_commit": "5c0f966d2258d12c762e30d0b402c0de6ce2b5ef"
+  "built_at_commit": "707c025bde52f84deb80c26bb1b33045936ec767"
 }

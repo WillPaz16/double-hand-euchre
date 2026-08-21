@@ -19,5 +19,7 @@
   "17": "composite_sprite",
   "18": "draw_card_frame",
   "19": "scale-audit.js",
-  "21": "make_sprite_sheet"
+  "20": "light_from",
+  "21": "make_sprite_sheet",
+  "22": "make_cat_frames"
 }
