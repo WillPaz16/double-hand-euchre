@@ -99,8 +99,15 @@
     // The min-width gate was supposed to guarantee this and did not: at 1010px it revealed
     // scenery already hanging 25px off the left edge, because the gate was derived from a
     // table width that had since changed.
+    // Ambient light washes are EXEMPT: they're deliberately oversized gradients meant to
+    // bleed past the object casting them (firelight, moonlight, the hearth's room-wide glow,
+    // the vignette), not discrete objects a player needs to recognize. Found by this check
+    // itself flagging .scene-moonlight at 51% lost on a phone — correctly measuring the glow,
+    // incorrectly treating "glow bleeds off-canvas" as the same bug as "sprite got clipped".
+    const AMBIENT = /glow|light|vignette/;
     const offscreen = [];
     for (const el of document.querySelectorAll('[class*="scene-"]')) {
+      if (AMBIENT.test(el.className)) continue;
       const cs = getComputedStyle(el);
       if (cs.display === 'none' || cs.backgroundImage === 'none') continue;
       const r = el.getBoundingClientRect();

@@ -1,7 +1,7 @@
 # Graph Report - euchre  (2026-08-20)
 
 ## Corpus Check
-- 49 files · ~43,847 words
+- 49 files · ~43,913 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f5315846`
+- Built from commit: `823cdc13`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -42,23 +42,23 @@
 3. `reduce()` - 20 edges
 4. `legalActions()` - 19 edges
 5. `otherPlayer()` - 16 edges
-6. `useGame()` - 15 edges
-7. `Art assets — spec` - 15 edges
+6. `Art assets — spec` - 15 edges
+7. `useGame()` - 15 edges
 8. `Player` - 14 edges
 9. `Card` - 13 edges
 10. `PlayerView` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `playGame()` --calls--> `chooseMove()`  [EXTRACTED]
-  scripts/balance.ts → shared/bot/heuristic.ts
-- `useGame()` --calls--> `chooseMove()`  [EXTRACTED]
-  src/game/useGame.ts → shared/bot/heuristic.ts
-- `useGame()` --calls--> `trickWinnerIndex()`  [EXTRACTED]
-  src/game/useGame.ts → shared/engine/rules.ts
 - `CompletedTrick` --references--> `Player`  [EXTRACTED]
+  src/game/useGame.ts → shared/engine/types.ts
+- `CompletedTrick` --references--> `TrickCard`  [EXTRACTED]
   src/game/useGame.ts → shared/engine/types.ts
 - `PlayStateOptions` --references--> `LonerTier`  [EXTRACTED]
   tests/helpers.ts → shared/engine/types.ts
+- `playFullGame()` --calls--> `useGame()`  [EXTRACTED]
+  tests/fullGame.test.tsx → src/game/useGame.ts
+- `playGame()` --calls--> `chooseMove()`  [EXTRACTED]
+  scripts/balance.ts → shared/bot/heuristic.ts
 
 ## Import Cycles
 - None detected.
@@ -143,7 +143,7 @@ Cohesion: 0.40
 Nodes (5): _clamp(), light_from(), Move a colour toward white (amount > 0) or black (amount < 0), with a hue…, Relight a finished sprite directionally, as a post-process. **The measurement…, _shift()
 
 ## Knowledge Gaps
-- **94 isolated node(s):** `name`, `private`, `type`, `test`, `test:watch` (+89 more)
+- **94 isolated node(s):** `Why this is stated so forcefully`, `Regenerating: use Python 3.11`, `Palette — cabin by the fire`, `Cards`, `Layout budget — asserted, not eyeballed` (+89 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -154,7 +154,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Why does `Card` connect `types.ts` to `Table.tsx`, `rules.ts`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `name`, `private`, `type` to the rest of the system?**
+- **What connects `Why this is stated so forcefully`, `Regenerating: use Python 3.11`, `Palette — cabin by the fire` to the rest of the system?**
   _94 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `_mix` be split into smaller, more focused modules?**
   _Cohesion score 0.13157894736842105 - nodes in this community are weakly interconnected._

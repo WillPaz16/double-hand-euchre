@@ -91,36 +91,28 @@ body {
  *     the top means no two regions of wall read the same, which is what actually stops the
  *     eye finding the grid — and it costs one gradient rather than a second, larger tile.
  *     Doing this with light rather than with noise is why the two jobs are one element. */
+/* The warm key sits on the hearth's corner and the cool fill sits opposite, at the window.
+   This used to be gated at 1000px on the reasoning that the hearth wasn't on screen below
+   that width — untrue now that the hearth is gateless and cropped, not hidden (2f.2), so the
+   anchored version applies at every width. On the narrowest phones the hearth itself is
+   mostly cropped out of view but the glow it casts still reads as coming from that corner,
+   which is the more honest failure mode: a light with no visible source at all, which is
+   what the old bottom-centre default amounted to. */
 .scene-hearth-glow {
   position: absolute;
   inset: 0;
   background:
     radial-gradient(
-      ellipse 70% 45% at 50% 100%,
-      rgba(255, 140, 60, 0.16),
-      rgba(255, 140, 60, 0) 70%
+      ellipse 55% 60% at 8% 72%,
+      rgba(255, 146, 62, 0.20),
+      rgba(255, 140, 60, 0) 72%
     ),
     /* The non-repeating field: broad, low-alpha, deliberately off-centre so it never lines
        up with the tile grid or with the table's own symmetry. */
-    radial-gradient(ellipse 60% 70% at 18% 78%, rgba(255, 156, 74, 0.10), rgba(0, 0, 0, 0) 70%),
-    radial-gradient(ellipse 55% 60% at 88% 22%, rgba(120, 158, 205, 0.07), rgba(0, 0, 0, 0) 70%),
-    radial-gradient(ellipse 80% 45% at 62% 8%, rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0) 75%);
+    radial-gradient(ellipse 45% 50% at 30% 92%, rgba(255, 168, 88, 0.09), rgba(0, 0, 0, 0) 70%),
+    radial-gradient(ellipse 50% 55% at 93% 26%, rgba(120, 158, 205, 0.09), rgba(0, 0, 0, 0) 70%),
+    radial-gradient(ellipse 80% 45% at 66% 6%, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0) 75%);
   animation: hearth-glow 5s ease-in-out infinite;
-}
-/* Once the hearth is actually on screen, the warm key moves onto it and the room is lit from
-   its own fire. The cool fill stays opposite, at the window. */
-@media (min-width: 1000px) {
-  .scene-hearth-glow {
-    background:
-      radial-gradient(
-        ellipse 55% 60% at 8% 72%,
-        rgba(255, 146, 62, 0.20),
-        rgba(255, 140, 60, 0) 72%
-      ),
-      radial-gradient(ellipse 45% 50% at 30% 92%, rgba(255, 168, 88, 0.09), rgba(0, 0, 0, 0) 70%),
-      radial-gradient(ellipse 50% 55% at 93% 26%, rgba(120, 158, 205, 0.09), rgba(0, 0, 0, 0) 70%),
-      radial-gradient(ellipse 80% 45% at 66% 6%, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0) 75%);
-  }
 }
 .scene-vignette {
   position: absolute;
@@ -161,47 +153,40 @@ body {
   box-shadow: inset 0 3px 0 rgba(255, 198, 132, 0.10);
 }
 
-/* Side scenery is gated on WIDTH, separately from lean mode's HEIGHT gate — two different
-   scarce resources. But the gate is now the ONLY thing width-dependent about it: every scene
-   object is anchored to a viewport EDGE at an `au * --px` inset, not to the table's width.
+/* Side scenery is now GATELESS (Phase 2f.2). It used to be `display: none` below a width
+   threshold — 1240, then 1000, then 720, each one derived from some other element's size at
+   the time and each one going stale the next time that element was resized. Measured at
+   1010px before the LAST such fix: the fireplace hung 25px off the left edge, the shelf 19px,
+   the cat 13px, the seated figure 25px off the right. A gate meant to prevent clipping kept
+   only moving where the clipping happened.
 
-   That is the actual fix for a bug this file has now produced twice. The gate was 1240, then
-   1000, each time derived from "the table's cap plus margins — and each time the table was
-   later resized without the scenery math being updated, so the number outlived its own
-   reasoning. Measured at 1010px before this change: the fireplace hung 25px off the left
-   edge, the shelf 19px, the cat 13px, the seated figure 25px off the right. The gate was
-   promising margin that the layout had already taken back.
-
-   Anchored to the edges, the only question a gate has to answer is "is there room beside the
-   table at all": 560px felt + two sprites + insets. 720 satisfies that at --px 1, and --px
-   only steps to 2 at 900px where the doubled sprites still fit. Phones are still excluded
-   here; giving them the room is 2f.2's job, and the answer there is cropping, not a gate. */
+   The actual fix is to stop hiding and start CROPPING. `.scene-layer` is `position: fixed`
+   with `overflow: hidden` (see its own rule, above), so an object anchored to a viewport edge
+   is naturally clipped by whatever margin exists — full fireplace on a wide desktop, a sliver
+   of firelight in the corner of a phone, nothing in between to get wrong. On the narrowest
+   phones that sliver is genuinely small, which is the deliberate tradeoff from the phase plan:
+   "same room, cropped tighter" over a second, simplified composition to maintain. The room is
+   visible everywhere now; how MUCH of it is visible is just geometry. */
 .scene-fireplace,
 .scene-window {
-  display: none;
+  display: block;
+  position: absolute;
 }
-@media (min-width: 720px) {
-  .scene-fireplace,
-  .scene-window {
-    display: block;
-    position: absolute;
-  }
-  /* Anchored so the hearth's base meets the floor line rather than floating on the wall. */
-  .scene-fireplace {
-    left: calc(6px * var(--px));
-    bottom: calc(34% - 3px * var(--px));
-    width: calc(70px * var(--px));
-    height: calc(93px * var(--px));
-    background-image: url('/art/scene/fireplace.png');
-    background-size: 100% 100%;
-    image-rendering: pixelated;
-  }
-  .scene-window {
-    right: calc(8px * var(--px));
-    top: 16%;
-    width: calc(60px * var(--px));
-    height: calc(73px * var(--px));
-  }
+/* Anchored so the hearth's base meets the floor line rather than floating on the wall. */
+.scene-fireplace {
+  left: calc(6px * var(--px));
+  bottom: calc(34% - 3px * var(--px));
+  width: calc(70px * var(--px));
+  height: calc(93px * var(--px));
+  background-image: url('/art/scene/fireplace.png');
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+.scene-window {
+  right: calc(8px * var(--px));
+  top: 16%;
+  width: calc(60px * var(--px));
+  height: calc(73px * var(--px));
 }
 
 /* One frame's window onto the strip; the strip slides behind it. */
@@ -295,36 +280,31 @@ body {
   );
 }
 /* --- Living things (2d.3) -------------------------------------------------------------- */
-/* All width-gated with the rest of the side scenery: same scarce resource, same 720px rule.
-   The Old-Timer is NOT in this list any more — he is not room decor, he is the person you are
-   playing, and he now lives in Table.tsx across the table (2f.3). */
+/* Gateless, same reasoning and the same 2f.2 change as the fireplace/window above — cropped
+   by `.scene-layer`'s own `overflow: hidden`, not hidden by a width threshold. The Old-Timer
+   is NOT in this list any more — he is not room decor, he is the person you are playing, and
+   he now lives in Table.tsx across the table (2f.3). */
 .scene-cat,
 .scene-shelf {
-  display: none;
+  display: block;
+  position: absolute;
+  image-rendering: pixelated;
 }
-@media (min-width: 720px) {
-  .scene-cat,
-  .scene-shelf {
-    display: block;
-    position: absolute;
-    image-rendering: pixelated;
-  }
-  /* Curled on the floor by the hearth, where a cat would actually be. */
-  .scene-cat {
-    left: calc(20px * var(--px));
-    bottom: calc(34% - 23px * var(--px));
-    width: calc(26px * var(--px));
-    height: calc(17px * var(--px));
-    overflow: hidden;
-  }
-  .scene-shelf {
-    left: calc(10px * var(--px));
-    bottom: calc(34% + 113px * var(--px));
-    width: calc(59px * var(--px));
-    height: calc(31px * var(--px));
-    background-image: url('/art/scene/shelf.png');
-    background-size: 100% 100%;
-  }
+/* Curled on the floor by the hearth, where a cat would actually be. */
+.scene-cat {
+  left: calc(20px * var(--px));
+  bottom: calc(34% - 23px * var(--px));
+  width: calc(26px * var(--px));
+  height: calc(17px * var(--px));
+  overflow: hidden;
+}
+.scene-shelf {
+  left: calc(10px * var(--px));
+  bottom: calc(34% + 113px * var(--px));
+  width: calc(59px * var(--px));
+  height: calc(31px * var(--px));
+  background-image: url('/art/scene/shelf.png');
+  background-size: 100% 100%;
 }
 .scene-cat-strip {
   width: calc(52px * var(--px));   /* 2 frames x 26au */
@@ -778,6 +758,19 @@ body {
      table that merely looks bigger. Desktop's vertical density is real and stays open for
      2f.4/2f.5, where the felt becomes actual art and the stage gets composed as a whole. */
   aspect-ratio: 1.6;
+  /* `align-self: stretch` makes height the DEFINITE input and derives width from it — which
+     is backwards on a tall narrow phone. `.table-area`'s centre row is `1fr`, so on an
+     812px-tall viewport with little other chrome it can stretch the felt to 439px tall before
+     `max-width` clips the derived width back down, and `aspect-ratio` does not reverse
+     itself once height was the definite side: the result was a 360x439 shape, nowhere near
+     1.6, most of it not even inside the visible ellipse's painted area.
+
+     max-height closes the loop the OTHER direction: capped at what the width limit's own
+     aspect ratio implies, height can never run ahead of the number that already governs
+     width. Not a rediscovery of the ceiling removed in 2f.3 — that one was a stale constant
+     (560px straitjacket that pinned the table on a phone); this one is DERIVED from the same
+     max-width already above, so it cannot go stale the same way. */
+  max-height: calc(min(560px, 96vw) / 1.6);
   /* Still round: a table seen from above, with hands at its north and south edges rather than
      all four. The ellipse shape doesn't depend on how many sides have seats. */
   border-radius: 50%;
