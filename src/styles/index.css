@@ -1,3 +1,41 @@
+/* ============================================================================
+   --px : THE UNIT  (Phase 2f.1)
+
+   Every piece of art in this game is authored in ART PIXELS (au) at its true resolution,
+   and rendered at a WHOLE-NUMBER multiple of that resolution. `--px` is that multiple. It
+   is the only thing that decides how big anything is; there is no second sizing system.
+
+   Why this exists. Before it, six different scaling behaviours coexisted and disagreed:
+   cards rendered at 1.0x in the tray, 0.5x in lean mode and 0.25x at a seat; the opponent
+   portrait at 0.6x; scene sprites at a fixed pixel size that never changed at any viewport;
+   the felt as a fluid CSS ellipse with no art at all. The fractional ones were not merely
+   soft — 0.6x drops pixel rows irregularly and visibly bent the Old-Timer's moustache, and
+   0.25x threw away 80% of the card back's lattice. Two separate comments in this codebase
+   asserted the whole-number rule while the code broke it, because it was only ever checked
+   by eye, per component, at one viewport.
+
+   The rule, now enforceable: **any size derived from art is `calc(<au> * var(--px) * 1px)`,
+   never a bare pixel count.** scripts/scale-audit.js walks the live DOM and fails on any
+   non-integer scale, which is the check that would have caught all of the above on the day
+   it landed.
+
+   `--px-seat` is a deliberate, separate INTEGER step, not an exception: hands resting on the
+   table are drawn one step smaller than the hand you are holding, which is also true of a
+   real table seen from where you sit.
+   ============================================================================ */
+:root {
+  --px: 1;
+  --px-seat: 1;
+}
+/* Two axes, because both can run out: a phone is width-limited, a laptop in landscape is
+   height-limited. Stepping up only when BOTH have room is what stops the table outgrowing
+   a short viewport. */
+@media (min-width: 900px) and (min-height: 700px) {
+  :root {
+    --px: 2;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -13,6 +51,10 @@ body {
      carries real sentences (status banner, bid button labels), not just headline numerals. */
   font-family: 'Silkscreen', system-ui, sans-serif;
   background: #1a1410 url('/art/wall_texture.png');
+  /* Tiles scale with --px like everything else. They used to be drawn at their own file size
+     forever, so at 2400px wide the "logs" thinned into slats — the room got relatively
+     smaller the bigger your screen was. */
+  background-size: calc(64px * var(--px));
   image-rendering: pixelated;
   color: #f0e6d6;
   overscroll-behavior: none;
@@ -111,6 +153,7 @@ body {
   height: 34%;
   background-image: url('/art/scene/floor.png');
   background-repeat: repeat;
+  background-size: calc(80px * var(--px));
   image-rendering: pixelated;
   /* The junction itself: a dark skirting line plus a lit lip, the same lit-edge/shadow pair
      the table rim uses to read as a physical boundary rather than a colour change. */
@@ -119,20 +162,25 @@ body {
 }
 
 /* Side scenery is gated on WIDTH, separately from lean mode's HEIGHT gate — two different
-   scarce resources. 1000 = the table's 760px cap plus 120px of real margin each side.
+   scarce resources. But the gate is now the ONLY thing width-dependent about it: every scene
+   object is anchored to a viewport EDGE at an `au * --px` inset, not to the table's width.
 
-   The gate was 1240 until the table was rebuilt (Phase 2e). That number was the old
-   full-width panel's 900px cap plus its margins, and it meant the entire room was
-   `display: none` on every phone and most laptop windows — every scenery asset built in 2d.2
-   and 2d.3 was invisible to almost everyone. Narrowing the table is what bought the margin
-   back; the gate is a consequence of the layout, so it moves when the layout does. (An even
-   earlier 1120 gate let both objects slide *under* the table and, being z-index -1, simply be
-   occluded by it: the gate promised margin that the layout then took back.) */
+   That is the actual fix for a bug this file has now produced twice. The gate was 1240, then
+   1000, each time derived from "the table's cap plus margins" — and each time the table was
+   later resized without the scenery math being updated, so the number outlived its own
+   reasoning. Measured at 1010px before this change: the fireplace hung 25px off the left
+   edge, the shelf 19px, the cat 13px, the seated figure 25px off the right. The gate was
+   promising margin that the layout had already taken back.
+
+   Anchored to the edges, the only question a gate has to answer is "is there room beside the
+   table at all": 560px felt + two sprites + insets. 720 satisfies that at --px 1, and --px
+   only steps to 2 at 900px where the doubled sprites still fit. Phones are still excluded
+   here; giving them the room is 2f.2's job, and the answer there is cropping, not a gate. */
 .scene-fireplace,
 .scene-window {
   display: none;
 }
-@media (min-width: 1000px) {
+@media (min-width: 720px) {
   .scene-fireplace,
   .scene-window {
     display: block;
@@ -140,39 +188,41 @@ body {
   }
   /* Anchored so the hearth's base meets the floor line rather than floating on the wall. */
   .scene-fireplace {
-    left: calc((100vw - 760px) / 2 - 150px);
-    bottom: calc(34% - 6px);
-    width: 140px;
-    height: 186px;
+    left: calc(6px * var(--px));
+    bottom: calc(34% - 3px * var(--px));
+    width: calc(70px * var(--px));
+    height: calc(93px * var(--px));
     background-image: url('/art/scene/fireplace.png');
+    background-size: 100% 100%;
     image-rendering: pixelated;
   }
   .scene-window {
-    right: calc((100vw - 760px) / 2 - 130px);
+    right: calc(8px * var(--px));
     top: 16%;
-    width: 120px;
-    height: 146px;
+    width: calc(60px * var(--px));
+    height: calc(73px * var(--px));
   }
 }
 
 /* One frame's window onto the strip; the strip slides behind it. */
 .scene-fire {
   position: absolute;
-  left: 37px;
-  top: 118px;
-  width: 66px;
-  height: 58px;
+  left: calc(18px * var(--px));
+  top: calc(59px * var(--px));
+  width: calc(33px * var(--px));
+  height: calc(29px * var(--px));
   overflow: hidden;
 }
 .scene-fire-strip {
-  width: 264px;   /* 4 frames x 66px */
-  height: 58px;
+  width: calc(132px * var(--px));   /* 4 frames x 33au */
+  height: calc(29px * var(--px));
   background-image: url('/art/scene/fire_sheet.png');
+  background-size: 100% 100%;
   image-rendering: pixelated;
   animation: fire-flicker 0.5s steps(4) infinite;
 }
 @keyframes fire-flicker {
-  to { transform: translateX(-264px); }
+  to { transform: translateX(calc(-132px * var(--px))); }
 }
 /* The light the fire throws into the room. Pulses out of phase with the flame loop so the
    two never lock into an obvious rhythm. */
@@ -202,6 +252,8 @@ body {
 }
 .scene-window-glass { background-image: url('/art/scene/window_glass.png'); }
 .scene-window-frame { background-image: url('/art/scene/window_frame.png'); }
+.scene-window-glass,
+.scene-window-frame { background-size: 100% 100%; }
 
 .scene-snow-clip {
   position: absolute;
@@ -215,16 +267,17 @@ body {
 .scene-snow {
   position: absolute;
   left: 0;
-  top: -72px;
+  top: calc(-36px * var(--px));
   width: 100%;
-  height: calc(100% + 144px);
+  height: calc(100% + 72px * var(--px));
   background-image: url('/art/scene/snow.png');
   background-repeat: repeat;
+  background-size: calc(60px * var(--px)) calc(36px * var(--px));
   image-rendering: pixelated;
   animation: snowfall 3.5s linear infinite;
 }
 @keyframes snowfall {
-  to { transform: translateY(72px); }
+  to { transform: translateY(calc(36px * var(--px))); }
 }
 /* Cool spill from the window, the counterweight to .scene-firelight. Steady, not pulsing:
    moonlight does not flicker, and a still cool source beside a breathing warm one is what
@@ -248,7 +301,7 @@ body {
 .scene-shelf {
   display: none;
 }
-@media (min-width: 1000px) {
+@media (min-width: 720px) {
   .scene-seated,
   .scene-cat,
   .scene-shelf {
@@ -262,40 +315,43 @@ body {
      space without restructuring the UI and risking the mobile height budgets. He sits at the
      side of the table instead — still a person in the room, just not opposite you. */
   .scene-seated {
-    right: calc((100vw - 760px) / 2 - 150px);
-    bottom: calc(34% - 34px);
-    width: 140px;
-    height: 196px;
+    right: calc(6px * var(--px));
+    bottom: calc(34% - 17px * var(--px));
+    width: calc(70px * var(--px));
+    height: calc(98px * var(--px));
     background-image: url('/art/scene/seated_old_timer.png');
+    background-size: 100% 100%;
     animation: seated-breathe 5.5s ease-in-out infinite;
   }
   /* Curled on the floor by the hearth, where a cat would actually be. */
   .scene-cat {
-    left: calc((100vw - 760px) / 2 - 138px);
-    bottom: calc(34% - 46px);
-    width: 52px;
-    height: 34px;
+    left: calc(20px * var(--px));
+    bottom: calc(34% - 23px * var(--px));
+    width: calc(26px * var(--px));
+    height: calc(17px * var(--px));
     overflow: hidden;
   }
   .scene-shelf {
-    left: calc((100vw - 760px) / 2 - 144px);
-    bottom: calc(34% + 226px);
-    width: 118px;
-    height: 62px;
+    left: calc(10px * var(--px));
+    bottom: calc(34% + 113px * var(--px));
+    width: calc(59px * var(--px));
+    height: calc(31px * var(--px));
     background-image: url('/art/scene/shelf.png');
+    background-size: 100% 100%;
   }
 }
 .scene-cat-strip {
-  width: 104px;   /* 2 frames x 52px */
-  height: 34px;
+  width: calc(52px * var(--px));   /* 2 frames x 26au */
+  height: calc(17px * var(--px));
   background-image: url('/art/scene/cat_sheet.png');
+  background-size: 100% 100%;
   image-rendering: pixelated;
   /* Slow enough to read as breathing rather than as a glitch. Two frames is plenty: the
      motion is a swell, not a gait. */
   animation: cat-breathe 3.4s steps(2) infinite;
 }
 @keyframes cat-breathe {
-  to { transform: translateX(-104px); }
+  to { transform: translateX(calc(-52px * var(--px))); }
 }
 /* A barely-perceptible settle, so he is not a decal. Deliberately tiny and slow — a seated
    person at rest shifts, they do not bob. */
@@ -486,7 +542,11 @@ body {
    Old-Timer's half was cut off by the right edge. */
 @media (max-width: 560px) {
   .scoreboard {
-    gap: 0.75rem;
+    /* Was overflowing at 390px — "You" clipped at left: -4px on a current iPhone. The score
+       cards now scale down with --px, so this only has to stop the flex row from being
+       squeezed past its own text. */
+    gap: 0.5rem;
+    padding-inline: 0.25rem;
   }
   .opponent-portrait {
     display: none;
@@ -520,8 +580,8 @@ body {
    Sized up from an earlier 55x65 for legibility once the hat/eyebrow overlap bug (see
    generate_art.py, _old_timer_parts) was fixed and the face was actually worth showing. */
 .opponent-portrait {
-  width: 66px;
-  height: 78px;
+  width: calc(55px * var(--px));
+  height: calc(65px * var(--px));
   image-rendering: pixelated;
   object-fit: cover;
   object-position: top;
@@ -554,8 +614,8 @@ body {
 }
 .score-card-slot {
   position: relative;
-  width: 60px;
-  height: 84px;
+  width: calc(30px * var(--px));
+  height: calc(42px * var(--px));
 }
 .score-card-pips {
   position: absolute;
@@ -567,7 +627,9 @@ body {
 .score-card-cover {
   position: absolute;
   inset: 0;
-  background-image: url('/art/card_back.png');
+  /* The scoreboard's OWN back art (30x42 au), not the deck's 50x70 squashed to fit — that
+     was rendering at 1.2x. */
+  background-image: url('/art/score_card_back.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
   transition: clip-path 350ms ease-out;
@@ -670,6 +732,7 @@ body {
   border-radius: 50%;
   background-image: url('/art/table_felt.png');
   background-repeat: repeat;
+  background-size: calc(64px * var(--px));
   image-rendering: pixelated;
   border: 5px solid #2a1a10;
   box-shadow:
@@ -705,8 +768,8 @@ body {
 /* The turned card lying across the deck, offset so both read as separate objects. */
 .kitty-upcard {
   position: absolute;
-  left: 26px;
-  top: 16px;
+  left: calc(13px * var(--px));
+  top: calc(8px * var(--px));
   transform: rotate(12deg);
   filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
 }
@@ -717,10 +780,10 @@ body {
    `animation-delay` slice — a sequential reveal built entirely from timing, no JS interval. */
 .upcard-wheel {
   position: absolute;
-  left: 26px;
-  top: 16px;
-  width: 70px;
-  height: 70px;
+  left: calc(13px * var(--px));
+  top: calc(8px * var(--px));
+  width: calc(35px * var(--px));
+  height: calc(35px * var(--px));
 }
 .upcard-wheel-frame {
   position: absolute;
@@ -808,7 +871,7 @@ body {
 }
 /* The empty seat keeps its footprint so nothing reflows when a hand is picked up. */
 .seat-fan.is-empty {
-  width: 70px;
+  width: calc(70px * var(--px));
   border-radius: 8px;
   border: 1px dashed rgba(255, 213, 74, 0.35);
 }
@@ -859,15 +922,26 @@ body {
 .seat-fan {
   display: flex;
   align-items: flex-end;
-  height: 46px;
+  /* Sized for the 35au backs plus the arc's overhang (rotated cards spill ~10au past their
+     layout box at the outer angles, which used to collide with the hand tray). */
+  height: calc(46px * var(--px));
+}
+/* Backs use the 25x35 seat asset; faces only ever appear at the end-of-deal reveal, where
+   nothing competes for the space, so they use the deck's own 50x70 art. Both integer. */
+.seat-fan .card-back {
+  width: calc(25px * var(--px));
+  height: calc(35px * var(--px));
+}
+.seat-fan .card-face {
+  width: calc(50px * var(--px-seat));
+  height: calc(70px * var(--px-seat));
 }
 .seat-fan .card-back,
 .seat-fan .card-face {
-  width: 25px;
-  height: 35px;
   transform-origin: 50% 190%;
-  margin-left: -15px;
 }
+.seat-fan .card-back { margin-left: calc(-15px * var(--px)); }
+.seat-fan .card-face { margin-left: calc(-30px * var(--px-seat)); }
 .seat-fan .card-back:first-child,
 .seat-fan .card-face:first-child {
   margin-left: 0;
@@ -1019,6 +1093,12 @@ body {
   padding: 0.5rem 0;
 }
 .bid-button {
+  /* <button> does NOT inherit font-family. Without this the game's most-clicked control
+     renders in the browser's default UI font — it shipped in Arial for two commits while
+     every other string on screen was the pixel font. `.title-play-button` got this and the
+     shared bid button did not, which is exactly the kind of gap a per-component eyeball
+     check misses. */
+  font-family: inherit;
   font-size: 0.95rem;
   padding: 0.6rem 1rem;
   border-radius: 8px;
@@ -1093,8 +1173,8 @@ body {
    whole-number fraction of native, never an arbitrary in-between. */
 .card-face,
 .card-back {
-  width: 100px;
-  height: 140px;
+  width: calc(50px * var(--px));
+  height: calc(70px * var(--px));
   image-rendering: pixelated;
   flex-shrink: 0;
 }
@@ -1124,6 +1204,8 @@ body {
 .card-face.dimmed img {
   opacity: 0.4;
 }
+/* `.mini` is now simply "one step down", which is what it always meant — it used to be a
+   hardcoded 50x70 that happened to coincide with 1x. */
 .card-back.mini,
 .card-face.mini {
   width: 50px;

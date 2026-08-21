@@ -18,6 +18,46 @@ cards does: each card shows a 52px strip (still above the 44px touch-target mini
 the rank index lives in the card's top-left corner every card in the fan stays readable. This
 keeps all six cards of the dealer-discard step on one row at 375px.
 
+## The unit: art pixels (au) and integer scale — READ FIRST
+
+Every asset in this project is authored in **art pixels (au)** and saved at its **true
+resolution**. Every place it is displayed renders it at a **whole-number multiple** of that
+resolution. There is no second sizing system and there are no exceptions.
+
+- Generator side: `save_asset()` in `generate_art.py` snaps to the `PX` grid, asserts it, then
+  halves to true resolution before writing. Every asset goes through it.
+- App side: `--px` in `src/styles/index.css`. Any size derived from art is
+  `calc(<au> * var(--px) * 1px)` — **never a bare pixel count**.
+- Enforcement: `scripts/scale-audit.js` walks the live DOM and fails on any non-integer scale
+  or any scene object clipped off the viewport. Run it at every target viewport, not one.
+
+**A smaller card is different ART, not the same art scaled down.** This is why there are three
+card backs (`card_back` 50×70, `score_card_back` 30×42, `card_back_seat` 25×35) rather than one
+squeezed into three boxes. If you need art at a new size, draw it at that size.
+
+### Why this is stated so forcefully
+
+It was violated for three phases while two separate comments in the codebase asserted it. The
+app shipped cards at 1.0×, 0.5× and **0.25×**, the opponent portrait at **0.6×**, scene sprites
+at a fixed pixel size that never changed at any viewport, and the felt as a fluid CSS ellipse
+with no art at all — six scaling behaviours that disagreed.
+
+Fractional downscales are not merely soft. 0.6× drops pixel rows irregularly and visibly bent
+the Old-Timer's moustache and hat brim; 0.25× discarded 80% of the card back's lattice and left
+the survivors unevenly spaced. `image-rendering: pixelated` does not rescue a downscale — it
+only decides which pixels get thrown away.
+
+The reason it survived so long is worth remembering: **it was only ever checked by eye, per
+component, at one viewport.** Each phase was verified against its own goal and shipped green;
+none was verified against the whole, so the whole drifted. That is what `scale-audit.js` exists
+to prevent, and why it checks globally and numerically rather than locally and visually.
+
+A related consequence: the true resolution had always been *half* the file size, because the
+`PX = 2` grid snap meant a 100×140 file held 50×70 distinct blocks. We were storing 50×70 art
+in a 100×140 file and calling it "1:1 native". Verified before the change — 26 of 26 card and
+portrait assets were byte-identical after halving and restoring, so moving to true resolution
+cost nothing at all.
+
 ## Palette — cabin by the fire
 
 | Name | Hex | Use |

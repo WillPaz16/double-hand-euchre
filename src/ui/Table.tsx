@@ -49,22 +49,44 @@ function seatOf(hand: HandId): Seat {
   return SEATS.find((s) => sameHand(s.hand, hand))?.at ?? 'nw';
 }
 
-/** The hand's own cards, if this player is currently allowed to see them face-up on the
- *  table — null if they should stay as anonymous backs.
+/** The hand's own cards, if this player is allowed to see them face-up on the table right
+ *  now — null if the seat must stay anonymous backs.
  *
- *  For your OWN hands this mirrors `redact()`: `ownSelectedHand` once the selection windows
- *  resolve, `ownBlindHand` only once it becomes the acting hand for the first time (RULES.md
- *  §6 — a hand is only ever visible to its owner while it's on the clock, or afterward via
- *  the reveal below). For the Old-Timer's hands this is null all through bidding and play —
- *  `opponentSelectedHand`/`opponentBlindHand` only populate at hand_complete/game_over, which
- *  is exactly RULES.md §8's "blind hand revealed to both players at the end of each deal."
- *  Reusing those same view fields means the table simply falls out already correct at that
- *  point: every seat shows real cards with no extra logic here. */
+ *  **This enforces RULES.md §6, which a previous version broke.** The rule is: "only the hand
+ *  currently taking its turn is shown to its owner ... never seeing both simultaneously." The
+ *  memory strain is the game (design spec §8: "No memory aids"). When 2e.7 put hands face-up
+ *  on the table it keyed off `redact()`'s `ownSelectedHand`, which stays populated for the
+ *  WHOLE deal once `selectedHandsRevealed` is set at bidding — so during play your selected
+ *  hand sat face-up at its seat while your blind hand was face-up in the tray, and you could
+ *  read both at once. The engine was never at fault; the UI showed something it was handed
+ *  and shouldn't have drawn.
+ *
+ *  So visibility is decided by PHASE, not merely by what redact() happens to expose:
+ *    - deal over          -> everything, per RULES.md §8's end-of-deal reveal
+ *    - bidding / selection -> your own SELECTED hand only; you have picked it up to bid on it,
+ *                             which is 2e.3's "like regular euchre" and what §2 intends
+ *    - play / exchange     -> nothing. The acting hand is in the tray and is the only hand
+ *                             anyone may see. */
+const DEAL_OVER_PHASES = new Set(['hand_complete', 'game_over']);
+const HAND_IN_YOUR_HANDS_PHASES = new Set([
+  'select',
+  'loner_full_blind',
+  'loner_blind_hand',
+  'bidding_round1',
+  'bidding_round2',
+]);
+
 function visibleCards(view: PlayerView, hand: HandId): CardType[] | null {
-  if (hand.player === HUMAN) {
-    return hand.role === 'selected' ? view.ownSelectedHand : view.ownBlindHand;
+  if (DEAL_OVER_PHASES.has(view.phase)) {
+    if (hand.player === HUMAN) {
+      return hand.role === 'selected' ? view.ownSelectedHand : view.ownBlindHand;
+    }
+    return hand.role === 'selected' ? view.opponentSelectedHand : view.opponentBlindHand;
   }
-  return hand.role === 'selected' ? view.opponentSelectedHand : view.opponentBlindHand;
+  if (HAND_IN_YOUR_HANDS_PHASES.has(view.phase)) {
+    return hand.player === HUMAN && hand.role === 'selected' ? view.ownSelectedHand : null;
+  }
+  return null;
 }
 
 /** Every active hand plays exactly one card per trick, so its remaining count is always
@@ -152,7 +174,7 @@ export function Table({
                     if (cards) {
                       return cards.map((card, i) => <Card key={i} card={card} />);
                     }
-                    return Array.from({ length: count }).map((_, i) => <CardBack key={i} />);
+                    return Array.from({ length: count }).map((_, i) => <CardBack key={i} seat />);
                   })()}
             </div>
             {/* The same information as the fan, as a numeral. Hidden everywhere except lean

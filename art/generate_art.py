@@ -954,14 +954,21 @@ def make_app_icon(size: int) -> Image.Image:
     return img
 
 
-def make_card_back() -> Image.Image:
-    img = Image.new("RGBA", (CARD_W, CARD_H), WOOD_DARK)
-    draw = ImageDraw.Draw(img)
-    draw.rectangle((0, 0, CARD_W - 1, CARD_H - 1), outline=(0, 0, 0, 255), width=2)
+def make_card_back(w: int = CARD_W, h: int = CARD_H, step: int = 14) -> Image.Image:
+    """The card back, drawable at any size.
 
-    step = 14
-    for y in range(-step, CARD_H + step, step):
-        for x in range(-step, CARD_W + step, step):
+    Sized because a *smaller* card needs *redrawn* art, not the same art squashed. The
+    scoreboard's cover card is 30x42 au against the deck's 50x70; stretching the deck's back
+    over it was rendering at 1.2x, which is exactly the kind of fractional scale this phase
+    exists to eliminate. `step` scales with the card so the lattice keeps its density instead
+    of turning into two big diamonds on the small one.
+    """
+    img = Image.new("RGBA", (w, h), WOOD_DARK)
+    draw = ImageDraw.Draw(img)
+    draw.rectangle((0, 0, w - 1, h - 1), outline=(0, 0, 0, 255), width=2)
+
+    for y in range(-step, h + step, step):
+        for x in range(-step, w + step, step):
             draw.polygon(
                 [
                     (x + step // 2, y),
@@ -973,9 +980,10 @@ def make_card_back() -> Image.Image:
             )
             draw.point((x + step // 2, y + step // 2), fill=WOOD_MED)
 
-    draw.rectangle((7, 7, CARD_W - 8, CARD_H - 8), outline=GOLD, width=2)
+    inset = 7 if w >= CARD_W else 4
+    draw.rectangle((inset, inset, w - inset - 1, h - inset - 1), outline=GOLD, width=2)
     img = snap_to_pixel_grid(img)
-    _assert_pixel_grid(img, label="card back")
+    _assert_pixel_grid(img, label=f"card back {w}x{h}")
     return img
 
 
@@ -1588,6 +1596,33 @@ def make_shelf(w=118, h=62):
     return img
 
 
+# --- The unit: true-resolution output (Phase 2f.1) ---------------------------------------- #
+# Every asset is authored on the PX grid (above) and then SAVED AT ITS TRUE RESOLUTION —
+# file size divided by PX. This is lossless by construction: a grid-snapped image has no
+# detail finer than PX, so halving it throws nothing away (verified across all 26 card and
+# portrait assets before the change: 26/26 byte-identical after round-tripping).
+#
+# **Why this matters more than it looks.** We were storing 50x70 art in a 100x140 file and
+# calling that "1:1 native, pixels stay crisp". Because the file was twice its real
+# resolution, the UI could — and did — render it at 0.25x and 0.6x while looking superficially
+# fine, and those fractional scales silently deformed the art: 0.6x dropped pixel rows
+# irregularly and visibly bent the Old-Timer's moustache; 0.25x discarded 80% of the card
+# back's lattice. Once the file IS the true resolution, any non-integer scale is immediately
+# obvious both to the eye and to scripts/scale-audit.js.
+#
+# Applied to EVERYTHING with no exceptions list. The scene sprites were previously never
+# snapped at all, which meant the world was drawn on a finer grid than the cards sitting on
+# it — the room read as higher-resolution than the game. One grid, one unit, one rule.
+
+
+def save_asset(img: Image.Image, path: str, label: str = "") -> None:
+    """Snap to the PX grid, prove it, halve to true resolution, write."""
+    img = snap_to_pixel_grid(img)
+    _assert_pixel_grid(img, label=label or os.path.basename(path))
+    w, h = img.size
+    img.resize((w // PX, h // PX), Image.NEAREST).save(path)
+
+
 def main() -> None:
     cards_dir = os.path.join(OUT_ROOT, "cards")
     os.makedirs(cards_dir, exist_ok=True)
@@ -1595,43 +1630,59 @@ def main() -> None:
     for suit in SUITS:
         for rank in RANKS:
             card = make_face_card(rank, suit) if rank in FACE_RANKS else make_number_card(rank, suit)
-            card.save(os.path.join(cards_dir, f"{suit}_{rank}.png"))
+            save_asset(card, os.path.join(cards_dir, f"{suit}_{rank}.png"), f"{suit}_{rank}")
 
-    make_card_back().save(os.path.join(OUT_ROOT, "card_back.png"))
-    make_table_felt().save(os.path.join(OUT_ROOT, "table_felt.png"))
-    make_wall_texture().save(os.path.join(OUT_ROOT, "wall_texture.png"))
+    save_asset(make_card_back(), os.path.join(OUT_ROOT, "card_back.png"))
+    # Drawn at the scoreboard card's own size (30x42 au) rather than reusing the deck's back,
+    # which would have to render at 1.2x to fit — see make_card_back's docstring.
+    save_asset(
+        make_card_back(SCORE_CARD_W, SCORE_CARD_H, step=10),
+        os.path.join(OUT_ROOT, "score_card_back.png"),
+    )
+    # A hand resting on the table is drawn SMALLER than the one you are holding, and smaller
+    # pixel art is redrawn, not shrunk. 50x70 for a seat fan crowded the table badly at 390px;
+    # 25x35 is the size that composition actually wants, and rendering the deck's back into it
+    # would be 0.5x — the exact fault this phase removes.
+    save_asset(
+        make_card_back(CARD_W // 2, CARD_H // 2, step=8),
+        os.path.join(OUT_ROOT, "card_back_seat.png"),
+    )
+    save_asset(make_table_felt(), os.path.join(OUT_ROOT, "table_felt.png"))
+    save_asset(make_wall_texture(), os.path.join(OUT_ROOT, "wall_texture.png"))
 
     scene_dir = os.path.join(OUT_ROOT, "scene")
     os.makedirs(scene_dir, exist_ok=True)
-    make_fireplace().save(os.path.join(scene_dir, "fireplace.png"))
-    make_sprite_sheet(make_fire_frames()).save(os.path.join(scene_dir, "fire_sheet.png"))
-    make_window_glass().save(os.path.join(scene_dir, "window_glass.png"))
-    make_window_frame().save(os.path.join(scene_dir, "window_frame.png"))
-    make_snowfall().save(os.path.join(scene_dir, "snow.png"))
-    make_floorboards().save(os.path.join(scene_dir, "floor.png"))
+    save_asset(make_fireplace(), os.path.join(scene_dir, "fireplace.png"))
+    save_asset(make_sprite_sheet(make_fire_frames()), os.path.join(scene_dir, "fire_sheet.png"))
+    save_asset(make_window_glass(), os.path.join(scene_dir, "window_glass.png"))
+    save_asset(make_window_frame(), os.path.join(scene_dir, "window_frame.png"))
+    save_asset(make_snowfall(), os.path.join(scene_dir, "snow.png"))
+    save_asset(make_floorboards(), os.path.join(scene_dir, "floor.png"))
     # Everything in the room is lit by the hearth, which sits in the LEFT margin. Applied here
     # rather than inside each generator so the light model is stated once, in one place, and
     # so it demonstrably cannot reach the card art. The fireplace and the window are their own
     # light sources and are deliberately excluded.
-    light_from(make_seated_old_timer()).save(os.path.join(scene_dir, "seated_old_timer.png"))
-    light_from(make_sprite_sheet(make_cat_frames()), strength=0.13).save(
-        os.path.join(scene_dir, "cat_sheet.png"))
-    light_from(make_shelf(), strength=0.13).save(os.path.join(scene_dir, "shelf.png"))
+    save_asset(light_from(make_seated_old_timer()), os.path.join(scene_dir, "seated_old_timer.png"))
+    save_asset(light_from(make_sprite_sheet(make_cat_frames()), strength=0.13),
+               os.path.join(scene_dir, "cat_sheet.png"))
+    save_asset(light_from(make_shelf(), strength=0.13), os.path.join(scene_dir, "shelf.png"))
 
     portraits_dir = os.path.join(OUT_ROOT, "portraits")
     os.makedirs(portraits_dir, exist_ok=True)
     for expression in ("idle", "happy", "rueful"):
-        make_old_timer_portrait(expression).save(
-            os.path.join(portraits_dir, f"old_timer_{expression}.png")
-        )
+        save_asset(make_old_timer_portrait(expression),
+                   os.path.join(portraits_dir, f"old_timer_{expression}.png"),
+                   f"portrait {expression}")
 
+    # NOT run through save_asset: these are consumed by the OS at the exact sizes declared
+    # in the manifest and <link rel="icon">, so they are output at nominal size, not au.
     for icon_size in (32, 192, 512):
         make_app_icon(icon_size).save(os.path.join(OUT_ROOT, f"icon-{icon_size}.png"))
 
     suits_dir = os.path.join(OUT_ROOT, "suits")
     os.makedirs(suits_dir, exist_ok=True)
     for suit in SUITS:
-        make_suit_icon(suit).save(os.path.join(suits_dir, f"{suit}.png"))
+        save_asset(make_suit_icon(suit), os.path.join(suits_dir, f"{suit}.png"), f"suit {suit}")
 
     # Only the suits SCORE_SUIT actually assigns (src/ui/Scoreboard.tsx: A -> hearts,
     # B -> spades) get scoreboard cards — generating all four was dead weight, since each
@@ -1642,7 +1693,7 @@ def main() -> None:
     os.makedirs(score_dir, exist_ok=True)
     for suit in SCOREBOARD_SUITS:
         for rank in ("4", "6"):
-            make_scoreboard_card(rank, suit).save(os.path.join(score_dir, f"{suit}_{rank}.png"))
+            save_asset(make_scoreboard_card(rank, suit), os.path.join(score_dir, f"{suit}_{rank}.png"))
 
     print(
         f"Generated {len(SUITS) * len(RANKS)} card faces + card back + table felt "
