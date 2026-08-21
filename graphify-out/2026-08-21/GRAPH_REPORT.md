@@ -1,16 +1,16 @@
-# Graph Report - euchre  (2026-08-20)
+# Graph Report - euchre  (2026-08-21)
 
 ## Corpus Check
-- 49 files · ~43,913 words
+- 49 files · ~44,583 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 432 nodes · 945 edges · 22 communities (20 shown, 2 thin omitted)
+- 433 nodes · 952 edges · 22 communities (20 shown, 2 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.55)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `823cdc13`
+- Built from commit: `bf8751dd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -24,7 +24,7 @@
 - generate_audio.py
 - Hand A1 (Player A, selected/blind)
 - Hand B1 (Player B, selected/blind)
-- Game.tsx
+- useSfx.ts
 - CLAUDE.md
 - fullGame.test.tsx
 - Art assets — spec
@@ -42,23 +42,23 @@
 3. `reduce()` - 20 edges
 4. `legalActions()` - 19 edges
 5. `otherPlayer()` - 16 edges
-6. `Art assets — spec` - 15 edges
-7. `useGame()` - 15 edges
+6. `useGame()` - 15 edges
+7. `Art assets — spec` - 15 edges
 8. `Player` - 14 edges
 9. `Card` - 13 edges
 10. `PlayerView` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `CompletedTrick` --references--> `Player`  [EXTRACTED]
-  src/game/useGame.ts → shared/engine/types.ts
-- `CompletedTrick` --references--> `TrickCard`  [EXTRACTED]
-  src/game/useGame.ts → shared/engine/types.ts
+- `playGame()` --calls--> `chooseMove()`  [EXTRACTED]
+  scripts/balance.ts → shared/bot/heuristic.ts
+- `useGame()` --calls--> `chooseMove()`  [EXTRACTED]
+  src/game/useGame.ts → shared/bot/heuristic.ts
+- `useGame()` --calls--> `trickWinnerIndex()`  [EXTRACTED]
+  src/game/useGame.ts → shared/engine/rules.ts
 - `PlayStateOptions` --references--> `LonerTier`  [EXTRACTED]
   tests/helpers.ts → shared/engine/types.ts
 - `playFullGame()` --calls--> `useGame()`  [EXTRACTED]
   tests/fullGame.test.tsx → src/game/useGame.ts
-- `playGame()` --calls--> `chooseMove()`  [EXTRACTED]
-  scripts/balance.ts → shared/bot/heuristic.ts
 
 ## Import Cycles
 - None detected.
@@ -79,7 +79,7 @@ Cohesion: 0.12
 Nodes (24): §3 Bidding (standard, on/after the upcard), Blind Hand Reveal Default, Blind-Trump Loner (6 points), config.ts Game-to-10 Constant, Dealer Alternation Default, Deferred Variant Rules ('few crazy rules'), RULES.md — Two-Handed Euchre Rules Spec, Full-Blind Loner (8 points) (+16 more)
 
 ### Community 2 - "types.ts"
-Cohesion: 0.09
+Cohesion: 0.10
 Nodes (58): aDealsFirst, bDealsFirst, PLAYERS, playGame(), run(), whoseTurn(), outcomes, pick() (+50 more)
 
 ### Community 3 - "compilerOptions"
@@ -92,7 +92,7 @@ Nodes (41): @fontsource/silkscreen, jsdom, dependencies, @fontsource/silkscreen,
 
 ### Community 5 - "rules.ts"
 Cohesion: 0.13
-Nodes (27): Knowledge graph, Repo layout, Running the engine, Status, Two-Handed Euchre, bestSuitByTrumpCount(), byType(), cardsEqual() (+19 more)
+Nodes (26): Knowledge graph, Repo layout, Running the engine, Status, Two-Handed Euchre, bestSuitByTrumpCount(), byType(), cardsEqual() (+18 more)
 
 ### Community 6 - "generate_audio.py"
 Cohesion: 0.19
@@ -106,21 +106,21 @@ Nodes (3): Hand A1 (Player A, selected/blind), Hand A2 (Player A, selected/blind
 Cohesion: 1.00
 Nodes (3): Hand B1 (Player B, selected/blind), Hand B2 (Player B, selected/blind), Player B
 
-### Community 9 - "Game.tsx"
-Cohesion: 0.10
-Nodes (24): LonerTier, App(), isMuted(), setMuted(), useLonerStamp(), play(), SOUND_FILES, SoundName (+16 more)
+### Community 9 - "useSfx.ts"
+Cohesion: 0.19
+Nodes (12): App(), isMuted(), setMuted(), play(), SOUND_FILES, SoundName, useSfx(), useSoundBank() (+4 more)
 
 ### Community 11 - "fullGame.test.tsx"
-Cohesion: 0.25
-Nodes (9): TRICK_HOLD_MS, advance(), lcg(), Outcome, playFullGame(), advance(), driveToHeldTrick(), driveToPlayPhase() (+1 more)
+Cohesion: 0.15
+Nodes (15): Action, TRICK_HOLD_MS, BID_PHASES, BidPanel(), label(), PendingTrump, SUIT_LABEL, advance() (+7 more)
 
 ### Community 12 - "Art assets — spec"
 Cohesion: 0.11
 Nodes (18): Animation convention, Art assets — spec, Audio (Phase 2c), Cards, Environment palette, Environment shading — `ramp()` (Phase 2d), Layout budget — asserted, not eyeballed, Lighting — `light_from()` (Phase 2d.5) (+10 more)
 
 ### Community 13 - "Table.tsx"
-Cohesion: 0.09
-Nodes (29): BOT, CompletedTrick, HUMAN, Expression, useOpponentExpression(), useUpcardReveal(), Card(), cardAsset() (+21 more)
+Cohesion: 0.08
+Nodes (37): LonerTier, PlayerView, BOT, HUMAN, useLonerStamp(), Expression, useOpponentExpression(), useUpcardReveal() (+29 more)
 
 ### Community 15 - "generate_art.py"
 Cohesion: 0.12
@@ -143,24 +143,24 @@ Cohesion: 0.40
 Nodes (5): _clamp(), light_from(), Move a colour toward white (amount > 0) or black (amount < 0), with a hue…, Relight a finished sprite directionally, as a post-process. **The measurement…, _shift()
 
 ## Knowledge Gaps
-- **94 isolated node(s):** `Why this is stated so forcefully`, `Regenerating: use Python 3.11`, `Palette — cabin by the fire`, `Cards`, `Layout budget — asserted, not eyeballed` (+89 more)
+- **93 isolated node(s):** `name`, `private`, `type`, `test`, `test:watch` (+88 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `useGame()` connect `types.ts` to `Game.tsx`, `fullGame.test.tsx`, `rules.ts`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `useGame()` connect `types.ts` to `useSfx.ts`, `Table.tsx`, `fullGame.test.tsx`, `rules.ts`?**
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Why does `Card` connect `types.ts` to `Table.tsx`, `rules.ts`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `Why this is stated so forcefully`, `Regenerating: use Python 3.11`, `Palette — cabin by the fire` to the rest of the system?**
-  _94 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `name`, `private`, `type` to the rest of the system?**
+  _93 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `_mix` be split into smaller, more focused modules?**
   _Cohesion score 0.13157894736842105 - nodes in this community are weakly interconnected._
 - **Should `RULES.md — Two-Handed Euchre Rules Spec` be split into smaller, more focused modules?**
   _Cohesion score 0.11956521739130435 - nodes in this community are weakly interconnected._
 - **Should `types.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.08900900900900902 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09537223340040242 - nodes in this community are weakly interconnected._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.09090909090909091 - nodes in this community are weakly interconnected._

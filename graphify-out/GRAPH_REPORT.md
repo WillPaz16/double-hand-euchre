@@ -1,16 +1,16 @@
 # Graph Report - euchre  (2026-08-21)
 
 ## Corpus Check
-- 49 files · ~44,583 words
+- 49 files · ~45,007 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 433 nodes · 952 edges · 22 communities (20 shown, 2 thin omitted)
+- 433 nodes · 952 edges · 21 communities (19 shown, 2 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.55)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bf8751dd`
+- Built from commit: `5c0f966d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -33,7 +33,6 @@
 - main
 - composite_sprite
 - draw_card_frame
-- light_from
 - make_sprite_sheet
 
 ## God Nodes (most connected - your core abstractions)
@@ -68,11 +67,11 @@
 - **Fixed Trick Rotation Ring (Four Hands)** — rules_trick_rotation_ring, rules_hand_a1, rules_hand_b1, rules_hand_a2, rules_hand_b2 [EXTRACTED 1.00]
 - **Config-Only V1 Defaults** — rules_stick_the_dealer, rules_sequential_first_refusal, rules_blind_hand_reveal, rules_dealer_alternation, rules_misdeal_conditions, rules_config_ts [INFERRED 0.85]
 
-## Communities (22 total, 2 thin omitted)
+## Communities (21 total, 2 thin omitted)
 
 ### Community 0 - "_mix"
-Cohesion: 0.13
-Nodes (20): make_fireplace(), make_floorboards(), make_shelf(), make_snowfall(), make_table_felt(), make_wall_texture(), make_window_frame(), make_window_glass() (+12 more)
+Cohesion: 0.10
+Nodes (25): _clamp(), light_from(), make_fireplace(), make_floorboards(), make_shelf(), make_snowfall(), make_table_felt(), make_wall_texture() (+17 more)
 
 ### Community 1 - "RULES.md — Two-Handed Euchre Rules Spec"
 Cohesion: 0.12
@@ -138,10 +137,6 @@ Nodes (17): composite_sprite(), contact_shadow(), darken(), _flame(), make_cat_f
 Cohesion: 0.50
 Nodes (4): draw_card_frame(), draw_glyph(), _score_card_frame(), ImageDraw
 
-### Community 20 - "light_from"
-Cohesion: 0.40
-Nodes (5): _clamp(), light_from(), Move a colour toward white (amount > 0) or black (amount < 0), with a hue…, Relight a finished sprite directionally, as a post-process. **The measurement…, _shift()
-
 ## Knowledge Gaps
 - **93 isolated node(s):** `name`, `private`, `type`, `test`, `test:watch` (+88 more)
   These have ≤1 connection - possible missing edges or undocumented components.
@@ -157,7 +152,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `name`, `private`, `type` to the rest of the system?**
   _93 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `_mix` be split into smaller, more focused modules?**
-  _Cohesion score 0.13157894736842105 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10333333333333333 - nodes in this community are weakly interconnected._
 - **Should `RULES.md — Two-Handed Euchre Rules Spec` be split into smaller, more focused modules?**
   _Cohesion score 0.11956521739130435 - nodes in this community are weakly interconnected._
 - **Should `types.ts` be split into smaller, more focused modules?**

@@ -1296,8 +1296,18 @@ def make_fire_frames(count=4, w=66, h=58):
     return frames
 
 
-def make_fireplace(w=140, h=186):
+def make_fireplace(w=308, h=410):
     """Stone hearth surround with a firebox opening and a timber mantel.
+
+    Sized at 2.2x its original 140x186 (Phase 2f.4) — the original was measured against a
+    real fireplace's proportions and found to be a whole miniature object sitting entirely
+    inside the frame, ~9x smaller than a fireplace has any business being next to a person.
+    2.2x, not the literal physical ratio (~6x), because the opponent (2f.3) already committed
+    this room to a DELIBERATE STYLISED scale rather than strict realism — a physically-correct
+    hearth next to a stylised head-is-one-card-tall figure would look like two different
+    drawing conventions arguing with each other. 2.2x is "large, deliberately cropped mass,"
+    per the phase plan, sized to match the opponent's own departure from realism rather than
+    to out-realism him.
 
     Two things this gets wrong if done naively, both fixed here:
 
@@ -1322,28 +1332,31 @@ def make_fireplace(w=140, h=186):
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
 
-    body_top = 22
+    body_top = 48
     d.rectangle((0, body_top, w - 1, h - 1), fill=mortar)
 
-    course_h = 17
+    # Course height and stone width both scaled with the fireplace — an unscaled course_h
+    # would have stacked 2.2x as many identical-looking rows rather than reading as bigger
+    # stones on a bigger wall.
+    course_h = 37
     seed = 5
     row = 0
     y = body_top
     while y < h:
-        x = -((row % 3) * 11)
+        x = -((row % 3) * 24)
         while x < w:
-            sw = 19 + (seed % 15)
+            sw = 42 + (seed % 33)
             tone = (base, hi, sh, base)[(seed // 3) % 4]
             # Clamp AND check: a course landing near the bottom edge can clamp y1 below y0,
             # which PIL rejects outright ("x1 must be greater than or equal to x0").
-            x0, y0 = x + 1, y + 1
-            x1, y1 = min(x + sw - 2, w - 1), min(y + course_h - 3, h - 1)
+            x0, y0 = x + 2, y + 2
+            x1, y1 = min(x + sw - 4, w - 1), min(y + course_h - 6, h - 1)
             if x1 >= x0 and y1 >= y0:
                 # Firelight falloff: the hearth emits light into the room, so its own stones
                 # must be lit by it too. Without this the object throwing the glow is itself
                 # uniformly lit, which quietly breaks the illusion.
                 mid_x, mid_y = (x0 + x1) / 2, (y0 + y1) / 2
-                dist = math.hypot(mid_x - w / 2, mid_y - 132) / 110.0
+                dist = math.hypot(mid_x - w / 2, mid_y - 290) / 240.0
                 tone = _mix(tone, FIRE_DEEP, max(0.0, 0.30 - dist * 0.30))
                 d.rectangle((x0, y0, x1, y1), fill=tone)
                 d.line((x0, y0, x1, y0), fill=_mix(tone, hi, 0.5))      # lit top edge
@@ -1356,25 +1369,27 @@ def make_fireplace(w=140, h=186):
     # Firebox, carved after the stonework so it reads as cut into the masonry. Not pure
     # black: a warm ember tone at the floor of the opening, so the recess reads as lit from
     # within rather than as a hole punched in the wall.
-    ox0, ox1 = 36, w - 36
-    oy0, oy1 = 98, h - 10
+    ox0, ox1 = 79, w - 79
+    oy0, oy1 = 216, h - 22
     d.rectangle((ox0, oy0, ox1, oy1), fill=(22, 15, 14, 255))
-    for i, band in enumerate(range(oy1 - 18, oy1, 4)):
-        d.rectangle((ox0 + 2, band, ox1 - 2, band + 3),
+    for i, band in enumerate(range(oy1 - 40, oy1, 9)):
+        d.rectangle((ox0 + 4, band, ox1 - 4, band + 7),
                     fill=_mix((22, 15, 14, 255), EMBER, 0.18 + i * 0.14))
-    d.rectangle((ox0, oy0, ox1, oy1), outline=_mix(mortar, deep, 0.6), width=3)
-    d.line((ox0 + 3, oy0 + 3, ox1 - 3, oy0 + 3), fill=_mix(deep, FIRE_DEEP, 0.45))
+    d.rectangle((ox0, oy0, ox1, oy1), outline=_mix(mortar, deep, 0.6), width=6)
+    d.line((ox0 + 6, oy0 + 6, ox1 - 6, oy0 + 6), fill=_mix(deep, FIRE_DEEP, 0.45))
 
     # Timber mantel, overhanging the stone on both sides.
     m_hi, m_base, m_sh, m_deep = ramp(TABLE_WOOD)
-    d.rectangle((0, body_top - 20, w - 1, body_top + 1), fill=m_base)
-    d.rectangle((0, body_top - 20, w - 1, body_top - 16), fill=m_hi)
-    d.line((0, body_top - 4, w - 1, body_top - 4), fill=m_sh)
-    d.line((0, body_top + 1, w - 1, body_top + 1), fill=m_deep)
+    d.rectangle((0, body_top - 44, w - 1, body_top + 2), fill=m_base)
+    d.rectangle((0, body_top - 44, w - 1, body_top - 35), fill=m_hi)
+    d.line((0, body_top - 9, w - 1, body_top - 9), fill=m_sh)
+    d.line((0, body_top + 2, w - 1, body_top + 2), fill=m_deep)
     return img
 
 
-WINDOW_W, WINDOW_H = 120, 146
+# 2.2x the original 120x146 (Phase 2f.4), same stylised-not-physical scale reasoning as the
+# fireplace above — sized to match the opponent's departure from realism, not physics.
+WINDOW_W, WINDOW_H = 264, 322
 
 
 def make_window_glass(w=WINDOW_W, h=WINDOW_H):
@@ -1398,7 +1413,7 @@ def make_window_glass(w=WINDOW_W, h=WINDOW_H):
         d.rectangle((0, y, w - 1, min(y + 5, h - 1)),
                     fill=_mix(g_deep, g_base, min(1.0, i / (h / 6.0) + 0.15)))
 
-    mx, my, mr = int(w * 0.68), int(h * 0.28), 11
+    mx, my, mr = int(w * 0.68), int(h * 0.28), 24  # moon radius scaled with the window
     for k in range(4, 0, -1):
         d.ellipse((mx - mr - k * 3, my - mr - k * 3, mx + mr + k * 3, my + mr + k * 3),
                   fill=_mix(g_base, FROST, 0.06 * (5 - k)))
@@ -1420,10 +1435,10 @@ def make_window_frame(w=WINDOW_W, h=WINDOW_H):
     # Frost creeping in from the pane corners — drawn on the frame layer so it sits in front
     # of the snow, the way frost on the inside of the glass actually would.
     for cx, cy in ((0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)):
-        for r in range(26, 6, -5):
+        for r in range(58, 12, -11):  # frost radius scaled with the window
             d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=_mix(g_base, FROST, 0.10))
 
-    bar = 5
+    bar = 11  # glazing bar width scaled with the window
     d.rectangle((w // 2 - bar // 2, 0, w // 2 + bar // 2, h - 1), fill=f_base)
     d.rectangle((0, h // 2 - bar // 2, w - 1, h // 2 + bar // 2), fill=f_base)
     d.line((w // 2 - bar // 2, 0, w // 2 - bar // 2, h - 1), fill=f_hi)

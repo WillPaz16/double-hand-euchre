@@ -8,7 +8,7 @@
   "6": "generate_audio.py",
   "7": "Hand A1 (Player A, selected/blind)",
   "8": "Hand B1 (Player B, selected/blind)",
-  "9": "Game.tsx",
+  "9": "useSfx.ts",
   "10": "CLAUDE.md",
   "11": "fullGame.test.tsx",
   "12": "Art assets — spec",

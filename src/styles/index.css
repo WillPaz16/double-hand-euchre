@@ -173,27 +173,39 @@ body {
   position: absolute;
 }
 /* Anchored so the hearth's base meets the floor line rather than floating on the wall. */
+/* Both au sizes below are 2.2x their pre-2f.4 dimensions (70x93 -> 154x205, 60x73 -> 132x161)
+   — see make_fireplace()/WINDOW_W,H in generate_art.py for why 2.2x and not the ~6x a strict
+   physical ratio would want. "Large, deliberately cropped mass, not a whole miniature object"
+   is the phase plan's own phrase: at this size neither is guaranteed to fit inside its corner
+   on a narrower desktop window, and that's the point — a real fireplace usually isn't fully
+   in frame either. `.scene-layer`'s `overflow: hidden` (2f.2) is what makes that safe to lean
+   on rather than something to guard against. */
 .scene-fireplace {
   left: calc(6px * var(--px));
   bottom: calc(34% - 3px * var(--px));
-  width: calc(70px * var(--px));
-  height: calc(93px * var(--px));
+  width: calc(154px * var(--px));
+  height: calc(205px * var(--px));
   background-image: url('/art/scene/fireplace.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
 }
 .scene-window {
   right: calc(8px * var(--px));
-  top: 16%;
-  width: calc(60px * var(--px));
-  height: calc(73px * var(--px));
+  top: 10%;
+  width: calc(132px * var(--px));
+  height: calc(161px * var(--px));
 }
 
-/* One frame's window onto the strip; the strip slides behind it. */
+/* One frame's window onto the strip; the strip slides behind it. Repositioned for the 2.2x
+   bigger firebox opening (2f.4) — the flame SPRITE ITSELF is still 33x29 au, only its position
+   within the hearth moved. Redrawing the flame frames larger to match is a reasonable next
+   step, not done here: this pass is the hearth's masonry and the window, and a slightly
+   smaller flame in a correctly-sized opening is a visible improvement over the fire being
+   misaligned with an opening that grew out from under it. */
 .scene-fire {
   position: absolute;
-  left: calc(18px * var(--px));
-  top: calc(59px * var(--px));
+  left: calc(60px * var(--px));
+  top: calc(155px * var(--px));
   width: calc(33px * var(--px));
   height: calc(29px * var(--px));
   overflow: hidden;
@@ -210,13 +222,14 @@ body {
   to { transform: translateX(calc(-132px * var(--px))); }
 }
 /* The light the fire throws into the room. Pulses out of phase with the flame loop so the
-   two never lock into an obvious rhythm. */
+   two never lock into an obvious rhythm. Scaled roughly with the 2.2x bigger hearth (2f.4) —
+   "roughly" is fine for a soft radial blur in a way it wouldn't be for a hard sprite edge. */
 .scene-firelight {
   position: absolute;
-  left: -140px;
-  top: -20px;
-  width: 440px;
-  height: 320px;
+  left: -260px;
+  top: -40px;
+  width: 700px;
+  height: 500px;
   background: radial-gradient(
     ellipse 50% 50% at 42% 55%,
     rgba(255, 150, 60, 0.22),
