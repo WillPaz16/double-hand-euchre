@@ -985,6 +985,33 @@ def _opponent_parts():
             (OPP_CX - 12, hy + 56), (OPP_CX + 12, hy + 56),
             (OPP_CX + 16, OPP_H), (OPP_CX - 16, OPP_H),
         ]), BOOT_DARK),
+        # Forearms and hands, resting on the table (2g.5). He was a floating BUST: shoulders
+        # that simply stopped, no arms, no hands, no contact with the furniture in front of
+        # him. Every other object in this room got grounded during Phase 2f and 2g — the table
+        # got legs and a contact shadow, the cat got a shadow, the rug got the table standing
+        # on it — while the one PERSON hovered. These come in from the lower corners and angle
+        # toward where his two card fans actually sit, so he reads as holding them.
+        # Sleeves get a DARKER flannel than the chest. Drawn in the same FLANNEL_RED they were
+        # invisible against the body behind them, so all that showed were two skin ovals
+        # floating on his chest, reading unmistakably as buttons. An arm needs an edge.
+        (_poly([
+            (OPP_CX - 118, OPP_H), (OPP_CX - 94, hy + 74),
+            (OPP_CX - 58, hy + 94), (OPP_CX - 62, OPP_H),
+        ]), ramp(FLANNEL_RED)[2]),
+        (_poly([
+            (OPP_CX + 118, OPP_H), (OPP_CX + 94, hy + 74),
+            (OPP_CX + 58, hy + 94), (OPP_CX + 62, OPP_H),
+        ]), ramp(FLANNEL_RED)[2]),
+        # Hands: squared-off, not round. A circle of skin reads as a ball; knuckles and a
+        # thumb read as a hand even at eight pixels across.
+        (_poly([
+            (OPP_CX - 88, hy + 92), (OPP_CX - 52, hy + 84), (OPP_CX - 44, hy + 100),
+            (OPP_CX - 52, hy + 118), (OPP_CX - 84, hy + 116),
+        ]), SKIN),
+        (_poly([
+            (OPP_CX + 88, hy + 92), (OPP_CX + 52, hy + 84), (OPP_CX + 44, hy + 100),
+            (OPP_CX + 52, hy + 118), (OPP_CX + 84, hy + 116),
+        ]), SKIN),
         # Neck, behind the head so the jaw reads as sitting on it.
         (_poly([
             (OPP_CX - 26, hy + 34), (OPP_CX + 26, hy + 34),
@@ -1015,35 +1042,92 @@ def _opponent_parts():
 
 
 def draw_opponent_face(img: Image.Image, expression: str) -> None:
-    """Same three states the portrait has, at this size. Reuses `useOpponentExpression`'s
-    existing idle/happy/rueful contract — no new game state."""
+    """The Old-Timer's face. Four states, sharing `useOpponentExpression`'s existing
+    idle/happy/rueful contract plus a `blink` frame that only the idle timer ever asks for.
+
+    **Rebuilt in 2g.5, for two reasons that turned out to be the same reason.**
+
+    Before this, the head was ONE FLAT SKIN ELLIPSE. No brow, no nose, no cheekbone, no jaw,
+    no chin, no age line — on a character whose name is "Old-Timer" — with its only modelling
+    the generic 2px shadow band `composite_sprite` puts under every part. Six colours on the
+    most prominent figure on screen, and no `ramp()` reaching him at all.
+
+    Separately, coarsening the room's grid in 2g.2 broke him: the eyes were 16x20 ellipses,
+    which at a 4px grid became 4x5 blocks and rendered as diamonds. He was left on the fine
+    grid as a stopgap, out of step with every other object in the room.
+
+    Both are fixed by drawing him the way pixel art actually draws a face at this size: with
+    RECTANGLES ON THE GRID, not ellipses hoping to survive quantisation. A pixel-art eye is a
+    rectangle. Every feature below is a multiple of 4 draw pixels and sits on a multiple-of-4
+    coordinate, so the coarse grid is what it was authored for rather than something applied
+    to it afterwards.
+    """
     d = ImageDraw.Draw(img)
     hy = OPP_HEAD_CY
     eye_y = hy - 8
+    skin_hi, _, skin_sh, skin_deep = ramp(SKIN)
 
+    # --- Modelling, under the features. Warm light from the left (hearth), so the right side
+    # of the face carries the shadow — consistent with light_from's direction. ---
+    # Cheekbone and jaw shadow down the shaded side.
+    d.polygon([(OPP_CX + 20, hy - 20), (OPP_CX + 52, hy - 28), (OPP_CX + 56, hy + 16),
+               (OPP_CX + 28, hy + 40), (OPP_CX + 16, hy + 24)], fill=skin_sh)
+    # Brow ridge: the face's strongest form, and what makes a head read as bone rather than egg.
+    d.rectangle((OPP_CX - 48, eye_y - 20, OPP_CX + 48, eye_y - 12), fill=skin_sh)
+    d.rectangle((OPP_CX - 48, eye_y - 24, OPP_CX + 48, eye_y - 20), fill=skin_hi)
+    # Nose: a lit ridge with its own shadow to the right, and a nostril line under it. It STOPS
+    # ABOVE THE MOUSTACHE (which `_opponent_parts` draws from hy+10) — the first pass ran it to
+    # hy+12 and split the moustache in half with a skin-coloured bar straight down the middle.
+    d.rectangle((OPP_CX - 4, eye_y - 8, OPP_CX + 4, hy + 4), fill=skin_hi)
+    d.rectangle((OPP_CX + 4, eye_y - 4, OPP_CX + 12, hy + 4), fill=skin_sh)
+    d.rectangle((OPP_CX - 8, hy, OPP_CX + 12, hy + 4), fill=skin_deep)
+    # Age lines — the whole point of a character called the Old-Timer. Crow's feet only: the
+    # nasolabial folds this originally also carried ran straight through the moustache, and
+    # the brow ridge, cheekbone and crow's feet already do the work. Kept to 4px marks, since
+    # a wrinkle drawn thinner than the grid is noise rather than detail.
+    for side in (-1, 1):
+        tx = OPP_CX + side * 44
+        for dy in (-8, 0, 8):
+            x0, x1 = sorted((tx, tx + side * 12))
+            d.rectangle((x0, eye_y + dy, x1, eye_y + dy + 4), fill=skin_sh)
+
+    # --- Features. Rectangles, on the grid. ---
     for side in (-1, 1):
         ex = OPP_CX + side * 24
         if expression == "happy":
-            d.arc((ex - 10, eye_y - 8, ex + 10, eye_y + 12), start=200, end=340, fill=INK, width=4)
+            # Closed-and-creased: a flat bar with a lift at the outer end.
+            d.rectangle((ex - 12, eye_y, ex + 12, eye_y + 4), fill=INK)
+            hx0, hx1 = sorted((ex + side * 12, ex + side * 16))
+            d.rectangle((hx0, eye_y - 4, hx1, eye_y), fill=INK)
+        elif expression == "blink":
+            d.rectangle((ex - 12, eye_y - 4, ex + 12, eye_y), fill=INK)
         else:
-            d.ellipse((ex - 8, eye_y - 10, ex + 8, eye_y + 10), fill=INK)
-            d.rectangle((ex - 6, eye_y - 8, ex - 2, eye_y - 4), fill=(255, 255, 255, 255))
+            d.rectangle((ex - 8, eye_y - 12, ex + 8, eye_y + 8), fill=INK)
+            d.rectangle((ex - 8, eye_y - 12, ex - 4, eye_y - 8), fill=(255, 255, 255, 255))
+        # Eye socket shadow, so the eye sits IN the head rather than on it.
+        d.rectangle((ex - 12, eye_y + 8, ex + 12, eye_y + 12), fill=skin_sh)
 
     by = eye_y - 24
     for side in (-1, 1):
-        x_out, x_in = OPP_CX + side * 42, OPP_CX + side * 12
+        x_out, x_in = OPP_CX + side * 44, OPP_CX + side * 12
         if expression == "rueful":
-            d.line((x_out, by - 8, x_in, by + 4), fill=BEARD_GRAY, width=6)
+            d.line((x_out, by - 8, x_in, by + 4), fill=BEARD_GRAY, width=8)
         elif expression == "happy":
-            d.line((x_out, by + 2, x_in, by - 6), fill=BEARD_GRAY, width=6)
+            d.line((x_out, by + 4, x_in, by - 4), fill=BEARD_GRAY, width=8)
         else:
-            d.line((x_out, by, x_in, by), fill=BEARD_GRAY, width=6)
+            d.line((x_out, by, x_in, by), fill=BEARD_GRAY, width=8)
 
     my = hy + 40
     if expression == "happy":
-        d.arc((OPP_CX - 20, my - 10, OPP_CX + 20, my + 14), start=15, end=165, fill=INK, width=4)
+        d.rectangle((OPP_CX - 20, my, OPP_CX + 20, my + 8), fill=INK)
+        for side in (-1, 1):
+            mx0, mx1 = sorted((OPP_CX + side * 20, OPP_CX + side * 24))
+            d.rectangle((mx0, my - 8, mx1, my), fill=INK)
     elif expression == "rueful":
-        d.arc((OPP_CX - 16, my, OPP_CX + 16, my + 18), start=200, end=340, fill=INK, width=4)
+        d.rectangle((OPP_CX - 16, my + 8, OPP_CX + 16, my + 12), fill=INK)
+        for side in (-1, 1):
+            mx0, mx1 = sorted((OPP_CX + side * 16, OPP_CX + side * 20))
+            d.rectangle((mx0, my, mx1, my + 8), fill=INK)
 
 
 def make_opponent(expression: str) -> Image.Image:
@@ -2236,18 +2320,18 @@ def main() -> None:
     # not as ambient room decor in the side margin — so he is no longer a scene/ asset.
     # Every sprite below goes through light_from, which is exactly what the colour ceiling
     # guards — an unbanded light pass is invisible in a diff and easy to pass by eye.
-    # The two CHARACTER sprites stay on the fine grid for now, and this is a known,
-    # deliberately-temporary inconsistency rather than an oversight. Coarsening them works
-    # mechanically but mangles the face: the eyes are 8x10 au ellipses, which at chunk=2
-    # become 4x5 blocks and render as diamonds rather than eyes, and the moustache breaks up.
-    # Those features have to be REDRAWN on the coarse grid, not snapped onto it — which is
-    # exactly what 2g.5's character pass is for. Shipping a coarsened broken face in the
-    # meantime would be strictly worse than shipping a fine one.
-    for expression in ("idle", "happy", "rueful"):
+    # On the coarse grid with the rest of the room as of 2g.5 — his features are now authored
+    # as grid-aligned rectangles rather than ellipses that had to survive quantisation, which
+    # is what forced the temporary fine-grid exception in 2g.2.
+    # `blink` is a fourth file, not a sprite-sheet frame: a blink is ~150ms every few seconds,
+    # and a steps() sheet gives every frame an equal slice, so matching that duty cycle would
+    # have meant ~20 near-identical frames. A timer swapping one image is smaller and gives
+    # exact control over both the interval and the duration.
+    for expression in ("idle", "happy", "rueful", "blink"):
         opp = make_opponent(expression)
         _assert_sprite_colours(opp, f"opponent {expression}")
         save_asset(opp, os.path.join(OUT_ROOT, f"opponent_{expression}.png"),
-                   f"opponent {expression}")
+                   f"opponent {expression}", chunk=CHUNK_ENV)
     cat = light_from(make_sprite_sheet(make_cat_frames()), strength=0.13)
     _assert_sprite_colours(cat, "cat sheet")
     save_asset(cat, os.path.join(scene_dir, "cat_sheet.png"), chunk=CHUNK_ENV)

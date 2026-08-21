@@ -2,9 +2,22 @@ import { useEffect, useRef, useState } from 'react';
 import type { Player, PlayerView } from '../../shared/engine/types.ts';
 import { HUMAN, BOT } from './useGame.ts';
 
-export type Expression = 'idle' | 'happy' | 'rueful';
+export type Expression = 'idle' | 'happy' | 'rueful' | 'blink';
 
 const REACTION_MS = 2200;
+
+/** Blink timings (2g.5). Until this, NOTHING in the game with a face ever moved — the only
+ *  ambient animation was a four-frame fire and a cat whose "breathing" swells by exactly one
+ *  art pixel. A completely still figure staring across the table is the difference between a
+ *  character and a cardboard cut-out, and a blink is the cheapest possible fix.
+ *
+ *  Driven by a timer rather than a CSS sprite sheet on purpose: `steps()` gives every frame an
+ *  equal slice, so a 140ms blink every ~5s would need roughly forty near-identical frames to
+ *  express as a duty cycle. Two timers and an image swap cost nothing and let the interval be
+ *  irregular, which matters — a perfectly metronomic blink reads as a machine. */
+const BLINK_MS = 140;
+const BLINK_MIN_GAP_MS = 2600;
+const BLINK_MAX_GAP_MS = 6200;
 
 /** Derives the Old-Timer's portrait expression from game events, purely by watching the
  *  redacted view change — no new engine state needed. Reacts to: winning/losing the trick
@@ -40,5 +53,34 @@ export function useOpponentExpression(view: PlayerView): Expression {
     if (timerRef.current) clearTimeout(timerRef.current);
   }, []);
 
-  return expression;
+  // Blink, but ONLY while idle. A blink layered over a reaction would fight it — `happy` and
+  // `rueful` both already redraw the eyes, so swapping to the blink frame mid-reaction would
+  // read as the expression glitching rather than as him blinking.
+  const [blinking, setBlinking] = useState(false);
+  useEffect(() => {
+    if (expression !== 'idle') {
+      setBlinking(false);
+      return;
+    }
+    let closeTimer: ReturnType<typeof setTimeout>;
+    const schedule = (): ReturnType<typeof setTimeout> =>
+      setTimeout(() => {
+        setBlinking(true);
+        closeTimer = setTimeout(() => {
+          setBlinking(false);
+          openTimer = schedule();
+        }, BLINK_MS);
+        // `Math.random` is banned in `shared/engine` because a game must replay exactly from
+        // (seed, actions) — but a blink is presentation, never game state, and nothing here
+        // reaches the reducer. Using the seeded RNG for it would make the determinism boundary
+        // LESS clear, not more.
+      }, BLINK_MIN_GAP_MS + Math.random() * (BLINK_MAX_GAP_MS - BLINK_MIN_GAP_MS));
+    let openTimer = schedule();
+    return () => {
+      clearTimeout(openTimer);
+      clearTimeout(closeTimer);
+    };
+  }, [expression]);
+
+  return blinking && expression === 'idle' ? 'blink' : expression;
 }
