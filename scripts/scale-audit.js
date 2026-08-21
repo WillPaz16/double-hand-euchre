@@ -105,9 +105,29 @@
     // itself flagging .scene-moonlight at 51% lost on a phone — correctly measuring the glow,
     // incorrectly treating "glow bleeds off-canvas" as the same bug as "sprite got clipped".
     const AMBIENT = /glow|light|vignette/;
+    // Sprite-sheet STRIPS are exempt for the same underlying reason, caught by this check
+    // flagging .scene-fire-strip at 57% lost: a strip is wider than its own frame by design
+    // (4 fire frames side by side sliding behind a 1-frame window) and is already clipped by
+    // its immediate parent's `overflow: hidden`. Checking it against the VIEWPORT edge is the
+    // wrong boundary — it was never meant to fit there, only inside its own frame, which it
+    // already does. General rather than name-matched: any element already clipped by a
+    // smaller `overflow: hidden` parent has a real crop boundary that isn't the viewport, so
+    // measuring it against the viewport can't tell you anything true.
+    const clippedByOwnParent = (el) => {
+      const p = el.parentElement;
+      if (!p) return false;
+      const pcs = getComputedStyle(p);
+      if (pcs.overflow !== 'hidden' && pcs.overflowX !== 'hidden' && pcs.overflowY !== 'hidden') {
+        return false;
+      }
+      const pr = p.getBoundingClientRect();
+      const er = el.getBoundingClientRect();
+      return er.width > pr.width || er.height > pr.height;
+    };
     const offscreen = [];
     for (const el of document.querySelectorAll('[class*="scene-"]')) {
       if (AMBIENT.test(el.className)) continue;
+      if (clippedByOwnParent(el)) continue;
       const cs = getComputedStyle(el);
       if (cs.display === 'none' || cs.backgroundImage === 'none') continue;
       const r = el.getBoundingClientRect();

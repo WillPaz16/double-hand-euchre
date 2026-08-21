@@ -896,24 +896,22 @@ body {
   transform: translate(-50%, -50%) rotate(var(--rot));
 }
 /* Four positions, split left/right within each side rather than around a compass ring —
-   matches the two-sided seats below. Spread wide enough that the four read as four hands
-   rather than as a pile: at half these offsets the cards overlapped so heavily that position
-   stopped carrying the information it exists to carry. */
-/* Tuned against the ELLIPSE, not the bounding box — a rotated card's far corner is what
+   matches the two-sided seats below. Genuinely separated and distinctly angled, like four
+   cards actually thrown down by four different hands, rather than a near-stack with a token
+   3-5deg of tilt between them (which is what these were before the felt had real room).
+
+   Tuned against the ELLIPSE, not the bounding box — a rotated card's far corner is what
    actually clips, and the rim curves away fastest exactly where these sit. Verify with
    animations frozen: measuring mid-`card-play-in` reads a card 54px low and reports a
    spurious overflow.
 
-   The two rows overlap heavily on purpose. A 2x2 of full-size cards needs two card-heights
-   (280px at --px 2) and the felt is ~215px tall on a 900px laptop, so a spread grid simply
-   cannot sit on the table there — the cards hung off the rim. Overlapping is also what a real
-   trick looks like: four cards thrown into the middle, each covering the last, with only the
-   rank corner of the earlier ones showing. Position still says who played what, which is the
-   whole reason they are placed by seat. */
-.trick-card.at-nw { --x: 38%; --y: 42%; --rot: -3deg; }
-.trick-card.at-ne { --x: 62%; --y: 42%; --rot: 3deg; }
-.trick-card.at-sw { --x: 38%; --y: 58%; --rot: -5deg; }
-.trick-card.at-se { --x: 62%; --y: 58%; --rot: 5deg; }
+   Room to separate them came from 2f.2's max-height fix, which grew the felt from ~215px to
+   ~350px tall at desktop by deriving the ceiling FROM the width cap instead of guessing a
+   number — the felt genuinely could not hold four separated cards before that fix existed. */
+.trick-card.at-nw { --x: 35%; --y: 40%; --rot: -9deg; }
+.trick-card.at-ne { --x: 65%; --y: 40%; --rot: 7deg; }
+.trick-card.at-sw { --x: 35%; --y: 60%; --rot: -6deg; }
+.trick-card.at-se { --x: 65%; --y: 60%; --rot: 10deg; }
 
 /* --- Seats ---------------------------------------------------------------------------- */
 .seat-nw { grid-area: nw; justify-self: end; }
@@ -1200,9 +1198,13 @@ body {
 .bid-panel-prompt {
   width: 100%;
   text-align: center;
-  font-size: 0.8rem;
-  opacity: 0.85;
-  margin-bottom: 0.1rem;
+  /* Was 0.8rem at 85% opacity — smaller and dimmer than the buttons underneath it, so the
+     one line stating what was just decided ("Clubs is trump") read as an afterthought
+     instead of the thing that makes the next question make sense. */
+  font-size: 0.95rem;
+  font-weight: 600;
+  opacity: 0.95;
+  margin-bottom: 0.2rem;
 }
 .bid-button-back {
   opacity: 0.7;
@@ -1213,6 +1215,16 @@ body {
 }
 .bid-button-danger:active {
   background: #5c231b;
+}
+/* Going alone is the notable branch of the with-partner/alone choice — the one that changes
+   how the hand is played, not just who gets credit — so it gets the same gold accent used
+   for "your turn" elsewhere rather than sitting visually identical to "With Partner". */
+.bid-button-alone {
+  border-color: #ffd54a;
+  color: #ffd54a;
+}
+.bid-button-alone:active {
+  background: #4a3a1a;
 }
 
 .hand-tray {
@@ -1339,9 +1351,18 @@ body {
   .table-top {
     position: absolute;
     inset: 0;
-    width: auto;
-    height: auto;
+    /* Explicit 100%, not `width: auto` + `inset: 0`. Measured this collapsing to a 10x137px
+       sliver even with `max-width`/`max-height`/`aspect-ratio` all correctly reset to `none`/
+       `auto` — `.table-top` still carries `justify-self: center` / `align-self: stretch` /
+       `grid-area: t` from the general rule (harmless once the parent is no longer a grid, in
+       principle), and something in that combination was still constraining the auto-stretch
+       resolution abspos elements normally get from having both `left` and `right` set.
+       Unclear exactly which of those interacted, and not worth fully diagnosing — `width`/
+       `height: 100%` says the same thing unambiguously and sidesteps it entirely. */
+    width: 100%;
+    height: 100%;
     max-width: none;
+    max-height: none;
     aspect-ratio: auto;
   }
   .seat {

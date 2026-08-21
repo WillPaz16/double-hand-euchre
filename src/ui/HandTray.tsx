@@ -1,6 +1,8 @@
 import { useLayoutEffect, useRef } from 'react';
 import type { Action, Card as CardType, PlayerView } from '../../shared/engine/types.ts';
 import { Card } from './Card.tsx';
+import { BIDDING_PHASES } from './Table.tsx';
+import { HUMAN } from '../game/useGame.ts';
 
 /** The pickup motion (2e.5): a hand travels from ITS SEAT into the tray, rather than the
  *  tray just appearing — "like I'm physically picking them up." Replaces the earlier
@@ -79,17 +81,19 @@ function cardsEqual(a: CardType, b: CardType): boolean {
   return a.suit === b.suit && a.rank === b.rank;
 }
 
-/** The tray always shows the human's whole acting hand — not just the legal subset — with
- *  legal cards glowing and the rest dimmed. Per the design spec: highlight legal plays, don't
- *  hide the rest of the hand. `legal` is already scoped to the human player, so a non-empty
- *  card-action list here means it's genuinely their turn.
+/** The tray shows whichever hand is currently HELD (Table.tsx, `isHeld`) — not just the
+ *  legal subset, with legal cards glowing and the rest dimmed. Per the design spec: highlight
+ *  legal plays, don't hide the rest of the hand.
  *
- *  During bidding your selected hand is visible too ("like regular euchre" — you pick your
- *  cards up and look at them before ordering up), but that's rendered at the SEAT now
- *  (Table.tsx, `visibleCards`) rather than a second time here — "the hands should be on the
- *  table" was the whole point, and a duplicate read-only strip in the tray just repeated what
- *  the seat already shows, in the wrong physical position for it. This component now only
- *  ever renders the ACTING hand. */
+ *  Two held cases, both driven by the same PickupTray so both get the same "picked up from
+ *  the table" motion:
+ *    1. The acting hand during play/dealer_exchange — legal actions exist, cards are
+ *       clickable.
+ *    2. Your selected hand during bidding — "when you go to call trump, the hand you
+ *       selected should come up into your hand so you can see the cards", i.e. like regular
+ *       euchre, you look at your cards before bidding on them rather than reading them off
+ *       the table from across it. Read-only: there is no PLAY_CARD/DEALER_DISCARD action to
+ *       attach here, bidding actions live in BidPanel. */
 export function HandTray({
   view,
   legal,
@@ -139,6 +143,23 @@ export function HandTray({
               />
             );
           })}
+        </PickupTray>
+      </div>
+    );
+  }
+
+  if (BIDDING_PHASES.has(view.phase) && view.ownSelectedHand) {
+    // Same seat-key convention as the acting-hand branch above, so PickupTray's FLIP
+    // animation finds the right `data-seat` origin (Table.tsx tags every seat, not just the
+    // acting one) regardless of which branch is rendering.
+    const trayKey = `${HUMAN}-selected`;
+    return (
+      <div className="hand-tray">
+        <div className="hand-tray-label">Your hand</div>
+        <PickupTray trayKey={trayKey}>
+          {view.ownSelectedHand.map((card, i) => (
+            <Card key={i} card={card} dimmed />
+          ))}
         </PickupTray>
       </div>
     );

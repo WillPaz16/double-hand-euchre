@@ -50,8 +50,10 @@ function seatOf(hand: HandId): Seat {
   return SEATS.find((s) => sameHand(s.hand, hand))?.at ?? 'nw';
 }
 
-/** The hand's own cards, if this player is allowed to see them face-up on the table right
- *  now — null if the seat must stay anonymous backs.
+/** The hand's own cards, if this player is allowed to see them face-up ON THE TABLE right
+ *  now — null if the seat must stay anonymous backs. A hand you have physically PICKED UP
+ *  (see `isHeld` below) is never shown here even if visible in principle; it's in the tray
+ *  instead, which is the whole point of picking it up.
  *
  *  **This enforces RULES.md §6, which a previous version broke.** The rule is: "only the hand
  *  currently taking its turn is shown to its owner ... never seeing both simultaneously." The
@@ -63,13 +65,11 @@ function seatOf(hand: HandId): Seat {
  *  and shouldn't have drawn.
  *
  *  So visibility is decided by PHASE, not merely by what redact() happens to expose:
- *    - deal over          -> everything, per RULES.md §8's end-of-deal reveal
- *    - bidding / selection -> your own SELECTED hand only; you have picked it up to bid on it,
- *                             which is 2e.3's "like regular euchre" and what §2 intends
- *    - play / exchange     -> nothing. The acting hand is in the tray and is the only hand
- *                             anyone may see. */
+ *    - deal over -> everything, per RULES.md §8's end-of-deal reveal
+ *    - bidding / selection / play / exchange -> nothing of your own; a visible hand of yours
+ *      is always the HELD one, which lives in the tray (HandTray.tsx), never at the seat. */
 const DEAL_OVER_PHASES = new Set(['hand_complete', 'game_over']);
-const HAND_IN_YOUR_HANDS_PHASES = new Set([
+export const BIDDING_PHASES = new Set([
   'select',
   'loner_full_blind',
   'loner_blind_hand',
@@ -84,10 +84,25 @@ function visibleCards(view: PlayerView, hand: HandId): CardType[] | null {
     }
     return hand.role === 'selected' ? view.opponentSelectedHand : view.opponentBlindHand;
   }
-  if (HAND_IN_YOUR_HANDS_PHASES.has(view.phase)) {
-    return hand.player === HUMAN && hand.role === 'selected' ? view.ownSelectedHand : null;
-  }
   return null;
+}
+
+/** Is this hand currently PICKED UP — in the tray, not resting at its seat? Two cases:
+ *    - the acting hand in play/dealer_exchange (unchanged from before)
+ *    - your own SELECTED hand during bidding: "when you go to call trump, the hand you
+ *      selected should come up into your hand so you can see the cards" — in real euchre you
+ *      pick your cards up to look at them before bidding, you don't leave them lying on the
+ *      table and squint at them from across it. Only ever the selected hand, and only ever
+ *      yours: the blind hand stays face-down (you haven't looked at it yet, §2), and the
+ *      Old-Timer's hand is never yours to hold regardless of phase. */
+export function isHeld(view: PlayerView, hand: HandId): boolean {
+  if (view.actingHand && sameHand(view.actingHand, hand)) return true;
+  return (
+    hand.player === HUMAN &&
+    hand.role === 'selected' &&
+    BIDDING_PHASES.has(view.phase) &&
+    view.ownSelectedHand !== null
+  );
 }
 
 /** Every active hand plays exactly one card per trick, so its remaining count is always
@@ -155,7 +170,13 @@ export function Table({
         draggable={false}
       />
       {SEATS.map(({ hand, at }) => {
+        // "acting" (gold highlight + turn order) and "held" (picked up, seat empty) used to
+        // be the same boolean. They're related but not identical now that a hand can be held
+        // during bidding, where nobody is "acting" in the RULES.md §6 turn-order sense at
+        // all — highlighting a seat gold while its owner merely holds it up to bid would
+        // wrongly imply it's that hand's turn to play.
         const acting = view.actingHand ? sameHand(view.actingHand, hand) : false;
+        const held = isHeld(view, hand);
         const count = remainingInHand(view, hand);
         return (
           <div
@@ -176,8 +197,8 @@ export function Table({
                 backs while the tray showed four faces, because one counts what is left after
                 this trick's card and the other counts what is left now. The seat is where a
                 hand rests; the tray is where you have picked it up. */}
-            <div className={`seat-fan${acting ? ' is-empty' : ''}`} data-count={count}>
-              {acting
+            <div className={`seat-fan${held ? ' is-empty' : ''}`} data-count={count}>
+              {held
                 ? null
                 : (() => {
                     // Once a hand's contents are visible, show it face-up ON THE TABLE —
@@ -197,7 +218,7 @@ export function Table({
                 mode, where four fans plus the felt plus the tray genuinely do not fit in
                 375px of height. How many cards a hand has left is real strategic
                 information, so lean mode drops the PICTURE of the hand, never the fact. */}
-            <div className="seat-count">{acting ? '—' : count}</div>
+            <div className="seat-count">{held ? '—' : count}</div>
           </div>
         );
       })}

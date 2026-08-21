@@ -103,17 +103,25 @@ export function BidPanel({
         a.loner &&
         (pending.type === 'ORDER_UP' ? a.type === 'ORDER_UP' : a.type === 'NAME_TRUMP' && a.suit === pending.suit),
     );
-    const suitPart = pending.type === 'NAME_TRUMP' ? ` ${SUIT_LABEL[pending.suit]}` : '';
+    // What trump was just decided, stated as a fact rather than repeated as a button label.
+    // The "with partner" button used to say "Order It Up" again (or "Call Spades" again) —
+    // the EXACT label the player had just tapped to get here — which reads as "did my last
+    // tap not register?" rather than as a genuinely new question. Stating the outcome in the
+    // prompt and giving the two options their own distinct wording fixes both: the trump
+    // decision visibly landed, and the two paths forward no longer look like the same choice
+    // offered twice.
+    const trumpSuit = pending.type === 'ORDER_UP' ? view.upcard?.suit : pending.suit;
+    const trumpNamed = trumpSuit ? SUIT_LABEL[trumpSuit] : '';
     return (
       <div className="bid-panel">
-        <div className="bid-panel-prompt">Play with your partner hand, or go alone?</div>
+        <div className="bid-panel-prompt">{trumpNamed} is trump. Play with your partner, or go alone?</div>
         {withPartner && (
           <button className="bid-button" onClick={() => play(withPartner)}>
-            {pending.type === 'ORDER_UP' ? 'Order It Up' : `Call${suitPart}`}
+            With Partner
           </button>
         )}
         {alone && (
-          <button className="bid-button" onClick={() => play(alone)}>
+          <button className="bid-button bid-button-alone" onClick={() => play(alone)}>
             Go Alone (4 pts)
           </button>
         )}
