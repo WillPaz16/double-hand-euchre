@@ -8,10 +8,12 @@ Native pixel grid throughout — assets are displayed at a whole-number scale wi
 `image-rendering: pixelated`, per the "hybrid fixed-grid" approach in the Phase 2 design spec.
 Never edit the PNGs in `public/art/` directly; edit this spec / the script and regenerate.
 
-**Native resolution is 100×140** (5:7, the real playing-card ratio). Cards display 1:1 at
-native, and every other size is a whole-number fraction of it — the half-size 50×70 is used for
-fanned idle-seat backs and for short (landscape-phone) viewports. Never an arbitrary in-between
-size, which is what would break pixel crispness.
+**A card is 50×70 au** (5:7, the real playing-card ratio) and displays at `--px` 1 or 2, i.e.
+50×70 or 100×140 screen pixels. Never an arbitrary in-between size, which is what would break
+pixel crispness. (This line used to read "native resolution is 100×140, cards display 1:1",
+which contradicted the READ FIRST section immediately below it and was left standing for three
+phases after 2f.1 halved every file to its true resolution. The 100×140 figure is the
+generator's *canvas*, not the file.)
 
 On narrow screens the hand **fans with overlap** rather than shrinking, the way a real hand of
 cards does: each card shows a 52px strip (still above the 44px touch-target minimum), and since
@@ -34,6 +36,47 @@ resolution. There is no second sizing system and there are no exceptions.
 **A smaller card is different ART, not the same art scaled down.** This is why there are three
 card backs (`card_back` 50×70, `score_card_back` 30×42, `card_back_seat` 25×35) rather than one
 squeezed into three boxes. If you need art at a new size, draw it at that size.
+
+### The chunk: how coarse a grid each class wears (Phase 2g.2)
+
+`save_asset(..., chunk=n)` snaps to a `PX * n` grid before halving. Two classes:
+
+| Class | chunk | Screen px per art feature at `--px` 2 |
+|---|---|---|
+| Cards, scoreboard, suit icons, portraits | **1** | 2 |
+| Everything in the room, and the opponent | **2** | **4** |
+
+4 is the apparent pixel size the Stardew/Pokémon references actually use; the game shipped at
+2, which is the literal measurement behind "it doesn't look pixelated". Cards stay fine because
+a rank index and a suit pip must survive at the 25×35 au seat size, and there is no room there
+to spend half the resolution. Same principle as "a smaller card is different art" — how coarse
+a grid a thing can wear depends on what it has to say.
+
+**Quantise the shading BEFORE coarsening the grid. Never the reverse.** Test-coarsening the
+pre-2g.1 opponent moved him only 361 → 245 colours, because each larger block still carried its
+own unique tint — the result is big blocks of subtly-different colour, i.e. visible banding,
+which is worse than what you started with. Band the light first (see `light_from`), then chunk.
+
+**Draw features as grid-aligned rectangles, not curves you hope survive.** A 16×20 ellipse eye
+quantises to a 4×5 block and renders as a diamond. At these sizes a pixel-art eye *is* a
+rectangle.
+
+### Assertions, because "checked by eye" is not a check
+
+Three build-time guards, each written after the thing it guards had already shipped broken:
+
+- `_assert_pixel_grid` — no detail finer than the grid.
+- `_assert_value_ladder` — wall < floor < table, minimum 6 lightness points apart. ASSETS.md
+  specified this ordering from Phase 2d **with the numbers L 33/54/62 and the words "asserted
+  by eye at full size"**. Measured, the shipped tiles were 13.7/19.8/23.7 — a third of the
+  stated separation, wrong for four phases, in the three largest surfaces in the game.
+- `_assert_sprite_colours` — ceiling of 64 distinct colours per sprite. The shipped opponent
+  carried **361**, roughly fifty skin tones within four RGB units of each other, because
+  `light_from` tinted every column independently. Stardew-class character sprites carry 12–25.
+
+All three are proven to bite: breaking the ladder or un-banding the light fails the build with
+a specific message. An invariant only ever checked by eye is not an invariant — that is exactly
+how each of these drifted while every phase shipped green.
 
 ### Why this is stated so forcefully
 
@@ -103,10 +146,58 @@ happens to be first on PATH is not one.
 | `boot_dark` | `#3a2a20` | boots, belt |
 | `pip_fill_black` | `#483628` | fill for black-suit pips/garments — distinct from `ink` on purpose, see below |
 
-Every colour also gets a derived shadow tone via `darken()`, applied as a bottom-right band on
-each shape (light from the top-left). One derived tone per material keeps the palette from
-exploding while still giving everything the 2-tone look that reads as pixel art rather than
-flat vector.
+### Environment palette (separate from the card palette on purpose)
+
+`wood_dark/med/light` above are **not** reused here: `make_card_back()` depends on them and the
+card art is frozen. The environment gets its own bases, each fed through `ramp()` at use site.
+
+| Name | Hex | Use |
+|---|---|---|
+| `table_wood` | `#b1744e` | the felt/table surface — **L 50** |
+| `floor_wood` | `#946442` | floorboards — **L 42** |
+| `wall_wood` | `#573e32` | log wall — **L 27** |
+| `night_blue_deep` | `#212d52` | window glass, the room's cool reference |
+| `frost` | `#b0c6dc` | window frost blooms |
+| `fire_core` / `fire_mid` / `fire_deep` / `ember` | `#ffe28c` / `#f09634` / `#bc4a1e` / `#782816` | flame tongues, log embers |
+| `stone_med` / `stone_dark` | `#635548` / `#40362e` | hearth masonry — warm greys, never neutral ones |
+| `rug_red` / `rug_cream` | `#80342e` / `#c6ac84` | the rug, and the shelf's books |
+| `flannel_red` / `hat_fur` | `#8c2e28` / `#ded2be` | the Old-Timer |
+| `picture_sky` | `#6c9cbe` | the framed landscape — **H 201** |
+| `coat_green` | `#44604e` | the hung coat — **H 147** |
+
+**The three L values are the value ladder** and are asserted at build time, not eyeballed —
+see the assertions section above. They are deliberately NOT the L 33/54/62 this document used
+to specify: mocked up under the real CSS vignette and hearth wash, those land on a *daylit*
+room, and at L 62 the table goes pale and milky and stops reading as wood. Mood comes from the
+lighting layer over properly-lit materials, not from painting the materials black and leaving
+the low-alpha glows nothing to lift.
+
+**`picture_sky` and `coat_green` exist as much for their HUE as their object.** Audited, 33 of
+41 constants sat inside a single 42° warm arc (2.7–44.9°), with nothing at all between 45° and
+108° and no purple or magenta anywhere. That is the palette-level reason the room read monotone
+however the values were tuned. A painting of somewhere else and a piece of cloth are the two
+objects that can carry cool mid-hues without contradicting a firelit night cabin.
+
+### Shading: `ramp()` for materials, `darken()` for card art
+
+Card art keeps its single derived shadow tone via `darken()`, applied as a bottom-right band on
+each shape (light from the top-left) — a 2-tone look that reads as pixel art rather than flat
+vector, and frozen along with the cards themselves.
+
+Environment materials use `ramp(colour, warm=True)` → `(highlight, base, shadow, deep)`, which
+works in **HLS**, not RGB. It was rebuilt there in 2g.1 because the RGB version measurably did
+not do what its docstring claimed: it blew out highlights (+16 to +25 lightness points, so
+every call site mixed them halfway back), rotated shadows by **under 1.5°** rather than bending
+them cool, and returned an S 3.9% grey on cool bases. In HLS, lightness/hue/saturation stop
+fighting over three channels and each step states what it wants. Now a consistent 28-point
+spread and 27–30° of real rotation, **validated against palette extremes** (`fire_core`,
+`parchment`, `frost`), not one convenient mid-brown — that shortcut is how the original bug
+shipped.
+
+**Calm is not the same as flat.** The felt and floor compressed their ramps a second time on
+top of that, leaving the felt at 15 colours across 3.4 lightness points and 1.1° of hue: one
+brown with dither noise. Those factors were tuned against the old violent highlight and
+double-compensated once it was fixed. Keep grain quiet; keep form.
 
 **Trap worth documenting:** the outline colour is `ink` (near-black). A black-suit pip or
 garment filled with `ink` too is invisible against its own outline — this shipped broken once.
@@ -206,9 +297,9 @@ modified, because `make_card_back()` depends on them and the card art is frozen.
 
 ## Tiles vs. placed objects — different rules
 
-- **`table_felt.png`** (128×128) — horizontal planks with a gentle crown, grain running *along*
+- **`table_felt.png`** (64×64) — horizontal planks with a gentle crown, grain running *along*
   them. The calmest surface in the room by design: it sits directly under the cards.
-- **`wall_texture.png`** (128×128) — three stacked logs of unequal height, each shaded as a
+- **`wall_texture.png`** (64×64) — three stacked logs of unequal height, each shaded as a
   cylinder, separated by a dark recess. Compressed toward base via `_mix()` so the backdrop
   recedes rather than competing with the cards.
 - **`scene/floor.png`** (160×160) — long boards, one low-contrast end-joint each, quiet grain.
@@ -274,7 +365,7 @@ siblings, so at `z-index: 0` the hearth glow tinted the cards orange — directl
 card readability this phase names as its top risk. Behind the content it lights the room; in
 front it lights the cards.
 
-- **`fireplace.png`** (140×186) — stone surround, firebox, timber mantel. Stone uses a
+- **`fireplace.png`** (154×206) — stone surround, firebox, timber mantel. Stone uses a
   *compressed* ramp: `ramp()`'s temperature swing is right for wood but turns stone into a
   patchwork of blue-grey and khaki, and masonry needs visible mortar joints (draw a mortar
   ground, inset each stone) or it reads as a colour-blocked grid.
@@ -289,7 +380,7 @@ front it lights the cards.
     every sample differs. Sampling one sinusoid at multiples of π is the general trap.
   - The hearth's own stones are lit by firelight falloff from the opening. An object that
     throws light into the room but is itself uniformly lit quietly breaks the illusion.
-- **`window_glass.png` + `window_frame.png`** (120×146) — split into two layers so snow falls
+- **`window_glass.png` + `window_frame.png`** (132×162) — split into two layers so snow falls
   *behind* the glazing bars; baking the bars into the glass puts snow in front of them, which
   reads as dirt on the lens. The glass is the room's **cool reference**, built with
   `warm=False`; the sash is firelit and warm. That juxtaposition is the point of the object.
@@ -297,7 +388,7 @@ front it lights the cards.
   than stepped frames. Snow stepped at 4–8fps stutters; the fire *wants* stepping, snow does
   not. Rate matters: 3.5s per 72px tile ≈ 21px/s, crossing the pane in ~7s. An earlier 11s
   worked out at 6.5px/s — about 22s to cross — and read as static specks, not weather.
-- **`floor.png`** (96×96) — tileable floorboards with staggered end-joints, plus a CSS
+- **`floor.png`** (80×80) — tileable floorboards with staggered end-joints, plus a CSS
   skirting line at the wall/floor junction. The room previously had a wall and a table but no
   ground, which was the clearest single reason it read as props pinned to a backdrop. Value
   sits between wall and table, so the scene reads back-to-front: wall (darkest) → floor →
@@ -305,43 +396,52 @@ front it lights the cards.
 
 ## Living things (Phase 2d.3)
 
-- **`seated_old_timer.png`** (140×196) — the opponent, seated in a chair, holding a fan of
-  card backs. Head geometry (radius, hat construction, mustache) is copied exactly from
-  `_old_timer_parts()` so the seated figure and the scoreboard portrait read as *one person*
-  rather than two similar characters; only the framing differs.
-  - **Bug worth remembering — a variable named for the intent, in code that did something
-    else.** The fan loop's variable was called `ang`, but no rotation was ever applied; it was
-    used purely as an x-offset. Five 18px cards at 12px spacing merged into one contiguous
-    band, filled brown with a gold inner rect — unmistakably a belt with a brass buckle. This
-    is close to invisible on re-reading, because the author sees the name and reads the
-    intent while a fresh reader sees the belt. Each card is now genuinely rotated on its own
-    layer (NEAREST, to keep edges hard) before compositing.
-  - Two more from the same review: the chair was `darken(WOOD_MED, 0.55)`, near-black against
-    a dark wall and therefore invisible, and the torso ran off the canvas with no thigh
-    break — so he read as a standing bust, not a seated man. The chair now uses lit ramp
-    tones and the torso stops at a drawn lap. Arms were FLANNEL_RED over a FLANNEL_RED torso
-    in an overlapping x-range, i.e. no silhouette separation at all; they now use a shade
-    tone.
-  - A suggestion that was **evaluated and rejected on measurement**: shifting him left so the
-    table's rim occludes his lower edge. Measured at 1400×860, a 40px shift puts only 20px of
-    his 140px width behind the table, leaving 120px of the bottom edge still visible — it
-    does not do what it intends. Drawing a real lap fixes the underlying problem instead.
-  - **Placement is a compromise worth documenting.** The design intent was "seated across the
-    table". The table spans the full width of its container with the scoreboard and status
-    banner filling the entire band above it, so there is no across-the-table space to put a
-    figure without restructuring the UI — which would put the carefully-guarded
-    landscape/portrait height budgets at risk. He sits in the side margin instead, on the
-    floor, at the side of the table. Still a person in the room; just not opposite you.
-    Revisit if the layout is ever reworked.
-- **`cat_sheet.png`** (2 frames × 52×30) — curled asleep by the hearth. Two frames is enough
+- **`opponent_{idle,happy,rueful,blink}.png`** (150×140 au) — the Old-Timer, head-and-shoulders,
+  seated behind the table's north edge where his two card fans are. Rendered by `Table.tsx`, not
+  by `SceneLayer` — he is the person you are playing, not room decor.
+  - **This replaced a `seated_old_timer.png` that no longer exists.** That asset was a full
+    seated figure in the SIDE MARGIN, 538px right of and 226px below his own card fans — an
+    artifact of 2e.4's seating change never being reconciled with the scenery. 2f.3 moved him
+    across the table; its generator became dead code and was deleted in 2g.5. This section
+    described it, in detail, for two phases after it stopped being generated.
+  - Head is 62×66 au against a 50×70 au card — a deliberate STYLISED ratio ("head ≈ one card
+    height"), not physical scale, which would put it at ~181 au. The hearth and window follow
+    the same convention; see the 2.2× note under Scene.
+  - Features are drawn as **grid-aligned rectangles, not ellipses**. At `chunk=2` a 16×20
+    ellipse eye quantises to a 4×5 block and renders as a diamond. A pixel-art eye at this size
+    *is* a rectangle — draw it that way rather than hoping a curve survives the grid.
+  - Face carries real modelling: brow ridge, lit nose ridge with its own shadow, cheekbone and
+    jaw shading, eye-socket shadow, crow's feet. Before 2g.5 the head was one flat `SKIN`
+    ellipse with no features but eyes, brows and a moustache.
+  - `blink` is a fourth FILE, swapped by a timer in `useOpponentExpression`, not a sprite-sheet
+    frame. `steps()` gives every frame an equal slice, so a 140ms blink every few seconds would
+    need ~40 near-identical frames to express as a duty cycle. It fires only while idle —
+    `happy` and `rueful` redraw the eyes themselves.
+- **`cat_sheet.png`** (2 frames × 44×28) — curled asleep by the hearth. Two frames is enough
   because the motion is a swell, not a gait: the body rises one pixel. At 3.4s that reads as
   breathing; more frames would add nothing perceptible at this size.
-- **`shelf.png`** (118×62) — books, jars, a lit lantern. A placed one-off, so it carries all
+- **`shelf.png`** (60×32 au) — books, jars, a lit lantern. A placed one-off, so it carries all
   the distinctive point detail a repeating tile must not.
 
-Both the cat and the seated figure rest on the floor plane added in the 2d.2 follow-up.
-Without that ground they would float exactly the way the fireplace originally did — which is
-why the floor had to land before this sub-phase.
+The cat rests on the floor plane added in the 2d.2 follow-up. Without that ground it would
+float exactly the way the fireplace originally did — which is why the floor had to land before
+this sub-phase.
+
+### Wall and floor furniture (Phase 2g.4)
+
+`picture.png` (48×36 au), `antlers.png` (60×40), `clock.png` (40×40), `coat_hooks.png` (42×54),
+`woodpile.png` (52×32). Placed one-offs, so **exempt from the tile rules below** — "no point
+features" exists to stop a repeating tile betraying its grid, and none of these repeat.
+
+Built because the span between the hearth and the window — 53% of the viewport's width —
+carried nothing but the opponent's head. Two things worth keeping:
+
+- **Hang them from the TOP edge, not up from the floor line.** The free wall is defined by what
+  the table and the opponent occupy, and both grow downward. Measuring up from the floor put
+  the clock behind the opponent's card fan and the antlers poking out of his hands.
+- **The picture is a DAYLIT scene on purpose.** The only window shows night, so a sunlit
+  painting is the one place the palette can carry a mid-blue and a green without contradicting
+  a firelit night cabin. Same logic for the coat's green. See the hue-range note under Palette.
 
 ## Animation convention
 
@@ -367,22 +467,33 @@ Scenery is decorative-only precisely so these gates can remove it without touchi
 
 All PNGs write to `public/art/` (Vite serves `public/` at the site root unchanged):
 
+61 PNGs. Anything not on this list is not generated — the list is the inventory, so add to it
+in the same commit that adds the asset. (It previously omitted twelve shipped files and named
+one that had stopped existing, which is how `seated_old_timer.png` kept a four-paragraph spec
+section two phases after its generator went dead.)
+
 ```
-public/art/cards/{suit}_{rank}.png         × 24
-public/art/card_back.png
-public/art/table_felt.png
-public/art/wall_texture.png
-public/art/portraits/old_timer_{state}.png × 3
-public/art/scoreboard/{suit}_{rank}.png    × 4   (hearts + spades only; see SCORE_SUIT)
-public/art/scene/fireplace.png
-public/art/scene/fire_sheet.png            4 frames
-public/art/scene/window_glass.png
-public/art/scene/window_frame.png
-public/art/scene/snow.png
-public/art/scene/floor.png
-public/art/scene/seated_old_timer.png
-public/art/scene/cat_sheet.png             2 frames
-public/art/scene/shelf.png
+public/art/cards/{suit}_{rank}.png         × 24   chunk=1
+public/art/card_back.png                          chunk=1
+public/art/card_back_seat.png                     chunk=1   25×35 au
+public/art/score_card_back.png                    chunk=1   30×42 au
+public/art/scoreboard/{suit}_{rank}.png    × 4    chunk=1   (hearts + spades; see SCORE_SUIT)
+public/art/suits/{suit}.png                × 4    chunk=1   24×24 au, for the upcard wheel
+public/art/icon-{32,192,512}.png           × 3    PWA/OS sizes, NOT via save_asset
+public/art/portraits/old_timer_{state}.png × 3    chunk=1
+public/art/opponent_{idle,happy,rueful,blink}.png × 4   chunk=2
+public/art/table_felt.png                         chunk=2
+public/art/wall_texture.png                       chunk=2
+public/art/scene/fireplace.png                    chunk=2
+public/art/scene/fire_sheet.png            4 frames         chunk=2
+public/art/scene/window_glass.png                 chunk=2
+public/art/scene/window_frame.png                 chunk=2
+public/art/scene/snow.png                         chunk=2
+public/art/scene/floor.png                        chunk=2
+public/art/scene/rug.png                          chunk=2
+public/art/scene/cat_sheet.png             2 frames         chunk=2
+public/art/scene/shelf.png                        chunk=2
+public/art/scene/{picture,antlers,clock,coat_hooks,woodpile}.png × 5   chunk=2
 ```
 
 ## Audio (Phase 2c)
