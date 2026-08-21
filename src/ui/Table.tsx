@@ -223,7 +223,14 @@ export function Table({
         );
       })}
 
-      <div className="table-top">
+      {/* `.table-frame` owns the SIZE (grid area, aspect-ratio, the fluid max-width/height
+          math); `.table-top` inside it owns the SURFACE (felt background, the stepped
+          clip-path silhouette, the rim). Split in the pixelation pass specifically because
+          `clip-path` clips EVERYTHING inside the element it's on, legs and all — with the
+          legs and the felt at the same level, the stepped polygon cut the legs off wherever
+          they poked out below the box. As two levels, only the surface is clipped; the legs
+          sit beside it, positioned by the same percentages, unclipped. */}
+      <div className="table-frame">
         {/* Legs (2f.5) — the table had none at all: a felt ellipse with a rim, nothing
             suggesting it was furniture standing on anything. Only the NEAR (south) edge gets
             them — a top-down ellipse's far edge would have its legs hidden behind the
@@ -232,50 +239,53 @@ export function Table({
             projection's equivalent of drawing hidden lines. */}
         <div className="table-leg table-leg-l" />
         <div className="table-leg table-leg-r" />
-        {/* The kitty, with the turned card on top. This used to live in the status banner
-            above the table, where a 100x140 card floating on the cabin wall was both the
-            single largest consumer of vertical space and a lie about what it is: the upcard
-            is an object lying on the table. Moving it here freed roughly a third of the
-            height the felt now occupies, and it costs no explanation at all — a card sitting
-            on the baize next to the deck reads as the upcard without a caption. */}
-        {view.upcard && KITTY_PHASES.has(view.phase) && (
-          <div className="table-kitty">
-            <CardBack />
-            {/* The one genuinely random reveal in the game gets a randomizer animation; naming
-                trump later gets a firm stamp instead, since a wheel would misrepresent a
-                choice as chance (Phase 2 design spec §8). */}
-            {wheelSpinning ? (
-              <UpcardWheel suit={view.upcard.suit} durationMs={500} />
-            ) : (
-              <Card card={view.upcard} className="kitty-upcard" />
-            )}
-          </div>
-        )}
 
-        <div className="table-trick">
-          {/* Only during play — otherwise it printed "trick in progress" underneath the
-              bidding kitty, describing something that had not started yet. */}
-          {trick.length === 0 && view.phase === 'play' && (
-            <div className="trick-empty">— trick in progress —</div>
-          )}
-          {/* A played card sits on ITS OWN SEAT'S side of the centre, so the table shows who
-              played what by position. The old layout put all four in a left-to-right row with
-              a text label under each, which is strictly more to read and less to see. */}
-          {trick.map((played, i) => (
-            <div
-              key={i}
-              className={
-                `trick-card at-${seatOf(played.handId)}` +
-                (sweeping
-                  ? ` is-sweeping sweep-${completedTrick.winner === HUMAN ? 'down' : 'up'}` +
-                    (i === completedTrick.winningIndex ? ' is-winner' : '')
-                  : '')
-              }
-              style={sweeping ? { animationDelay: `${TRICK_HOLD_BEFORE_SWEEP_MS}ms` } : undefined}
-            >
-              <Card card={played.card} />
+        <div className="table-top">
+          {/* The kitty, with the turned card on top. This used to live in the status banner
+              above the table, where a 100x140 card floating on the cabin wall was both the
+              single largest consumer of vertical space and a lie about what it is: the upcard
+              is an object lying on the table. Moving it here freed roughly a third of the
+              height the felt now occupies, and it costs no explanation at all — a card sitting
+              on the baize next to the deck reads as the upcard without a caption. */}
+          {view.upcard && KITTY_PHASES.has(view.phase) && (
+            <div className="table-kitty">
+              <CardBack />
+              {/* The one genuinely random reveal in the game gets a randomizer animation; naming
+                  trump later gets a firm stamp instead, since a wheel would misrepresent a
+                  choice as chance (Phase 2 design spec §8). */}
+              {wheelSpinning ? (
+                <UpcardWheel suit={view.upcard.suit} durationMs={500} />
+              ) : (
+                <Card card={view.upcard} className="kitty-upcard" />
+              )}
             </div>
-          ))}
+          )}
+
+          <div className="table-trick">
+            {/* Only during play — otherwise it printed "trick in progress" underneath the
+                bidding kitty, describing something that had not started yet. */}
+            {trick.length === 0 && view.phase === 'play' && (
+              <div className="trick-empty">— trick in progress —</div>
+            )}
+            {/* A played card sits on ITS OWN SEAT'S side of the centre, so the table shows who
+                played what by position. The old layout put all four in a left-to-right row
+                with a text label under each, which is strictly more to read and less to see. */}
+            {trick.map((played, i) => (
+              <div
+                key={i}
+                className={
+                  `trick-card at-${seatOf(played.handId)}` +
+                  (sweeping
+                    ? ` is-sweeping sweep-${completedTrick.winner === HUMAN ? 'down' : 'up'}` +
+                      (i === completedTrick.winningIndex ? ' is-winner' : '')
+                    : '')
+                }
+                style={sweeping ? { animationDelay: `${TRICK_HOLD_BEFORE_SWEEP_MS}ms` } : undefined}
+              >
+                <Card card={played.card} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

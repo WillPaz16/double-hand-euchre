@@ -769,7 +769,13 @@ body {
    shadow onto the floor — the same contact-shadow principle the sprites use. Value
    separation does the rest: the wall is much darker, so the table reads as nearer and lit
    rather than as more of the same wood. */
-.table-top {
+/* `.table-frame` owns SIZE — the grid area, the fluid max-width/max-height/aspect-ratio math
+   that used to live directly on `.table-top`. Split out in the pixelation pass because
+   `clip-path` (on `.table-top`, below) clips every descendant, and the legs are meant to
+   overflow their box on purpose (`bottom: -8%`). As a sibling of the clipped surface instead
+   of a child, `.table-frame` gives the legs the same coordinate box without being subject to
+   the same clip. */
+.table-frame {
   grid-area: t;
   position: relative;
   /* Above the opponent (0), below the fans (2). */
@@ -811,9 +817,43 @@ body {
      (560px straitjacket that pinned the table on a phone); this one is DERIVED from the same
      max-width already above, so it cannot go stale the same way. */
   max-height: calc(min(560px, 96vw) / 1.6);
+}
+.table-top {
+  /* Fills `.table-frame` exactly, so it shares its parent's box (and thus the legs'
+     coordinate system) without being a layout participant of its own. */
+  position: absolute;
+  inset: 0;
   /* Still round: a table seen from above, with hands at its north and south edges rather than
-     all four. The ellipse shape doesn't depend on how many sides have seats. */
-  border-radius: 50%;
+     all four. The ellipse shape doesn't depend on how many sides have seats.
+
+     A STEPPED polygon, not `border-radius: 50%` — this was the single largest smooth
+     anti-aliased curve in a game whose whole visual identity is hard pixel edges, on-screen
+     at every moment of play. `border-radius` was never going to stop being that: it is a true
+     geometric circle, and a circle has no hard edges to have.
+
+     `clip-path` is what makes this possible on a FLUID-width felt (`max-width:
+     min(560px, 96vw)`) — a raster PNG rim was the alternative and was rejected in 2f.5
+     specifically because it would need one drawn size while the felt takes a continuous
+     range, the exact fractional-scale mismatch 2f.1 removed everywhere else. A polygon in
+     PERCENTAGES has no fixed size to mismatch; it scales with the box for free, at any width,
+     losslessly, because it's vector math instead of pixels.
+
+     The 38-point staircase below is a 12x12 grid rasterisation of a circle (same technique
+     `_heart_mask`/`_spade_mask`/etc. use in the Python generator, just computed for a CSS
+     polygon instead of a PIL mask) — generated, not hand-drawn, so it stays exactly
+     reproducible. 12 cells, not a higher count: at 20+ the steps get fine enough to
+     approximate smooth again, which defeats the entire point; at 12 the blockiness reads as
+     deliberate at a glance, the way a game character explicitly IS as a die pattern of
+     squares rather than a blurred approximation of a circle. */
+  clip-path: polygon(
+    66.67% 0.00%, 66.67% 8.33%, 83.33% 8.33%, 83.33% 16.67%, 91.67% 16.67%, 91.67% 25.00%,
+    91.67% 33.33%, 100.00% 33.33%, 100.00% 41.67%, 100.00% 50.00%, 100.00% 58.33%,
+    100.00% 66.67%, 91.67% 66.67%, 91.67% 75.00%, 91.67% 83.33%, 83.33% 83.33%,
+    83.33% 91.67%, 66.67% 91.67%, 66.67% 100.00%, 33.33% 100.00%, 33.33% 91.67%,
+    16.67% 91.67%, 16.67% 83.33%, 8.33% 83.33%, 8.33% 75.00%, 8.33% 66.67%, 0.00% 66.67%,
+    0.00% 58.33%, 0.00% 50.00%, 0.00% 41.67%, 0.00% 33.33%, 8.33% 33.33%, 8.33% 25.00%,
+    8.33% 16.67%, 16.67% 16.67%, 16.67% 8.33%, 33.33% 8.33%, 33.33% 0.00%
+  );
   background-image: url('/art/table_felt.png');
   background-repeat: repeat;
   background-size: calc(64px * var(--px));
@@ -837,11 +877,13 @@ body {
     0 22px 0 -8px rgba(0, 0, 0, 0.32),
     0 34px 26px -6px rgba(0, 0, 0, 0.42);
 }
-/* Legs (2f.5). Positioned as PERCENTAGES of the felt's own box, not au/--px sizes, because
-   the felt itself is fluid (`max-width: min(560px, 96vw)`) — a fixed-au leg would be exactly
-   the fractional-scale mismatch 2f.1 exists to prevent the moment the felt resized to a width
-   the leg wasn't drawn for. A percentage of the parent has no "wrong size" to be. Same dark
-   wood tone as the felt's own rim (`#2a1a10`) so they read as one object, not an applique. */
+/* Legs (2f.5), siblings of `.table-top` inside `.table-frame` (not children of it — see the
+   comment on `.table-frame` above) so the clip-path doesn't clip them. Positioned as
+   PERCENTAGES of that shared box, not au/--px sizes, because the felt itself is fluid
+   (`max-width: min(560px, 96vw)`) — a fixed-au leg would be exactly the fractional-scale
+   mismatch 2f.1 exists to prevent the moment the felt resized to a width the leg wasn't drawn
+   for. A percentage of the parent has no "wrong size" to be. Same dark wood tone as the
+   felt's own rim (`#2a1a10`) so they read as one object, not an applique. */
 .table-leg {
   position: absolute;
   bottom: -8%;
@@ -1416,12 +1458,12 @@ body {
     position: relative;
     max-height: none;
   }
-  .table-top {
+  .table-frame {
     position: absolute;
     inset: 0;
     /* Explicit 100%, not `width: auto` + `inset: 0`. Measured this collapsing to a 10x137px
        sliver even with `max-width`/`max-height`/`aspect-ratio` all correctly reset to `none`/
-       `auto` — `.table-top` still carries `justify-self: center` / `align-self: stretch` /
+       `auto` — the element still carries `justify-self: center` / `align-self: stretch` /
        `grid-area: t` from the general rule (harmless once the parent is no longer a grid, in
        principle), and something in that combination was still constraining the auto-stretch
        resolution abspos elements normally get from having both `left` and `right` set.
