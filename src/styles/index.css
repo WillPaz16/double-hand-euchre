@@ -120,15 +120,19 @@ body {
       rgba(255, 146, 62, 0.036) 45%, rgba(255, 146, 62, 0.036) 56%,
       rgba(255, 146, 62, 0) 56%
     ),
-    /* The non-repeating field: broad, low-alpha, deliberately off-centre so it never lines
-       up with the tile grid or with the table's own symmetry. */
+    /* The POOL the hearth throws onto the floor in front of it (2g.3). This started as a
+       broad low-alpha "field" parked at 30%/92% purely so it wouldn't line up with the tile
+       grid — light with no source, which is what the hearth glow's own comment calls the
+       dishonest failure mode. Moved in front of the fire and strengthened, it does a job
+       instead: firelight lands on the floorboards nearest the hearth. Wider than it is tall,
+       because a pool of light on a floor seen at this angle is an ellipse, not a disc. */
     radial-gradient(
-      ellipse 45% 50% at 30% 92%,
-      rgba(255, 168, 88, 0.09) 0%, rgba(255, 168, 88, 0.09) 18%,
-      rgba(255, 168, 88, 0.063) 18%, rgba(255, 168, 88, 0.063) 32%,
-      rgba(255, 168, 88, 0.038) 32%, rgba(255, 168, 88, 0.038) 43%,
-      rgba(255, 168, 88, 0.016) 43%, rgba(255, 168, 88, 0.016) 55%,
-      rgba(255, 168, 88, 0) 55%
+      ellipse 30% 22% at 14% 86%,
+      rgba(255, 168, 88, 0.17) 0%, rgba(255, 168, 88, 0.17) 22%,
+      rgba(255, 168, 88, 0.115) 22%, rgba(255, 168, 88, 0.115) 40%,
+      rgba(255, 168, 88, 0.065) 40%, rgba(255, 168, 88, 0.065) 58%,
+      rgba(255, 168, 88, 0.028) 58%, rgba(255, 168, 88, 0.028) 78%,
+      rgba(255, 168, 88, 0) 78%
     ),
     radial-gradient(
       ellipse 50% 55% at 93% 26%,
@@ -264,30 +268,31 @@ body {
   height: calc(162px * var(--px));
 }
 
-/* One frame's window onto the strip; the strip slides behind it. Repositioned for the 2.2x
-   bigger firebox opening (2f.4) — the flame SPRITE ITSELF is still 33x29 au, only its position
-   within the hearth moved. Redrawing the flame frames larger to match is a reasonable next
-   step, not done here: this pass is the hearth's masonry and the window, and a slightly
-   smaller flame in a correctly-sized opening is a visible improvement over the fire being
-   misaligned with an opening that grew out from under it. */
+/* One frame's window onto the strip; the strip slides behind it.
+   Resized in 2g.3 to actually fill the hearth. 2f.4 grew the fireplace 2.2x and moved this
+   flame into the new opening without resizing it, flagging the debt at the time; measured,
+   that left a 34x30 au flame in a 75x87 au firebox — 45% of its width, 34% of its height.
+   The fire is the literal source of this room's warmth and it was reading as embers in a
+   cold cathedral. Now 56x64 au: 75% and 74% of the opening, with margin so it still sits
+   INSIDE the firebox rather than filling it corner to corner. */
 .scene-fire {
   position: absolute;
-  left: calc(60px * var(--px));
-  top: calc(155px * var(--px));
-  width: calc(34px * var(--px));
-  height: calc(30px * var(--px));
+  left: calc(48px * var(--px));
+  top: calc(122px * var(--px));
+  width: calc(56px * var(--px));
+  height: calc(64px * var(--px));
   overflow: hidden;
 }
 .scene-fire-strip {
-  width: calc(136px * var(--px));   /* 4 frames x 34au */
-  height: calc(30px * var(--px));
+  width: calc(224px * var(--px));   /* 4 frames x 56au */
+  height: calc(64px * var(--px));
   background-image: url('/art/scene/fire_sheet.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
   animation: fire-flicker 0.5s steps(4) infinite;
 }
 @keyframes fire-flicker {
-  to { transform: translateX(calc(-136px * var(--px))); }
+  to { transform: translateX(calc(-224px * var(--px))); }
 }
 /* The light the fire throws into the room. Pulses out of phase with the flame loop so the
    two never lock into an obvious rhythm. Scaled roughly with the 2.2x bigger hearth (2f.4).

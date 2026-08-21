@@ -1352,7 +1352,7 @@ def _flame(draw, cx, base_y, w, h, sway, color, phase):
     draw.polygon(left + right[::-1], fill=color)
 
 
-def make_fire_frames(count=4, w=68, h=60):
+def make_fire_frames(count=4, w=112, h=128):
     """Animation frames for the hearth fire. Deterministic: each frame is a pure function of
     its index, no randomness, so regeneration is byte-identical.
 
@@ -1362,6 +1362,17 @@ def make_fire_frames(count=4, w=68, h=60):
     loop read as a shape pumping between two states rather than as fire. Using sin for one
     dimension and cos for the other makes the pair trace a circle, so every sample is distinct.
     Sampling a single sinusoid at multiples of pi is the general trap here.
+
+    **Sized to actually fill the hearth (Phase 2g.3), and parametric so it stays that way.**
+    2f.4 scaled the fireplace 2.2x and moved this flame into the new opening WITHOUT resizing
+    it, noting the debt honestly at the time. The result measured 34x30 au inside a 75x87 au
+    firebox — 45% of its width and 34% of its height, a pilot light in a cathedral hearth.
+    That matters more than any other single object here, because in a game whose stated mood
+    is "cabin by the fire" this is the literal source of the warmth.
+
+    Every constant below is now a FRACTION of `w`/`h` rather than a pixel count, which is why
+    the resize was a two-number change. The previous magic numbers were tuned for 68x60 and
+    silently became wrong the moment the hearth around them grew.
     """
     frames = []
     for i in range(count):
@@ -1369,19 +1380,26 @@ def make_fire_frames(count=4, w=68, h=60):
         d = ImageDraw.Draw(img)
         phase = 2 * math.pi * i / count
         sin_p, cos_p = math.sin(phase), math.cos(phase)
-        cx, base = w / 2, h - 7
+        cx, base = w / 2, h - round(h * 0.11)
 
-        for lx, ly, lw in ((10, 4, 24), (30, 6, 26), (20, 0, 22)):
-            d.rectangle((lx, base + ly - 4, lx + lw, base + ly), fill=darken(WOOD_MED, 0.7))
-            d.rectangle((lx, base + ly - 4, lx + lw, base + ly - 3), fill=EMBER)
+        log_h = max(4, round(h * 0.055))
+        for lx_f, ly_f, lw_f in ((0.13, 0.03, 0.34), (0.43, 0.05, 0.37), (0.28, 0.0, 0.31)):
+            lx, ly, lw = round(w * lx_f), round(h * ly_f), round(w * lw_f)
+            d.rectangle((lx, base + ly - log_h, lx + lw, base + ly), fill=darken(WOOD_MED, 0.7))
+            d.rectangle((lx, base + ly - log_h, lx + lw, base + ly - log_h + 1), fill=EMBER)
 
-        _flame(d, cx, base, 36, 32 + 6 * sin_p, 3.5 * cos_p, FIRE_DEEP, phase)
-        _flame(d, cx, base, 25, 24 + 5 * cos_p, 2.5 * sin_p, FIRE_MID, phase + 1.1)
-        _flame(d, cx, base, 13, 15 + 4 * sin_p, 1.5 * cos_p, FIRE_CORE, phase + 2.2)
+        _flame(d, cx, base, w * 0.53, h * 0.55 + h * 0.10 * sin_p, w * 0.05 * cos_p,
+               FIRE_DEEP, phase)
+        _flame(d, cx, base, w * 0.37, h * 0.41 + h * 0.085 * cos_p, w * 0.037 * sin_p,
+               FIRE_MID, phase + 1.1)
+        _flame(d, cx, base, w * 0.19, h * 0.26 + h * 0.068 * sin_p, w * 0.022 * cos_p,
+               FIRE_CORE, phase + 2.2)
 
-        for k, (ex, ey) in enumerate(((16, 22), (42, 28), (30, 16))):
-            off = (i * 4 + k * 3) % 14
-            d.point((ex + (k % 2), base - ey - off), fill=FIRE_CORE if off < 7 else FIRE_MID)
+        spark_travel = round(h * 0.24)
+        for k, (ex_f, ey_f) in enumerate(((0.24, 0.38), (0.62, 0.48), (0.44, 0.28))):
+            off = (i * 4 + k * 3) % spark_travel
+            d.point((round(w * ex_f) + (k % 2), base - round(h * ey_f) - off),
+                    fill=FIRE_CORE if off < spark_travel // 2 else FIRE_MID)
         frames.append(img)
     return frames
 
