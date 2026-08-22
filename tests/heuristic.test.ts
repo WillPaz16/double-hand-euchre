@@ -132,7 +132,39 @@ describe('chooseMove: bidding_round2 (naming a suit)', () => {
   });
 
   it('passes below threshold when passing is legal', () => {
-    const hand = [c('9', 'clubs'), c('9', 'hearts'), c('9', 'diamonds'), c('9', 'spades'), c('A', 'clubs')];
+    // Genuinely weak in every suit: one bare 9 of trump per candidate, no bower, no ace bonus
+    // (10 of clubs is not an ace and is not the candidate suit either way it's evaluated).
+    const hand = [c('9', 'clubs'), c('9', 'hearts'), c('9', 'diamonds'), c('9', 'spades'), c('10', 'clubs')];
+    const legal: Action[] = [
+      { type: 'NAME_TRUMP', player: 'B', suit: 'clubs', loner: false },
+      { type: 'PASS', player: 'B' },
+    ];
+    const view = makeView({ phase: 'bidding_round2', ownSelectedHand: hand });
+    expect(chooseMove(view, legal)).toEqual({ type: 'PASS', player: 'B' });
+  });
+
+  it('both bowers alone is a genuine exception to the trump-count gate', () => {
+    // Only 2 literal trump cards for clubs (right + left bower — J of clubs, J of spades), one
+    // short of the normal count-3 gate — but this specific 2-card holding is elite enough to
+    // name trump anyway. This is the narrow, validated exception, not a general "ace helps"
+    // rule: an EARLIER version let off-suit aces push a hand over the line on their own, and
+    // that measurably made the bot WORSE (see the file's docstring) because a single strong
+    // card is not the same as trump control. Only a genuinely elite 2-card holding qualifies.
+    const hand = [c('J', 'clubs'), c('J', 'spades'), c('9', 'hearts'), c('9', 'diamonds'), c('10', 'diamonds')];
+    const legal: Action[] = [
+      { type: 'NAME_TRUMP', player: 'B', suit: 'clubs', loner: false },
+      { type: 'PASS', player: 'B' },
+    ];
+    const view = makeView({ phase: 'bidding_round2', ownSelectedHand: hand });
+    expect(chooseMove(view, legal)).toEqual({ type: 'NAME_TRUMP', player: 'B', suit: 'clubs', loner: false });
+  });
+
+  it('two ordinary trump (no bower) does NOT clear the elite-exception bar', () => {
+    // Same count (2) as the elite case above, but two low/mid trump instead of both bowers —
+    // must still pass. This is the regression test for the bug that shipped first: a version
+    // scoring quality alone (not gated by count) let a single elite card, or two merely-decent
+    // ones, clear the line far too easily.
+    const hand = [c('9', 'clubs'), c('K', 'clubs'), c('9', 'hearts'), c('9', 'diamonds'), c('10', 'diamonds')];
     const legal: Action[] = [
       { type: 'NAME_TRUMP', player: 'B', suit: 'clubs', loner: false },
       { type: 'PASS', player: 'B' },
@@ -142,7 +174,7 @@ describe('chooseMove: bidding_round2 (naming a suit)', () => {
   });
 
   it('stick-the-dealer: names a suit anyway when passing is not legal', () => {
-    const hand = [c('9', 'clubs'), c('9', 'hearts'), c('9', 'diamonds'), c('9', 'spades'), c('A', 'clubs')];
+    const hand = [c('9', 'clubs'), c('9', 'hearts'), c('9', 'diamonds'), c('9', 'spades'), c('10', 'clubs')];
     const legal: Action[] = [
       { type: 'NAME_TRUMP', player: 'B', suit: 'clubs', loner: false },
       { type: 'NAME_TRUMP', player: 'B', suit: 'hearts', loner: false },
@@ -166,9 +198,25 @@ describe('chooseMove: dealer_exchange', () => {
   });
 });
 
-describe('chooseMove: play', () => {
-  it('leads the highest card when the trick is empty', () => {
+describe('chooseMove: play (leading)', () => {
+  it('leads its best trump when holding two or more — enough to draw the opponent\'s out', () => {
+    const hand = [c('9', 'clubs'), c('A', 'hearts'), c('10', 'hearts')];
+    const legal: Action[] = hand.map((card) => ({ type: 'PLAY_CARD', card }));
+    const view = makeView({ phase: 'play', trump: 'hearts', currentTrick: [] });
+    expect(chooseMove(view, legal)).toEqual({ type: 'PLAY_CARD', card: c('A', 'hearts') });
+  });
+
+  it('holds a LONE trump back and leads its best off-suit card instead', () => {
+    // Only one trump card (the ace of hearts) — leading it immediately would burn a stopper
+    // that could win a later trick instead of drawing anything meaningful out.
     const hand = [c('9', 'clubs'), c('A', 'hearts'), c('10', 'clubs')];
+    const legal: Action[] = hand.map((card) => ({ type: 'PLAY_CARD', card }));
+    const view = makeView({ phase: 'play', trump: 'hearts', currentTrick: [] });
+    expect(chooseMove(view, legal)).toEqual({ type: 'PLAY_CARD', card: c('10', 'clubs') });
+  });
+
+  it('leads its best trump when it is literally all the hand has left', () => {
+    const hand = [c('9', 'hearts'), c('A', 'hearts')];
     const legal: Action[] = hand.map((card) => ({ type: 'PLAY_CARD', card }));
     const view = makeView({ phase: 'play', trump: 'hearts', currentTrick: [] });
     expect(chooseMove(view, legal)).toEqual({ type: 'PLAY_CARD', card: c('A', 'hearts') });
