@@ -77,7 +77,10 @@ export const BIDDING_PHASES = new Set([
   'bidding_round2',
 ]);
 
-function visibleCards(view: PlayerView, hand: HandId): CardType[] | null {
+/** Exported for tests/tableVisibility.test.ts — this function IS the RULES.md §6 enforcement
+ *  (see the docstring above it), so it needs a test that pins the invariant directly rather
+ *  than trusting it stays correct across future edits to phase lists. */
+export function visibleCards(view: PlayerView, hand: HandId): CardType[] | null {
   if (DEAL_OVER_PHASES.has(view.phase)) {
     if (hand.player === HUMAN) {
       return hand.role === 'selected' ? view.ownSelectedHand : view.ownBlindHand;

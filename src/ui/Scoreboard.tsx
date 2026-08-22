@@ -28,8 +28,11 @@ export const PIP_Y1 = 78;
 
 /** The still-covered region, as a `clip-path` polygon on the (full-card-sized) cover element.
  *  Full rows below the current one stay entirely covered; if `revealed` is odd, the right
- *  pip of the current row does too — the left one has already been read past. */
-function coveredClipPath(revealed: number, rows: number): string {
+ *  pip of the current row does too — the left one has already been read past.
+ *  Exported for tests/scoreboard.test.tsx — this is the actual reveal math, and it's cheaper
+ *  and more precise to assert on the polygon string directly than to parse computed styles
+ *  out of jsdom, which doesn't run layout at all. */
+export function coveredClipPath(revealed: number, rows: number): string {
   const rowH = (PIP_Y1 - PIP_Y0) / rows;
   const fullRows = Math.floor(revealed / 2);
   const rightPipStillCovered = revealed % 2 === 1;
