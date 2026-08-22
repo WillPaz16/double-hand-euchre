@@ -126,4 +126,54 @@ describe('BidPanel', () => {
     rerender(<BidPanel view={makeView({ phase: 'bidding_round2' })} legal={nextLegal} play={vi.fn()} />);
     expect(screen.queryByText(/is trump/i)).toBeNull();
   });
+
+  it('focus moves to Back on entering the trump-alone confirm screen (2h.4)', () => {
+    const legal: Action[] = [
+      { type: 'ORDER_UP', player: HUMAN, loner: false },
+      { type: 'PASS', player: HUMAN },
+    ];
+    render(<BidPanel view={makeView()} legal={legal} play={vi.fn()} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Order It Up' }));
+    // The button just clicked no longer exists — focus must have moved somewhere real rather
+    // than falling back to <body>, and specifically to the non-committing option: this is the
+    // one screen in the panel with the least room for a misdirected keystroke to matter.
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Back' }));
+  });
+
+  it('focus moves to Back on entering the full-blind confirm screen (2h.4)', () => {
+    const legal: Action[] = [
+      { type: 'DECLARE_FULL_BLIND_LONER', player: HUMAN },
+      { type: 'PASS', player: HUMAN },
+    ];
+    render(<BidPanel view={makeView({ phase: 'loner_full_blind' })} legal={legal} play={vi.fn()} />);
+    fireEvent.click(screen.getByRole('button', { name: /go alone.*full blind/i }));
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Back' }));
+  });
+
+  it('Escape backs out of the trump-alone confirm screen without firing an action (2h.4)', () => {
+    const play = vi.fn();
+    const legal: Action[] = [
+      { type: 'ORDER_UP', player: HUMAN, loner: false },
+      { type: 'PASS', player: HUMAN },
+    ];
+    render(<BidPanel view={makeView()} legal={legal} play={play} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Order It Up' }));
+    expect(screen.getByText(/is trump/i)).toBeTruthy();
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Back' }), { key: 'Escape' });
+    expect(screen.getByRole('button', { name: 'Order It Up' })).toBeTruthy();
+    expect(play).not.toHaveBeenCalled();
+  });
+
+  it('Escape backs out of the full-blind confirm screen — the one decision with no undo once made', () => {
+    const play = vi.fn();
+    const legal: Action[] = [
+      { type: 'DECLARE_FULL_BLIND_LONER', player: HUMAN },
+      { type: 'PASS', player: HUMAN },
+    ];
+    render(<BidPanel view={makeView({ phase: 'loner_full_blind' })} legal={legal} play={play} />);
+    fireEvent.click(screen.getByRole('button', { name: /go alone.*full blind/i }));
+    fireEvent.keyDown(screen.getByRole('button', { name: 'Back' }), { key: 'Escape' });
+    expect(screen.getByRole('button', { name: /go alone.*full blind/i })).toBeTruthy();
+    expect(play).not.toHaveBeenCalled();
+  });
 });

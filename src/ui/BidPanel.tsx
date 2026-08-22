@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Action, PlayerView, Suit } from '../../shared/engine/types.ts';
 
 const SUIT_LABEL: Record<string, string> = {
@@ -69,13 +69,30 @@ export function BidPanel({
     setConfirmingFullBlind(false);
   }, [view.phase]);
 
+  // Focus management + Escape-to-cancel for the two confirm screens (2h.4). Both replace the
+  // top-level button list wholesale — the button a keyboard/screen-reader user just pressed is
+  // gone, unmounted along with everything else in that list, and nothing moved focus to
+  // whatever appeared in its place. Landing on "Back" rather than the committing action is the
+  // safer default for a confirm step, especially the full-blind one: RULES.md §2 says that
+  // declaration can't be revisited once made, so accidentally landing on and activating the
+  // wrong control here is the one mistake in this whole panel with no undo.
+  const panelRef = useRef<HTMLDivElement>(null);
+  const confirming = confirmingFullBlind || pending !== null;
+  useEffect(() => {
+    if (!confirming) return;
+    panelRef.current?.querySelector<HTMLButtonElement>('.bid-button-back')?.focus();
+  }, [confirming]);
+  const onEscape = (back: () => void) => (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') back();
+  };
+
   if (!BID_PHASES.has(view.phase) || legal.length === 0) return null;
 
   if (confirmingFullBlind) {
     const declare = legal.find((a) => a.type === 'DECLARE_FULL_BLIND_LONER');
     if (!declare) return null;
     return (
-      <div className="bid-panel">
+      <div className="bid-panel" ref={panelRef} onKeyDown={onEscape(() => setConfirmingFullBlind(false))}>
         <div className="bid-panel-prompt">
           You won't see your hand or the upcard — nothing — until the deal is over. Go full
           blind for 8 points?
@@ -113,7 +130,7 @@ export function BidPanel({
     const trumpSuit = pending.type === 'ORDER_UP' ? view.upcard?.suit : pending.suit;
     const trumpNamed = trumpSuit ? SUIT_LABEL[trumpSuit] : '';
     return (
-      <div className="bid-panel">
+      <div className="bid-panel" ref={panelRef} onKeyDown={onEscape(() => setPending(null))}>
         <div className="bid-panel-prompt">{trumpNamed} is trump. Play with your partner, or go alone?</div>
         {withPartner && (
           <button className="bid-button" onClick={() => play(withPartner)}>

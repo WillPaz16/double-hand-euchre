@@ -21,6 +21,11 @@ export function TitleScreen({ onPlay }: { onPlay: () => void }) {
         </button>
         <button
           className="title-mute-toggle"
+          // "Pressed" = sound is the engaged/active state, matching what the visible label
+          // already says ("Sound: On"/"Off") — a screen reader user gets the same fact a
+          // sighted player reads off the label, instead of a toggle with no reported state
+          // at all (the default for a plain <button>, which carries no on/off semantics).
+          aria-pressed={!muted}
           onClick={() => {
             const next = !muted;
             setMuted(next);
