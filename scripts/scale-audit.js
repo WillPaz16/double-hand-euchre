@@ -1,5 +1,5 @@
 /**
- * Scale audit — the invariant this project failed silently for three phases.
+ * Scale audit — the invariant this project failed silently for three phases, twice over.
  *
  * Every piece of pixel art must render at a WHOLE-NUMBER multiple of its true resolution.
  * Nothing else keeps a pixel the same physical size across the screen, and nothing else
@@ -11,8 +11,17 @@
  * places anyway, because it was only ever checked by eye, per-component, at one viewport.
  * This checks it globally, numerically, at every viewport that matters.
  *
- * Run: paste into the browser console on a running dev server, or execute via the
- * preview tool's javascript_tool. Returns a report object; `ok` is the thing to look at.
+ * **2h.1 added a fourth check, for the same underlying reason: chrome collision.** 2g.4's
+ * wall furniture placement was verified once, at one viewport (1280x860), with a snippet that
+ * lived nowhere. It shipped a regression invisible to every check above it — the props weren't
+ * mis-scaled and weren't off the viewport, they were simply UNDER the scoreboard and status
+ * banner at 375x812, up to 89% hidden. "Checked once, by hand, at one size" is exactly the
+ * failure this file exists to replace; extending it rather than writing a second script keeps
+ * that lesson in one place.
+ *
+ * Run via `npm run audit` (Playwright, headless, all four target viewports — see
+ * scripts/audit.mjs), or paste this IIFE into a browser console / execute via a preview tool's
+ * javascript_tool for a one-off check. Returns a report object; `ok` is what to look at.
  */
 (() => {
   const EPS = 0.02; // sub-pixel layout rounding, not a real fractional scale
@@ -141,12 +150,68 @@
       }
     }
 
+    // --- Scenery must not be swallowed by GAMEPLAY CHROME (2h.1) ---------------------------
+    // The offscreen check above answers "is this cropped by the viewport", which is a
+    // deliberate part of the stage design (§11: "cropped, not hidden"). It has no opinion on a
+    // prop being covered by another IN-PAGE element — which is exactly the bug that shipped in
+    // 2g.4: the wall furniture was placed as au offsets from a viewport edge, so it held at
+    // 1280px and collapsed at 375px, where the scoreboard and status banner occupy far more of
+    // the top of the screen. Measured after the fact: the picture 89% behind the scoreboard,
+    // the clock 80%, the antlers 65% behind the banner, the coat hooks 58% behind the
+    // opponent. scale-audit had nothing to say about any of it, because collision with other
+    // elements was never a thing it checked — only collision with the viewport edge.
+    //
+    // CHROME_SELECTORS is deliberately a short, explicit list rather than "everything with a
+    // higher z-index": the felt legitimately overlaps the rug's near edge (the table standing
+    // ON the rug is the point, per 2f.5/2g.4), so blanket z-index comparison would flag a
+    // correct composition. Chrome is the stuff that is guaranteed to be in front for reasons
+    // that have nothing to do with staging — the scoreboard, the banner, the hand trays, the
+    // opponent's own sprite — and a decorative prop should never lose a fight with any of it.
+    // `.score-slot`, not `.scoreboard` — the scoreboard is a flex CONTAINER spanning the full
+    // width with `justify-content: space-between`, so its own bounding box includes the empty
+    // middle between the two corner tallies. Checking against it produced a false positive at
+    // 1010px (a prop 55% "hidden by the scoreboard" that in fact sat entirely in the empty gap
+    // between the two visible corner boxes). Checking the two `.score-slot` children instead
+    // measures what is actually opaque on screen.
+    const CHROME_SELECTORS = [
+      '.score-slot',
+      '.status-banner',
+      '.hand-tray',
+      '.table-opponent',
+      '.seat-fan',
+    ];
+    const COLLISION_CEILING = 0.35; // a little overlap at an edge is fine; losing a third isn't
+    const collisions = [];
+    for (const el of document.querySelectorAll('[class*="scene-"]')) {
+      if (AMBIENT.test(el.className) || clippedByOwnParent(el)) continue;
+      const cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.backgroundImage === 'none') continue;
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) continue;
+      for (const sel of CHROME_SELECTORS) {
+        for (const chrome of document.querySelectorAll(sel)) {
+          const c = chrome.getBoundingClientRect();
+          const ow = Math.max(0, Math.min(r.right, c.right) - Math.max(r.left, c.left));
+          const oh = Math.max(0, Math.min(r.bottom, c.bottom) - Math.max(r.top, c.top));
+          const frac = (ow * oh) / (r.width * r.height);
+          if (frac > COLLISION_CEILING) {
+            collisions.push({
+              sel: el.className,
+              hiddenBy: sel,
+              pctHidden: +(frac * 100).toFixed(0),
+            });
+          }
+        }
+      }
+    }
+
     return {
       viewport: [innerWidth, innerHeight],
       px: getComputedStyle(document.documentElement).getPropertyValue('--px').trim() || '(unset)',
-      ok: findings.length === 0 && offscreen.length === 0,
+      ok: findings.length === 0 && offscreen.length === 0 && collisions.length === 0,
       fractionalScales: findings,
       mostlyOffscreen: offscreen,
+      chromeCollisions: collisions,
     };
   })();
 })();

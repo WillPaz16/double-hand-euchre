@@ -863,82 +863,17 @@ def make_face_card(rank: str, suit: str) -> Image.Image:
 FLANNEL_RED = (140, 46, 40, 255)
 HAT_FUR = (222, 210, 190, 255)
 
-PORTRAIT_W, PORTRAIT_H = 112, 132
-OT_CX = PORTRAIT_W // 2
-OT_HEAD_CY = 58
-OT_HEAD_RX, OT_HEAD_RY = 26, 27
-
-
-def _old_timer_parts():
-    return [
-        (_poly([
-            (OT_CX - 30, 92), (OT_CX + 30, 92), (OT_CX + 40, PORTRAIT_H), (OT_CX - 40, PORTRAIT_H),
-        ]), FLANNEL_RED),
-        (_poly([(OT_CX - 18, 92), (OT_CX - 12, 92), (OT_CX - 22, PORTRAIT_H), (OT_CX - 28, PORTRAIT_H)]), BOOT_DARK),
-        (_poly([(OT_CX + 12, 92), (OT_CX + 18, 92), (OT_CX + 28, PORTRAIT_H), (OT_CX + 22, PORTRAIT_H)]), BOOT_DARK),
-        (_ellipse(OT_CX - OT_HEAD_RX, OT_HEAD_CY - OT_HEAD_RY, OT_CX + OT_HEAD_RX, OT_HEAD_CY + OT_HEAD_RY), SKIN),
-        # Big mustache — drawn before the hat so the hat's brim can sit in front of the hairline.
-        (_poly([
-            (OT_CX - 20, OT_HEAD_CY + 8), (OT_CX - 4, OT_HEAD_CY + 4), (OT_CX, OT_HEAD_CY + 7),
-            (OT_CX + 4, OT_HEAD_CY + 4), (OT_CX + 20, OT_HEAD_CY + 8),
-            (OT_CX + 16, OT_HEAD_CY + 14), (OT_CX, OT_HEAD_CY + 10), (OT_CX - 16, OT_HEAD_CY + 14),
-        ]), BEARD_GRAY),
-        # Trapper hat: peaked crown, a fur brim, and two fur ear-flaps. The crown+brim are
-        # raised well clear of the eyebrow line (drawn at eye_y-7 in draw_old_timer_face) — an
-        # earlier version had the brim sitting almost exactly where the eyebrows are drawn, so
-        # every expression read as one gray "ski-goggle" stripe instead of showing brows at
-        # all. Ear flaps stay low and to the sides (they hang past the ears, not across the
-        # face) so they're not part of that overlap and don't need to move.
-        (_poly([
-            (OT_CX - 24, OT_HEAD_CY - 22), (OT_CX - 24, OT_HEAD_CY - 40), (OT_CX, OT_HEAD_CY - 48),
-            (OT_CX + 24, OT_HEAD_CY - 40), (OT_CX + 24, OT_HEAD_CY - 22),
-        ]), FLANNEL_RED),
-        (_ellipse(OT_CX - 30, OT_HEAD_CY - 20, OT_CX - 16, OT_HEAD_CY - 2), HAT_FUR),
-        (_ellipse(OT_CX + 16, OT_HEAD_CY - 20, OT_CX + 30, OT_HEAD_CY - 2), HAT_FUR),
-        (_poly([
-            (OT_CX - 25, OT_HEAD_CY - 24), (OT_CX + 25, OT_HEAD_CY - 24),
-            (OT_CX + 25, OT_HEAD_CY - 18), (OT_CX - 25, OT_HEAD_CY - 18),
-        ]), HAT_FUR),
-    ]
-
-
-def draw_old_timer_face(card: Image.Image, expression: str) -> None:
-    """`expression`: "idle" (neutral), "happy" (won a trick/euchre), "rueful" (lost one)."""
-    d = ImageDraw.Draw(card)
-    eye_y = OT_HEAD_CY - 3
-    for side in (-1, 1):
-        ex = OT_CX + side * 10
-        if expression == "happy":
-            d.arc((ex - 4, eye_y - 3, ex + 4, eye_y + 5), start=200, end=340, fill=INK, width=2)
-        else:
-            d.ellipse((ex - 3, eye_y - 4, ex + 3, eye_y + 4), fill=INK)
-            d.rectangle((ex - 2, eye_y - 3, ex - 1, eye_y - 2), fill=(255, 255, 255, 255))
-
-    by = eye_y - 10
-    for side in (-1, 1):
-        x_out, x_in = OT_CX + side * 17, OT_CX + side * 5
-        if expression == "rueful":
-            d.line((x_out, by - 3, x_in, by + 2), fill=BEARD_GRAY, width=3)
-        elif expression == "happy":
-            d.line((x_out, by + 1, x_in, by - 2), fill=BEARD_GRAY, width=3)
-        else:
-            d.line((x_out, by, x_in, by), fill=BEARD_GRAY, width=3)
-
-    my = OT_HEAD_CY + 16
-    if expression == "happy":
-        d.arc((OT_CX - 8, my - 4, OT_CX + 8, my + 6), start=15, end=165, fill=INK, width=2)
-    elif expression == "rueful":
-        d.arc((OT_CX - 6, my, OT_CX + 6, my + 8), start=200, end=340, fill=INK, width=2)
-    # idle: no explicit mouth line — the mustache alone reads as neutral.
-
-
-def make_old_timer_portrait(expression: str) -> Image.Image:
-    card = Image.new("RGBA", (PORTRAIT_W, PORTRAIT_H), (0, 0, 0, 0))
-    paste(card, composite_sprite(PORTRAIT_W, PORTRAIT_H, _old_timer_parts()), 0, 0)
-    draw_old_timer_face(card, expression)
-    card = snap_to_pixel_grid(card)
-    _assert_pixel_grid(card, label=f"portrait ({expression})")
-    return card
+# `_old_timer_parts()` / `draw_old_timer_face()` / `make_old_timer_portrait()` used to live
+# here: a standalone head-and-shoulders portrait, shown in a corner of the scoreboard for
+# reaction close-ups (the original Phase 2 design spec, §8). Deleted in 2h.1 — dead code found
+# during that phase's audit, still writing `public/art/portraits/old_timer_{idle,happy,
+# rueful}.png` and still counted in the `main()` run summary, with `src/` referencing none of
+# it. Superseded when 2f.3 put the Old-Timer at the table (`make_opponent()` below, reusing
+# this same geometry at a different scale) and made obsolete for the reason
+# `Scoreboard.tsx` states directly: once he sits across the table reacting with the same
+# `useOpponentExpression` states, a second portrait of the same man in the corner is
+# "literally a second copy of the same man on the same screen" — removed there in 2e.7, three
+# phases before its generator stopped being called here.
 
 
 # --- The opponent, across the table (Phase 2f.3) ------------------------------------------ #
@@ -969,10 +904,10 @@ OPP_HEAD_RX, OPP_HEAD_RY = 62, 66
 
 
 def _opponent_parts():
-    """Head, hat and shoulders at across-the-table size. Same visual language as the portrait
-    (`_old_timer_parts`) — same flannel, same trapper hat, same moustache — deliberately
-    redrawn at this size rather than scaled up from the 55x65au portrait, because scaling
-    pixel art is the one thing this project forbids."""
+    """Head, hat and shoulders at across-the-table size — same flannel, same trapper hat, same
+    moustache the standalone portrait used to draw (deleted in 2h.1; see the note above),
+    deliberately redrawn at this size rather than scaled up from a smaller original, because
+    scaling pixel art is the one thing this project forbids."""
     hy = OPP_HEAD_CY
     return [
         # Shoulders/chest, running off the bottom of the canvas — the felt crops it.
@@ -1735,130 +1670,15 @@ def make_floorboards(size=160):
 
 
 # --- Living things (Phase 2d.3) ----------------------------------------------------------- #
-
-SEAT_W, SEAT_H = 140, 196
-SEAT_CX = SEAT_W // 2
-SEAT_HEAD_CY = 66
-SEAT_HEAD_RX, SEAT_HEAD_RY = 26, 27
-
-
-def _mini_card_back(w=20, h=30):
-    """A small card back for the seated figure's hand. Uses the real card-back palette
-    (WOOD_DARK ground, GOLD inner border, lattice) rather than an arbitrary brown, so a hand
-    of them reads as *cards* and not as some other brown object."""
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    d.rectangle((0, 0, w - 1, h - 1), fill=WOOD_DARK, outline=INK)
-    d.rectangle((2, 2, w - 3, h - 3), outline=GOLD)
-    for y in range(5, h - 4, 5):
-        for x in range(5, w - 4, 5):
-            d.point((x, y), fill=WOOD_LIGHT)
-    return img
-
-
-def make_seated_old_timer():
-    """The opponent, seated in the room — same character as the scoreboard portrait (trapper
-    hat with fur flaps, red flannel, big gray mustache), rebuilt at full body holding a fan
-    of cards.
-
-    Head geometry deliberately matches `_old_timer_parts()` exactly (same radius, same hat
-    construction) so the seated figure and the portrait read as one person rather than two
-    similar characters. Only the framing differs.
-
-    Three bugs review caught in the first version, all worth remembering:
-
-    1. **The "fan" was never rotated.** The loop variable was named `ang`, which encoded the
-       *intent*, but it was only ever used as an x-offset — no rotation was applied anywhere.
-       Five 18px cards at 12px spacing merged into one contiguous band, filled brown with a
-       gold inner rect: unmistakably a belt with a brass buckle. A variable named for what you
-       meant, in code that does something else, is nearly invisible on re-reading — the author
-       sees the intent, a fresh reader sees the belt. Each card is now rotated on its own
-       layer before compositing.
-    2. **No chair and no lap, so he read as a standing bust.** The chair was
-       `darken(WOOD_MED, 0.55)` — near-black against a dark wall, invisible at every viewport
-       — and the torso simply ran off the bottom of the canvas with no thigh break. The chair
-       now uses lit ramp tones, and the torso stops at a lap.
-    3. **Invisible arms.** FLANNEL_RED arms drawn over a FLANNEL_RED torso in an overlapping
-       x-range have no silhouette separation at all. They now use the shade tone.
-    """
-    c_hi, c_base, c_sh, c_deep = ramp(WOOD_MED)
-    arm = darken(FLANNEL_RED, 0.74)
-    trouser = darken(BOOT_DARK, 1.25)
-    lap_y = 158
-
-    parts = [
-        # Chair: lit enough to actually be visible against the dark wall behind it.
-        (_poly([(SEAT_CX - 46, 50), (SEAT_CX + 46, 50), (SEAT_CX + 46, 72), (SEAT_CX - 46, 72)]), c_base),
-        (_poly([(SEAT_CX - 46, 50), (SEAT_CX - 37, 50), (SEAT_CX - 37, SEAT_H), (SEAT_CX - 46, SEAT_H)]), c_sh),
-        (_poly([(SEAT_CX + 37, 50), (SEAT_CX + 46, 50), (SEAT_CX + 46, SEAT_H), (SEAT_CX + 37, SEAT_H)]), c_sh),
-        # Lap and thighs — the break that makes "seated" read instead of "standing bust".
-        (_poly([(SEAT_CX - 40, lap_y), (SEAT_CX + 40, lap_y), (SEAT_CX + 44, SEAT_H), (SEAT_CX - 44, SEAT_H)]), trouser),
-        # Torso, stopping at the lap.
-        (_poly([(SEAT_CX - 32, 96), (SEAT_CX + 32, 96), (SEAT_CX + 38, lap_y), (SEAT_CX - 38, lap_y)]), FLANNEL_RED),
-        (_poly([(SEAT_CX - 19, 96), (SEAT_CX - 11, 96), (SEAT_CX - 14, lap_y), (SEAT_CX - 22, lap_y)]), BOOT_DARK),
-        (_poly([(SEAT_CX + 11, 96), (SEAT_CX + 19, 96), (SEAT_CX + 22, lap_y), (SEAT_CX + 14, lap_y)]), BOOT_DARK),
-        # Arms in the shade tone so they separate from the torso.
-        (_poly([(SEAT_CX - 44, 108), (SEAT_CX - 30, 104), (SEAT_CX - 24, 150), (SEAT_CX - 42, 154)]), arm),
-        (_poly([(SEAT_CX + 30, 104), (SEAT_CX + 44, 108), (SEAT_CX + 42, 154), (SEAT_CX + 24, 150)]), arm),
-        (_ellipse(SEAT_CX - 44, 140, SEAT_CX - 26, 158), SKIN),
-        (_ellipse(SEAT_CX + 26, 140, SEAT_CX + 44, 158), SKIN),
-        # Head.
-        (_ellipse(SEAT_CX - SEAT_HEAD_RX, SEAT_HEAD_CY - SEAT_HEAD_RY,
-                  SEAT_CX + SEAT_HEAD_RX, SEAT_HEAD_CY + SEAT_HEAD_RY), SKIN),
-        (_poly([
-            (SEAT_CX - 20, SEAT_HEAD_CY + 8), (SEAT_CX - 4, SEAT_HEAD_CY + 4),
-            (SEAT_CX, SEAT_HEAD_CY + 7), (SEAT_CX + 4, SEAT_HEAD_CY + 4),
-            (SEAT_CX + 20, SEAT_HEAD_CY + 8), (SEAT_CX + 16, SEAT_HEAD_CY + 14),
-            (SEAT_CX, SEAT_HEAD_CY + 10), (SEAT_CX - 16, SEAT_HEAD_CY + 14),
-        ]), BEARD_GRAY),
-        # Trapper hat: crown raised clear of the brow (a portrait bug once put the brim across
-        # the eyebrow line and every expression read as one gray stripe).
-        (_poly([
-            (SEAT_CX - 24, SEAT_HEAD_CY - 22), (SEAT_CX - 24, SEAT_HEAD_CY - 40),
-            (SEAT_CX, SEAT_HEAD_CY - 48), (SEAT_CX + 24, SEAT_HEAD_CY - 40),
-            (SEAT_CX + 24, SEAT_HEAD_CY - 22),
-        ]), FLANNEL_RED),
-        (_ellipse(SEAT_CX - 30, SEAT_HEAD_CY - 20, SEAT_CX - 16, SEAT_HEAD_CY - 2), HAT_FUR),
-        (_ellipse(SEAT_CX + 16, SEAT_HEAD_CY - 20, SEAT_CX + 30, SEAT_HEAD_CY - 2), HAT_FUR),
-        (_poly([
-            (SEAT_CX - 25, SEAT_HEAD_CY - 24), (SEAT_CX + 25, SEAT_HEAD_CY - 24),
-            (SEAT_CX + 25, SEAT_HEAD_CY - 18), (SEAT_CX - 25, SEAT_HEAD_CY - 18),
-        ]), HAT_FUR),
-    ]
-    img = Image.new("RGBA", (SEAT_W, SEAT_H), (0, 0, 0, 0))
-    paste(img, composite_sprite(SEAT_W, SEAT_H, parts), 0, 0)
-
-    # The hand, composited after the silhouette so it reads as held in front of him.
-    #
-    # Positions come from ONE pivot rather than from hand-tuned offsets. Each card is rotated
-    # about a point below the hand, and its centre is placed on the circle that pivot defines
-    # — so the splay and the arc are the same fact, and the fan cannot drift out of shape the
-    # way independently-chosen dx/dy inevitably do.
-    #
-    # The previous version listed dx offsets separately from the angles and added a token
-    # `abs(ang) * 0.42` droop. The result splayed nearly the full width of his body and hung
-    # down over his lap: a spread-out deck rather than a hand held up. Same lesson as the belt
-    # that was supposed to be a fan of cards — the numbers have to *mean* the geometry, not
-    # approximate its appearance.
-    pivot_x, pivot_y = SEAT_CX, 196          # below the sprite: a low pivot, as when held
-    radius = 52                              # pivot to card centre
-    for ang in (-19, -9.5, 0, 9.5, 19):
-        card = _mini_card_back()
-        rot = card.rotate(-ang, expand=True, resample=Image.NEAREST)
-        a = math.radians(ang)
-        cx = pivot_x + radius * math.sin(a) - rot.width // 2
-        cy = pivot_y - radius * math.cos(a) - rot.height // 2
-        img.paste(rot, (int(cx), int(cy)), rot)
-
-    d = ImageDraw.Draw(img)
-    eye_y = SEAT_HEAD_CY - 3
-    for side in (-1, 1):
-        ex = SEAT_CX + side * 10
-        d.ellipse((ex - 3, eye_y - 4, ex + 3, eye_y + 4), fill=INK)
-        d.rectangle((ex - 2, eye_y - 3, ex - 1, eye_y - 2), fill=(255, 255, 255, 255))
-        d.line((SEAT_CX + side * 17, eye_y - 10, SEAT_CX + side * 5, eye_y - 10),
-               fill=BEARD_GRAY, width=3)
-    return img
+# A full seated figure (`make_seated_old_timer()`, holding a fan of `_mini_card_back()` cards)
+# used to live here, parked in the right margin. 2f.3 replaced him with `make_opponent()`
+# across the table, where his hands already are (see that function's docstring). The seated
+# generator and its 119 lines of geometry, plus `SEAT_W/H/CX/HEAD_*` and `_mini_card_back()`,
+# were dead code from that point on — never called from `main()`, no output file existed for
+# them (`public/art/scene/seated_old_timer.png` was already gone) — and stayed in the file for
+# two more phases before being deleted here in 2h.1. Audited alongside the other 2g.4 items:
+# same failure shape as the orphaned portrait generator below, code that survived because
+# nothing forces a generator's absence from `main()` to be noticed.
 
 
 def make_cat_frames(count=2, w=88, h=56):
@@ -2353,14 +2173,6 @@ def main() -> None:
         _assert_sprite_colours(lit, name)
         save_asset(lit, os.path.join(scene_dir, f"{name}.png"), name, chunk=CHUNK_ENV)
 
-    portraits_dir = os.path.join(OUT_ROOT, "portraits")
-    os.makedirs(portraits_dir, exist_ok=True)
-    for expression in ("idle", "happy", "rueful"):
-        # Fine grid, same reason as the opponent above — it is the same face, smaller.
-        save_asset(make_old_timer_portrait(expression),
-                   os.path.join(portraits_dir, f"old_timer_{expression}.png"),
-                   f"portrait {expression}")
-
     # NOT run through save_asset: these are consumed by the OS at the exact sizes declared
     # in the manifest and <link rel="icon">, so they are output at nominal size, not au.
     for icon_size in (32, 192, 512):
@@ -2384,7 +2196,7 @@ def main() -> None:
 
     print(
         f"Generated {len(SUITS) * len(RANKS)} card faces + card back + table felt "
-        f"+ 3 Old-Timer portraits + {len(SUITS)} suit icons + {len(SCOREBOARD_SUITS) * 2} scoreboard cards -> {OUT_ROOT}"
+        f"+ {len(SUITS)} suit icons + {len(SCOREBOARD_SUITS) * 2} scoreboard cards -> {OUT_ROOT}"
     )
 
 

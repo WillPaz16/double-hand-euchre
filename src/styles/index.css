@@ -427,62 +427,118 @@ body {
   to { transform: translateX(calc(-88px * var(--px))); }
 }
 
-/* --- Wall and floor furniture (2g.4) ---------------------------------------------------- */
+/* --- Wall and floor furniture (2g.4, re-placed in 2h.1) ---------------------------------- */
 /* All anchored to a VIEWPORT EDGE, never to the table or to each other. Every stale-geometry
    bug this file has shipped — the 1240px gate, the 1000px gate, the 760px scenery math — came
    from deriving a position from some other element's size at the time of writing. An edge
-   does not change size. */
+   does not change size.
+
+   **2g.4's placements were verified once, at one viewport (1280x860), and never against the
+   scoreboard at all — the exact regression the 2h.1 audit collision check exists to catch.**
+   Measured at 375x812: picture 89% hidden behind the scoreboard, clock 80%, antlers 65%
+   behind the status banner, coat-hooks 58% behind the opponent. Re-verified with the fixed
+   audit at every widescreen checkpoint too and found picture/clock had ALWAYS collided with
+   the left `.score-slot` even at 1280x860 — the original ad-hoc check never included the
+   scoreboard as a blocker at all, so that miss predates this file's `min-width` gate entirely.
+
+   **Below 900px there is no free wall for any of these**, so they are hidden there — this
+   reuses the SAME breakpoint `.scoreboard`'s own layout keys off (below it the scoreboard is
+   still in-flow at the top of the page, not pulled into the corners), so it cannot go stale
+   independent of the chrome it exists to avoid colliding with. This is not the same failure
+   as the 1240/1000/720px gates referenced above: those hid ROOM ELEMENTS that belong in the
+   room at every size and went stale because the number was borrowed from something else's
+   size at the time. This gates DECOR that is competing for the same screen space as
+   information the player needs to read. Below 900px, less room; less decor. */
+.scene-picture,
+.scene-clock,
+.scene-antlers,
+.scene-coat-hooks {
+  display: none;
+}
+@media (min-width: 900px) {
+  .scene-picture,
+  .scene-clock,
+  .scene-coat-hooks {
+    display: block;
+  }
+}
+/* Antlers alone need a SECOND, higher gate. They sit in the gap between the opponent and the
+   window, and that gap is not fixed-width: the opponent is centred (its edges scale with
+   viewport-width/2), while the antlers were anchored from the right edge (scaling 1:1 with
+   width) — two different rates, so the gap between them shrinks as the viewport narrows.
+   Solved for the width where they stop touching: width/2 >= 556px, i.e. ~1112px. Verified
+   clean at 1150px and colliding at 1010px, so the gate below uses 1150 with a margin, not the
+   bare algebraic threshold — the same "verify the number, don't trust the derivation alone"
+   lesson as the value-ladder assert. Below it: three props, not four; still more than 2g.4
+   shipped with at any width, since picture/clock/coat-hooks now hold at every size >=900px
+   including this one. */
+@media (min-width: 1150px) {
+  .scene-antlers {
+    display: block;
+  }
+}
 .scene-picture,
 .scene-clock,
 .scene-antlers,
 .scene-coat-hooks,
 .scene-woodpile {
-  display: block;
   position: absolute;
   background-size: 100% 100%;
   image-rendering: pixelated;
 }
-/* Anchored to the TOP edge, not measured up from the floor. Everything on this wall is hung
-   from above in reality, and more practically: the free wall is defined by what the table and
-   the opponent occupy, and both of those grow downward from the top of the play area.
-   Measuring up from the floor line put the first attempt's clock squarely behind the
-   opponent's card fan and its antlers poking out of his hands like a houseplant.
+.scene-woodpile {
+  display: block;
+}
+/* Picture, clock and coat-hooks all live in ONE region, verified free at every tested width
+   from 1010px up: the gap between the score-slot's bottom edge and the fireplace's top edge,
+   directly above the hearth. Both of those neighbours are LEFT-edge-anchored with a fixed au
+   offset (the fireplace never moves; the left score-slot's width barely changes with content),
+   so a fixed au position here holds at any width wide enough to hit chunk=2 at all — unlike
+   the opponent, whose edges are centred and scale with width/2, which is what made the
+   original right-side antlers/coat-hooks placement width-dependent and is why antlers alone
+   still needs its own, higher gate above.
 
-   The two genuinely free regions at every viewport, measured: ABOVE THE HEARTH (its sprite
-   tops out well below the ceiling) and the RIGHT GAP between the opponent's fan and the
-   window. The opponent's head sits in the space between them, which is why nothing is
-   centred — he is the composition's middle, and hanging a picture behind his head would be
-   fighting him for the same spot. */
+   Anchored to the TOP edge, not measured up from the floor: the free band is bounded by the
+   score-slot above and the fireplace below, and measuring from the floor (2g.4's original
+   approach) has no relationship to either. Stacked in one row rather than centred over the
+   opponent's head — "nothing is centred, he is the composition's middle" no longer holds once
+   the only reliably free region is this one band, but the props are still clearly to the LEFT
+   of him, so the room still reads as furnished on both sides once antlers join in above
+   1150px. */
 .scene-picture {
-  left: calc(95px * var(--px));
-  top: calc(22px * var(--px));
+  left: calc(8px * var(--px));
+  top: calc(46px * var(--px));
   width: calc(48px * var(--px));
   height: calc(36px * var(--px));
   background-image: url('/art/scene/picture.png');
 }
 .scene-clock {
-  right: calc(148px * var(--px));
-  top: calc(22px * var(--px));
+  left: calc(64px * var(--px));
+  top: calc(46px * var(--px));
   width: calc(40px * var(--px));
   height: calc(40px * var(--px));
   background-image: url('/art/scene/clock.png');
 }
+/* Third in the row, and TALLER than the 50au gap between the score-slot and the fireplace
+   top — it overlaps the fireplace's own bounding box by design, not by mistake. The
+   fireplace is not a chrome selector (a decorative prop losing to another decorative prop
+   is not the bug this phase fixes), and mounting coat hooks directly above a hearth's
+   mantel is the single most plausible placement in the whole room for them. */
+.scene-coat-hooks {
+  left: calc(112px * var(--px));
+  top: calc(44px * var(--px));
+  width: calc(42px * var(--px));
+  height: calc(54px * var(--px));
+  background-image: url('/art/scene/coat_hooks.png');
+}
+/* Right of the opponent, in the gap toward the window — see the min-width: 1150px gate above
+   for why this one placement needs it and the other three don't. */
 .scene-antlers {
   right: calc(143px * var(--px));
   top: calc(75px * var(--px));
   width: calc(60px * var(--px));
   height: calc(40px * var(--px));
   background-image: url('/art/scene/antlers.png');
-}
-/* Tucked into the narrow strip between the hearth and the table's left edge. Partly occluded
-   by the felt, which is correct rather than a defect — it sits further back in the room, and
-   the scene layer's z-index -1 gives that for free. */
-.scene-coat-hooks {
-  left: calc(160px * var(--px));
-  top: calc(86px * var(--px));
-  width: calc(42px * var(--px));
-  height: calc(54px * var(--px));
-  background-image: url('/art/scene/coat_hooks.png');
 }
 /* On the floor beside the hearth, where the fire's fuel comes from. */
 .scene-woodpile {
@@ -710,9 +766,6 @@ body {
     gap: 0.5rem;
     padding-inline: 0.25rem;
   }
-  .opponent-portrait {
-    display: none;
-  }
   .score-pair {
     gap: 3px;
   }
@@ -736,18 +789,6 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 0.1rem;
-}
-/* 66x78 is exactly 60% of the source art's native 110x130 — same aspect ratio, so
-   object-fit here is a pure scale with zero actual cropping (verified: 110/130 == 66/78).
-   Sized up from an earlier 55x65 for legibility once the hat/eyebrow overlap bug (see
-   generate_art.py, _old_timer_parts) was fixed and the face was actually worth showing. */
-.opponent-portrait {
-  width: calc(56px * var(--px));
-  height: calc(66px * var(--px));
-  image-rendering: pixelated;
-  object-fit: cover;
-  object-position: top;
-  border-radius: 0;
 }
 .score-label {
   font-size: 0.85rem;
@@ -1657,15 +1698,10 @@ body {
     font-size: 0.6rem;
   }
   /* The scoreboard row was the single biggest contributor to the overflow this rule was meant
-     to prevent: portrait + score-pair stack vertically inside .score-slot (a flex column), and
-     at full size that column alone measured ~195px tall — more than half a 375px-tall phone in
-     landscape. The portrait is decorative here (its expression already isn't legible at this
-     size) so it's dropped entirely; the score cards shrink for real rather than via `transform`
+     to prevent: at full size the score-pair column measured ~195px tall — more than half a
+     375px-tall phone in landscape. The score cards shrink for real rather than via `transform`
      (which would leave the pre-shrink box still reserving its full flow space and fix nothing).
      ScorePair's slide offset is a %, not a hardcoded px, specifically so this resize is safe. */
-  .opponent-portrait {
-    display: none;
-  }
   .scoreboard {
     gap: 1rem;
     padding-top: 0;
