@@ -30,8 +30,14 @@ resolution. There is no second sizing system and there are no exceptions.
   halves to true resolution before writing. Every asset goes through it.
 - App side: `--px` in `src/styles/index.css`. Any size derived from art is
   `calc(<au> * var(--px) * 1px)` — **never a bare pixel count**.
-- Enforcement: `scripts/scale-audit.js` walks the live DOM and fails on any non-integer scale
-  or any scene object clipped off the viewport. Run it at every target viewport, not one.
+- Enforcement: `scripts/scale-audit.js` walks the live DOM and fails on any non-integer scale,
+  any scene object clipped off the viewport, or (2h.1) any scene object more than 35% hidden
+  behind gameplay chrome (the scoreboard, status banner, hand tray, opponent). Run via
+  `npm run audit` (Playwright, headless, all four target viewports, see `scripts/audit.ts`) —
+  wired into CI (2h.2) so "run it at every target viewport, not one" is no longer something
+  that depends on a person remembering to. That dependency is exactly how 2g.4 shipped a
+  regression this check would have caught: verified once, at one viewport, with a snippet
+  that lived nowhere.
 
 **A smaller card is different ART, not the same art scaled down.** This is why there are three
 card backs (`card_back` 50×70, `score_card_back` 30×42, `card_back_seat` 25×35) rather than one

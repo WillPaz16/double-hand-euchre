@@ -5,6 +5,7 @@ logic, so re-running this script always produces the same output. See ASSETS.md 
 editing: change the spec/constants below, not the PNGs in public/art/.
 """
 import colorsys
+import json
 import math
 import os
 
@@ -2193,6 +2194,20 @@ def main() -> None:
     for suit in SCOREBOARD_SUITS:
         for rank in ("4", "6"):
             save_asset(make_scoreboard_card(rank, suit), os.path.join(score_dir, f"{suit}_{rank}.png"))
+
+    # Emitted so the "MUST MATCH" comment on Scoreboard.tsx's CARD_H/PIP_Y0/PIP_Y1 is a checked
+    # fact instead of a promise (2h.2) — tests/scoreboardGeometry.test.ts reads this file and
+    # compares it against the TS constants directly. Not written into public/art/: it is not a
+    # game asset, just a build-time contract between this generator and that one component, so
+    # it lives beside the generator instead of shipping to players.
+    art_dir = os.path.dirname(__file__)
+    with open(os.path.join(art_dir, "scoreboard-geometry.generated.json"), "w") as f:
+        json.dump(
+            {"CARD_H": SCORE_CARD_H, "PIP_Y0": SCORE_PIP_Y0, "PIP_Y1": SCORE_PIP_Y1},
+            f,
+            indent=2,
+        )
+        f.write("\n")
 
     print(
         f"Generated {len(SUITS) * len(RANKS)} card faces + card back + table felt "

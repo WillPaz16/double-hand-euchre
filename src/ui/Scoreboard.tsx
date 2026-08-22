@@ -19,10 +19,12 @@ const GAME_TARGET = 10;
  *  place the pip rows, and this reproduces the same boundaries to compute the cover's
  *  clip-path, so a change to one without the other misaligns the reveal with the row it's
  *  meant to stop between. Same cross-file coupling pattern as TRICK_HOLD_MS (useGame.ts /
- *  Table.tsx). */
-const CARD_H = 84;
-const PIP_Y0 = 6;
-const PIP_Y1 = 78;
+ *  Table.tsx). Exported so tests/scoreboardGeometry.test.ts can check this against the
+ *  generator's own emitted values (art/scoreboard-geometry.generated.json) instead of the two
+ *  files drifting apart with nothing to notice (2h.2). */
+export const CARD_H = 84;
+export const PIP_Y0 = 6;
+export const PIP_Y1 = 78;
 
 /** The still-covered region, as a `clip-path` polygon on the (full-card-sized) cover element.
  *  Full rows below the current one stay entirely covered; if `revealed` is odd, the right

@@ -20,7 +20,7 @@
  * that lesson in one place.
  *
  * Run via `npm run audit` (Playwright, headless, all four target viewports — see
- * scripts/audit.mjs), or paste this IIFE into a browser console / execute via a preview tool's
+ * scripts/audit.ts), or paste this IIFE into a browser console / execute via a preview tool's
  * javascript_tool for a one-off check. Returns a report object; `ok` is what to look at.
  */
 (() => {

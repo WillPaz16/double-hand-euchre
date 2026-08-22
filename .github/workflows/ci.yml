@@ -1,0 +1,60 @@
+name: CI
+
+# There was no .github/ directory at all before this workflow, on a project that has shipped
+# regressions its own tooling could have caught (see scripts/scale-audit.js's collision check,
+# added after a prop-placement bug shipped verified once, by hand, at one viewport, in 2g.4).
+# This runs the checks that already exist in the repo — nothing here is new logic, only new
+# automation around it.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Engine fuzz (10k random legal deals)
+        run: npm run fuzz
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install -r art/requirements.txt
+
+      - name: Art determinism (pixel-identical across two runs)
+        run: python art/check_determinism.py
+
+      - name: Card art frozen
+        # ASSETS.md rule 6: the 24 faces and card backs are frozen and every environment/art
+        # change is supposed to leave them untouched. A raw `git diff` on the PNGs would
+        # false-positive here: CI's Pillow version is not guaranteed to match whatever
+        # generated the committed bytes, and ASSETS.md documents that identical PILLOW PIXELS
+        # can still encode to different PNG bytes across versions. Pixel-compares against the
+        # git-committed baseline instead — see art/check_cards_frozen.py.
+        run: python art/check_cards_frozen.py
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Scale + collision audit (all four target viewports)
+        run: npm run audit
+
+      - name: Production build
+        run: npm run build

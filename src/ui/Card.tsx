@@ -38,7 +38,8 @@ export function CardBack({ mini, seat }: { mini?: boolean; seat?: boolean }) {
   // `seat` swaps the ASSET, not just the box. Pixel art at a smaller size is redrawn, never
   // scaled down — rendering the 50x70 deck back into a 25x35 seat would be 0.5x, and a
   // fractional scale is the one thing this codebase now forbids outright (see --px in
-  // index.css, and scripts/scale-audit.js which fails the build on it).
+  // index.css, and scripts/scale-audit.js, wired into CI as `npm run audit` since 2h.2, which
+  // fails the build on it).
   return (
     <img
       className={`card-back${mini ? ' mini' : ''}${seat ? ' seat' : ''}`}
