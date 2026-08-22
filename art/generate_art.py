@@ -1921,19 +1921,32 @@ def make_antlers(w=120, h=80):
     d.polygon([(cx - 8, py + 2), (cx + 8, py + 2), (cx + 6, py + 12), (cx - 6, py + 12)],
               fill=p_deep)
 
+    # Widths roughly doubled from the first pass, which measured genuinely spindly at display
+    # size — the tine tips in particular were a single floating pixel with nothing connecting
+    # them to the beam visually. A real antler beam is a substantial, weight-bearing form, not
+    # a wire; `d.ellipse` "burrs" at every joint round out where segments meet, since PIL's
+    # line-width joints stay hard mitres otherwise and read as notches rather than one branch
+    # splitting into another.
+    def burr(x, y, r):
+        d.ellipse((x - r, y - r, x + r, y + r), fill=bone)
+
     for side in (-1, 1):
         # Main beam, sweeping up and out.
         beam = [(cx + side * 4, py), (cx + side * 16, py - 18), (cx + side * 30, py - 30),
                 (cx + side * 46, py - 34)]
         for (x0, y0), (x1, y1) in zip(beam, beam[1:]):
-            d.line((x0, y0, x1, y1), fill=bone, width=5)
+            d.line((x0, y0, x1, y1), fill=bone, width=9)
+        for jx, jy in beam:
+            burr(jx, jy, 5)
         # Tines off the beam.
         for (bx, by), (tx, ty) in (((cx + side * 16, py - 18), (cx + side * 12, py - 40)),
                                    ((cx + side * 30, py - 30), (cx + side * 30, py - 52)),
                                    ((cx + side * 42, py - 33), (cx + side * 50, py - 50))):
-            d.line((bx, by, tx, ty), fill=bone, width=4)
-            d.line((tx, ty, tx + side, ty - 2), fill=b_hi, width=3)
-        d.line((cx + side * 4, py, cx + side * 16, py - 18), fill=b_sh, width=2)
+            d.line((bx, by, tx, ty), fill=bone, width=7)
+            burr(bx, by, 4)
+            burr(tx, ty, 4)
+            d.line((tx, ty, tx + side * 2, ty - 3), fill=b_hi, width=5)
+        d.line((cx + side * 4, py, cx + side * 16, py - 18), fill=b_sh, width=3)
     return img
 
 
