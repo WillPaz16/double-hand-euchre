@@ -572,11 +572,54 @@ def paste_corners(card: Image.Image, rank: str, suit: str) -> None:
     card.paste(flipped, (CARD_W - block_w - INDEX_MARGIN, CARD_H - block_h - INDEX_MARGIN), flipped)
 
 
+# The real pip count for a 9 or a 10 — this used to draw exactly ONE big pip for every number
+# rank (Ace included), which is correct for an Ace but was quietly wrong for the 9 and the 10,
+# the two ranks whose entire visual identity on a real deck IS the pip count. Positions follow
+# the standard Anglo-American layout: two columns of four, which is 8 on its own (a real "8"),
+# plus rank-specific extras — a dead-centre ninth pip for the 9, or a pip inserted between each
+# pair of rows on the centreline for the 10. Kept out of `_index_boxes`' reserved corners by
+# construction (see the column-x comment below), not by trial and error.
+_PIP_ROWS = (26, 58, 90, 122)
+_PIP_COL_L, _PIP_COL_R = 34, 66  # clears both corner index boxes on X alone — any Y is safe
+_PIP_SIZE = 14
+
+
+def _pip_positions(rank: str) -> list[tuple[int, int]]:
+    if rank == "A":
+        return [(CX, 70)]  # unchanged: an Ace shows exactly one large pip
+    positions = [(x, y) for y in _PIP_ROWS for x in (_PIP_COL_L, _PIP_COL_R)]  # the shared 8
+    if rank == "9":
+        positions.append((CX, 74))  # dead centre — the traditional 9th pip
+    elif rank == "10":
+        # Between the two row-pairs, not above/below them: the safe vertical band only needs
+        # to hold the existing 4 rows, and CX is clear of both index boxes at any Y anyway.
+        positions.append((CX, (_PIP_ROWS[0] + _PIP_ROWS[1]) // 2))
+        positions.append((CX, (_PIP_ROWS[2] + _PIP_ROWS[3]) // 2))
+    return positions
+
+
+def _assert_pips_clear_of_indices(positions, half, rank, label):
+    """Same guardrail as `_assert_art_clear_of_indices`, expressed directly against pip centres
+    and a bounding half-size instead of an alpha channel — cheaper and exact for circles-on-a-
+    grid rather than an arbitrary composited silhouette."""
+    for bx0, by0, bx1, by1 in _index_boxes(rank):
+        for x, y in positions:
+            if x - half < bx1 and x + half > bx0 and y - half < by1 and y + half > by0:
+                raise AssertionError(
+                    f"{label}: pip at ({x},{y}) intrudes into reserved index box "
+                    f"({bx0},{by0})-({bx1},{by1})"
+                )
+
+
 def make_number_card(rank: str, suit: str) -> Image.Image:
     card = Image.new("RGBA", (CARD_W, CARD_H), (0, 0, 0, 0))
     draw_card_frame(ImageDraw.Draw(card))
-    size = 48
-    paste(card, pip_sprite(suit, size, body_color(suit), outline_px=3), CX - size / 2, 70 - size / 2)
+    positions = _pip_positions(rank)
+    size = 48 if rank == "A" else _PIP_SIZE
+    _assert_pips_clear_of_indices(positions, size / 2, rank, f"{rank} of {suit}")
+    for x, y in positions:
+        paste(card, pip_sprite(suit, size, body_color(suit), outline_px=3 if rank == "A" else 2),
+              x - size / 2, y - size / 2)
     paste_corners(card, rank, suit)
     card = snap_to_pixel_grid(card)
     _assert_pixel_grid(card, label=f"{rank} of {suit}")
