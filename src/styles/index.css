@@ -845,6 +845,17 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
+  /* Reserve two rows so the banner never collapses and shoves the table around (2i.1).
+     Gating the trick row on `phase === 'play'` took this to ZERO rows during selection and
+     bidding, which moved the entire table down 43px the instant play began — measured
+     table y 271 -> 314. That is a worse jank than the wrong text it replaced. Two rows is the
+     steady state during play (trump + trick), so reserving it holds the table still for the
+     whole hand; it also absorbs the pre-existing 1-row/2-row wobble as the trump line appears.
+     `em`, not `rem`, so it tracks the 0.8rem lean-mode override instead of over-reserving
+     height on the viewport that can least afford it. The rarer three-row case (a turned-down
+     suit AND named trump) still grows by a row — a smaller, rarer shift than the one removed. */
+  min-height: 2.85em;
+  justify-content: center;
 }
 .status-banner.big {
   font-size: 1.5rem;
@@ -1214,9 +1225,11 @@ body {
   border-radius: 0;
   border: 1px solid transparent;
 }
-/* The empty seat keeps its footprint so nothing reflows when a hand is picked up. */
+/* The empty seat keeps its footprint so nothing reflows when a hand is picked up. The dashed
+   outline is the "you are holding this one" affordance and stays exclusive to `is-empty`; the
+   FOOTPRINT itself moved to `.seat-fan`'s own `min-width` below, because a fan can be empty
+   without being held. */
 .seat-fan.is-empty {
-  width: calc(70px * var(--px));
   border-radius: 0;
   border: 1px dashed rgba(255, 213, 74, 0.35);
 }
@@ -1292,6 +1305,15 @@ body {
      box at the outer angles, which used to collide with the hand tray). Kept tight: every au
      here comes straight out of the felt, which has to hold two rows of played cards. */
   height: calc(40px * var(--px));
+  /* A fan with no cards left used to collapse to width ZERO, and `.seat-label` is centred on
+     it — so at the end of every hand, once all five cards are played, the two labels of each
+     seat pair landed on top of each other. Measured: "Hand 1" at x=606 (w48) against "Hand 2"
+     at x=625, a 29px overlap that rendered as the unreadable "HANDND 2". The old fixed width
+     only applied while a hand was HELD, which is a different condition — a hand can be empty
+     without being held, and at hand-complete every hand is. A floor on the base rule covers
+     both, and also stops the labels drifting together as a hand plays down to its last card. */
+  min-width: calc(70px * var(--px));
+  justify-content: center;
 }
 /* Backs use the 25x35 seat asset; faces only ever appear at the end-of-deal reveal, where
    nothing competes for the space, so they use the deck's own 50x70 art. Both integer. */

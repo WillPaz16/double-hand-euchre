@@ -91,17 +91,27 @@ export function visibleCards(view: PlayerView, hand: HandId): CardType[] | null 
 }
 
 /** Is this hand currently PICKED UP — in the tray, not resting at its seat? Two cases:
- *    - the acting hand in play/dealer_exchange (unchanged from before)
+ *    - YOUR acting hand in play/dealer_exchange
  *    - your own SELECTED hand during bidding: "when you go to call trump, the hand you
  *      selected should come up into your hand so you can see the cards" — in real euchre you
  *      pick your cards up to look at them before bidding, you don't leave them lying on the
  *      table and squint at them from across it. Only ever the selected hand, and only ever
  *      yours: the blind hand stays face-down (you haven't looked at it yet, §2), and the
- *      Old-Timer's hand is never yours to hold regardless of phase. */
+ *      Old-Timer's hand is never yours to hold regardless of phase.
+ *
+ *  **Both cases are gated on HUMAN, and the first one was not (2i.1).** "Held" means
+ *  physically picked up off the table into the tray — and there is exactly one tray, yours.
+ *  The acting-hand branch was player-agnostic, so it fired for the Old-Timer too: sampling
+ *  every acting seat across a hand, ALL of them had zero cards. His fan vanished for the whole
+ *  of his turn with nothing appearing anywhere to replace it, while the gold `.acting`
+ *  highlight sat on an empty box — which reads as "this hand is finished", the opposite of
+ *  "this hand is up". That is the concrete cause behind turn order being hard to follow, and
+ *  the fix is to stop moving cards that were never going anywhere rather than to make the
+ *  highlight louder. */
 export function isHeld(view: PlayerView, hand: HandId): boolean {
+  if (hand.player !== HUMAN) return false;
   if (view.actingHand && sameHand(view.actingHand, hand)) return true;
   return (
-    hand.player === HUMAN &&
     hand.role === 'selected' &&
     BIDDING_PHASES.has(view.phase) &&
     view.ownSelectedHand !== null
@@ -194,12 +204,13 @@ export function Table({
           >
             <div className="seat-label">{seatLabel(hand)}</div>
             <div className="seat-label-short">{shortSeatLabel(hand)}</div>
-            {/* An acting hand has been PICKED UP — its faces are in the tray below, so its
-                seat is empty. Showing backs at the seat while the same cards sit face-up in
-                the tray drew the hand twice and let the two disagree: the seat kept five
-                backs while the tray showed four faces, because one counts what is left after
-                this trick's card and the other counts what is left now. The seat is where a
-                hand rests; the tray is where you have picked it up. */}
+            {/* A hand YOU have picked up has its faces in the tray below, so its seat is
+                empty. Showing backs at the seat while the same cards sit face-up in the tray
+                drew the hand twice and let the two disagree: the seat kept five backs while
+                the tray showed four faces, because one counts what is left after this trick's
+                card and the other counts what is left now. The seat is where a hand rests; the
+                tray is where you have picked it up — and only you have a tray, so the
+                Old-Timer's hands never empty (see `isHeld`). */}
             <div className={`seat-fan${held ? ' is-empty' : ''}`} data-count={count}>
               {held
                 ? null

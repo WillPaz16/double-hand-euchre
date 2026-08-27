@@ -66,10 +66,18 @@ export function StatusBanner({
           {view.lonerTier && ` (${view.lonerTier.replace('_', ' ')} loner)`}
         </div>
       )}
-      <div className="status-row">
-        Trick {view.trickNumber + 1} of 5 — Tricks won: You {view.tricksWon[HUMAN]}, Old-Timer{' '}
-        {view.tricksWon[BOT]}
-      </div>
+      {/* Only once cards are actually being played (2i.1). This row had no phase guard, so
+          through the whole of selection and bidding it announced "Trick 1 of 5 — Tricks won:
+          You 0, Old-Timer 0" before a single card existed — stating a trick was underway while
+          the player was still being asked to pick a packet. `play` is the only phase where a
+          trick number and a trick tally are both real; `dealer_exchange` knows trump but has
+          not begun one. */}
+      {view.phase === 'play' && (
+        <div className="status-row">
+          Trick {view.trickNumber + 1} of 5 — Tricks won: You {view.tricksWon[HUMAN]}, Old-Timer{' '}
+          {view.tricksWon[BOT]}
+        </div>
+      )}
     </div>
   );
 }

@@ -123,3 +123,44 @@ describe('HandTray / PickupTray FLIP idempotency guard', () => {
     expect(rafSpy).toHaveBeenCalledTimes(1);
   });
 });
+
+/** The tray's label used to be computed with no reference to `frozen`, so for the whole
+ *  ~1.3s trick hold it read "Your turn — play a card" while every card below it was
+ *  disabled — instructing an action at the exact moment input was being refused, which reads
+ *  as the game having dropped your click. Pinned here rather than in the browser because the
+ *  defect only exists inside a ~1.3s window that a live driver catches unreliably. */
+describe('HandTray label never prompts an action it is refusing (2i.1)', () => {
+  const playing = () =>
+    makeView({
+      phase: 'play',
+      actingHand: { player: HUMAN, role: 'selected' },
+    });
+  const legal = [{ type: 'PLAY_CARD' as const, card: CARDS[0]! }];
+
+  it('prompts normally when play is actually accepted', () => {
+    const { container } = render(<HandTray view={playing()} legal={legal} play={vi.fn()} />);
+    expect(container.querySelector('.hand-tray-label')?.textContent).toMatch(/your turn/i);
+    expect(container.querySelectorAll('.card-face:not([disabled])').length).toBeGreaterThan(0);
+  });
+
+  it('does NOT prompt while frozen — and every card really is disabled then', () => {
+    const { container } = render(<HandTray view={playing()} legal={legal} play={vi.fn()} frozen />);
+    const label = container.querySelector('.hand-tray-label')?.textContent ?? '';
+    const total = container.querySelectorAll('.card-face').length;
+    const enabled = container.querySelectorAll('.card-face:not([disabled])').length;
+
+    // The precondition the old label was lying about.
+    expect(total).toBeGreaterThan(0);
+    expect(enabled).toBe(0);
+    // The fix: no action prompt while nothing is actionable.
+    expect(label).not.toMatch(/your turn|choose a card/i);
+    expect(label.trim()).not.toBe('');
+  });
+
+  it('still labels the discard step correctly when not frozen', () => {
+    const view = makeView({ phase: 'dealer_exchange', actingHand: { player: HUMAN, role: 'selected' } });
+    const discard = [{ type: 'DEALER_DISCARD' as const, card: CARDS[0]! }];
+    const { container } = render(<HandTray view={view} legal={discard} play={vi.fn()} />);
+    expect(container.querySelector('.hand-tray-label')?.textContent).toMatch(/discard/i);
+  });
+});

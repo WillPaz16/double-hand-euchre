@@ -40,9 +40,18 @@ function makeView(overrides: Partial<PlayerView> = {}): PlayerView {
  *  showing a hand face-up at its seat AND in the tray at once (2e.7) — pinned directly here so
  *  a future edit to either function's phase lists can't silently reopen that gap. */
 describe('isHeld (which hand is picked up into the tray)', () => {
-  it('the acting hand is held, regardless of whose it is', () => {
+  it('YOUR acting hand is held — it goes to the tray', () => {
     const view = makeView({ actingHand: humanSelected });
     expect(isHeld(view, humanSelected)).toBe(true);
+  });
+
+  it('the OPPONENT\'s acting hand is never held — he has no tray (2i.1)', () => {
+    // Regression test for the turn-clarity bug: this branch used to be player-agnostic, so
+    // the Old-Timer's fan emptied for the whole of his turn and the gold `.acting` highlight
+    // landed on an empty seat — reading as "this hand is finished" rather than "this hand is
+    // up". Cards only ever leave a seat to go somewhere, and the only somewhere is your tray.
+    const view = makeView({ actingHand: botSelected });
+    expect(isHeld(view, botSelected)).toBe(false);
   });
 
   it('a non-acting hand is not held during play', () => {

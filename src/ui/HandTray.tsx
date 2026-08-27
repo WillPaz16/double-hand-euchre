@@ -118,8 +118,16 @@ export function HandTray({
       view.actingHand.role === 'selected' ? view.ownSelectedHand : view.ownBlindHand;
     if (!fullHand) return null;
 
-    const label =
-      view.phase === 'dealer_exchange' ? 'Choose a card to discard' : 'Your turn — play a card';
+    // `frozen` comes first: while a finished trick is still on the table every card below is
+    // disabled, and the label used to ignore that entirely — so for the whole ~1.3s hold the
+    // tray read "Your turn — play a card" while refusing every click. Being told to act at the
+    // exact moment input is being rejected is worse than no label at all; it reads as the game
+    // having missed your click. Say what is actually happening instead.
+    const label = frozen
+      ? 'Trick complete…'
+      : view.phase === 'dealer_exchange'
+        ? 'Choose a card to discard'
+        : 'Your turn — play a card';
 
     // Keying on the acting hand's identity forces React to remount this container whenever
     // the human switches which of their two hands is up — which is exactly when the flip
