@@ -51,7 +51,18 @@ function waitForServer(url: string, timeoutMs = 30_000): Promise<void> {
 // Drives the game to a mid-hand bidding state, the same sequence every manual check in this
 // project's history has used: Play -> pick a packet -> pass until something is legal to click
 // (order-up windows come and go across a few bidding phases, so "pass" isn't always present).
-async function driveToBiddingState(page: import('@playwright/test').Page): Promise<void> {
+//
+// 2j.2: `onPacketPicked` fires right after the packet-pick click, while the upcard reveal
+// wheel (`useUpcardReveal`'s ~500ms `spinning` window) is still on screen. Every prior version
+// of this function ran the audit only once, at the very end — by then the wheel's window had
+// long since closed, which is exactly how its 1.458x fractional scale (35px box on 24x24 au
+// art) shipped uncaught: the check existed, the bug was real, and the two never met because
+// nothing sampled that ~500ms. A transient element needs to be sampled DURING its transient
+// state, not just wherever the playthrough happens to be standing once it's done moving.
+async function driveToBiddingState(
+  page: import('@playwright/test').Page,
+  onPacketPicked?: () => Promise<void>,
+): Promise<void> {
   const clickIfPresent = async (re: RegExp): Promise<boolean> => {
     const btn = page.getByRole('button', { name: re });
     if ((await btn.count()) === 0) return false;
@@ -59,8 +70,36 @@ async function driveToBiddingState(page: import('@playwright/test').Page): Promi
     return true;
   };
   await clickIfPresent(/^play$/i);
+  // A fixed 400ms wait before the FIRST click after Play was flaky under a cold dev-server
+  // page load (card art fetches can push the select screen's first render past 400ms) —
+  // observed directly: `clickIfPresent(/pick packet 1/i)` returning false because the button
+  // simply didn't exist yet at the 400ms mark. Poll for it instead of trusting the delay.
+  for (let i = 0; i < 10; i++) {
+    if (await clickIfPresent(/pick packet 1/i)) break;
+    await page.waitForTimeout(200);
+  }
   await page.waitForTimeout(400);
-  await clickIfPresent(/pick packet 1/i);
+  // The upcard wheel fires on the loner_full_blind -> loner_blind_hand transition (that's
+  // when `view.upcard` goes null -> non-null, RULES.md's "upcard turned" step), which is one
+  // Pass past the packet pick, not the packet pick itself — the first version of this sample
+  // fired right after picking the packet and always found nothing there, silently passing
+  // regardless of the wheel's actual box size. Poll for the wheel rather than trusting a fixed
+  // delay: it's a genuinely short (~500ms) window and exactly when it opens depends on how
+  // many bot-turn delays land before it, which isn't worth hardcoding here.
+  if (onPacketPicked) {
+    // The 400ms wait above lands mid-transition, before the full-blind loner window's own
+    // Pass button exists yet (there's a beat with no buttons at all while the packet pick
+    // resolves) — a single clickIfPresent here is a no-op more often than not. Keep trying
+    // until either the wheel shows up or the click genuinely has nothing left to do.
+    for (let i = 0; i < 8; i++) {
+      if (await page.locator('.upcard-wheel').count()) {
+        await onPacketPicked();
+        break;
+      }
+      await clickIfPresent(/^pass$/i);
+      await page.waitForTimeout(120);
+    }
+  }
   await page.waitForTimeout(400);
   for (let i = 0; i < 14; i++) {
     await page.waitForTimeout(350);
@@ -88,7 +127,14 @@ async function main(): Promise<void> {
       for (const vp of VIEWPORTS) {
         const page = await browser.newPage({ viewport: { width: vp.width, height: vp.height } });
         await page.goto(BASE_URL);
-        await driveToBiddingState(page);
+
+        // Sampled mid-transition, during the upcard wheel's own ~500ms window — see
+        // driveToBiddingState's docstring for why this can't just be folded into the final
+        // sample below.
+        let wheelResult: unknown;
+        await driveToBiddingState(page, async () => {
+          wheelResult = await page.evaluate(AUDIT_SRC);
+        });
 
         const result = await page.evaluate(AUDIT_SRC);
         const de = await page.evaluate(() => ({
@@ -97,14 +143,21 @@ async function main(): Promise<void> {
         }));
         const noScroll = de.scrollHeight === de.clientHeight;
 
-        const ok = (result as { ok: boolean }).ok && noScroll;
+        const wheelOk = wheelResult === undefined || (wheelResult as { ok: boolean }).ok;
+        const ok = (result as { ok: boolean }).ok && noScroll && wheelOk;
         const label = `${vp.width}x${vp.height} (${vp.label})`;
         if (ok) {
           console.log(`  OK    ${label}`);
         } else {
           failed = true;
           console.error(`  FAIL  ${label}`);
-          console.error(JSON.stringify({ ...(result as object), noScroll }, null, 2));
+          if (!wheelOk) {
+            console.error('  (during upcard wheel reveal)');
+            console.error(JSON.stringify(wheelResult, null, 2));
+          }
+          if (!(result as { ok: boolean }).ok || !noScroll) {
+            console.error(JSON.stringify({ ...(result as object), noScroll }, null, 2));
+          }
         }
         await page.close();
       }

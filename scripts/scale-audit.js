@@ -180,10 +180,19 @@
       '.table-opponent',
       '.seat-fan',
     ];
+    // `.scene-floor`/`.scene-rug` are the continuous GROUND PLANE, not a discrete prop the
+    // player is meant to recognize — unlike the picture/clock/antlers this check exists to
+    // protect, most of it is legitimately covered whenever the bid panel or hand tray opens
+    // as a full-width bottom overlay (2j.1), the exact same footprint the floor occupies.
+    // Found by 2j.2's audit-flow fix landing the playthrough in a state with the tray open for
+    // the first time: the floor 60-74% "hidden", which is what the overlay is FOR, not a
+    // regression. Same reasoning as the felt legitimately covering the rug's near edge, two
+    // paragraphs up — a correct composition, not a collision.
+    const GROUND_PLANE = /scene-floor|scene-rug/;
     const COLLISION_CEILING = 0.35; // a little overlap at an edge is fine; losing a third isn't
     const collisions = [];
     for (const el of document.querySelectorAll('[class*="scene-"]')) {
-      if (AMBIENT.test(el.className) || clippedByOwnParent(el)) continue;
+      if (AMBIENT.test(el.className) || GROUND_PLANE.test(el.className) || clippedByOwnParent(el)) continue;
       const cs = getComputedStyle(el);
       if (cs.display === 'none' || cs.backgroundImage === 'none') continue;
       const r = el.getBoundingClientRect();

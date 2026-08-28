@@ -19,13 +19,16 @@
    non-integer scale, which is the check that would have caught all of the above on the day
    it landed.
 
-   `--px-seat` is a deliberate, separate INTEGER step, not an exception: hands resting on the
-   table are drawn one step smaller than the hand you are holding, which is also true of a
-   real table seen from where you sit.
+   Hands resting on the table ARE drawn smaller than the hand you are holding — but that comes
+   from a smaller ASSET (the 25x35 au seat card back, against the deck's 50x70 au) at this
+   same `--px`, not from a second scale variable. A `--px-seat` used to exist for exactly that
+   purpose and stayed pinned at 1 with no media-query step of its own (2j.2) — it happened to
+   look right at desktop (25*2 == 50*1) and was visibly wrong at mobile. Removed rather than
+   fixed: the smaller-asset approach already does the job with no second variable to keep in
+   sync.
    ============================================================================ */
 :root {
   --px: 1;
-  --px-seat: 1;
 }
 /* Two axes, because both can run out: a phone is width-limited, a laptop in landscape is
    height-limited. Stepping up only when BOTH have room is what stops the table outgrowing
@@ -181,13 +184,23 @@ body {
 
 /* The floor, and the wall/floor junction. The room previously had a wall and a table but no
    ground, which is the clearest single reason it read as props pinned to a backdrop. The
-   scene now reads back-to-front by value: wall (darkest) -> floor -> table (lightest). */
+   scene now reads back-to-front by value: wall (darkest) -> floor -> table (lightest).
+
+   2j.2: height used to be `34%` of the VIEWPORT — a second coordinate system living inside a
+   file whose whole `--px` point is that there is only one. It also meant the floor's own au
+   depth changed with every viewport's height: 34% of a 900px-tall desktop window is a
+   different number of au than 34% of a 480px-tall landscape phone, so the room's own ground
+   plane had no fixed size to be a ruler for. FLOOR_H below (150 au) is that fixed size; every
+   scene object anchored "N au above the floor line" is now `(150 - N) au` from the viewport
+   bottom directly, computed once here rather than carrying a live `34% - Nau` expression at
+   each of the six call sites. */
 .scene-floor {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 34%;
+  /* FLOOR_H = 150 au. */
+  height: calc(150px * var(--px));
   background-image: url('/art/scene/floor.png');
   background-repeat: repeat;
   background-size: calc(80px * var(--px));
@@ -228,9 +241,10 @@ body {
      WIDE AND SHALLOW (340x70 au), not square. The first attempt at this was 340x150 and it
      rose 230px above the floor line into the WALL zone, reading as a red panel hung behind
      the table rather than as anything on the ground. A floor seen at this angle compresses
-     vertically; the rug has to compress with it. Anchored to the floor line itself — the same
-     34% the floor plane uses — so it cannot drift off the surface it is supposed to lie on. */
-  bottom: calc(34% - 70px * var(--px));
+     vertically; the rug has to compress with it. Anchored to the floor line itself — 80 au
+     from the viewport bottom, i.e. 70 au up from FLOOR_H (150 au, see `.scene-floor`) — so it
+     cannot drift off the surface it is supposed to lie on. */
+  bottom: calc(80px * var(--px));
   transform: translateX(-50%);
   width: calc(340px * var(--px));
   height: calc(70px * var(--px));
@@ -276,7 +290,7 @@ body {
    edge keeps its true size AND returns wall to the composition. */
 .scene-fireplace {
   left: calc(-78px * var(--px));
-  bottom: calc(34% - 3px * var(--px));
+  bottom: calc(147px * var(--px));
   width: calc(374px * var(--px));
   height: calc(270px * var(--px));
   background-image: url('/art/scene/fireplace.png');
@@ -325,12 +339,17 @@ body {
    two never lock into an obvious rhythm. Scaled roughly with the 2.2x bigger hearth (2f.4).
    Banded in 2g.2 like every other light in the room — the "roughly is fine for a soft radial
    blur" note that used to sit here stopped applying the moment it stopped being a blur. */
+/* 2j.2: was a bare-px box (700x500, offset -260/-40) that did not scale with --px at all, so
+   the glow was the wrong size relative to everything else in the room at one of the two --px
+   values — correct only by whichever one it happened to be tuned against. A CSS gradient has
+   no art asset for scale-audit.js to check it against, so this was never caught by the audit;
+   still a real second sizing system, just an invisible one. */
 .scene-firelight {
   position: absolute;
-  left: -260px;
-  top: -40px;
-  width: 700px;
-  height: 500px;
+  left: calc(-260px * var(--px));
+  top: calc(-40px * var(--px));
+  width: calc(700px * var(--px));
+  height: calc(500px * var(--px));
   background: radial-gradient(
     ellipse 50% 50% at 42% 55%,
     rgba(255, 150, 60, 0.26) 0%, rgba(255, 150, 60, 0.26) 17%,
@@ -384,12 +403,13 @@ body {
 /* Cool spill from the window, the counterweight to .scene-firelight. Steady, not pulsing:
    moonlight does not flicker, and a still cool source beside a breathing warm one is what
    makes the fire read as the living thing. */
+/* 2j.2: same bare-px-doesn't-scale gap as .scene-firelight above, fixed the same way. */
 .scene-moonlight {
   position: absolute;
-  left: -90px;
-  top: -40px;
-  width: 320px;
-  height: 300px;
+  left: calc(-90px * var(--px));
+  top: calc(-40px * var(--px));
+  width: calc(320px * var(--px));
+  height: calc(300px * var(--px));
   background: radial-gradient(
     ellipse 45% 45% at 62% 40%,
     rgba(150, 190, 235, 0.17) 0%, rgba(150, 190, 235, 0.17) 20%,
@@ -418,7 +438,7 @@ body {
    actually lies — near the warmth, not inside it. */
 .scene-cat {
   left: calc(20px * var(--px));
-  bottom: calc(34% - 85px * var(--px));
+  bottom: calc(65px * var(--px));
   width: calc(126px * var(--px));
   height: calc(80px * var(--px));
   overflow: hidden;
@@ -426,7 +446,7 @@ body {
 /* Resized 2.5x in 2j.3 along with the rest of the room's furniture (60x32 -> 150x80 au). */
 .scene-shelf {
   left: calc(10px * var(--px));
-  bottom: calc(34% + 113px * var(--px));
+  bottom: calc(263px * var(--px));
   width: calc(150px * var(--px));
   height: calc(80px * var(--px));
   background-image: url('/art/scene/shelf.png');
@@ -591,7 +611,7 @@ body {
 /* Resized 2.5x in 2j.3 (52x32 -> 130x80 au). */
 .scene-woodpile {
   left: calc(112px * var(--px));
-  bottom: calc(34% - 34px * var(--px));
+  bottom: calc(116px * var(--px));
   width: calc(130px * var(--px));
   height: calc(80px * var(--px));
   background-image: url('/art/scene/woodpile.png');
@@ -843,10 +863,11 @@ body {
   .score-pair {
     gap: 3px;
   }
-  .score-card-slot {
-    width: 42px;
-    height: 59px;
-  }
+  /* 2j.2: a `width: 42px; height: 59px;` override used to live here — a 1.4x fractional
+     upscale of the 30x42 au art (`--px` is already 1 below the 900px breakpoint, so the base
+     rule already renders it at its true 30x42 size). Predates the `--px` system; the base
+     `.score-card-slot` rule two rules up already handles every width correctly, so there is
+     nothing left for this breakpoint to override. */
 }
 /* Laid out as a ROW. Stacked (portrait over label over cards over numeral) this block was
    208px tall at desktop — as much vertical space as the table itself had, for two numbers.
@@ -1176,9 +1197,6 @@ body {
   top: 50%;
   transform: translate(-50%, -50%) rotate(-7deg);
 }
-.table-kitty .card-back.mini {
-  display: block;
-}
 /* The turned card lying across the deck, offset so both read as separate objects. */
 .kitty-upcard {
   position: absolute;
@@ -1192,12 +1210,18 @@ body {
    nothing shifts when the wheel stops and the actual card takes over. Frames are stacked
    (position: absolute, all at inset 0) and each is invisible except during its own
    `animation-delay` slice — a sequential reveal built entirely from timing, no JS interval. */
+/* 2j.2: was `35px * var(--px)` against 24x24 au suit-icon art — a 1.458x fractional scale
+   that `scale-audit.js` was built to forbid and never caught, because the wheel exists for
+   only ~500ms during the reveal and the audit's live playthrough never happened to sample
+   that moment (fixed in scripts/audit.ts alongside this). Sized to the icon's real 24x24 au
+   directly; centred in roughly the same spot the 35x35 box occupied rather than left/top-
+   matched exactly, since nothing else in this corner is pinned to the old box's edges. */
 .upcard-wheel {
   position: absolute;
-  left: calc(13px * var(--px));
-  top: calc(8px * var(--px));
-  width: calc(35px * var(--px));
-  height: calc(35px * var(--px));
+  left: calc(18px * var(--px));
+  top: calc(14px * var(--px));
+  width: calc(24px * var(--px));
+  height: calc(24px * var(--px));
 }
 .upcard-wheel-frame {
   position: absolute;
@@ -1390,22 +1414,31 @@ body {
   min-width: calc(70px * var(--px));
   justify-content: center;
 }
-/* Backs use the 25x35 seat asset; faces only ever appear at the end-of-deal reveal, where
-   nothing competes for the space, so they use the deck's own 50x70 art. Both integer. */
+/* Backs use the 25x35 seat asset, scaled by --px like everything else. Faces only ever appear
+   at the end-of-deal reveal, where nothing competes for the space, so they use the deck's own
+   50x70 art at the deck's own scale — also --px, not a second variable.
+
+   2j.2: this used to read `var(--px-seat)`, a second scale variable pinned to 1 forever with
+   no media-query step of its own. At --px 2 that coincidentally rendered 50x70px — the exact
+   same box --px would have produced directly, since 50*1 == 25*2 — so it looked correct on
+   desktop by accident. At --px 1 (mobile) it did not: the back-card fan sized 25x35 while the
+   face-card reveal sized 50x70, two different physical sizes for what is meant to read as the
+   same hand. `--px-seat` is gone; there is no second sizing system, per the file's own header
+   comment, and this was the one place still using one. */
 .seat-fan .card-back {
   width: calc(25px * var(--px));
   height: calc(35px * var(--px));
 }
 .seat-fan .card-face {
-  width: calc(50px * var(--px-seat));
-  height: calc(70px * var(--px-seat));
+  width: calc(50px * var(--px));
+  height: calc(70px * var(--px));
 }
 .seat-fan .card-back,
 .seat-fan .card-face {
   transform-origin: 50% 190%;
 }
 .seat-fan .card-back { margin-left: calc(-15px * var(--px)); }
-.seat-fan .card-face { margin-left: calc(-30px * var(--px-seat)); }
+.seat-fan .card-face { margin-left: calc(-30px * var(--px)); }
 .seat-fan .card-back:first-child,
 .seat-fan .card-face:first-child {
   margin-left: 0;
@@ -1690,14 +1723,6 @@ body {
 .card-face.dimmed img {
   opacity: 0.4;
 }
-/* `.mini` is now simply "one step down", which is what it always meant — it used to be a
-   hardcoded 50x70 that happened to coincide with 1x. */
-.card-back.mini,
-.card-face.mini {
-  width: 50px;
-  height: 70px;
-}
-
 /* Narrow screens can't fit five 100px cards side by side, so the hand steps down to exactly
    half native rather than overlapping.
    
@@ -1711,9 +1736,12 @@ body {
   .hand-tray-cards {
     gap: 0.3rem;
   }
+  /* 2j.2: this query only ever fires at --px 1 (the 900px breakpoint that steps --px to 2 is
+     wider than 560px), where the base `.card-face`/`.card-back` rule already renders 50x70 —
+     so a bare `width: 50px; height: 70px;` override here was restating the base rule's own
+     output by coincidence, a second sizing system agreeing with the first by luck rather than
+     by construction. Dropped; only the margin reset (a real narrow-screen change) is kept. */
   .hand-tray-cards .card-face {
-    width: 50px;
-    height: 70px;
     margin-left: 0;
   }
 }
@@ -1783,11 +1811,8 @@ body {
   .status-banner {
     font-size: 0.8rem;
   }
-  .card-face,
-  .card-back {
-    width: 50px;
-    height: 70px;
-  }
+  /* 2j.2: same redundant-coincidence override as the max-width:560px query above — this query
+     also only fires at --px 1, where the base rule already produces 50x70. Removed. */
   .hand-tray-cards .card-face + .card-face {
     margin-left: 0;
   }
@@ -1818,8 +1843,9 @@ body {
   .score-pair {
     gap: 2px;
   }
-  .score-card-slot {
-    width: 30px;
-    height: 42px;
-  }
+  /* Bare-30x42px here used to just restate the base rule's own value in disguise (--px is
+     already 1 at any viewport short enough to hit this query, so `calc(30px * var(--px))`
+     was already 30x42) — a second sizing system that happened to agree with the first one by
+     coincidence rather than by construction. Dropped the override; the base `.score-card-slot`
+     rule already produces the same result and can't drift out of sync with it now. */
 }
