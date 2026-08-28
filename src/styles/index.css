@@ -730,6 +730,32 @@ body {
     env(safe-area-inset-left);
   padding-top: max(0.5rem, env(safe-area-inset-top));
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  /* Containing block for the action bar below, which is taken out of flow so that mounting
+     and unmounting it cannot move the table (2j.1). */
+  position: relative;
+}
+/* --- The action bar OVERLAYS the room, it does not displace it (2j.1) -------------------- */
+/* The bid panel and the hand tray both mount and unmount during a hand, and both used to sit
+   in `.game-root`'s flex column. Fixing the felt's SIZE stopped them resizing it, but they
+   still shifted it: measured on portrait, the table slid between y=351 and y=421 as the panels
+   swapped — a 70px jump on almost every turn. Out of flow they cost the column no height at
+   all, so the table holds still both in size and in position.
+   Pinned to the bottom because that is where a thumb reaches (design spec §2), and centred
+   horizontally so the tray reads as yours rather than as a floating panel. */
+.bid-panel,
+.hand-tray {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* `0`, not the safe-area inset: `.hand-tray`'s own rule further down already carries
+     `padding-bottom: max(0.5rem, env(safe-area-inset-bottom))`, and setting it here too would
+     apply the same gap twice. */
+  bottom: 0;
+  z-index: 5;
+  /* It now floats over the room rather than sitting below it in flow, so it needs its own
+     ground — without one the felt and the floorboards read straight through the gaps between
+     the cards. */
+  background: rgba(16, 11, 8, 0.82);
 }
 
 /* In the flow by default. On a phone there is no horizontal room beside the status text, and
@@ -914,7 +940,19 @@ body {
 }
 
 .table-area {
+  /* Still `flex: 1` — it should absorb the leftover height so the hand tray stays pinned to
+     the bottom of the screen where a thumb can reach it. What changed in 2j.1 is that
+     absorbing that height no longer RESIZES anything: `.table-frame` is a fixed au box and the
+     grid rows are all `auto`, so the leftover simply becomes empty room around a table of
+     constant size, rather than being turned into the table.
+
+     `align-content: center` is the other half of that. With three `auto` rows in a container
+     taller than their content, the tracks would otherwise pack to the top — which on a tall
+     phone left the whole composition jammed against the ceiling with a third of the screen as
+     bare floor underneath. Centring the tracks puts the table in the middle of the space it is
+     given, at whatever size that space happens to be. */
   flex: 1;
+  align-content: center;
   min-height: 0;
   position: relative;
   /* Reserves the band his head occupies ABOVE the fans, and is tuned so the felt's top edge
@@ -931,12 +969,11 @@ body {
      together. Dropping the side columns entirely also gives the felt back the width they
      used to take. */
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  /* No max-height. It existed to stop a tall window opening a gap between the felt and the
-     seats — but the felt now `align-self: stretch`es into its row, so it grows with the row
-     and the gap it guarded against cannot form. Left in place it was a straitjacket rather
-     than a ceiling: on an 812px phone it pinned the table to 320px and left ~500px of empty
-     floor below the tray. */
+  /* All three rows `auto` (2j.1). The centre row used to be `minmax(0, 1fr)` so the felt could
+     stretch into whatever height was left over — the mechanism behind the resize. With a
+     fixed-au felt the row simply takes the felt's own height, and the whole grid becomes
+     content-sized. */
+  grid-template-rows: auto auto auto;
   grid-template-areas:
     'nw ne'
     't  t'
@@ -960,48 +997,38 @@ body {
    overflow their box on purpose (`bottom: -8%`). As a sibling of the clipped surface instead
    of a child, `.table-frame` gives the legs the same coordinate box without being subject to
    the same clip. */
+/* --- The felt is a FIXED ART-UNIT OBJECT (Phase 2j.1) ------------------------------------ */
+/* It used to be the only thing in the game with no art units at all: `max-width:
+   min(560px, 96vw)`, `aspect-ratio: 1.6`, `align-self: stretch` — vw and bare px, nothing on
+   the pixel grid. ASSETS.md's own rule is "there is no second sizing system and there are no
+   exceptions"; this was the exception, and it was the thing breaking the world.
+
+   **Measured, at a FIXED 1280x860 viewport, across one hand:** 560x350 with no panel showing,
+   405x253 with the hand tray up, 298x187 and then 249x156 with the bid panel up. A 2.25x
+   swing, changing on every single turn. The cause was structural rather than a bad number:
+   `.table-area` was the only `flex: 1` child of `.game-root`, so its height was `100dvh`
+   minus every sibling's rendered height; `align-self: stretch` made that leftover the felt's
+   height; and `aspect-ratio` derived the width from it. The bid panel and hand tray mount and
+   unmount during a hand, so the table breathed in and out with them. Nothing else in the room
+   can hold a stable proportion to a ruler that resizes every turn.
+
+   280x175 au, and specifically that: it is exactly the size the old rules produced at their
+   desktop maximum (560x350 at --px 2), so the desktop composition — including the trick-fits-
+   on-the-felt geometry tuned in 2f.2/2f.5 — is preserved rather than re-litigated. What
+   changes is that every OTHER viewport now gets the same table instead of a squeezed one.
+
+   It also fixes a cross-viewport inconsistency the old rule hid: because the felt was sized in
+   CSS px while the cards are sized in au, the felt held 5.6 card-widths at desktop but 7.2 at
+   phone. Now both are 5.6, because both sides of that ratio are finally in the same unit. */
 .table-frame {
   grid-area: t;
   position: relative;
   /* Above the opponent (0), below the fans (2). */
   z-index: 1;
-  /* `align-self: stretch`, not `height: 100%`. Under `align-items: center` the felt was sized
-     to its own content and `height: 100%` never resolved against the row, so it sat at 223px
-     inside a 288px row and the trick could not fit on it. Stretching makes the row's height
-     the felt's height by definition, and `aspect-ratio` derives the width from that. */
-  align-self: stretch;
   justify-self: center;
-  width: auto;
-  /* Wider cap than the round-table version: with no side columns competing for width, the
-     felt can use more of it. Aspect ratio widened to match — a felt this much wider than it
-     is tall reads as a table two people sit at across its long side, not a card table seen
-     dead-on. */
-  max-width: min(560px, 96vw);
-  /* The felt has to hold two ROWS of played cards (2 x 70au) plus margin, so its HEIGHT is
-     the binding constraint and its width is free. Wider than tall also reads correctly: two
-     people sit at this table across its long side.
-
-     1.6, not wider. Desktop is width-rich and height-poor — at --px 2 every band above and
-     below the felt doubles while a 900px laptop is nowhere near double an 812px phone, so the
-     felt is smaller at desktop than on a phone and widening it is tempting. Measured: at 1.9
-     the trick no longer fits on the table (worst corner 1.09-1.13 vs 0.92 here), because the
-     ellipse's usable height falls away toward the sides. A table the trick sits ON beats a
-     table that merely looks bigger. Desktop's vertical density is real and stays open for
-     2f.4/2f.5, where the felt becomes actual art and the stage gets composed as a whole. */
-  aspect-ratio: 1.6;
-  /* `align-self: stretch` makes height the DEFINITE input and derives width from it — which
-     is backwards on a tall narrow phone. `.table-area`'s centre row is `1fr`, so on an
-     812px-tall viewport with little other chrome it can stretch the felt to 439px tall before
-     `max-width` clips the derived width back down, and `aspect-ratio` does not reverse
-     itself once height was the definite side: the result was a 360x439 shape, nowhere near
-     1.6, most of it not even inside the visible ellipse's painted area.
-
-     max-height closes the loop the OTHER direction: capped at what the width limit's own
-     aspect ratio implies, height can never run ahead of the number that already governs
-     width. Not a rediscovery of the ceiling removed in 2f.3 — that one was a stale constant
-     (560px straitjacket that pinned the table on a phone); this one is DERIVED from the same
-     max-width already above, so it cannot go stale the same way. */
-  max-height: calc(min(560px, 96vw) / 1.6);
+  align-self: center;
+  width: calc(280px * var(--px));
+  height: calc(175px * var(--px));
 }
 .table-top {
   /* Fills `.table-frame` exactly, so it shares its parent's box (and thus the legs'
@@ -1482,7 +1509,10 @@ body {
   flex-wrap: wrap;
   gap: 0.5rem;
   justify-content: center;
-  padding: 0.5rem 0;
+  /* Bottom padding matches `.hand-tray`'s, so the two panels sit at the same height when they
+     swap — they are the same action bar wearing two faces, and a differing inset made the
+     controls jump vertically between bidding and play. */
+  padding: 0.5rem 0 max(0.5rem, env(safe-area-inset-bottom));
 }
 .bid-button {
   /* <button> does NOT inherit font-family. Without this the game's most-clicked control
