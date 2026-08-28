@@ -210,6 +210,37 @@ body {
   border-top: 3px solid #17100c;
   box-shadow: inset 0 3px 0 rgba(255, 198, 132, 0.10);
 }
+/* The DEPTH band (2j.4). The floor tile alone is flat by construction — a repeating pattern
+   has no opinion about distance — so the whole ground plane read as directly underfoot at
+   every point, wall to viewer, which is the last piece of "flat front elevation instead of
+   one receding projection" the earlier phases hadn't touched. A banded (not smooth — same
+   hard-stop convention `.scene-hearth-glow`/`.scene-vignette` already use, so a THIRD
+   continuous gradient doesn't creep back into a room that spent 2g.2 removing the first two)
+   darkening from the wall/floor seam down: the far edge of the floor recedes into shadow, the
+   near edge (closest to the camera, and closest to the hearth's own light pool) stays lit.
+
+   A `::after` pseudo-element, not a second background LAYER on `.scene-floor` itself — that
+   was the first attempt, and scale-audit.js flagged it: its background-size parser splits on
+   a bare space, so a comma-separated multi-layer value (`100% 100%, calc(80px * var(--px))`)
+   read as one malformed value and it measured the TILE's 80x80 art against the whole floor
+   box, a false "17.5x fractional scale". Rather than teach the audit to parse multi-layer
+   background-size for what would be its first real caller, a `::after` sidesteps the question
+   entirely — it has no `url()` in its own background, so the audit's background check (which
+   only looks at elements with an image) skips it the same way it already skips the pure-CSS
+   `.scene-firelight`/`.scene-moonlight` glows. */
+.scene-floor::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.34) 14%,
+    rgba(0, 0, 0, 0.22) 14%, rgba(0, 0, 0, 0.22) 28%,
+    rgba(0, 0, 0, 0.12) 28%, rgba(0, 0, 0, 0.12) 44%,
+    rgba(0, 0, 0, 0.05) 44%, rgba(0, 0, 0, 0.05) 62%,
+    rgba(0, 0, 0, 0) 62%
+  );
+}
 
 /* The rug (2f.5) — centred under where the table sits, near the TOP of the floor band so it
    reaches up toward the table's near edge rather than sitting lost in the middle of the

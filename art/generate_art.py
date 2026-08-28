@@ -2068,11 +2068,19 @@ def make_woodpile(w=260, h=160):
     2j.3: resized 2.5x (104x64 -> 260x160) along with the rest of the room's furniture, scaled
     off the same table-as-ruler that resized the hearth and window. `r` (log radius) and every
     offset below are the original values times 2.5, so the logs get proportionally bigger and
-    there are proportionally more rows, rather than the same handful of logs blown up blurry."""
+    there are proportionally more rows, rather than the same handful of logs blown up blurry.
+
+    2j.4: carries a contact shadow, the same `contact_shadow()` the cat has had since 2d.3 —
+    this was the one floor-standing prop in the room still floating with nothing pinning it to
+    the boards under it. Pasted first, behind the base row of logs, the same ordering the cat
+    uses."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     b_hi, bark, b_sh, b_deep = ramp(WOOD_MED)
     f_hi, face, f_sh, _ = ramp(PARCHMENT_SHADOW)
+
+    shadow = contact_shadow(round(w * 0.9), round(h * 0.15), max_alpha=110)
+    img.paste(shadow, (round(w * 0.05), h - round(h * 0.16)), shadow)
 
     rows = ((15, 5), (33, 4), (50, 3), (68, 2))
     r = 28
