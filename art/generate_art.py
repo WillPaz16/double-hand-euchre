@@ -1424,7 +1424,7 @@ def _flame(draw, cx, base_y, w, h, sway, color, phase):
     draw.polygon(left + right[::-1], fill=color)
 
 
-def make_fire_frames(count=4, w=112, h=128):
+def make_fire_frames(count=4, w=272, h=168):
     """Animation frames for the hearth fire. Deterministic: each frame is a pure function of
     its index, no randomness, so regeneration is byte-identical.
 
@@ -1476,18 +1476,38 @@ def make_fire_frames(count=4, w=112, h=128):
     return frames
 
 
-def make_fireplace(w=308, h=412):
+def make_fireplace(w=748, h=540):
     """Stone hearth surround with a firebox opening and a timber mantel.
 
-    Sized at 2.2x its original 140x186 (Phase 2f.4) — the original was measured against a
-    real fireplace's proportions and found to be a whole miniature object sitting entirely
-    inside the frame, ~9x smaller than a fireplace has any business being next to a person.
-    2.2x, not the literal physical ratio (~6x), because the opponent (2f.3) already committed
-    this room to a DELIBERATE STYLISED scale rather than strict realism — a physically-correct
-    hearth next to a stylised head-is-one-card-tall figure would look like two different
-    drawing conventions arguing with each other. 2.2x is "large, deliberately cropped mass,"
-    per the phase plan, sized to match the opponent's own departure from realism rather than
-    to out-realism him.
+    **Sized from the table as ruler (Phase 2j.3), and every constant below is now a FRACTION
+    of w/h rather than a pixel count.** The felt is a fixed 280 au and a real card table is
+    about 90cm, which fixes the room's scale at roughly 1 au = 3.2mm. A hearth surround of
+    ~120cm wide is therefore ~374 au, and this canvas is exactly that, doubled (au = canvas/2).
+
+    **HEIGHT is capped by the frame, not by the ruler, and that is a deliberate compromise.**
+    A physically-correct 150cm surround would be 468 au, but the wall band between the floor
+    line and the top of the viewport measures only 284 au at desktop — so a realistic hearth
+    literally cannot fit, and at 468 au it rendered with its top at y=-362, cropping the mantel
+    off the screen entirely. Cropping a hearth is fine; cropping away the mantel is not, since
+    that is the feature that makes it read as a hearth at all. 270 au keeps the correct WIDTH
+    (the more legible dimension) and yields a wide, low inglenook, which is characterful rather
+    than merely compromised. The real fix is a camera that shows more wall, which is 2j.4's
+    job — noted here so the number is understood as frame-bound, not as the ruler's answer.
+
+    That supersedes 2f.4's "2.2x, stylised not physical" reasoning, which was calibrated
+    against the opponent on the assumption he was also stylised. Measuring both against the
+    table showed otherwise: at 150 au wide his shoulders are ~48cm, which is simply CORRECT.
+    So the person was never the stylised one — the room was uniformly ~2.4x too small around
+    him, which is exactly why it read as miniatures on a shelf rather than somewhere you sit.
+    Sizing each object from the ruler instead of from a blanket multiplier matters here
+    specifically because the error was NOT uniform: hearth-to-shoulders should be ~2.5 and was
+    1.03, so scaling everything equally would have preserved that wrongness.
+
+    Proportional constants are not cosmetic tidiness. The previous version hardcoded
+    `course_h`, stone width and the firebox inset in pixels, so growing the canvas would have
+    stacked 2.4x as many identical-sized stones instead of reading as bigger stone on a bigger
+    wall — the exact failure this function's own docstring warned about, and the same trap the
+    fire frames hit in 2g.3.
 
     Two things this gets wrong if done naively, both fixed here:
 
@@ -1512,31 +1532,31 @@ def make_fireplace(w=308, h=412):
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
 
-    body_top = 48
+    body_top = round(h * 0.117)
     d.rectangle((0, body_top, w - 1, h - 1), fill=mortar)
 
-    # Course height and stone width both scaled with the fireplace — an unscaled course_h
-    # would have stacked 2.2x as many identical-looking rows rather than reading as bigger
-    # stones on a bigger wall.
-    course_h = 37
+    # Course height and stone width are FRACTIONS of the fireplace, so a resize gives bigger
+    # stone rather than more of it.
+    course_h = round(h * 0.0898)
+    stone_pad = max(2, round(w * 0.0065))
     seed = 5
     row = 0
     y = body_top
     while y < h:
-        x = -((row % 3) * 24)
+        x = -((row % 3) * round(w * 0.078))
         while x < w:
-            sw = 42 + (seed % 33)
+            sw = round(w * 0.136) + (seed % round(w * 0.107))
             tone = (base, hi, sh, base)[(seed // 3) % 4]
             # Clamp AND check: a course landing near the bottom edge can clamp y1 below y0,
             # which PIL rejects outright ("x1 must be greater than or equal to x0").
-            x0, y0 = x + 2, y + 2
-            x1, y1 = min(x + sw - 4, w - 1), min(y + course_h - 6, h - 1)
+            x0, y0 = x + stone_pad, y + stone_pad
+            x1, y1 = min(x + sw - stone_pad * 2, w - 1), min(y + course_h - stone_pad * 3, h - 1)
             if x1 >= x0 and y1 >= y0:
                 # Firelight falloff: the hearth emits light into the room, so its own stones
                 # must be lit by it too. Without this the object throwing the glow is itself
                 # uniformly lit, which quietly breaks the illusion.
                 mid_x, mid_y = (x0 + x1) / 2, (y0 + y1) / 2
-                dist = math.hypot(mid_x - w / 2, mid_y - 290) / 240.0
+                dist = math.hypot(mid_x - w / 2, mid_y - h * 0.704) / (h * 0.583)
                 tone = _mix(tone, FIRE_DEEP, max(0.0, 0.30 - dist * 0.30))
                 d.rectangle((x0, y0, x1, y1), fill=tone)
                 d.line((x0, y0, x1, y0), fill=_mix(tone, hi, 0.5))      # lit top edge
@@ -1549,27 +1569,39 @@ def make_fireplace(w=308, h=412):
     # Firebox, carved after the stonework so it reads as cut into the masonry. Not pure
     # black: a warm ember tone at the floor of the opening, so the recess reads as lit from
     # within rather than as a hole punched in the wall.
-    ox0, ox1 = 79, w - 79
-    oy0, oy1 = 216, h - 22
+    ox0, ox1 = round(w * 0.2565), w - round(w * 0.2565)
+    oy0, oy1 = round(h * 0.524), h - round(h * 0.0534)
+    lip = max(2, round(w * 0.013))
     d.rectangle((ox0, oy0, ox1, oy1), fill=(22, 15, 14, 255))
-    for i, band in enumerate(range(oy1 - 40, oy1, 9)):
-        d.rectangle((ox0 + 4, band, ox1 - 4, band + 7),
+    band_h = max(3, round(h * 0.017))
+    band_step = max(4, round(h * 0.0218))
+    for i, band in enumerate(range(oy1 - round(h * 0.097), oy1, band_step)):
+        d.rectangle((ox0 + lip, band, ox1 - lip, band + band_h),
                     fill=_mix((22, 15, 14, 255), EMBER, 0.18 + i * 0.14))
-    d.rectangle((ox0, oy0, ox1, oy1), outline=_mix(mortar, deep, 0.6), width=6)
-    d.line((ox0 + 6, oy0 + 6, ox1 - 6, oy0 + 6), fill=_mix(deep, FIRE_DEEP, 0.45))
+    d.rectangle((ox0, oy0, ox1, oy1), outline=_mix(mortar, deep, 0.6), width=lip)
+    d.line((ox0 + lip, oy0 + lip, ox1 - lip, oy0 + lip), fill=_mix(deep, FIRE_DEEP, 0.45))
 
     # Timber mantel, overhanging the stone on both sides.
     m_hi, m_base, m_sh, m_deep = ramp(TABLE_WOOD)
-    d.rectangle((0, body_top - 44, w - 1, body_top + 2), fill=m_base)
-    d.rectangle((0, body_top - 44, w - 1, body_top - 35), fill=m_hi)
-    d.line((0, body_top - 9, w - 1, body_top - 9), fill=m_sh)
-    d.line((0, body_top + 2, w - 1, body_top + 2), fill=m_deep)
+    mantel = round(h * 0.107)
+    m_lip = max(2, round(h * 0.022))
+    d.rectangle((0, body_top - mantel, w - 1, body_top + m_lip), fill=m_base)
+    d.rectangle((0, body_top - mantel, w - 1, body_top - mantel + m_lip * 2), fill=m_hi)
+    d.line((0, body_top - m_lip, w - 1, body_top - m_lip), fill=m_sh)
+    d.line((0, body_top + m_lip, w - 1, body_top + m_lip), fill=m_deep)
     return img
 
 
-# 2.2x the original 120x146 (Phase 2f.4), same stylised-not-physical scale reasoning as the
-# fireplace above — sized to match the opponent's departure from realism, not physics.
-WINDOW_W, WINDOW_H = 264, 324
+# Sized from the table as ruler (2j.3): a ~100cm-wide window at ~1 au = 3.2mm is ~312 au, and
+# au = canvas/2. Supersedes 2f.4's stylised 2.2x — see make_fireplace's docstring for why the
+# room, not the person, turned out to be the thing that was mis-scaled.
+#
+# Height is capped by the same wall band the hearth is (284 au at desktop), for the same
+# reason and with the same compromise: at a realistic 374 au this rendered from y=86 down to
+# y=834, hanging a quarter of its height BELOW the floor line and into the room, which reads
+# as a window resting on the floorboards rather than set into the wall. 220 au keeps the
+# correct width and fits the band as a wide casement.
+WINDOW_W, WINDOW_H = 624, 440
 
 
 def make_window_glass(w=WINDOW_W, h=WINDOW_H):
@@ -1725,7 +1757,7 @@ def make_floorboards(size=160):
 # nothing forces a generator's absence from `main()` to be noticed.
 
 
-def make_cat_frames(count=2, w=88, h=56):
+def make_cat_frames(count=2, w=252, h=160):
     """A cat asleep by the fire, two frames of slow breathing.
 
     Two frames is enough because the motion is a swell, not a gait — the body rises a pixel.

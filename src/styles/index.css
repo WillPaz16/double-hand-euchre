@@ -266,20 +266,29 @@ body {
    on a narrower desktop window, and that's the point — a real fireplace usually isn't fully
    in frame either. `.scene-layer`'s `overflow: hidden` (2f.2) is what makes that safe to lean
    on rather than something to guard against. */
+/* Cropped hard by the left edge (2j.3). At true scale the hearth (374 au) and the window
+   (312 au) together span 686 au, which at --px 2 is 1372px — 98% of a 1400px viewport, leaving
+   a measured ZERO-pixel gap of free wall between them and burying all five wall props at 100%
+   overlap. Shrinking the furniture back would just restore the proportion error this phase
+   exists to fix. "Cropped, not hidden" is the rule the stage was designed around, and it was
+   never actually applied to these two: at `left: 6au` the hearth was fully in frame, which is
+   what a miniature does, not what a piece of room-scale furniture does. Running it off the
+   edge keeps its true size AND returns wall to the composition. */
 .scene-fireplace {
-  left: calc(6px * var(--px));
+  left: calc(-78px * var(--px));
   bottom: calc(34% - 3px * var(--px));
-  width: calc(154px * var(--px));
-  height: calc(206px * var(--px));
+  width: calc(374px * var(--px));
+  height: calc(270px * var(--px));
   background-image: url('/art/scene/fireplace.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
 }
+/* Cropped by the right edge for the same reason as the hearth — see above. */
 .scene-window {
-  right: calc(8px * var(--px));
+  right: calc(-72px * var(--px));
   top: 10%;
-  width: calc(132px * var(--px));
-  height: calc(162px * var(--px));
+  width: calc(312px * var(--px));
+  height: calc(220px * var(--px));
 }
 
 /* One frame's window onto the strip; the strip slides behind it.
@@ -289,24 +298,28 @@ body {
    The fire is the literal source of this room's warmth and it was reading as embers in a
    cold cathedral. Now 56x64 au: 75% and 74% of the opening, with margin so it still sits
    INSIDE the firebox rather than filling it corner to corner. */
+/* Positioned against the RESCALED hearth (2j.3). `make_fireplace` puts the firebox opening at
+   0.2565w-0.7435w and 0.524h-0.9466h, which on the 374x270 au surround is x 96-278,
+   y 141-256 au — a 182x115 au opening. The 136x84 au flame is centred in that horizontally
+   and sits on its floor, since logs rest on the hearth rather than floating mid-opening. */
 .scene-fire {
   position: absolute;
-  left: calc(48px * var(--px));
-  top: calc(122px * var(--px));
-  width: calc(56px * var(--px));
-  height: calc(64px * var(--px));
+  left: calc(119px * var(--px));
+  top: calc(168px * var(--px));
+  width: calc(136px * var(--px));
+  height: calc(84px * var(--px));
   overflow: hidden;
 }
 .scene-fire-strip {
-  width: calc(224px * var(--px));   /* 4 frames x 56au */
-  height: calc(64px * var(--px));
+  width: calc(544px * var(--px));   /* 4 frames x 136au */
+  height: calc(84px * var(--px));
   background-image: url('/art/scene/fire_sheet.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
   animation: fire-flicker 0.5s steps(4) infinite;
 }
 @keyframes fire-flicker {
-  to { transform: translateX(calc(-224px * var(--px))); }
+  to { transform: translateX(calc(-544px * var(--px))); }
 }
 /* The light the fire throws into the room. Pulses out of phase with the flame loop so the
    two never lock into an obvious rhythm. Scaled roughly with the 2.2x bigger hearth (2f.4).
@@ -398,11 +411,16 @@ body {
 }
 /* Curled on the floor by the hearth, where a cat would actually be. Enlarged 26x18 -> 44x28 au
    in 2g.4; at the old size he was half a card wide and read as a smudge on the boards. */
+/* Lowered onto the floorboards in 2j.3. At 44x28 au the cat was small enough to tuck beside
+   the hearth; grown to 126x80 au it reached up INTO the firebox opening (which the rescaled
+   hearth places at 18-200 au horizontally), so it read as a cat sitting in the fire rather
+   than in front of it. Dropping it clear of the floor line puts it on the boards where a cat
+   actually lies — near the warmth, not inside it. */
 .scene-cat {
   left: calc(20px * var(--px));
-  bottom: calc(34% - 30px * var(--px));
-  width: calc(44px * var(--px));
-  height: calc(28px * var(--px));
+  bottom: calc(34% - 85px * var(--px));
+  width: calc(126px * var(--px));
+  height: calc(80px * var(--px));
   overflow: hidden;
 }
 .scene-shelf {
@@ -414,8 +432,8 @@ body {
   background-size: 100% 100%;
 }
 .scene-cat-strip {
-  width: calc(88px * var(--px));   /* 2 frames x 44au */
-  height: calc(28px * var(--px));
+  width: calc(252px * var(--px));   /* 2 frames x 126au */
+  height: calc(80px * var(--px));
   background-image: url('/art/scene/cat_sheet.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
@@ -424,7 +442,7 @@ body {
   animation: cat-breathe 3.4s steps(2) infinite;
 }
 @keyframes cat-breathe {
-  to { transform: translateX(calc(-88px * var(--px))); }
+  to { transform: translateX(calc(-252px * var(--px))); }
 }
 
 /* --- Wall and floor furniture (2g.4, re-placed in 2h.1) ---------------------------------- */
@@ -464,15 +482,21 @@ body {
 }
 /* Antlers alone need a SECOND, higher gate. They sit in the gap between the opponent and the
    window, and that gap is not fixed-width: the opponent is centred (its edges scale with
-   viewport-width/2), while the antlers were anchored from the right edge (scaling 1:1 with
-   width) — two different rates, so the gap between them shrinks as the viewport narrows.
-   Solved for the width where they stop touching: width/2 >= 556px, i.e. ~1112px. Verified
-   clean at 1150px and colliding at 1010px, so the gate below uses 1150 with a margin, not the
-   bare algebraic threshold — the same "verify the number, don't trust the derivation alone"
-   lesson as the value-ladder assert. Below it: three props, not four; still more than 2g.4
-   shipped with at any width, since picture/clock/coat-hooks now hold at every size >=900px
-   including this one. */
-@media (min-width: 1150px) {
+   viewport-width/2), while the antlers are anchored from the right edge (scaling 1:1 with
+   width) — two different rates, so the gap shrinks as the viewport narrows.
+
+   **Raised from 1150 to 1560 in 2j.3**, because the window grew from 132 to 312 au and ate
+   most of that gap. Re-derived against the new sizes: the opponent's right edge is
+   `vw/2 + 150px` and the window's left edge is `vw - 480px`, so the free wall between them is
+   `vw/2 - 630px` — which reaches the antlers' own 120px width only at vw >= 1500. Verified
+   rather than trusted: at 1400 the audit measured them 42% buried by the opponent, which is
+   how this was caught at all. 1560 leaves ~30px of margin on top of the algebraic threshold,
+   the same "verify the number, don't trust the derivation" habit as the value-ladder assert.
+
+   Below it: three props, not four. That is the honest cost of a room at true scale — a hearth
+   and a window sized to a real room simply consume the wall, and the frame has to give
+   something up. Widening that frame is 2j.4's job, not a reason to shrink the furniture back. */
+@media (min-width: 1560px) {
   .scene-antlers {
     display: block;
   }
@@ -533,8 +557,12 @@ body {
 }
 /* Right of the opponent, in the gap toward the window — see the min-width: 1150px gate above
    for why this one placement needs it and the other three don't. */
+/* Repositioned in 2j.3. At `right: 143au` this now hung squarely ON the window glass — the
+   window grew from 132 to 312 au and swallowed the spot the antlers used to occupy. Moved
+   into the strip of real wall between the opponent and the window's left edge, which is the
+   only free wall left once the hearth and window are at true scale. */
 .scene-antlers {
-  right: calc(143px * var(--px));
+  right: calc(240px * var(--px));
   top: calc(75px * var(--px));
   width: calc(60px * var(--px));
   height: calc(40px * var(--px));
