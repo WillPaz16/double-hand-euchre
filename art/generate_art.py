@@ -1851,37 +1851,39 @@ def make_rug(w=680, h=140) -> Image.Image:
     return img
 
 
-def make_shelf(w=120, h=64):
+def make_shelf(w=300, h=160):
     """A wall shelf with clutter — jars, books, a lantern. Placed once, never tiled, so unlike
-    the wall texture it may carry all the distinctive point detail it likes."""
+    the wall texture it may carry all the distinctive point detail it likes.
+
+    2j.3: resized 2.5x (120x64 -> 300x160). Every offset below is the original times 2.5."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     hi, base, sh, deep = ramp(TABLE_WOOD)
 
-    plank_y = h - 12
-    d.rectangle((0, plank_y, w - 1, plank_y + 6), fill=base)
+    plank_y = h - 30
+    d.rectangle((0, plank_y, w - 1, plank_y + 15), fill=base)
     d.line((0, plank_y, w - 1, plank_y), fill=hi)
-    d.line((0, plank_y + 6, w - 1, plank_y + 6), fill=deep)
-    for bx in (10, w - 16):
-        d.polygon([(bx, plank_y + 6), (bx + 6, plank_y + 6), (bx + 3, h - 1)], fill=sh)
+    d.line((0, plank_y + 15, w - 1, plank_y + 15), fill=deep)
+    for bx in (25, w - 40):
+        d.polygon([(bx, plank_y + 15), (bx + 15, plank_y + 15), (bx + 8, h - 1)], fill=sh)
 
     # Books, leaning.
-    for i, (bx, bh, col) in enumerate(((8, 26, RUG_RED), (16, 30, LEAF_GREEN), (24, 24, CLOTH_BLUE))):
-        d.rectangle((bx, plank_y - bh, bx + 7, plank_y - 1), fill=col)
-        d.rectangle((bx, plank_y - bh, bx + 7, plank_y - bh + 2), fill=_mix(col, GOLD, 0.5))
+    for i, (bx, bh, col) in enumerate(((20, 65, RUG_RED), (40, 75, LEAF_GREEN), (60, 60, CLOTH_BLUE))):
+        d.rectangle((bx, plank_y - bh, bx + 18, plank_y - 1), fill=col)
+        d.rectangle((bx, plank_y - bh, bx + 18, plank_y - bh + 5), fill=_mix(col, GOLD, 0.5))
 
     # Jars.
-    for jx, jh, fill in ((44, 20, _mix(LEAF_GREEN, PARCHMENT, 0.4)), (62, 16, _mix(RUG_RED, PARCHMENT, 0.5))):
-        d.rectangle((jx, plank_y - jh, jx + 13, plank_y - 1), fill=fill)
-        d.rectangle((jx, plank_y - jh, jx + 13, plank_y - jh + 3), fill=sh)
-        d.line((jx, plank_y - jh + 5, jx + 13, plank_y - jh + 5), fill=_mix(fill, PARCHMENT, 0.5))
+    for jx, jh, fill in ((110, 50, _mix(LEAF_GREEN, PARCHMENT, 0.4)), (155, 40, _mix(RUG_RED, PARCHMENT, 0.5))):
+        d.rectangle((jx, plank_y - jh, jx + 32, plank_y - 1), fill=fill)
+        d.rectangle((jx, plank_y - jh, jx + 32, plank_y - jh + 8), fill=sh)
+        d.line((jx, plank_y - jh + 13, jx + 32, plank_y - jh + 13), fill=_mix(fill, PARCHMENT, 0.5))
 
     # Lantern, with a lit pane.
-    lx = 86
-    d.rectangle((lx, plank_y - 28, lx + 18, plank_y - 1), fill=sh)
-    d.rectangle((lx + 3, plank_y - 24, lx + 15, plank_y - 8), fill=_mix(FIRE_MID, PARCHMENT, 0.35))
-    d.rectangle((lx + 5, plank_y - 22, lx + 13, plank_y - 10), fill=FIRE_CORE)
-    d.rectangle((lx + 6, plank_y - 32, lx + 12, plank_y - 28), fill=deep)
+    lx = 215
+    d.rectangle((lx, plank_y - 70, lx + 45, plank_y - 1), fill=sh)
+    d.rectangle((lx + 8, plank_y - 60, lx + 37, plank_y - 20), fill=_mix(FIRE_MID, PARCHMENT, 0.35))
+    d.rectangle((lx + 12, plank_y - 55, lx + 33, plank_y - 25), fill=FIRE_CORE)
+    d.rectangle((lx + 15, plank_y - 80, lx + 30, plank_y - 70), fill=deep)
     return img
 
 
@@ -1900,36 +1902,37 @@ def make_shelf(w=120, h=64):
 # room.
 
 
-def make_framed_picture(w=96, h=72):
+def make_framed_picture(w=240, h=180):
     """A small framed landscape — the most literal reading of "art on walls".
 
     Deliberately a DAYLIT scene: the one window in this room shows night, so a sunlit picture
     is the only warm-and-bright note available, and it gives the palette somewhere to put the
     greens and mid-blues that the environment's 42-degree warm arc otherwise has no room for.
-    """
+
+    2j.3: resized 2.5x (96x72 -> 240x180). Every offset below is the original times 2.5."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     f_hi, f_base, f_sh, f_deep = ramp(TABLE_WOOD)
 
     d.rectangle((0, 0, w - 1, h - 1), fill=f_base)
-    d.rectangle((0, 0, w - 1, 1), fill=f_hi)
-    d.rectangle((0, h - 2, w - 1, h - 1), fill=f_deep)
+    d.rectangle((0, 0, w - 1, 3), fill=f_hi)
+    d.rectangle((0, h - 5, w - 1, h - 1), fill=f_deep)
 
     # The painted field, inset inside the moulding.
-    m = 8
+    m = 20
     sky_hi, sky, sky_sh, _ = ramp(PICTURE_SKY, warm=False)
     d.rectangle((m, m, w - m - 1, h - m - 1), fill=sky)
-    d.rectangle((m, m, w - m - 1, m + 8), fill=sky_hi)
+    d.rectangle((m, m, w - m - 1, m + 20), fill=sky_hi)
 
-    horizon = h - m - 20
+    horizon = h - m - 50
     hill_hi, hill, hill_sh, hill_deep = ramp(LEAF_GREEN)
     # Two overlapping hills, the far one lighter, so the little scene has depth of its own.
-    d.polygon([(m, horizon + 6), (m + 26, horizon - 12), (m + 54, horizon + 6)], fill=hill_hi)
-    d.polygon([(m + 30, horizon + 8), (m + 58, horizon - 14), (w - m - 1, horizon + 8)], fill=hill)
-    d.rectangle((m, horizon + 6, w - m - 1, h - m - 1), fill=hill_sh)
-    d.line((m, horizon + 6, w - m - 1, horizon + 6), fill=hill_deep)
+    d.polygon([(m, horizon + 15), (m + 65, horizon - 30), (m + 135, horizon + 15)], fill=hill_hi)
+    d.polygon([(m + 75, horizon + 20), (m + 145, horizon - 35), (w - m - 1, horizon + 20)], fill=hill)
+    d.rectangle((m, horizon + 15, w - m - 1, h - m - 1), fill=hill_sh)
+    d.line((m, horizon + 15, w - m - 1, horizon + 15), fill=hill_deep)
     # A low sun, the warm note the night room never gets.
-    d.ellipse((m + 60, m + 8, m + 60 + 12, m + 20), fill=FIRE_CORE)
+    d.ellipse((m + 150, m + 20, m + 150 + 30, m + 50), fill=FIRE_CORE)
     return img
 
 
@@ -1982,97 +1985,107 @@ def make_antlers(w=120, h=80):
     return img
 
 
-def make_wall_clock(size=80):
+def make_wall_clock(size=200):
     """A round wall clock. Reads instantly at a glance and is the only circle on the wall.
 
     Hands sit at roughly ten-past-ten — the arrangement every clock in every advert uses,
     because it is symmetric, keeps both hands clear of each other, and never reads as an
-    accident of where the hands happened to stop."""
+    accident of where the hands happened to stop.
+
+    2j.3: resized 2.5x (80 -> 200). `r` and every stroke width below scale off `size` directly
+    rather than off a hardcoded constant, so this one is naturally proportional already."""
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     c_hi, case, c_sh, c_deep = ramp(TABLE_WOOD)
-    r = size // 2 - 1
+    r = size // 2 - 2
     cx = cy = size // 2
 
     d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=case)
-    d.arc((cx - r, cy - r, cx + r, cy + r), 200, 340, fill=c_hi, width=2)
-    d.arc((cx - r, cy - r, cx + r, cy + r), 20, 160, fill=c_deep, width=2)
-    fr = r - 6
+    d.arc((cx - r, cy - r, cx + r, cy + r), 200, 340, fill=c_hi, width=5)
+    d.arc((cx - r, cy - r, cx + r, cy + r), 20, 160, fill=c_deep, width=5)
+    fr = r - 15
     d.ellipse((cx - fr, cy - fr, cx + fr, cy + fr), fill=PARCHMENT)
-    d.ellipse((cx - fr, cy - fr, cx + fr, cy + fr), outline=c_deep, width=1)
+    d.ellipse((cx - fr, cy - fr, cx + fr, cy + fr), outline=c_deep, width=2)
 
     # Only the four quarter marks. Twelve ticks was the first attempt and at this size the
     # coarse grid turned them into an even speckled ring — detail that averages out to noise
     # is worse than no detail, because it costs contrast and buys nothing readable.
     for tick in range(4):
         a = math.radians(tick * 90 - 90)
-        r0 = fr - 10
+        r0 = fr - 25
         d.line((cx + r0 * math.cos(a), cy + r0 * math.sin(a),
-                cx + (fr - 3) * math.cos(a), cy + (fr - 3) * math.sin(a)), fill=INK, width=4)
+                cx + (fr - 8) * math.cos(a), cy + (fr - 8) * math.sin(a)), fill=INK, width=10)
 
     # Screen angles: 12 o'clock is -90deg. Ten-past-ten puts the minute hand at the 2 (-30deg)
     # and the hour hand at the 10 (-150deg) — a V opening upward. The first attempt used -62
     # and 118, which are 180 apart, so the two hands drew one straight line through the centre
     # and the clock read as a blank disc with a slash across it.
-    for ang, length in ((-30, fr - 7), (-150, fr - 14)):
+    for ang, length in ((-30, fr - 18), (-150, fr - 35)):
         a = math.radians(ang)
-        d.line((cx, cy, cx + length * math.cos(a), cy + length * math.sin(a)), fill=INK, width=3)
-    d.ellipse((cx - 3, cy - 3, cx + 3, cy + 3), fill=INK)
+        d.line((cx, cy, cx + length * math.cos(a), cy + length * math.sin(a)), fill=INK, width=8)
+    d.ellipse((cx - 8, cy - 8, cx + 8, cy + 8), fill=INK)
     return img
 
 
-def make_coat_hooks(w=84, h=108):
+def make_coat_hooks(w=208, h=268):
     """A hook rail with a coat hung on it. The one object here that implies a PERSON — someone
     came in out of the snow and hung their coat up — which is a different kind of warmth from
-    the fire, and cheap to state."""
+    the fire, and cheap to state.
+
+    2j.3: resized ~2.48x (84x108 -> 208x268). Every offset below is the original times ~2.48."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     r_hi, rail, r_sh, r_deep = ramp(TABLE_WOOD)
     c_hi, coat, c_sh, c_deep = ramp(COAT_GREEN)
 
-    d.rectangle((0, 0, w - 1, 9), fill=rail)
+    d.rectangle((0, 0, w - 1, 22), fill=rail)
     d.line((0, 0, w - 1, 0), fill=r_hi)
-    d.line((0, 9, w - 1, 9), fill=r_deep)
-    for hx in (14, w // 2, w - 15):
-        d.rectangle((hx - 2, 9, hx + 2, 16), fill=r_sh)
-        d.rectangle((hx - 4, 14, hx + 4, 17), fill=r_deep)
+    d.line((0, 22, w - 1, 22), fill=r_deep)
+    for hx in (35, w // 2, w - 37):
+        d.rectangle((hx - 5, 22, hx + 5, 40), fill=r_sh)
+        d.rectangle((hx - 10, 35, hx + 10, 42), fill=r_deep)
 
     # The coat, hanging from the middle hook: shoulders, body, two sleeves.
-    cx, top = w // 2, 15
-    d.polygon([(cx - 6, top), (cx + 6, top), (cx + 26, top + 20), (cx + 22, top + 30),
-               (cx + 14, top + 24), (cx + 15, h - 6), (cx - 15, h - 6), (cx - 14, top + 24),
-               (cx - 22, top + 30), (cx - 26, top + 20)], fill=coat)
-    d.polygon([(cx - 6, top), (cx + 1, top), (cx + 1, h - 6), (cx - 5, h - 6)], fill=c_sh)
-    d.line((cx - 26, top + 20, cx - 6, top), fill=c_hi, width=2)
-    d.line((cx + 6, top, cx + 26, top + 20), fill=c_deep, width=2)
-    for by in (top + 34, top + 50, top + 66):
-        d.rectangle((cx - 3, by, cx - 1, by + 2), fill=GOLD)
+    cx, top = w // 2, 37
+    d.polygon([(cx - 15, top), (cx + 15, top), (cx + 64, top + 50), (cx + 55, top + 74),
+               (cx + 35, top + 60), (cx + 37, h - 15), (cx - 37, h - 15), (cx - 35, top + 60),
+               (cx - 55, top + 74), (cx - 64, top + 50)], fill=coat)
+    d.polygon([(cx - 15, top), (cx + 2, top), (cx + 2, h - 15), (cx - 12, h - 15)], fill=c_sh)
+    d.line((cx - 64, top + 50, cx - 15, top), fill=c_hi, width=5)
+    d.line((cx + 15, top, cx + 64, top + 50), fill=c_deep, width=5)
+    for by in (top + 84, top + 124, top + 164):
+        d.rectangle((cx - 7, by, cx - 2, by + 5), fill=GOLD)
     return img
 
 
-def make_woodpile(w=104, h=64):
+def make_woodpile(w=260, h=160):
     """Split logs stacked beside the hearth — where the fire's fuel visibly comes from.
 
     Log ENDS face the room, so this is a grid of circles in a rough stack rather than a row of
     cylinders; that is both what a real woodpile looks like from the front and much easier to
-    read at this size."""
+    read at this size.
+
+    2j.3: resized 2.5x (104x64 -> 260x160) along with the rest of the room's furniture, scaled
+    off the same table-as-ruler that resized the hearth and window. `r` (log radius) and every
+    offset below are the original values times 2.5, so the logs get proportionally bigger and
+    there are proportionally more rows, rather than the same handful of logs blown up blurry."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     b_hi, bark, b_sh, b_deep = ramp(WOOD_MED)
     f_hi, face, f_sh, _ = ramp(PARCHMENT_SHADOW)
 
-    rows = ((6, 5), (13, 4), (20, 3), (27, 2))
-    r = 11
+    rows = ((15, 5), (33, 4), (50, 3), (68, 2))
+    r = 28
     for row, (inset, count) in enumerate(rows):
-        y = h - 8 - row * (r + 3)
+        y = h - 20 - row * (r + 8)
         for i in range(count):
-            x = inset + i * (r * 2 + 2)
+            x = inset + i * (r * 2 + 5)
             d.ellipse((x, y - r, x + r * 2, y + r), fill=bark)
-            d.ellipse((x + 2, y - r + 2, x + r * 2 - 2, y + r - 2), fill=face)
+            d.ellipse((x + 5, y - r + 5, x + r * 2 - 5, y + r - 5), fill=face)
             # Growth rings, and a split — enough to say "cut log" and no more.
-            d.ellipse((x + 5, y - r + 5, x + r * 2 - 5, y + r - 5), outline=f_sh, width=1)
-            d.line((x + r, y - r + 3, x + r, y + r - 3), fill=f_sh)
-            d.arc((x, y - r, x + r * 2, y + r), 200, 340, fill=b_hi, width=1)
+            d.ellipse((x + 12, y - r + 12, x + r * 2 - 12, y + r - 12), outline=f_sh, width=2)
+            d.line((x + r, y - r + 8, x + r, y + r - 8), fill=f_sh, width=2)
+            d.arc((x, y - r, x + r * 2, y + r), 200, 340, fill=b_hi, width=2)
     return img
 
 

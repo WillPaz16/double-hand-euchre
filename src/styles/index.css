@@ -423,11 +423,12 @@ body {
   height: calc(80px * var(--px));
   overflow: hidden;
 }
+/* Resized 2.5x in 2j.3 along with the rest of the room's furniture (60x32 -> 150x80 au). */
 .scene-shelf {
   left: calc(10px * var(--px));
   bottom: calc(34% + 113px * var(--px));
-  width: calc(60px * var(--px));
-  height: calc(32px * var(--px));
+  width: calc(150px * var(--px));
+  height: calc(80px * var(--px));
   background-image: url('/art/scene/shelf.png');
   background-size: 100% 100%;
 }
@@ -529,18 +530,24 @@ body {
    the only reliably free region is this one band, but the props are still clearly to the LEFT
    of him, so the room still reads as furnished on both sides once antlers join in above
    1150px. */
+/* Resized 2.5x in 2j.3 (48x36 -> 120x90 au); the clock alongside it moved right to clear it. */
 .scene-picture {
   left: calc(8px * var(--px));
   top: calc(46px * var(--px));
-  width: calc(48px * var(--px));
-  height: calc(36px * var(--px));
+  width: calc(120px * var(--px));
+  height: calc(90px * var(--px));
   background-image: url('/art/scene/picture.png');
 }
+/* Resized 2.5x in 2j.3 (40x40 -> 100x100 au). Pulled back tight against the picture — the
+   opponent is centred (its edges scale with viewport-width/2, not with this row's fixed au
+   offsets), and at its first placement here the clock's right edge collided with him 59% at
+   1010px. This is the antlers' own known failure mode; the fix is the antlers' own fix — sit
+   as far left as the row allows rather than trusting the algebra to hold at every width. */
 .scene-clock {
-  left: calc(64px * var(--px));
+  left: calc(112px * var(--px));
   top: calc(46px * var(--px));
-  width: calc(40px * var(--px));
-  height: calc(40px * var(--px));
+  width: calc(100px * var(--px));
+  height: calc(100px * var(--px));
   background-image: url('/art/scene/clock.png');
 }
 /* Third in the row, and TALLER than the 50au gap between the score-slot and the fireplace
@@ -548,11 +555,23 @@ body {
    fireplace is not a chrome selector (a decorative prop losing to another decorative prop
    is not the bug this phase fixes), and mounting coat hooks directly above a hearth's
    mantel is the single most plausible placement in the whole room for them. */
+/* Resized ~2.48x in 2j.3 (42x54 -> 104x134 au). Moved from beside picture/clock to BELOW them —
+   pushing it further right at the bigger size ran into the opponent (audit-caught: 59-75%
+   hidden by `.table-opponent` at 1010/1400px, since the opponent is centred and its left edge
+   scales with viewport width/2, not with this row's own au offsets). Stacking vertically keeps
+   the whole picture/clock/coat-hooks group anchored to the same free left-edge column that was
+   already verified clear of the fireplace and scoreboard.
+
+   Directly below the picture (top:146) landed squarely on top of the shelf (top:208, DOM order
+   after coat-hooks so it paints over it) — invisible in the live game though the audit never
+   catches same-scene overlaps, only chrome collisions. Dropped below the shelf instead; the
+   remaining band there is a few px shorter than the coat-hooks' own height, so it settles a
+   little into the floor plane, same as the woodpile and rug already do by design. */
 .scene-coat-hooks {
-  left: calc(112px * var(--px));
-  top: calc(44px * var(--px));
-  width: calc(42px * var(--px));
-  height: calc(54px * var(--px));
+  left: calc(8px * var(--px));
+  top: calc(184px * var(--px));
+  width: calc(104px * var(--px));
+  height: calc(134px * var(--px));
   background-image: url('/art/scene/coat_hooks.png');
 }
 /* Right of the opponent, in the gap toward the window — see the min-width: 1150px gate above
@@ -569,11 +588,12 @@ body {
   background-image: url('/art/scene/antlers.png');
 }
 /* On the floor beside the hearth, where the fire's fuel comes from. */
+/* Resized 2.5x in 2j.3 (52x32 -> 130x80 au). */
 .scene-woodpile {
   left: calc(112px * var(--px));
   bottom: calc(34% - 34px * var(--px));
-  width: calc(52px * var(--px));
-  height: calc(32px * var(--px));
+  width: calc(130px * var(--px));
+  height: calc(80px * var(--px));
   background-image: url('/art/scene/woodpile.png');
 }
 /* A barely-perceptible settle, so he is not a decal. Deliberately tiny and slow — a seated
