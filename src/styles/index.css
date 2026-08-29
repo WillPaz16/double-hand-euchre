@@ -1704,6 +1704,10 @@ body {
   border-top: 2px solid #4a3728;
   padding-top: 0.5rem;
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  /* Transparent to clicks by default, same reasoning as .hand-tray-cards above: this box's
+     own background layer sits over .bid-panel wherever the two overlap (both share the exact
+     same absolute footprint by design). .card-face:not(:disabled) re-enables itself. */
+  pointer-events: none;
 }
 .hand-tray-label {
   text-align: center;
@@ -1723,6 +1727,11 @@ body {
   justify-content: center;
   align-items: flex-end;
   gap: 0.4rem;
+  /* Transparent to clicks by default: the read-only bidding-phase hand fills this container
+     with disabled cards (see .card-face:disabled above), but the flex box itself still has a
+     hit-testable area covering the same footprint as .bid-panel underneath it. Re-enabled
+     below for the cards that are actually clickable. */
+  pointer-events: none;
 }
 .hand-tray-cards .card-face {
   transform-origin: 50% 260%;
@@ -1767,6 +1776,17 @@ body {
 }
 .card-face:not(:disabled) {
   cursor: pointer;
+  pointer-events: auto;
+}
+/* A disabled card (no onClick — e.g. the read-only hand shown during bidding, per
+   HandTray.tsx's BIDDING_PHASES branch) has nothing of its own to receive a click for, but a
+   disabled <button> still paints and still captures the hit-test by default. `.bid-panel` and
+   `.hand-tray` share the exact same absolute bottom-0 footprint and z-index by design (2j.1 —
+   "the action bar overlays the room") because bidding shows both the trump-call buttons AND
+   your own hand at once; HandTray mounts after BidPanel in Game.tsx, so its disabled cards
+   silently ate every click aimed at "Order It Up"/"Alone"/"Pass" underneath them. */
+.card-face:disabled {
+  pointer-events: none;
 }
 .card-face.highlighted img {
   filter:
