@@ -40,14 +40,14 @@ export function StatusBanner({
   if (view.phase === 'hand_complete') {
     return (
       <div className="status-banner" role="status" aria-live="polite">
-        Hand complete — dealing next hand…
+        Hand complete, dealing next hand…
       </div>
     );
   }
   if (view.phase === 'misdeal') {
     return (
       <div className="status-banner" role="status" aria-live="polite">
-        Misdeal — redealing…
+        Misdeal, redealing…
       </div>
     );
   }
@@ -62,7 +62,7 @@ export function StatusBanner({
       {view.trump && (
         <div className="status-row">
           Trump: {SUIT_LABEL[view.trump]}
-          {view.maker && <> — Maker: {view.maker === HUMAN ? 'You' : 'Old-Timer'}</>}
+          {view.maker && <>, maker: {view.maker === HUMAN ? 'You' : 'Old-Timer'}</>}
           {view.lonerTier && ` (${view.lonerTier.replace('_', ' ')} loner)`}
         </div>
       )}
@@ -74,7 +74,7 @@ export function StatusBanner({
           not begun one. */}
       {view.phase === 'play' && (
         <div className="status-row">
-          Trick {view.trickNumber + 1} of 5 — Tricks won: You {view.tricksWon[HUMAN]}, Old-Timer{' '}
+          Trick {view.trickNumber + 1} of 5. Tricks won: You {view.tricksWon[HUMAN]}, Old-Timer{' '}
           {view.tricksWon[BOT]}
         </div>
       )}

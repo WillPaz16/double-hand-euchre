@@ -127,7 +127,7 @@ export function HandTray({
       ? 'Trick complete…'
       : view.phase === 'dealer_exchange'
         ? 'Choose a card to discard'
-        : 'Your turn — play a card';
+        : 'Your turn: play a card';
 
     // Keying on the acting hand's identity forces React to remount this container whenever
     // the human switches which of their two hands is up — which is exactly when the flip

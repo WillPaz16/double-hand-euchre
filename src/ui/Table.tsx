@@ -232,7 +232,7 @@ export function Table({
                 mode, where four fans plus the felt plus the tray genuinely do not fit in
                 375px of height. How many cards a hand has left is real strategic
                 information, so lean mode drops the PICTURE of the hand, never the fact. */}
-            <div className="seat-count">{held ? '—' : count}</div>
+            <div className={`seat-count${held ? ' is-held' : ''}`}>{held ? '' : count}</div>
           </div>
         );
       })}
@@ -279,7 +279,7 @@ export function Table({
             {/* Only during play — otherwise it printed "trick in progress" underneath the
                 bidding kitty, describing something that had not started yet. */}
             {trick.length === 0 && view.phase === 'play' && (
-              <div className="trick-empty">— trick in progress —</div>
+              <div className="trick-empty">Trick in progress</div>
             )}
             {/* A played card sits on ITS OWN SEAT'S side of the centre, so the table shows who
                 played what by position. The old layout put all four in a left-to-right row

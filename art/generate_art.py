@@ -18,18 +18,18 @@ INK = (43, 28, 20, 255)
 INK_LIGHT = (90, 64, 46, 255)
 RED = (176, 58, 46, 255)
 GOLD = (212, 165, 74, 255)
-WOOD_DARK = (42, 26, 16, 255)
-WOOD_MED = (74, 46, 30, 255)
-WOOD_LIGHT = (91, 58, 41, 255)
+WOOD_DARK = (46, 30, 18, 255)
+WOOD_MED = (84, 55, 33, 255)
+WOOD_LIGHT = (108, 72, 46, 255)
 SKIN = (238, 194, 150, 255)
 BLUSH = (223, 138, 118, 255)
 BEARD_GRAY = (196, 190, 178, 255)
 HAIR_AUBURN = (140, 74, 38, 255)
 HAIR_BROWN = (104, 68, 40, 255)
-CAP_GREEN = (74, 118, 74, 255)  # the Jack's cap — deliberately not suit-colored, so it reads
-# as its own garment against all four suit-colored tunics.
+CAP_GREEN = (94, 122, 78, 255)  # the Jack's cap — deliberately not suit-colored, so it reads
+# as its own garment against all four suit-colored tunics. Warmed toward moss/homespun green.
 BOOT_DARK = (58, 42, 32, 255)
-CLOTH_BLUE = (82, 96, 122, 255)   # sleeves — a cool contrast so the body isn't one flat slab,
+CLOTH_BLUE = (96, 104, 108, 255)   # sleeves — a cool contrast so the body isn't one flat slab,
 # and it works against both the red and the soot-brown garments.
 STEEL = (172, 178, 188, 255)
 ROSE_RED = (198, 72, 66, 255)
@@ -58,9 +58,9 @@ LEAF_GREEN = (86, 128, 76, 255)
 # The mood is supposed to come from the LIGHTING layer (vignette, hearth glow, firelight) over
 # properly-lit materials — not from painting the materials themselves nearly black, which is
 # what left the low-alpha glows with nothing to lift.
-TABLE_WOOD = (177, 116, 78, 255)    # L50 — the lit surface the cards sit on
-WALL_WOOD = (87, 62, 50, 255)       # L27 — furthest back, recedes
-FLOOR_WOOD = (148, 100, 66, 255)    # L42 — between the two
+TABLE_WOOD = (196, 142, 92, 255)    # L56 — honey-pine, the lit surface the cards sit on
+WALL_WOOD = (98, 74, 52, 255)       # L29 — furthest back, recedes
+FLOOR_WOOD = (168, 122, 78, 255)    # L48 — between the two
 # The cool counterweight. Warm only reads as warm against something cold, and the window is
 # the only cold thing in the room — but at the old (24,30,50) it rendered at **L 11.8**,
 # darker than the lit parts of the wall it sits on, so the one cool reference in the room was
@@ -904,8 +904,8 @@ def make_face_card(rank: str, suit: str) -> Image.Image:
 # sits beside a seat label rather than filling a card, so it gets its own canvas size and none
 # of the corner-index layout constraints face cards have.
 
-FLANNEL_RED = (140, 46, 40, 255)
-HAT_FUR = (222, 210, 190, 255)
+FLANNEL_RED = (158, 56, 42, 255)  # barn-red, warmed from the original brownish-red
+HAT_FUR = (232, 216, 184, 255)    # warmer cream, homestead sheepskin rather than grey fur
 
 # `_old_timer_parts()` / `draw_old_timer_face()` / `make_old_timer_portrait()` used to live
 # here: a standalone head-and-shoulders portrait, shown in a corner of the scoreboard for
@@ -1223,8 +1223,12 @@ def make_card_back(w: int = CARD_W, h: int = CARD_H, step: int = 14) -> Image.Im
     Sized because a *smaller* card needs *redrawn* art, not the same art squashed. The
     scoreboard's cover card is 30x42 au against the deck's 50x70; stretching the deck's back
     over it was rendering at 1.2x, which is exactly the kind of fractional scale this phase
-    exists to eliminate. `step` scales with the card so the lattice keeps its density instead
-    of turning into two big diamonds on the small one.
+    exists to eliminate. `step` scales with the card so the quilt blocks keep their density
+    instead of turning into two big squares on the small one.
+
+    Quilted patchwork, not a diamond lattice: each block gets a stitched square outline plus
+    a cross-stitch through its centre, which reads as sewn fabric squares rather than a repeat
+    of hollow diamonds — the "held deck sitting on the table" read the redesign is going for.
     """
     img = Image.new("RGBA", (w, h), WOOD_DARK)
     draw = ImageDraw.Draw(img)
@@ -1232,16 +1236,10 @@ def make_card_back(w: int = CARD_W, h: int = CARD_H, step: int = 14) -> Image.Im
 
     for y in range(-step, h + step, step):
         for x in range(-step, w + step, step):
-            draw.polygon(
-                [
-                    (x + step // 2, y),
-                    (x + step, y + step // 2),
-                    (x + step // 2, y + step),
-                    (x, y + step // 2),
-                ],
-                outline=WOOD_LIGHT,
-            )
-            draw.point((x + step // 2, y + step // 2), fill=WOOD_MED)
+            draw.rectangle((x, y, x + step, y + step), outline=WOOD_LIGHT)
+            draw.line((x, y, x + step, y + step), fill=WOOD_MED)
+            draw.line((x + step, y, x, y + step), fill=WOOD_MED)
+            draw.point((x + step // 2, y + step // 2), fill=GOLD)
 
     inset = 7 if w >= CARD_W else 4
     draw.rectangle((inset, inset, w - inset - 1, h - inset - 1), outline=GOLD, width=2)

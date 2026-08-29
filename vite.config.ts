@@ -19,8 +19,8 @@ export default defineConfig({
         short_name: 'Euchre',
         description:
           'A two-player euchre variant where each player controls two hands, playing them alternately from memory.',
-        theme_color: '#2a1a10',
-        background_color: '#1a1410',
+        theme_color: '#3a2415',
+        background_color: '#211710',
         // 'standalone', not 'fullscreen': the architecture doc's "chrome-less launch" means no
         // browser UI, not no OS status bar too — fullscreen hides that as well and reads as
         // broken on some devices rather than as a game.

@@ -50,7 +50,7 @@ describe('BidPanel', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('the trump-then-alone flow: calling trump stages it, "With Partner" fires the non-loner action exactly once', () => {
+  it('calling trump with partner fires the non-loner action directly, one tap, no second screen', () => {
     const play = vi.fn();
     const legal: Action[] = [
       { type: 'ORDER_UP', player: HUMAN, loner: false },
@@ -59,21 +59,16 @@ describe('BidPanel', () => {
     ];
     render(<BidPanel view={makeView()} legal={legal} play={play} />);
 
-    // Step 1: the top-level list collapses the loner:true/false pair into ONE button.
+    // One row: the primary trump call plus its own "Alone" chip, both visible at once.
     expect(screen.getAllByRole('button', { name: 'Order It Up' })).toHaveLength(1);
+    expect(screen.getByRole('button', { name: /alone/i })).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Order It Up' }));
-
-    // Step 2: the confirm screen states the outcome as fact and offers two distinct paths —
-    // never repeats "Order It Up" as a button label (the exact bug 2f.2 fixed).
-    expect(screen.getByText(/spades is trump/i)).toBeTruthy();
-    expect(screen.queryByRole('button', { name: 'Order It Up' })).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'With Partner' }));
 
     expect(play).toHaveBeenCalledTimes(1);
     expect(play).toHaveBeenCalledWith({ type: 'ORDER_UP', player: HUMAN, loner: false });
   });
 
-  it('"Go Alone" from the confirm screen fires the loner action', () => {
+  it('the "Alone" chip fires the loner action directly, one tap, no second screen', () => {
     const play = vi.fn();
     const legal: Action[] = [
       { type: 'NAME_TRUMP', player: HUMAN, suit: 'hearts', loner: false },
@@ -81,22 +76,24 @@ describe('BidPanel', () => {
       { type: 'PASS', player: HUMAN },
     ];
     render(<BidPanel view={makeView({ phase: 'bidding_round2' })} legal={legal} play={play} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Call Hearts' }));
-    fireEvent.click(screen.getByRole('button', { name: /go alone/i }));
+    fireEvent.click(screen.getByRole('button', { name: /alone/i }));
+    expect(play).toHaveBeenCalledTimes(1);
     expect(play).toHaveBeenCalledWith({ type: 'NAME_TRUMP', player: HUMAN, suit: 'hearts', loner: true });
   });
 
-  it('"Back" from the trump confirm screen returns to the original choices without firing anything', () => {
-    const play = vi.fn();
+  it('round 2 shows one row per legal suit, each with its own primary + alone controls', () => {
     const legal: Action[] = [
-      { type: 'ORDER_UP', player: HUMAN, loner: false },
+      { type: 'NAME_TRUMP', player: HUMAN, suit: 'hearts', loner: false },
+      { type: 'NAME_TRUMP', player: HUMAN, suit: 'hearts', loner: true },
+      { type: 'NAME_TRUMP', player: HUMAN, suit: 'clubs', loner: false },
+      { type: 'NAME_TRUMP', player: HUMAN, suit: 'clubs', loner: true },
       { type: 'PASS', player: HUMAN },
     ];
-    render(<BidPanel view={makeView()} legal={legal} play={play} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Order It Up' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-    expect(screen.getByRole('button', { name: 'Order It Up' })).toBeTruthy();
-    expect(play).not.toHaveBeenCalled();
+    render(<BidPanel view={makeView({ phase: 'bidding_round2' })} legal={legal} play={vi.fn()} />);
+    expect(screen.getByRole('button', { name: 'Call Hearts' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Call Clubs' })).toBeTruthy();
+    expect(screen.getAllByRole('button', { name: /alone/i })).toHaveLength(2);
+    expect(screen.getByRole('button', { name: 'Pass' })).toBeTruthy();
   });
 
   it('the full-blind loner gets its OWN deliberate confirm, distinct from the trump-alone flow', () => {
@@ -112,32 +109,18 @@ describe('BidPanel', () => {
     expect(play).toHaveBeenCalledWith({ type: 'DECLARE_FULL_BLIND_LONER', player: HUMAN });
   });
 
-  it('a staged choice never survives a phase change — no leaking into the next bidding window', () => {
+  it('legal stays live across a phase change with no stale state to leak', () => {
     const legal: Action[] = [
       { type: 'ORDER_UP', player: HUMAN, loner: false },
       { type: 'PASS', player: HUMAN },
     ];
     const { rerender } = render(<BidPanel view={makeView()} legal={legal} play={vi.fn()} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Order It Up' }));
-    expect(screen.getByText(/is trump/i)).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Order It Up' })).toBeTruthy();
 
-    // Phase moves on (e.g. the other player acted) — the staged trump choice must not persist.
+    // Phase moves on (e.g. the other player acted) — round 1's controls must not persist.
     const nextLegal: Action[] = [{ type: 'PASS', player: HUMAN }];
     rerender(<BidPanel view={makeView({ phase: 'bidding_round2' })} legal={nextLegal} play={vi.fn()} />);
-    expect(screen.queryByText(/is trump/i)).toBeNull();
-  });
-
-  it('focus moves to Back on entering the trump-alone confirm screen (2h.4)', () => {
-    const legal: Action[] = [
-      { type: 'ORDER_UP', player: HUMAN, loner: false },
-      { type: 'PASS', player: HUMAN },
-    ];
-    render(<BidPanel view={makeView()} legal={legal} play={vi.fn()} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Order It Up' }));
-    // The button just clicked no longer exists — focus must have moved somewhere real rather
-    // than falling back to <body>, and specifically to the non-committing option: this is the
-    // one screen in the panel with the least room for a misdirected keystroke to matter.
-    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Back' }));
+    expect(screen.queryByRole('button', { name: 'Order It Up' })).toBeNull();
   });
 
   it('focus moves to Back on entering the full-blind confirm screen (2h.4)', () => {
@@ -148,20 +131,6 @@ describe('BidPanel', () => {
     render(<BidPanel view={makeView({ phase: 'loner_full_blind' })} legal={legal} play={vi.fn()} />);
     fireEvent.click(screen.getByRole('button', { name: /go alone.*full blind/i }));
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Back' }));
-  });
-
-  it('Escape backs out of the trump-alone confirm screen without firing an action (2h.4)', () => {
-    const play = vi.fn();
-    const legal: Action[] = [
-      { type: 'ORDER_UP', player: HUMAN, loner: false },
-      { type: 'PASS', player: HUMAN },
-    ];
-    render(<BidPanel view={makeView()} legal={legal} play={play} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Order It Up' }));
-    expect(screen.getByText(/is trump/i)).toBeTruthy();
-    fireEvent.keyDown(screen.getByRole('button', { name: 'Back' }), { key: 'Escape' });
-    expect(screen.getByRole('button', { name: 'Order It Up' })).toBeTruthy();
-    expect(play).not.toHaveBeenCalled();
   });
 
   it('Escape backs out of the full-blind confirm screen — the one decision with no undo once made', () => {

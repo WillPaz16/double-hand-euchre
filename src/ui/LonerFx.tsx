@@ -3,8 +3,8 @@ import { useLonerStamp } from '../game/useLonerStamp.ts';
 
 const STAMP_TEXT: Record<LonerTier, string> = {
   standard: 'GOING ALONE',
-  blind_hand: 'ALONE — BLIND HAND',
-  full_blind: 'ALONE — FULL BLIND',
+  blind_hand: 'ALONE: BLIND HAND',
+  full_blind: 'ALONE: FULL BLIND',
 };
 
 /** The loner ladder's visual language (Phase 2 design spec §8): each tier is a bigger bet on
