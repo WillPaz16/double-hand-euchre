@@ -1694,6 +1694,14 @@ body {
   display: flex;
   gap: 0.35rem;
 }
+/* Suit-call labels vary in width ("Call Diamonds" vs "Call Hearts"), and each row centers
+   independently once .bid-panel wraps them onto separate lines (narrow screens, round 2's
+   up-to-3-row case) — without a shared width their left edges zigzag instead of reading as one
+   centered block. Pinning the primary button to the widest label's width lines every row's
+   edges up under the same center. */
+.bid-row .bid-button:not(.bid-button-chip) {
+  min-width: 11rem;
+}
 /* Going alone is the notable branch of the with-partner/alone choice — the one that changes
    how the hand is played, not just who gets credit — so it gets the same gold accent used
    for "your turn" elsewhere rather than sitting visually identical to "With Partner". */
