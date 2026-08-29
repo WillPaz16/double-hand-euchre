@@ -24,8 +24,10 @@ export function Game() {
       <Scoreboard view={view} />
       <StatusBanner view={view} onRestart={restart} />
       <Table view={view} completedTrick={completedTrick} />
-      <BidPanel view={view} legal={legal} play={play} />
-      <HandTray view={view} legal={legal} play={play} frozen={frozen} />
+      <div className="action-bar">
+        <BidPanel view={view} legal={legal} play={play} />
+        <HandTray view={view} legal={legal} play={play} frozen={frozen} />
+      </div>
       </div>
     </>
   );

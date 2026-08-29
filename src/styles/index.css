@@ -840,17 +840,29 @@ body {
    swapped — a 70px jump on almost every turn. Out of flow they cost the column no height at
    all, so the table holds still both in size and in position.
    Pinned to the bottom because that is where a thumb reaches (design spec §2), and centred
-   horizontally so the tray reads as yours rather than as a floating panel. */
-.bid-panel,
-.hand-tray {
+   horizontally so the tray reads as yours rather than as a floating panel.
+
+   ONE wrapper is what's out of flow, not each panel individually. During round-1/round-2
+   bidding, BidPanel (the trump-call buttons) and HandTray (your own hand, read-only, shown
+   for reference per HandTray's BIDDING_PHASES branch) are both mounted AT THE SAME TIME —
+   they were never a strict either/or "swap". Positioning each of them absolutely at the same
+   bottom:0 box made them occupy the identical rectangle: HandTray mounts after BidPanel in
+   Game.tsx, so its opaque background painted completely over BidPanel's buttons for the
+   entire bidding window, not just at the margins — the trump-call row was invisible, not just
+   hard to hit. Stacking them as normal-flow children of one positioned wrapper fixes that
+   without giving up the "table never resizes when the action bar's contents change" property:
+   the wrapper is always the same out-of-flow element: only what's inside it varies. */
+.action-bar {
   position: absolute;
   left: 0;
   right: 0;
-  /* `0`, not the safe-area inset: `.hand-tray`'s own rule further down already carries
-     `padding-bottom: max(0.5rem, env(safe-area-inset-bottom))`, and setting it here too would
-     apply the same gap twice. */
   bottom: 0;
   z-index: 5;
+  display: flex;
+  flex-direction: column;
+}
+.bid-panel,
+.hand-tray {
   /* It now floats over the room rather than sitting below it in flow, so it needs its own
      ground — without one the felt and the floorboards read straight through the gaps between
      the cards. */
