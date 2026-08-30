@@ -328,12 +328,78 @@ body {
   background-size: 100% 100%;
   image-rendering: pixelated;
 }
-/* Cropped by the right edge for the same reason as the hearth — see above. */
+/* Cropped by the right edge for the same reason as the hearth — see above.
+   Shrunk from 312x220 (2j.3) so the window reads as a background detail rather than a second
+   light source competing with the hearth at equal weight — "warm hearth wins the room, cool
+   window is a quiet background detail" rather than a 50/50 split between them. */
+/* 170x120 (2k.1), down from 258x182. Direct user feedback: even the de-emphasised size still
+   read as a second wall-sized object rather than a window in a furnished room — "the window
+   being huge along with the clock, in contrast [to everything else]". Must match
+   WINDOW_W/H // 2 in generate_art.py exactly (npm run audit fails on a fractional scale); see
+   that constant's own 2k.1 note for the full reasoning. `right` offset kept as-is, which
+   pushes the smaller box further right and opens more free wall to its left — verified by
+   measurement, not assumed, in the antlers/coat-hooks gate re-derivation below.
+
+   Re-anchored from `top: 10%` to `bottom`, in au off the floor line (2k.1). A shorter box
+   under the old top-anchor kept its TOP fixed and lost height off its BOTTOM, which pulled
+   its bottom edge up and roughly doubled the bare wall/floor gap beneath it — the exact
+   "gap you introduced" this pass is supposed to account for, not the bare-floor complaint
+   itself (that's the follow-up prop pass's job). Anchoring off the floor line instead — the
+   same convention every other wall/floor prop in this file already uses, `.scene-window` was
+   the one holdout on a viewport-height percentage — keeps the window's bottom edge close to
+   where it sat before the resize regardless of viewport height. 220au = FLOOR_H (150au) + a
+   70au gap, close to the ~73au gap the old top:10%/182au-tall box measured out to at 1440x900.
+
+   2l.1: raised again, 220 -> 260au. Direct user feedback: at a typical desktop viewport height
+   the 70au gap below read as nothing (a window sitting on the floor) while the wall above sat
+   mostly bare — a real window leaves a visible sill's worth of wall beneath it and doesn't
+   usually reach anywhere near the ceiling. Raising the anchor both shrinks the bare span above
+   (window top moves up with it) AND, the actual point of this pass, opens a real 110au gap
+   below for `.scene-window-sill` and `.scene-dresser` to occupy — the same "bare bottom right"
+   complaint the dresser exists to fix. Width/height/right unchanged; only the floor-relative
+   anchor moved. */
 .scene-window {
   right: calc(-72px * var(--px));
-  top: 10%;
-  width: calc(312px * var(--px));
-  height: calc(220px * var(--px));
+  bottom: calc(260px * var(--px));
+  width: calc(170px * var(--px));
+  height: calc(120px * var(--px));
+}
+/* The sill (2l.1): a plain ledge under the window's new position, sized a little wider than
+   the sash (170 -> 186au, 8au overhang each side) the way a real windowsill oversails its
+   frame. A SEPARATE element and asset rather than baked into window_frame.png — that PNG is
+   stretched to `background-size: 100% 100%` over whatever box `.scene-window` happens to be,
+   so a ledge drawn inside it would stretch along with the sash on every resize instead of
+   staying a fixed-height strip directly under it. Its own top edge sits flush with the
+   window's bottom edge: 260 - 12 (sill height) = 248au. */
+.scene-window-sill {
+  position: absolute;
+  right: calc(-80px * var(--px));
+  bottom: calc(248px * var(--px));
+  width: calc(186px * var(--px));
+  height: calc(12px * var(--px));
+  background-image: url('/art/scene/window_sill.png');
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+/* The dresser (2l.1) — the "bare bottom right" complaint and the "window has nothing under
+   it" complaint are the same complaint, so one object answers both. Floor-anchored flush with
+   the wall/floor line (bottom: FLOOR_H = 150au, see `.scene-floor`), the same "further back on
+   the floor sits higher, not lower" convention `.scene-woodpile`/`.scene-shelf` already use for
+   furniture standing against the wall rather than lying flat on it like the rug. Right-anchored
+   by a fixed au offset, same as the window itself, so the two stay aligned at every viewport
+   width instead of drifting apart the way a centred element would (see `.scene-rug`'s own
+   "two different rates" note for why that pairing matters). Sits with room to spare below the
+   sill (150+64=214 vs sill at 248) rather than touching it — a dresser pushed flush against a
+   windowsill is a less common arrangement than one with a hand's-width of wall between them. */
+.scene-dresser {
+  position: absolute;
+  right: calc(-8px * var(--px));
+  bottom: calc(150px * var(--px));
+  width: calc(96px * var(--px));
+  height: calc(64px * var(--px));
+  background-image: url('/art/scene/dresser.png');
+  background-size: 100% 100%;
+  image-rendering: pixelated;
 }
 
 /* One frame's window onto the strip; the strip slides behind it.
@@ -435,17 +501,19 @@ body {
    moonlight does not flicker, and a still cool source beside a breathing warm one is what
    makes the fire read as the living thing. */
 /* 2j.2: same bare-px-doesn't-scale gap as .scene-firelight above, fixed the same way. */
+/* Scaled and dimmed alongside the window shrink above (2j.4-ish "hearth wins the room") —
+   moonlight is now a quiet cool wash, not a glow of comparable weight to the firelight. */
 .scene-moonlight {
   position: absolute;
-  left: calc(-90px * var(--px));
-  top: calc(-40px * var(--px));
-  width: calc(320px * var(--px));
-  height: calc(300px * var(--px));
+  left: calc(-75px * var(--px));
+  top: calc(-33px * var(--px));
+  width: calc(266px * var(--px));
+  height: calc(249px * var(--px));
   background: radial-gradient(
     ellipse 45% 45% at 62% 40%,
-    rgba(168, 186, 148, 0.13) 0%, rgba(168, 186, 148, 0.13) 20%,
-    rgba(168, 186, 148, 0.08) 20%, rgba(168, 186, 148, 0.08) 36%,
-    rgba(168, 186, 148, 0.04) 36%, rgba(168, 186, 148, 0.04) 52%,
+    rgba(168, 186, 148, 0.09) 0%, rgba(168, 186, 148, 0.09) 20%,
+    rgba(168, 186, 148, 0.055) 20%, rgba(168, 186, 148, 0.055) 36%,
+    rgba(168, 186, 148, 0.025) 36%, rgba(168, 186, 148, 0.025) 52%,
     rgba(168, 186, 148, 0) 52%
   );
 }
@@ -522,7 +590,8 @@ body {
 .scene-picture,
 .scene-clock,
 .scene-antlers,
-.scene-coat-hooks {
+.scene-coat-hooks,
+.scene-picture-2 {
   display: none;
 }
 @media (min-width: 900px) {
@@ -537,13 +606,17 @@ body {
    viewport-width/2), while the antlers are anchored from the right edge (scaling 1:1 with
    width) — two different rates, so the gap shrinks as the viewport narrows.
 
-   **Raised from 1150 to 1560 in 2j.3**, because the window grew from 132 to 312 au and ate
-   most of that gap. Re-derived against the new sizes: the opponent's right edge is
-   `vw/2 + 150px` and the window's left edge is `vw - 480px`, so the free wall between them is
-   `vw/2 - 630px` — which reaches the antlers' own 120px width only at vw >= 1500. Verified
-   rather than trusted: at 1400 the audit measured them 42% buried by the opponent, which is
-   how this was caught at all. 1560 leaves ~30px of margin on top of the algebraic threshold,
-   the same "verify the number, don't trust the derivation" habit as the value-ladder assert.
+   Re-verified for 2k.1's window shrink (258x182 -> 170x120 au), not just re-derived: measured
+   directly with the antlers forced visible and its bounding rect compared against
+   `.table-opponent` and `.scene-window` at a sweep of widths. The window turns out to have
+   never been the actual constraint despite the old comment's algebra treating it as the right
+   edge of the "free wall" band — at every width tested the window's left edge sat 250px+
+   clear of the antlers, both before and after this resize, because the antlers' own
+   `right: 240au` anchor keeps them well short of where the (now smaller and lower) window
+   starts. The OPPONENT is what actually collides: overlap hits 0 at exactly 1500px and grows
+   ~0.5px of margin per 1px of extra viewport width, so **1560 stays the right threshold**
+   (~30px margin, unchanged from 2j.3) even though the window that motivated raising it to
+   1560 in the first place is no longer the reason it needs to be there.
 
    Below it: three props, not four. That is the honest cost of a room at true scale — a hearth
    and a window sized to a real room simply consume the wall, and the frame has to give
@@ -552,12 +625,22 @@ body {
   .scene-antlers {
     display: block;
   }
+  /* 2l.1's second picture frame reuses this exact gate rather than deriving its own: it shares
+     the antlers' `right: 240au` column (see `.scene-picture-2` below), so it collides with the
+     opponent at exactly the same widths the antlers already do, and the antlers gate has
+     already been measured — margin ~30px at 1560px, hits 0 at 1500px. Below 1560 there is
+     already "three props, not four" for the antlers' own reasons; this stays a sibling of that
+     tradeoff rather than a new one. */
+  .scene-picture-2 {
+    display: block;
+  }
 }
 .scene-picture,
 .scene-clock,
 .scene-antlers,
 .scene-coat-hooks,
-.scene-woodpile {
+.scene-woodpile,
+.scene-picture-2 {
   position: absolute;
   background-size: 100% 100%;
   image-rendering: pixelated;
@@ -594,11 +677,17 @@ body {
    offsets), and at its first placement here the clock's right edge collided with him 59% at
    1010px. This is the antlers' own known failure mode; the fix is the antlers' own fix — sit
    as far left as the row allows rather than trusting the algebra to hold at every width. */
+/* 60x60 (2k.1), down from 100x100 — direct user feedback that the clock read as "huge" next
+   to the rest of the room. Must match make_wall_clock()'s size // 2 exactly (see that
+   function's 2k.1 note). No longer needs to hug the picture's bounding box to clear the
+   opponent — at this size there is plenty of row left even with a real gap — so it sits a
+   few au clear of the picture's right edge (128au) instead of overlapping it, and is
+   vertically centred against the picture's 46-136au band rather than sharing its top. */
 .scene-clock {
-  left: calc(112px * var(--px));
-  top: calc(46px * var(--px));
-  width: calc(100px * var(--px));
-  height: calc(100px * var(--px));
+  left: calc(132px * var(--px));
+  top: calc(61px * var(--px));
+  width: calc(60px * var(--px));
+  height: calc(60px * var(--px));
   background-image: url('/art/scene/clock.png');
 }
 /* Third in the row, and TALLER than the 50au gap between the score-slot and the fireplace
@@ -638,6 +727,18 @@ body {
   height: calc(40px * var(--px));
   background-image: url('/art/scene/antlers.png');
 }
+/* A second framed picture (2l.1 — direct user feedback, more art on the walls). Stacked
+   directly below the antlers, sharing their exact `right: 240au` / `width: 60au` horizontal
+   footprint on purpose: that footprint is the one already measured clear of the opponent at
+   1560px+ (see the gate above), so matching it exactly carries that margin over instead of
+   opening a new, unverified one a few au wider. */
+.scene-picture-2 {
+  right: calc(240px * var(--px));
+  top: calc(125px * var(--px));
+  width: calc(60px * var(--px));
+  height: calc(56px * var(--px));
+  background-image: url('/art/scene/picture_2.png');
+}
 /* On the floor beside the hearth, where the fire's fuel comes from. */
 /* Resized 2.5x in 2j.3 (52x32 -> 130x80 au). */
 .scene-woodpile {
@@ -646,6 +747,40 @@ body {
   width: calc(130px * var(--px));
   height: calc(80px * var(--px));
   background-image: url('/art/scene/woodpile.png');
+}
+/* A small roaming hen (2l.1) — the cat's fireside stillness gets a moving counterpart
+   elsewhere on the floor, a different species so the two don't read as copies of each other.
+   Gateless like the cat/shelf above: cropped by `.scene-layer`'s own `overflow: hidden`
+   rather than hidden by a width threshold. Placed on the near/open floor between the rug and
+   the dresser — right-anchored, like the window and dresser it sits near, so it does not drift
+   relative to them as the viewport narrows.
+
+   `bottom: 130au` clears the action bar's footprint (bid panel / hand tray, whichever is
+   mounted) with real margin — measured directly across several mid-hand states, not just one:
+   the action bar's own height varies a lot by state (a bare "Pass" row vs. a discard prompt
+   with an empty second hand slot), and the smaller `.scene-cat` already sits close enough to
+   that footprint at some of those states to be a caution, not a template, for how tight a NEW
+   prop this small can safely sit. */
+.scene-chicken {
+  position: absolute;
+  right: calc(120px * var(--px));
+  bottom: calc(130px * var(--px));
+  width: calc(38px * var(--px));
+  height: calc(30px * var(--px));
+  overflow: hidden;
+}
+.scene-chicken-strip {
+  width: calc(76px * var(--px));   /* 2 frames x 38au */
+  height: calc(30px * var(--px));
+  background-image: url('/art/scene/chicken_sheet.png');
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  /* Same steps()-driven strip-slide as the cat, at a brisker interval — a peck is a quicker
+     motion than a breath. */
+  animation: chicken-peck 2.8s steps(2) infinite;
+}
+@keyframes chicken-peck {
+  to { transform: translateX(calc(-76px * var(--px))); }
 }
 /* A barely-perceptible settle, so he is not a decal. Deliberately tiny and slow — a seated
    person at rest shifts, they do not bob.
@@ -664,6 +799,7 @@ body {
   .scene-firelight,
   .scene-snow,
   .scene-cat-strip,
+  .scene-chicken-strip,
   .table-opponent { animation: none; }
 }
 
@@ -681,6 +817,57 @@ body {
 #root {
   position: relative;
   z-index: 1;
+}
+
+/* --- Title screen scene overrides -------------------------------------------------------- */
+/* SceneLayer's own gating (min-width:1240px for fireplace/window margin, the 900px/1560px
+   wall-prop gates) was tuned against the IN-GAME table layout — a wide felt with a scoreboard
+   pinned to the top corners. The title screen is a different composition: text and buttons
+   centered in a column, nothing else on screen to share the frame with. Reusing the table's
+   thresholds put "SOUND: ON" on top of the rug's dashed border at 1280x800 and put the window
+   behind the title text on a phone — collisions the table's own thresholds were never tuned
+   to avoid because the table doesn't have a centered text column.
+   Scoped to `.title-scene` (TitleScreen.tsx's own wrapper) rather than touching any of the
+   shared `.scene-*` rules above, so Game.tsx's <SceneLayer> behind the table is untouched. */
+/* The rug/woodpile/cat/shelf cluster is positioned assuming a table felt sits above it (the
+   rug reaches up toward the felt's near edge, the woodpile and cat sit beside the hearth at
+   floor level) — on the title screen there is no felt, and that cluster is exactly what the
+   centered text column and the mute toggle sit on top of. Dropped rather than repositioned:
+   the fireplace and window alone are what the tagline ("a cabin, a fire") is actually about. */
+.title-scene .scene-rug,
+.title-scene .scene-woodpile,
+.title-scene .scene-cat,
+.title-scene .scene-shelf {
+  display: none;
+}
+/* The wall-prop width gates (900px, 1560px) exist to avoid the in-game scoreboard/opponent —
+   chrome the title screen doesn't have, so its own gate can open earlier: 700px fills the
+   bare-log gap between the fireplace and window on a tablet-sized screen (the empty-center
+   complaint at 768px) without also cramming picture/clock/coat-hooks onto a 390px phone,
+   where they have no free wall and would collide with each other and the window instead.
+   Antlers keeps its own original 1560px gate untouched — narrower than that it sits inside
+   the window's own box on this layout, gate or no gate, so opening it earlier buys nothing. */
+.title-scene .scene-picture,
+.title-scene .scene-clock,
+.title-scene .scene-coat-hooks {
+  display: none;
+}
+@media (min-width: 700px) {
+  .title-scene .scene-picture,
+  .title-scene .scene-clock,
+  .title-scene .scene-coat-hooks {
+    display: block;
+  }
+}
+/* Safe zone for the text/button column: rather than chase the fireplace and window's own
+   corner placement across every breakpoint, give the column a backdrop so whatever scene
+   geometry lands behind it never has to be collision-checked against it. */
+.title-scene .title-screen {
+  max-width: 26rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  background: rgba(20, 14, 9, 0.55);
+  box-shadow: 0 0 40px 40px rgba(20, 14, 9, 0.55);
 }
 
 /* --- Title screen (Phase 2e.9) ---------------------------------------------------------- */
@@ -1141,6 +1328,58 @@ body {
   align-self: center;
   width: calc(280px * var(--px));
   height: calc(175px * var(--px));
+}
+/* Portrait phones are TALL, not wide — `.table-area` is `flex: 1; align-content: center`
+   (see its own comment), so on a narrow-but-tall viewport the fixed 280x175 felt above just
+   floats in the middle of a lot of leftover height, splitting it into a dead band above the
+   opponent's feet and another below the felt. Measured at 390x844: 174px between the
+   opponent's bottom and the felt's top, another ~130px between the felt's bottom and the
+   action bar. That's real user-visible "everything floating with huge gaps", not a rounding
+   error — direct feedback confirmed it, not just eyeballing.
+   A bigger fixed au box for this range is the same fix `.hand-tray-cards` already uses one
+   breakpoint over: a second, DELIBERATE fixed size for narrow screens, not a fluid one — the
+   felt still can't resize mid-hand as panels mount/unmount (2j.1's whole point), because this
+   still only depends on the VIEWPORT, never on a sibling's rendered height. Rounder than the
+   desktop oval (280x175, a 1.6 ratio) is deliberate too: portrait's spare dimension is height,
+   not width, so gaining height without a matching width gain is what actually closes the gap
+   rather than just clipping the sides. `min-height: 700px` keeps this out of the landscape
+   lean-mode range (`max-height: 480px`, its own fixed-box-in-empty-room fix) — there is a
+   narrow gap between 480 and 700px of height where neither query fires and the table stays at
+   its base size, which is an acceptable no-op rather than a wrong guess at a boundary nothing
+   in the required viewport matrix actually lands on.
+
+   HEIGHT IS CAPPED BY THE ACTION BAR, not by the ruler — `.action-bar` is out-of-flow (2j.1),
+   so it doesn't push `.table-area` around, but it's still painted on top of it, and its own
+   height varies with its busiest content: round-2 bidding can show three trump-call rows
+   AND the read-only hand tray at once (BidPanel's up-to-3-row case). Measured at 360x800 in
+   that exact state: the action bar's top edge lands at y=548. A first pass at this fix grew
+   the felt to 320x280, which put the felt's bottom at y=640 — 92px UNDER the action bar,
+   enough that a seat label's text was legible bleeding through the panel's translucent
+   backdrop, not just the felt tile. That's worse than the baseline 175-tall felt already was
+   at this same worst case (bottom y=587, ~40px under) — this fix is meant to close the dead
+   gap, not trade it for a new collision. 300x230 keeps most of the gap closed in every OTHER
+   screen (where the action bar is far shorter — a single hand tray or one bidding row, not
+   three rows plus the tray) while keeping this rare, transient worst case close to its
+   original, already-accepted overlap rather than tripling it. */
+@media (max-width: 899px) and (min-height: 700px) {
+  .table-frame {
+    width: calc(300px * var(--px));
+    height: calc(230px * var(--px));
+  }
+  /* `select`/loner-window phases (Table.tsx's NO_HAND_PHASES): HandTray shows nothing yet
+     (view.ownSelectedHand is still null), so the action bar is just BidPanel's 2-button list —
+     nowhere near round2's up-to-3-row-plus-tray worst case the 300x230 size above is capped
+     by. Sized against that shorter bar specifically: measured at 390x844, its action-bar top
+     sits far enough down that the felt can grow to 320x360 and still clear it with margin,
+     closing most of the still-real 147/162px gap that size leaves on this phase. Not a whole-
+     number au multiple like the rest of the room on principle — `.table-top`'s felt tile has
+     its own fixed `background-size` independent of this container's box (confirmed against
+     scripts/scale-audit.js: it checks the TILE's rendered size, never the container it repeats
+     across), so this box has no scale-audit constraint tying it to art-unit values. */
+  .table-frame.table-frame-roomy {
+    width: calc(320px * var(--px));
+    height: calc(360px * var(--px));
+  }
 }
 .table-top {
   /* Fills `.table-frame` exactly, so it shares its parent's box (and thus the legs'
@@ -1717,6 +1956,26 @@ body {
 .bid-button-chip {
   padding: 0.6rem 0.7rem;
   font-size: 0.85rem;
+}
+
+/* Narrow screens get the same step-down `.hand-tray-cards` already has (see its own
+   max-width:560px query below) — `.bid-button` never did, so the longest label in the panel
+   ("Go Alone: Full Blind (8 pts)") rendered at its full 0.95rem intrinsic width, ~308px on a
+   390px phone: edge-to-edge and visibly oversized next to every other control on screen, which
+   all shrink at this width. Shrinking font-size and padding here does the same job the card
+   rule does — smaller controls that still clear the 44px touch-target floor. */
+@media (max-width: 560px) {
+  .bid-button {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.7rem;
+  }
+  .bid-button-chip {
+    padding: 0.5rem 0.55rem;
+    font-size: 0.75rem;
+  }
+  .bid-row .bid-button:not(.bid-button-chip) {
+    min-width: 9rem;
+  }
 }
 
 .hand-tray {

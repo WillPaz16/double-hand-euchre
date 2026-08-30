@@ -49,6 +49,9 @@ export function SceneLayer() {
         <div className="scene-window-frame" />
         <div className="scene-moonlight" />
       </div>
+      {/* A separate element, not nested in .scene-window — see .scene-window-sill's own CSS
+          comment for why baking it into the window asset would stretch it along with the sash. */}
+      <div className="scene-window-sill" />
       {/* Wall and floor furniture (2g.4). Measured before building any of it: the span between
           the fireplace's right edge and the window's left edge — 53% of the viewport's width —
           carried nothing at all but the opponent's head. A venue that is the whole point of
@@ -63,8 +66,14 @@ export function SceneLayer() {
       <div className="scene-picture" />
       <div className="scene-clock" />
       <div className="scene-antlers" />
+      {/* A second frame (2l.1), stacked below the antlers and sharing the same 1560px gate —
+          see its CSS comment for why that reuses the antlers' already-measured margin from the
+          opponent rather than deriving a new one. */}
+      <div className="scene-picture-2" />
       <div className="scene-coat-hooks" />
       <div className="scene-woodpile" />
+      {/* Under the window's new, higher position (2l.1) — see .scene-dresser's own CSS comment. */}
+      <div className="scene-dresser" />
 
       {/* Living things. The cat rests on the floor plane added in the 2d.2 follow-up —
           without that ground it would float exactly the way the fireplace originally did.
@@ -74,6 +83,11 @@ export function SceneLayer() {
       <div className="scene-shelf" />
       <div className="scene-cat">
         <div className="scene-cat-strip" />
+      </div>
+      {/* A second small animal (2l.1) — a hen, roaming the open floor rather than resting like
+          the cat. Same two-frame strip-slide technique, see .scene-chicken-strip's CSS. */}
+      <div className="scene-chicken">
+        <div className="scene-chicken-strip" />
       </div>
 
       <div className="scene-hearth-glow" />

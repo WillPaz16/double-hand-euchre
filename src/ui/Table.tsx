@@ -77,6 +77,16 @@ export const BIDDING_PHASES = new Set([
   'bidding_round2',
 ]);
 
+/** The subset of BIDDING_PHASES where HandTray shows nothing (view.ownSelectedHand is still
+ *  null — the player hasn't looked at their hand yet, per RULES.md) — so the action bar is
+ *  just BidPanel's own 2-button list, much shorter than round1/round2's suit rows plus the
+ *  read-only hand. `.table-frame`'s portrait-phone size (index.css) is tuned to the WORST
+ *  case action-bar height (round2's up-to-3-row-plus-tray), which leaves real dead space
+ *  above/below the felt on these shorter-action-bar phases — measured at 390x844: 147px above,
+ *  162px below, on a phone that's already accepted per the mobile-proportions fix. Letting the
+ *  felt grow further specifically here doesn't touch that already-tuned worst case at all. */
+export const NO_HAND_PHASES = new Set(['select', 'loner_full_blind', 'loner_blind_hand']);
+
 /** Exported for tests/tableVisibility.test.ts — this function IS the RULES.md §6 enforcement
  *  (see the docstring above it), so it needs a test that pins the invariant directly rather
  *  than trusting it stays correct across future edits to phase lists. */
@@ -244,7 +254,7 @@ export function Table({
           legs and the felt at the same level, the stepped polygon cut the legs off wherever
           they poked out below the box. As two levels, only the surface is clipped; the legs
           sit beside it, positioned by the same percentages, unclipped. */}
-      <div className="table-frame">
+      <div className={`table-frame${NO_HAND_PHASES.has(view.phase) ? ' table-frame-roomy' : ''}`}>
         {/* Legs (2f.5) — the table had none at all: a felt ellipse with a rim, nothing
             suggesting it was furniture standing on anything. Only the NEAR (south) edge gets
             them — a top-down ellipse's far edge would have its legs hidden behind the

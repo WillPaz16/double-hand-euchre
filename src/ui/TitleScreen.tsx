@@ -11,7 +11,11 @@ export function TitleScreen({ onPlay }: { onPlay: () => void }) {
   const [muted, setMutedState] = useState(isMuted());
 
   return (
-    <>
+    // `.title-scene` scopes the CSS overrides in index.css that retune SceneLayer for this
+    // screen's centered-text composition rather than the in-game table's — see the "Title
+    // screen scene overrides" block there. Game.tsx's own <SceneLayer> has no such ancestor,
+    // so the in-game room is untouched by any of it.
+    <div className="title-scene">
       <SceneLayer />
       <div className="title-screen">
         <h1 className="title-heading">Two-Handed Euchre</h1>
@@ -35,6 +39,6 @@ export function TitleScreen({ onPlay }: { onPlay: () => void }) {
           {muted ? 'Sound: Off' : 'Sound: On'}
         </button>
       </div>
-    </>
+    </div>
   );
 }

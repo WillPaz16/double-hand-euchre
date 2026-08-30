@@ -907,6 +907,14 @@ def make_face_card(rank: str, suit: str) -> Image.Image:
 FLANNEL_RED = (158, 56, 42, 255)  # barn-red, warmed from the original brownish-red
 HAT_FUR = (232, 216, 184, 255)    # warmer cream, homestead sheepskin rather than grey fur
 
+# Flat FLANNEL_RED on both the chest AND the crown, plus cream fur trim and a grey moustache,
+# is Santa's exact colour signature (red coat + white fur trim + white beard) — reported
+# directly as "looks like Santa". The silhouette (trapper flaps, moustache not a full beard)
+# was never the problem, so it stays; only the colour story changes. `_buffalo_check()` breaks
+# the chest up into a red/dark-brown check instead of a flat mass, and the crown moves off red
+# entirely onto CAP_GREEN (the Jack's homespun cap colour — already in the palette, already
+# "not suit-colored") so hat and coat are no longer both red.
+
 # `_old_timer_parts()` / `draw_old_timer_face()` / `make_old_timer_portrait()` used to live
 # here: a standalone head-and-shoulders portrait, shown in a corner of the scoreboard for
 # reaction close-ups (the original Phase 2 design spec, §8). Deleted in 2h.1 — dead code found
@@ -1010,7 +1018,7 @@ def _opponent_parts():
         (_poly([
             (OPP_CX - 58, hy - 52), (OPP_CX - 58, hy - 80), (OPP_CX, hy - 96),
             (OPP_CX + 58, hy - 80), (OPP_CX + 58, hy - 52),
-        ]), FLANNEL_RED),
+        ]), CAP_GREEN),
         (_ellipse(OPP_CX - 72, hy - 48, OPP_CX - 38, hy - 4), HAT_FUR),
         (_ellipse(OPP_CX + 38, hy - 48, OPP_CX + 72, hy - 4), HAT_FUR),
         (_poly([
@@ -1109,9 +1117,30 @@ def draw_opponent_face(img: Image.Image, expression: str) -> None:
             d.rectangle((mx0, my, mx1, my + 8), fill=INK)
 
 
+def _buffalo_check(img: Image.Image, base: tuple, alt: tuple, size: int) -> None:
+    """Recolors every pixel still flat `base` into an alternating checker with `alt`, in place.
+
+    No polygon clipping needed: `composite_sprite` already baked the chest's silhouette into
+    the alpha channel, and the 2px shadow band down one edge of every part is `darken(base)`,
+    not `base` — so only the flat interior gets checked, and the existing shadow band survives
+    untouched as the check's border, exactly like it already was for a flat fill.
+    """
+    px = img.load()
+    w, h = img.size
+    target = base[:3]
+    for y in range(h):
+        for x in range(w):
+            r, g, b, a = px[x, y]
+            if a and (r, g, b) == target and ((x // size) + (y // size)) % 2 == 0:
+                px[x, y] = alt
+
+
 def make_opponent(expression: str) -> Image.Image:
     img = Image.new("RGBA", (OPP_W, OPP_H), (0, 0, 0, 0))
     paste(img, composite_sprite(OPP_W, OPP_H, _opponent_parts(), outline_px=4, pad=6), 0, 0)
+    # Buffalo check, not a flat coat — see the FLANNEL_RED/HAT_FUR note above. BOOT_DARK is
+    # already in this sprite's palette (the chest placket), so this adds no new base colour.
+    _buffalo_check(img, FLANNEL_RED, BOOT_DARK, 16)
     draw_opponent_face(img, expression)
     # Lit from the hearth like everything else in the room (see light_from's docstring).
     return light_from(img, strength=0.14)
@@ -1249,34 +1278,22 @@ def make_card_back(w: int = CARD_W, h: int = CARD_H, step: int = 14) -> Image.Im
 
 
 def make_table_felt() -> Image.Image:
-    """Table surface — horizontal planks, lit from above. **The calmest surface in the room.**
+    """Table surface — a woven gingham tablecloth. **The calmest surface in the room.**
 
-    Three rules, all learned by looking at the tile repeated to full size rather than on its
-    own:
+    Replaces the earlier wood-plank material (despite the function's name, it drew planks, not
+    cloth) — a farmhouse table is laid with a cloth, not bare board. The "calm centre" rules
+    that shaped the plank tile are kept exactly, because they were never about wood, they were
+    about this tile's job — it sits directly under the cards and must not compete with them:
 
-      1. **No point features.** An earlier version put knots here and at 14x14 repeats they
-         read as a perfect polka-dot grid, instantly betraying the tiling. Distinctive one-off
-         marks belong in the scene layer as placed decals, never in a tile.
-
-      2. **This tile sits directly under the cards.** The design spec's whole environment
-         principle is "rich periphery, calm centre", and the previous version violated it more
-         than anything else in the room: dense bright grain dashes at high contrast across the
-         entire play area — the loudest texture on screen, in the one place that must be
-         quietest. Grain is now pulled almost to base and the planks carry the interest.
-
-      3. **Plank tone stays close.** High plank-to-plank contrast reads as stripes rather than
-         as one wooden surface. The tonal range is better spent on the plank crown, which
-         gives the surface volume, than on shouting where one plank ends.
-
-    **Calm is not the same as flat (Phase 2g.1).** Rules 2 and 3 were right and were
-    over-applied: every tone here was compressed toward base twice — once when the ramp was
-    halved into `hi`/`sh`, and again by the 0.14 crown mix — so the effective highlight was
-    ~7% of the ramp's. Measured, this tile shipped with **15 colours spanning 3.4 lightness
-    points and 1.1 degrees of hue**: one brown with dither noise, not a plank. Those factors
-    were tuned against the old ramp, whose highlight blew out by +16 lightness points and had
-    to be reined in; against the calibrated ramp they double-compensate. The crown now gets a
-    real share of the ramp and the plank seam a real shadow, while GRAIN — the thing that
-    actually made this tile loud — stays quiet. Local contrast low, form present.
+      1. **No point features.** Distinctive one-off marks belong in the scene layer as placed
+         decals, never in a repeating tile — they read as an unmistakable dot grid at repeat.
+      2. **Rich periphery, calm centre.** The check pattern is large and low-contrast, not a
+         busy print; the weave texture on top of it is pulled almost to base.
+      3. **Tone stays close.** High contrast between check squares reads as a loud pattern
+         competing with the cards, not as one calm cloth. The crown/weave carries what little
+         local contrast this tile has, per the same 2g.1 "calm is not the same as flat" lesson
+         the plank tile learned — fully flat colour looks like dithered noise up close, so a
+         small amount of tonal range stays, just not spent on the checks themselves.
     """
     size = 128
     hi, base, sh, deep = ramp(TABLE_WOOD)
@@ -1284,121 +1301,137 @@ def make_table_felt() -> Image.Image:
     img = Image.new("RGBA", (size, size), base)
     draw = ImageDraw.Draw(img)
 
-    plank_h = 32
-    plank_tint = (0.00, 0.08, -0.07, 0.04)
+    # Gingham check: alternating light/dark bands in both axes, overlapping bands darkening
+    # further where they cross — the classic woven-check look, kept deliberately low-contrast.
+    check = 32
+    light = _mix(base, hi, 0.16)
+    dark = _mix(base, sh, 0.20)
 
-    for i, py in enumerate(range(0, size, plank_h)):
-        tint = plank_tint[i % len(plank_tint)]
-        p_base = _mix(base, hi if tint >= 0 else sh, abs(tint))
-        body = plank_h - 2
-        for dy in range(body):
-            frac = dy / (body - 1)
-            # Retuned once the coarse grid landed (2g.2). At chunk=2 each tonal step is a 2px
-            # band rather than a 1px one, so the same mix factors read roughly twice as loud —
-            # the first pass at 0.45/0.55 turned the felt into horizontal stripes directly
-            # under the cards, which is the exact "calm centre" failure this tile was rebuilt
-            # to fix in the first place. Form, not stripes.
-            tone = _mix(p_base, hi, 0.26) if 0.2 < frac < 0.6 else (
-                _mix(p_base, sh, 0.13) if frac < 0.86 else _mix(p_base, sh, 0.34))
-            draw.line((0, py + dy, size, py + dy), fill=tone)
+    for y in range(size):
+        band_y = (y // check) % 2 == 0
+        for x0 in range(0, size, check):
+            band_x = (x0 // check) % 2 == 0
+            if band_x and band_y:
+                tone = dark
+            elif band_x or band_y:
+                tone = light
+            else:
+                tone = base
+            draw.line((x0, y, x0 + check - 1, y), fill=tone)
 
-        # Grain along the plank. Fixed arithmetic, never `random`, so the tile stays
-        # byte-reproducible — and low enough in contrast to read as figure, not as scratches.
-        seed = i * 19 + 5
-        for gy in range(3, body - 3, 6):
-            x = (seed * 7) % 15
-            while x < size:
-                dash = 12 + (seed % 18)
-                draw.line((x, py + gy, min(x + dash, size), py + gy),
-                          fill=_mix(p_base, sh if (seed // 4) % 2 else hi, 0.08))
-                x += dash + 9 + (seed % 7)
-                seed += 11
+    # Woven texture on top of the check, quiet dashes in both directions so it reads as cloth
+    # rather than as flat printed fill. Fixed arithmetic, never `random`, byte-reproducible.
+    for y in range(0, size, 3):
+        seed = y * 7 + 5
+        x = (seed * 5) % 11
+        while x < size:
+            run = 6 + (seed % 9)
+            draw.line((x, y, min(x + run, size - 1), y),
+                      fill=_mix(img.getpixel((x, y))[:3] + (255,), hi if (seed // 3) % 2 else sh, 0.05))
+            x += run + 6 + (seed % 5)
+            seed += 7
 
-        draw.line((0, py + body, size, py + body), fill=_mix(base, deep, 0.55))
-        draw.line((0, py + body + 1, size, py + body + 1), fill=_mix(p_base, hi, 0.32))
+    for x in range(0, size, 3):
+        seed = x * 11 + 3
+        y = (seed * 5) % 11
+        while y < size:
+            run = 6 + (seed % 9)
+            for yy in range(y, min(y + run, size - 1) + 1):
+                draw.point((x, yy),
+                           fill=_mix(img.getpixel((x, yy))[:3] + (255,), sh if (seed // 3) % 2 else hi, 0.05))
+            y += run + 7 + (seed % 5)
+            seed += 9
+
+    # A soft seam line every two checks, standing in for a runner/hem crease rather than a
+    # plank joint — subtle, never brighter than the check contrast itself.
+    for py in range(0, size, check * 2):
+        draw.line((0, py, size - 1, py), fill=_mix(base, deep, 0.12))
+
     return img
 
 
 def make_wall_texture() -> Image.Image:
-    """Log-cabin wall — stacked horizontal logs, each shaded as a cylinder.
+    """Farmhouse wall — flat board-and-batten paneling: wide flat vertical boards with a
+    narrow raised batten strip covering each seam.
 
-    **Three attempts, and the useful record is why the first two failed.**
+    Replaces the earlier log-cabin material (stacked cylindrical logs) which, however well
+    the tiling artifacts were solved, was structurally a log cabin rather than a farmhouse —
+    a material problem, not a shading problem, so the fix is a different material rather than
+    a different treatment of the same one.
 
-    v1 argued vertical->horizontal logs would fix striping because horizontal stacking is
-    "self-breaking". Wrong: nothing interrupts a horizontal run either.
+    The hard-won tiling lessons from the log wall still apply and are kept:
+      - **No point features** (knots, nails) — they become a polka-dot grid at repeat.
+      - **No hard uniform edge as the sole period.** The old wall failed as "venetian blinds"
+        when its band boundaries were thin bright rules; here the boards are flat (no per-log
+        cylinder falloff to reintroduce that problem) and the seams are batten strips with
+        soft flanking shadow, not single bright/dark lines.
+      - **Stay compressed toward base** via `_mix()`. This is a backdrop; it must recede
+        behind the table rather than compete with the cards.
 
-    v2 added butt joints and broke the mortar into segments so no line ran the full width.
-    Tiled out to 1440px it read as **brickwork** — segmented mortar plus visible vertical
-    joints is, precisely, a brick bond. It fixed the striping by replacing the material.
-
-    v3 (this one) starts from what the thing IS. A log wall *is* horizontal bands; bands were
-    never the defect. It read as venetian blinds because the bands were flat fills separated
-    by thin bright rules — so the eye saw the rules, which are the tile's period. Give each
-    log a smooth cylindrical falloff and the band becomes a lit surface with volume, and the
-    chinking becomes the dark recess between two round things instead of a drawn line.
-
-    So: no joints, no bright mortar, no segmentation. Three logs of unequal height, each with
-    a continuous top-lit gradient, separated by a dark gap. What kills the tiling signature is
-    the absence of any hard uniform edge, not the addition of more marks.
-
-    Two constraints that still hold from earlier passes:
-      - **No point features** (knots, nails). At 11x repeats they become a polka-dot grid.
-      - **Stay compressed toward base** via _mix(). This is a backdrop; it must recede behind
-        the table rather than compete with the cards.
+    Deliberately near-flat per §"model the material, don't decorate the tile": board-and-batten
+    IS flat panels, so there is no cylindrical shading to add. Only a very gentle top-lit
+    vertical falloff per board (for a hint of form) plus the raised batten strips.
     """
     size = 128
     hi_f, base, sh_f, deep_f = ramp(WALL_WOOD)
-    hi = _mix(base, hi_f, 0.55)
-    sh = _mix(base, sh_f, 0.6)
-    deep = _mix(base, deep_f, 0.75)
+    hi = _mix(base, hi_f, 0.5)
+    sh = _mix(base, sh_f, 0.55)
+    deep = _mix(base, deep_f, 0.7)
 
     img = Image.new("RGBA", (size, size), base)
     draw = ImageDraw.Draw(img)
 
-    # Unequal heights summing to `size`, so the wall has no single repeat frequency. The gap
-    # between logs is part of each course's height.
-    course_h = (40, 46, 42)
-    gap = 3
-    course_tint = (0.00, 0.08, -0.06)
+    # Unequal widths summing to `size` so the wall has no single repeat frequency.
+    board_w = (34, 30, 32, 32)
+    batten_w = 6
+    board_tint = (0.00, 0.06, -0.05, 0.03)
 
-    ly = 0
-    for course, log_h in enumerate(course_h):
-        body_h = log_h - gap
-        tint = course_tint[course]
-        c_base = _mix(base, hi if tint >= 0 else sh, abs(tint))
+    bx = 0
+    for board, w in enumerate(board_w):
+        tint = board_tint[board % len(board_tint)]
+        b_base = _mix(base, hi if tint >= 0 else sh, abs(tint))
 
-        for dy in range(body_h):
-            frac = dy / (body_h - 1)
-            # Cylinder: lit shoulder near the top, falling smoothly to a dark underside. The
-            # light sits at 0.3 rather than 0.0 so the very top edge reads as curving away,
-            # which is what stops the log looking like a flat strip with a highlight on it.
-            if frac < 0.30:
-                t = frac / 0.30
-                tone = _mix(_mix(c_base, hi, 0.20), _mix(c_base, hi, 0.52), t)
-            else:
-                t = (frac - 0.30) / 0.70
-                tone = _mix(_mix(c_base, hi, 0.52), _mix(c_base, sh, 0.95), t ** 0.85)
-            draw.line((0, ly + dy, size, ly + dy), fill=tone)
+        # Very gentle top-lit falloff — flat paneling, not a log, so this stays subtle: a
+        # whisper of form rather than a gradient anyone would consciously notice.
+        for dy in range(size):
+            frac = dy / (size - 1)
+            tone = _mix(b_base, hi, 0.10 * (1 - frac)) if frac < 0.5 else \
+                _mix(b_base, sh, 0.10 * (frac - 0.5) / 0.5)
+            draw.line((bx, dy, bx + w - 1, dy), fill=tone)
 
-        # Grain: long dashes running along the log, tinted with the local tone so they never
-        # cut across the cylinder shading. Fixed arithmetic, never `random`.
-        seed = course * 17 + 3
-        for gy in range(4, body_h - 4, 6):
-            x = (seed * 5) % 13
-            while x < size:
-                run = 9 + (seed % 14)
-                frac = gy / (body_h - 1)
-                streak = _mix(c_base, sh if (seed // 3) % 2 else hi, 0.10 + 0.12 * frac)
-                draw.line((x, ly + gy, min(x + run, size), ly + gy), fill=streak)
-                x += run + 7 + (seed % 6)
+        # Quiet vertical grain, running WITH the board (unlike the old horizontal log grain),
+        # low-contrast dashes so it reads as figure rather than scratches. Fixed arithmetic.
+        seed = board * 13 + 5
+        for gx in range(2, w - 2, 5):
+            y = (seed * 5) % 17
+            while y < size:
+                run = 10 + (seed % 16)
+                streak = _mix(b_base, sh if (seed // 3) % 2 else hi, 0.06)
+                draw.line((bx + gx, y, bx + gx, min(y + run, size - 1)), fill=streak)
+                y += run + 8 + (seed % 6)
                 seed += 7
 
-        # Chinking: the shadowed recess between two round logs. Dark, not pale — as a bright
-        # line this was the single loudest element in the tile and did most of the striping.
-        for g in range(gap):
-            draw.line((0, ly + body_h + g, size, ly + body_h + g),
-                      fill=deep if g < gap - 1 else _mix(deep, hi, 0.18))
-        ly += log_h
+        bx += w
+
+    # Battens: a raised strip nailed over each board seam. Modelled as a soft shadow on the
+    # left, a lit face, and a soft shadow on the right — three narrow flat bands, not a single
+    # bright/dark rule, so no one hard edge becomes the tile's visible period.
+    seam_x = 0
+    for w in board_w:
+        seam_x += w
+        cx = seam_x % size
+        if cx == 0:
+            continue
+        half = batten_w // 2
+        for dx in range(-half, half + 1):
+            x = (cx + dx) % size
+            if dx <= -half:
+                tone = deep
+            elif dx >= half:
+                tone = _mix(deep, sh, 0.4)
+            else:
+                tone = _mix(hi, base, 0.25)
+            draw.line((x, 0, x, size - 1), fill=tone)
     return img
 
 
@@ -1599,7 +1632,14 @@ def make_fireplace(w=748, h=540):
 # y=834, hanging a quarter of its height BELOW the floor line and into the room, which reads
 # as a window resting on the floorboards rather than set into the wall. 220 au keeps the
 # correct width and fits the band as a wide casement.
-WINDOW_W, WINDOW_H = 624, 440
+#
+# 170x120 (2k.1): the physically-derived size above is still what put the "large, deliberately
+# cropped mass" philosophy at odds with a *small cabin room* — a real-scale window read as a
+# second wall-sized object next to the hearth, which is exactly the "furniture that ate the
+# wall" complaint this pass exists to fix. Direct user feedback, not a re-measurement: the
+# room needs to read as furnished, not as objects at true architectural scale. Shrunk ~66% of
+# the prior 258x182 (which was itself only a partial de-emphasis pass, per the comment above).
+WINDOW_W, WINDOW_H = 340, 240
 
 
 def make_window_glass(w=WINDOW_W, h=WINDOW_H):
@@ -1623,13 +1663,27 @@ def make_window_glass(w=WINDOW_W, h=WINDOW_H):
         d.rectangle((0, y, w - 1, min(y + 5, h - 1)),
                     fill=_mix(g_deep, g_base, min(1.0, i / (h / 6.0) + 0.15)))
 
-    mx, my, mr = int(w * 0.68), int(h * 0.28), 24  # moon radius scaled with the window
-    for k in range(4, 0, -1):
+    # De-emphasis pass: the window was reading as a light source competing with the hearth
+    # rather than a quiet background detail. Two changes, both small on purpose — this glass
+    # still has to read as genuinely cold (see the docstring above), just not as LOUD:
+    #   - the moon shrinks and its glow rings dim, so it stops pulling the eye first.
+    #   - the near (left, hearth-facing) edge gets a faint warm wash, as if firelight from
+    #     across the room is glancing off the inside of the pane — real glass does this.
+    warm_w = int(w * 0.22)
+    warm_edge = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    wd = ImageDraw.Draw(warm_edge)
+    for x in range(warm_w):
+        a = int(70 * (1.0 - x / warm_w))
+        wd.line((x, 0, x, h - 1), fill=(*FIRE_MID[:3], a))
+    img.alpha_composite(warm_edge)
+
+    mx, my, mr = int(w * 0.68), int(h * 0.28), 17  # shrunk from 24 — quieter presence
+    for k in range(3, 0, -1):
         d.ellipse((mx - mr - k * 3, my - mr - k * 3, mx + mr + k * 3, my + mr + k * 3),
-                  fill=_mix(g_base, FROST, 0.06 * (5 - k)))
-    d.ellipse((mx - mr, my - mr, mx + mr, my + mr), fill=_mix(FROST, (255, 255, 255, 255), 0.5))
-    d.ellipse((mx - mr + 4, my - mr + 2, mx + mr - 2, my + mr - 4),
-              fill=_mix(FROST, (255, 255, 255, 255), 0.75))
+                  fill=_mix(g_base, FROST, 0.045 * (4 - k)))
+    d.ellipse((mx - mr, my - mr, mx + mr, my + mr), fill=_mix(FROST, (255, 255, 255, 255), 0.42))
+    d.ellipse((mx - mr + 3, my - mr + 1, mx + mr - 2, my + mr - 3),
+              fill=_mix(FROST, (255, 255, 255, 255), 0.65))
     return img
 
 
@@ -1657,6 +1711,25 @@ def make_window_frame(w=WINDOW_W, h=WINDOW_H):
     for i, tone in enumerate((f_hi, f_base, f_sh)):
         d.rectangle((i, i, w - 1 - i, h - 1 - i), outline=tone, width=1)
     d.rectangle((3, 3, w - 4, h - 4), outline=f_deep, width=2)
+    return img
+
+
+# 372x24 canvas -> 186x12 au: 16au wider than the window itself (8au overhang each side), the
+# same "sash sits inside a slightly wider ledge" relationship a real windowsill has. A separate
+# asset rather than folded into make_window_frame: the frame is stretched to `background-size:
+# 100% 100%` over whatever box `.scene-window` is, so adding a ledge inside that same image
+# would stretch WITH the window every time its box resizes, rather than staying a fixed-height
+# strip under it.
+def make_window_sill(w=372, h=24):
+    """A plain wood ledge sitting under the window, firelit like the sash it belongs to."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    hi, base, sh, deep = ramp(TABLE_WOOD)
+
+    d.rectangle((0, 0, w - 1, h - 1), fill=base)
+    d.line((0, 0, w - 1, 0), fill=hi)
+    d.rectangle((0, h - 6, w - 1, h - 1), fill=deep)
+    d.line((0, h - 6, w - 1, h - 6), fill=sh)
     return img
 
 
@@ -1865,8 +1938,11 @@ def make_shelf(w=300, h=160):
     for bx in (25, w - 40):
         d.polygon([(bx, plank_y + 15), (bx + 15, plank_y + 15), (bx + 8, h - 1)], fill=sh)
 
-    # Books, leaning.
-    for i, (bx, bh, col) in enumerate(((20, 65, RUG_RED), (40, 75, LEAF_GREEN), (60, 60, CLOTH_BLUE))):
+    # Books, leaning. A fourth spine added in 2l.1 (direct user feedback: "fuller" shelf) —
+    # same leaning-book draw call as the other three, just one more (bx, bh, col) tuple.
+    for i, (bx, bh, col) in enumerate((
+        (20, 65, RUG_RED), (40, 75, LEAF_GREEN), (60, 60, CLOTH_BLUE), (80, 50, STEEL),
+    )):
         d.rectangle((bx, plank_y - bh, bx + 18, plank_y - 1), fill=col)
         d.rectangle((bx, plank_y - bh, bx + 18, plank_y - bh + 5), fill=_mix(col, GOLD, 0.5))
 
@@ -1875,6 +1951,12 @@ def make_shelf(w=300, h=160):
         d.rectangle((jx, plank_y - jh, jx + 32, plank_y - 1), fill=fill)
         d.rectangle((jx, plank_y - jh, jx + 32, plank_y - jh + 8), fill=sh)
         d.line((jx, plank_y - jh + 13, jx + 32, plank_y - jh + 13), fill=_mix(fill, PARCHMENT, 0.5))
+
+    # A small vase, 2l.1 — the one gap left on the plank, between the jars and the lantern.
+    vx, vh = 193, 35
+    d.polygon([(vx + 4, plank_y - vh), (vx + 14, plank_y - vh), (vx + 17, plank_y - 1),
+               (vx + 1, plank_y - 1)], fill=_mix(RUG_RED, INK_LIGHT, 0.35))
+    d.line((vx + 4, plank_y - vh, vx + 14, plank_y - vh), fill=_mix(GOLD, PARCHMENT, 0.4))
 
     # Lantern, with a lit pane.
     lx = 215
@@ -1934,6 +2016,53 @@ def make_framed_picture(w=240, h=180):
     return img
 
 
+# A second, smaller frame for the same free wall column the antlers sit in (2l.1 — more art on
+# the walls, direct user feedback). Not a resized copy of make_framed_picture: that function's
+# hill/sun geometry is hand-placed in absolute pixels tuned for its 240x180 canvas specifically
+# (the hill polygons alone would run off the right edge of a frame under half that width), and
+# reworking it to scale proportionally risks nudging the shipped picture.png for no reason —
+# picture.png isn't cards-frozen, but "don't touch what already works" still applies. A single
+# tree silhouette is a plainer scene that is cheap to place correctly at a smaller size instead.
+def make_framed_picture_small(w=120, h=112):
+    """A small framed picture: one tree against a daylit sky. Same moulding technique as
+    make_framed_picture (TABLE_WOOD frame, PICTURE_SKY field) — a second, smaller piece of art
+    for the same wall, not a different kind of object."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    f_hi, f_base, f_sh, f_deep = ramp(TABLE_WOOD)
+
+    d.rectangle((0, 0, w - 1, h - 1), fill=f_base)
+    d.rectangle((0, 0, w - 1, 2), fill=f_hi)
+    d.rectangle((0, h - 4, w - 1, h - 1), fill=f_deep)
+
+    m = 10
+    sky_hi, sky, sky_sh, _ = ramp(PICTURE_SKY, warm=False)
+    d.rectangle((m, m, w - m - 1, h - m - 1), fill=sky)
+    d.rectangle((m, m, w - m - 1, m + round((h - 2 * m) * 0.2)), fill=sky_hi)
+
+    ground_y = h - m - round((h - 2 * m) * 0.22)
+    grass_hi, grass, grass_sh, grass_deep = ramp(LEAF_GREEN)
+    d.rectangle((m, ground_y, w - m - 1, h - m - 1), fill=grass)
+    d.line((m, ground_y, w - m - 1, ground_y), fill=grass_deep)
+
+    # One tree: a trunk and a round canopy, centred over the ground band.
+    cx = m + (w - 2 * m) // 2
+    trunk_w = max(3, (w - 2 * m) // 14)
+    d.rectangle((cx - trunk_w // 2, ground_y - round((h - 2 * m) * 0.18), cx + trunk_w // 2, ground_y),
+                fill=darken(TABLE_WOOD, 0.6))
+    r = round((w - 2 * m) * 0.24)
+    cy = ground_y - round((h - 2 * m) * 0.30)
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=grass_hi)
+    d.ellipse((cx - r + 4, cy - r + 4, cx + r - 6, cy + r - 6), fill=grass)
+    d.ellipse((cx - r // 3, cy - r // 3, cx + r // 3, cy + r // 3), fill=grass_sh)
+
+    # A low sun, same warm note make_framed_picture uses.
+    sr = max(4, round((w - 2 * m) * 0.09))
+    sx, sy = w - m - sr - 6, m + sr + 4
+    d.ellipse((sx - sr, sy - sr, sx + sr, sy + sr), fill=FIRE_CORE)
+    return img
+
+
 def make_antlers(w=120, h=80):
     """A mounted rack on a wooden plaque. Cabin shorthand, and the one object in the room with
     a genuinely irregular silhouette — every other thing here is a rectangle or an ellipse."""
@@ -1983,15 +2112,20 @@ def make_antlers(w=120, h=80):
     return img
 
 
-def make_wall_clock(size=200):
+def make_wall_clock(size=120):
     """A round wall clock. Reads instantly at a glance and is the only circle on the wall.
 
     Hands sit at roughly ten-past-ten — the arrangement every clock in every advert uses,
     because it is symmetric, keeps both hands clear of each other, and never reads as an
     accident of where the hands happened to stop.
 
-    2j.3: resized 2.5x (80 -> 200). `r` and every stroke width below scale off `size` directly
-    rather than off a hardcoded constant, so this one is naturally proportional already."""
+    2j.3: resized 2.5x (80 -> 200) as part of the "large, deliberately cropped mass"
+    philosophy. 2k.1: brought back down to 120 (60 au) on direct user feedback that a
+    wall-sized clock read as furniture that ate the wall rather than furnished decor — see
+    WINDOW_W/H's own 2k.1 note for the same complaint applied to the window. `r` scales off
+    `size`; a handful of the interior strokes (hand width, tick length) are still absolute
+    pixel counts and get proportionally chunkier at this size, which reads fine on the same
+    coarse grid the rest of the room already uses."""
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     c_hi, case, c_sh, c_deep = ramp(TABLE_WOOD)
@@ -2093,6 +2227,95 @@ def make_woodpile(w=260, h=160):
             d.line((x + r, y - r + 8, x + r, y + r - 8), fill=f_sh, width=2)
             d.arc((x, y - r, x + r * 2, y + r), 200, 340, fill=b_hi, width=2)
     return img
+
+
+# A low dresser under the window (2l.1 — direct user feedback: the window sat too close to the
+# floor with nothing under it, and separately, the floor near it read as bare). Raising the
+# window freed a band of wall/floor between its new sill and the floor line; this fills it.
+# Flat-shaded like woodpile/coat_hooks above, not outlined like the cat/opponent — it is
+# furniture, not a character, and every other piece of furniture in this room reads the same
+# way.
+def make_dresser(w=192, h=128):
+    """A simple three-drawer dresser, seen straight-on. Two brass-dot pulls per drawer, a
+    plinth base, and a lit top edge/shadowed underside — the same two-tone body every other
+    wood object in this room uses (see darken()/ramp() call sites throughout)."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    hi, base, sh, deep = ramp(TABLE_WOOD)
+
+    shadow = contact_shadow(round(w * 0.92), round(h * 0.14), max_alpha=110)
+    img.paste(shadow, (round(w * 0.04), h - round(h * 0.12)), shadow)
+
+    # Carcass.
+    top, bottom = round(h * 0.10), h - round(h * 0.12)
+    left, right = round(w * 0.04), w - round(w * 0.04)
+    d.rectangle((left, top, right, bottom), fill=base)
+    d.rectangle((left, top, right, top + 4), fill=hi)
+    d.rectangle((left, bottom - 4, right, bottom), fill=deep)
+    d.rectangle((left, top, left + 4, bottom), fill=sh)
+    d.rectangle((right - 4, top, right, bottom), fill=deep)
+
+    # A slab top overhanging the carcass slightly, the way a real dresser's does.
+    d.rectangle((left - 6, top - 8, right + 6, top), fill=hi)
+    d.rectangle((left - 6, top - 8, right + 6, top - 6), fill=_mix(hi, PARCHMENT, 0.3))
+
+    # Three drawers, stacked, each with a routed shadow line and two pulls.
+    drawer_top, drawer_bottom = top + 10, bottom - 10
+    gap = 6
+    dh = (drawer_bottom - drawer_top - gap * 2) // 3
+    for i in range(3):
+        dy0 = drawer_top + i * (dh + gap)
+        dy1 = dy0 + dh
+        d.rectangle((left + 8, dy0, right - 8, dy1), fill=sh)
+        d.rectangle((left + 8, dy0, right - 8, dy0 + 3), fill=_mix(sh, hi, 0.4))
+        d.rectangle((left + 8, dy1 - 3, right - 8, dy1), fill=deep)
+        pull_y = (dy0 + dy1) // 2
+        for px in (left + (right - left) * 0.32, left + (right - left) * 0.68):
+            d.ellipse((px - 4, pull_y - 4, px + 4, pull_y + 4), fill=GOLD)
+            d.ellipse((px - 4, pull_y - 4, px + 1, pull_y + 1), fill=_mix(GOLD, PARCHMENT, 0.5))
+
+    # Short plinth feet.
+    for fx in (left + 6, right - 18):
+        d.rectangle((fx, bottom, fx + 12, bottom + round(h * 0.06)), fill=deep)
+    return img
+
+
+# A small roaming animal — a hen, pecking around the floor (2l.1 — a farmhouse-appropriate
+# companion to the cat by the fireplace, deliberately a different species so the two don't read
+# as duplicates of each other). Same two-frame "idle" technique as make_cat_frames: not a gait,
+# just enough motion (the head dips to peck) to read as alive rather than a decal.
+def make_chicken_frames(count=2, w=76, h=60):
+    """A hen. Frame 2 dips the head down as if pecking at the floor; the body stays put, the
+    same "swell, not a gait" restraint make_cat_frames uses for the cat's breathing."""
+    frames = []
+    shadow = contact_shadow(round(w * 0.7), round(h * 0.16), max_alpha=100)
+    body_hi, body, body_sh, _ = ramp(DIAMOND_BODY)
+    for i in range(count):
+        img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        img.paste(shadow, (round(w * 0.14), h - round(h * 0.18)), shadow)
+        d = ImageDraw.Draw(img)
+        peck = round(h * 0.12) * i  # frame 2 only: head/neck drop toward the floor
+
+        # Body: one round-backed oval, tail feathers a small triangle at the back.
+        bx0, by0, bx1, by1 = round(w * 0.12), round(h * 0.30), round(w * 0.78), h - round(h * 0.16)
+        d.ellipse((bx0, by0, bx1, by1), fill=body)
+        d.ellipse((bx0, by0, bx1, by0 + round((by1 - by0) * 0.45)), fill=body_hi)
+        d.polygon([(bx0 + 4, by0 + round((by1 - by0) * 0.3)), (bx0 - round(w * 0.14), by0 - 2),
+                    (bx0 + 4, by0 + round((by1 - by0) * 0.7))], fill=body_sh)
+
+        # Head: a smaller circle out front, dropping toward the ground on the peck frame.
+        hr = round(h * 0.22)
+        hx, hy = bx1 - round(w * 0.10), by0 + round(h * 0.06) + peck
+        d.ellipse((hx - hr, hy - hr, hx + hr, hy + hr), fill=body_hi)
+        # Comb and beak.
+        d.polygon([(hx - 4, hy - hr), (hx, hy - hr - 6), (hx + 4, hy - hr)], fill=RED)
+        d.polygon([(hx + hr - 2, hy - 2), (hx + hr + 7, hy + 2), (hx + hr - 2, hy + 6)], fill=GOLD)
+
+        # Two thin legs.
+        for lx in (bx0 + round((bx1 - bx0) * 0.35), bx0 + round((bx1 - bx0) * 0.62)):
+            d.line((lx, by1 - 4, lx, by1 + round(h * 0.14)), fill=GOLD, width=3)
+        frames.append(img)
+    return frames
 
 
 # --- The unit: true-resolution output (Phase 2f.1) ---------------------------------------- #
@@ -2234,6 +2457,8 @@ def main() -> None:
                os.path.join(scene_dir, "fire_sheet.png"), chunk=CHUNK_ENV)
     save_asset(make_window_glass(), os.path.join(scene_dir, "window_glass.png"), chunk=CHUNK_ENV)
     save_asset(make_window_frame(), os.path.join(scene_dir, "window_frame.png"), chunk=CHUNK_ENV)
+    save_asset(light_from(make_window_sill(), strength=0.13),
+               os.path.join(scene_dir, "window_sill.png"), chunk=CHUNK_ENV)
     save_asset(make_snowfall(), os.path.join(scene_dir, "snow.png"), chunk=CHUNK_ENV)
     save_asset(floor, os.path.join(scene_dir, "floor.png"), chunk=CHUNK_ENV)
     # Lit like the fireplace/window it sits between, not left neutral — a rug directly in the
@@ -2266,16 +2491,22 @@ def main() -> None:
     shelf = light_from(make_shelf(), strength=0.13)
     _assert_sprite_colours(shelf, "shelf")
     save_asset(shelf, os.path.join(scene_dir, "shelf.png"), chunk=CHUNK_ENV)
+    # A second small animal (2l.1), same technique as the cat: two-frame idle sheet, hearth-lit.
+    chicken = light_from(make_sprite_sheet(make_chicken_frames()), strength=0.13)
+    _assert_sprite_colours(chicken, "chicken sheet")
+    save_asset(chicken, os.path.join(scene_dir, "chicken_sheet.png"), chunk=CHUNK_ENV)
 
     # Wall and floor furniture (2g.4). Same hearth-side lighting as everything else in the
     # room, at the same modest strengths — an object that skips light_from is the one that
     # gives away that the room's light is painted rather than modelled.
     for name, sprite in (
         ("picture", make_framed_picture()),
+        ("picture_2", make_framed_picture_small()),
         ("antlers", make_antlers()),
         ("clock", make_wall_clock()),
         ("coat_hooks", make_coat_hooks()),
         ("woodpile", make_woodpile()),
+        ("dresser", make_dresser()),
     ):
         lit = light_from(sprite, strength=0.13)
         _assert_sprite_colours(lit, name)
