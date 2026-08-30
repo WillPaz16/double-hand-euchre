@@ -1582,6 +1582,26 @@ def make_fireplace(w=748, h=540):
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
 
+    def _solid_line(x0, y0, x1, y1, fill, lw):
+        # d.line(..., width=N) on a shallow diagonal rasterizes with visible gaps/stairstepping
+        # instead of a solid stroke (PIL quirk). Drawing the thick line as a filled quad instead
+        # (the two endpoints offset perpendicular to the line direction by half the width) is
+        # solid at any angle -- AT THE RAW CANVAS RESOLUTION. It is not enough on its own: every
+        # asset in this file is snapped to a `PX*CHUNK_ENV` (2*2=4 canvas-px) grid by
+        # `save_asset()` before being halved to true resolution. A diagonal quad NARROWER than
+        # that grid cell still comes out dashed after the snap, because its coverage of each
+        # 4x4 cell alternates between "mostly in" and "barely in" as it walks along the
+        # diagonal -- the exact same visual defect as the original `d.line()` bug, just moved
+        # one step downstream. Caught by re-inspecting the actual SAVED PNG, not the pre-snap
+        # canvas, which is what let this slip through the first time. `lw` is clamped to at
+        # least 1.6x the grid size so the quad can never fully vanish between snapped cells.
+        lw = max(lw, PX * CHUNK_ENV * 1.6)
+        dx, dy = x1 - x0, y1 - y0
+        length = math.hypot(dx, dy) or 1
+        nx, ny = -dy / length * lw / 2, dx / length * lw / 2
+        d.polygon([(x0 + nx, y0 + ny), (x1 + nx, y1 + ny),
+                   (x1 - nx, y1 - ny), (x0 - nx, y0 - ny)], fill=fill)
+
     body_top = round(h * 0.117)
     d.rectangle((0, body_top, w - 1, h - 1), fill=mortar)
 
@@ -1655,7 +1675,7 @@ def make_fireplace(w=748, h=540):
     for bx, lean, tone in ((ox0 - round(w * 0.025), -round(w * 0.06), STEEL),
                             (ox0 - round(w * 0.025) - 10, -round(w * 0.025), darken(STEEL))):
         tx = bx + lean
-        d.line((bx, iron_by, tx, iron_ty), fill=tone, width=iron_w)
+        _solid_line(bx, iron_by, tx, iron_ty, tone, iron_w)
         d.ellipse((tx - 5, iron_ty - 9, tx + 5, iron_ty + 1), outline=tone, width=2)
 
     # Bundled kindling — thinner, fanned sticks in the hearth's corner opposite the irons
@@ -1666,7 +1686,7 @@ def make_fireplace(w=748, h=540):
     kbase_y = oy1 - round(h * 0.01)
     ktop_y = kbase_y - round(h * 0.09)
     for spread in (-18, -9, 0, 9, 18):
-        d.line((kx, kbase_y, kx + spread, ktop_y), fill=WOOD_MED, width=2)
+        _solid_line(kx, kbase_y, kx + spread, ktop_y, WOOD_MED, 2)
     d.line((kx - 15, kbase_y - round(h * 0.045), kx + 15, kbase_y - round(h * 0.045)),
            fill=darken(WOOD_MED), width=3)
 
@@ -1684,7 +1704,11 @@ def make_fireplace(w=748, h=540):
     # introducing new base colours — darker than the m_hi strip they sit on, so they read as
     # silhouettes against it instead of disappearing into their own background.
     ledge_y = body_top - mantel + m_lip * 2  # bottom of the lit top-edge strip
-    cndl_x = round(w * 0.15)
+    # .scene-fireplace crops the leftmost 78au (156 canvas-px at this w) off-screen (see
+    # src/styles/index.css, ~L356). At 0.15w the candle sat at canvas-x~112, entirely inside
+    # that band and permanently invisible. 0.24w (~180) clears it with margin, and stays well
+    # left of the tin at frm_x=0.30w below.
+    cndl_x = round(w * 0.24)
     holder_h = max(4, round(h * 0.007))
     stem_h = max(10, round(h * 0.020))
     d.rectangle((cndl_x - 6, ledge_y - holder_h, cndl_x + 6, ledge_y), fill=m_deep)
@@ -2085,12 +2109,15 @@ def make_floor_patch(w=400, h=80):
     for the entire hand.
     """
     _, base, _, deep = ramp(FLOOR_WOOD)
-    tone = _mix(base, deep, 0.30)
+    # 0.30/205 measured imperceptible against the floorboards' own grain variance (confirmed by
+    # outlining it live and comparing with/without). Pushed to the top of a still-plausible
+    # "worn smooth" contrast range so it reads by eye, not just in a debug outline.
+    tone = _mix(base, deep, 0.58)
 
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     px = img.load()
     feather = 22
-    max_alpha = 205
+    max_alpha = 235
     for y in range(h):
         fy = min(y, h - 1 - y, feather) / feather
         for x in range(w):
@@ -2462,7 +2489,16 @@ def make_dresser(w=192, h=128):
     # make_table_felt() uses for the gingham tablecloth, just scaled down to a small object.
     qx0, qx1 = left - 6, left + 58
     qy0, qy1 = top - 8, top + 32
-    q_hi, q_base, q_sh, q_deep = ramp(CLOTH_BLUE)
+    # CLOTH_BLUE measures under 6% HLS saturation — already near-neutral before light_from's
+    # warm-hue rotation (see that function's docstring) even touches it, so the room-wide warm
+    # wash finishes the job: measured, the quilt was landing at (118,118,110)-(99,96,85), a
+    # gray-olive indistinguishable from the shadow next to it. A local, saturation-boosted
+    # variant survives the same wash reading blue; CLOTH_BLUE itself (used elsewhere in this
+    # file — shelf books, felt stripe) is untouched.
+    _qh, _ql, _qs = colorsys.rgb_to_hls(*[v / 255 for v in CLOTH_BLUE[:3]])
+    quilt_blue = tuple(round(v * 255) for v in
+                        colorsys.hls_to_rgb(_qh, min(0.96, _ql + 0.06), min(1.0, _qs + 0.32))) + (255,)
+    q_hi, q_base, q_sh, q_deep = ramp(quilt_blue)
     check = 10
     light = _mix(q_base, q_hi, 0.18)
     dark = _mix(q_base, q_sh, 0.22)
@@ -2477,6 +2513,12 @@ def make_dresser(w=192, h=128):
     for fy in (qy0 + 10, qy0 + 22, qy0 + 33):
         d.line((qx0, fy, qx1, fy), fill=darken(q_base, 0.7))
     d.line((qx0, qy0, qx1, qy0), fill=q_hi)  # lit crest along the fold nearest the light
+    # A 1px light-toned rim on the quilt's own silhouette so it separates from whatever sits
+    # against it (the top drawer's routed shadow line just below) instead of blending in.
+    rim = _mix(q_hi, PARCHMENT, 0.35)
+    d.line((qx0, qy0, qx0, qy1 - 1), fill=rim)
+    d.line((qx1 - 1, qy0, qx1 - 1, qy1 - 1), fill=rim)
+    d.line((qx0, qy1 - 1, qx1 - 1, qy1 - 1), fill=rim)
 
     # Three drawers, stacked, each with a routed shadow line and two pulls.
     drawer_top, drawer_bottom = top + 10, bottom - 10
@@ -2545,8 +2587,15 @@ def make_chicken_frames(count=2, w=76, h=60):
 # independently-sized box instead.
 def make_feed_dots(w=48, h=20):
     """A fixed, hand-placed scatter of small seed dots — arithmetic coordinates, not `random`,
-    so the layout is exactly reproducible run to run. Flat-shaded (no ramp/shading): at 1-2
-    file-pixels each there is no room for a highlight to read as anything but noise."""
+    so the layout is exactly reproducible run to run. Flat-shaded (no ramp/shading): at this
+    file size there is no room for a highlight to read as anything but noise.
+
+    Radius 3 (not the original 2): at radius 2 every dot snapped to a single 2x2 file-pixel
+    cell on the PX*chunk=4 authoring grid, which read fine at --px:2 (4 screen px) but
+    collapsed to ~2 real screen pixels at --px:1 — invisible against the floor. Radius 3
+    guarantees at least a 2x4 file-pixel cell per dot (most land 4x4), doubling the minimum
+    on-screen footprint at --px:1 while staying a small, distinct speck rather than a blob at
+    --px:2 (verified live at both 768x1024 and 1440x900)."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     dots = (
@@ -2554,7 +2603,7 @@ def make_feed_dots(w=48, h=20):
         (31, 6, RUG_CREAM), (39, 12, GOLD), (10, 16, RUG_CREAM),
     )
     for x, y, color in dots:
-        d.ellipse((x - 2, y - 2, x + 2, y + 2), fill=color)
+        d.ellipse((x - 3, y - 3, x + 3, y + 3), fill=color)
     return img
 
 
