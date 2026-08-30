@@ -29,6 +29,12 @@ export function SceneLayer() {
           Deferred since 2d.2 because the table used to span its full container, leaving no
           floor for a rug to occupy — no longer true after the 2f scale rebuild. */}
       <div className="scene-rug" />
+      {/* A worn patch in front of the player's own seat (2m.1) — its own placed asset, not
+          baked into floor.png's repeating tile (see make_floor_patch()'s docstring for why).
+          Mounted AFTER the rug on purpose: its footprint straddles the rug's own near edge
+          (see .scene-floor-patch's CSS comment for the measured reason), so it needs to paint
+          on top of the rug there rather than under it. */}
+      <div className="scene-floor-patch" />
 
       <div className="scene-fireplace">
         {/* Sprite strip animated with transform + steps(): compositor-only. Animating
@@ -84,11 +90,18 @@ export function SceneLayer() {
       <div className="scene-cat">
         <div className="scene-cat-strip" />
       </div>
+      {/* A yarn ball beside the cat — a separate static prop, not baked into the cat's own
+          sprite strip since it never moves. See .scene-yarn's own CSS comment. */}
+      <div className="scene-yarn" />
       {/* A second small animal (2l.1) — a hen, roaming the open floor rather than resting like
           the cat. Same two-frame strip-slide technique, see .scene-chicken-strip's CSS. */}
       <div className="scene-chicken">
         <div className="scene-chicken-strip" />
       </div>
+      {/* Feed dots beside the hen — a separate static element, not baked into the chicken's own
+          sprite strip since that strip is clipped by its own overflow:hidden for the walk-cycle
+          slide animation. See .scene-feed's own CSS comment. */}
+      <div className="scene-feed" />
 
       <div className="scene-hearth-glow" />
       <div className="scene-vignette" />

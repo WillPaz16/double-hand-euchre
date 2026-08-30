@@ -955,6 +955,18 @@ OPP_HEAD_CY = 92
 OPP_HEAD_RX, OPP_HEAD_RY = 62, 66
 
 
+def _star_points(cx, cy, r_out, r_in, points=5):
+    """A 5-point star polygon, point-up. Used for the chest pin below — `_poly` takes any
+    point list, but nothing else in this file needed a star, so there was no existing helper
+    to reuse."""
+    pts = []
+    for i in range(points * 2):
+        r = r_out if i % 2 == 0 else r_in
+        angle = math.radians(-90 + i * (360 / (points * 2)))
+        pts.append((cx + r * math.cos(angle), cy + r * math.sin(angle)))
+    return pts
+
+
 def _opponent_parts():
     """Head, hat and shoulders at across-the-table size — same flannel, same trapper hat, same
     moustache the standalone portrait used to draw (deleted in 2h.1; see the note above),
@@ -972,6 +984,13 @@ def _opponent_parts():
             (OPP_CX - 12, hy + 56), (OPP_CX + 12, hy + 56),
             (OPP_CX + 16, OPP_H), (OPP_CX - 16, OPP_H),
         ]), BOOT_DARK),
+        # A small tin star pinned to the chest (creative-direction pass). Sits left of the
+        # placket (clear by 18+ file px / 9+ au) and well clear of both arm/hand shapes, which
+        # start no closer than x=OPP_CX-44 at any y — this star's x=OPP_CX-34 never reaches
+        # them, at any y, so no need to also dodge them vertically. Kept above hy+90 anyway,
+        # in the plainest, flattest run of chest fill, the spot the direction review flagged
+        # as free: below the shoulder line (hy+52) and clear of the placket and hand zone.
+        (_poly(_star_points(OPP_CX - 34, hy + 70, 12, 5)), GOLD),
         # Forearms and hands, resting on the table (2g.5). He was a floating BUST: shoulders
         # that simply stopped, no arms, no hands, no contact with the furniture in front of
         # him. Every other object in this room got grounded during Phase 2f and 2g — the table
@@ -1612,6 +1631,45 @@ def make_fireplace(w=748, h=540):
     d.rectangle((ox0, oy0, ox1, oy1), outline=_mix(mortar, deep, 0.6), width=lip)
     d.line((ox0 + lip, oy0 + lip, ox1 - lip, oy0 + lip), fill=_mix(deep, FIRE_DEEP, 0.45))
 
+    # Soft soot smudge directly above the opening — a low-alpha dark band implying years of
+    # smoke staining. Drawn on a transparent overlay and alpha-composited, the same pattern
+    # make_window_glass uses for its warm edge wash, rather than fighting ImageDraw's flat
+    # (non-blending) fills on an RGBA canvas.
+    soot = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    sd = ImageDraw.Draw(soot)
+    soot_h = round(h * 0.09)
+    soot_top = oy0 - lip - soot_h
+    for i in range(soot_h):
+        frac = i / soot_h  # 0 at the top (faint) -> 1 right above the opening (darkest)
+        inset = round((1 - frac) * (ox1 - ox0) * 0.12)
+        sd.line((ox0 + inset, soot_top + i, ox1 - inset, soot_top + i),
+                fill=(*INK[:3], int(46 * frac)))  # tops out ~18% opacity, per spec
+    img.alpha_composite(soot)
+
+    # Fire irons — poker and tongs, leaning against the stone to the left of the opening. Two
+    # thin angled lines, each ending in a small ellipse-outline handle loop where it meets the
+    # wall.
+    iron_by = oy1 - round(h * 0.01)
+    iron_ty = oy0 + round(h * 0.10)
+    iron_w = max(2, round(w * 0.0045))
+    for bx, lean, tone in ((ox0 - round(w * 0.025), -round(w * 0.06), STEEL),
+                            (ox0 - round(w * 0.025) - 10, -round(w * 0.025), darken(STEEL))):
+        tx = bx + lean
+        d.line((bx, iron_by, tx, iron_ty), fill=tone, width=iron_w)
+        d.ellipse((tx - 5, iron_ty - 9, tx + 5, iron_ty + 1), outline=tone, width=2)
+
+    # Bundled kindling — thinner, fanned sticks in the hearth's corner opposite the irons
+    # (right of the opening), with one darker band suggesting twine wrapped around the bundle.
+    # Distinct from the round split logs of make_woodpile(): thin fanned sticks, not stacked
+    # cylinders.
+    kx = ox1 + round(w * 0.04)
+    kbase_y = oy1 - round(h * 0.01)
+    ktop_y = kbase_y - round(h * 0.09)
+    for spread in (-18, -9, 0, 9, 18):
+        d.line((kx, kbase_y, kx + spread, ktop_y), fill=WOOD_MED, width=2)
+    d.line((kx - 15, kbase_y - round(h * 0.045), kx + 15, kbase_y - round(h * 0.045)),
+           fill=darken(WOOD_MED), width=3)
+
     # Timber mantel, overhanging the stone on both sides.
     m_hi, m_base, m_sh, m_deep = ramp(TABLE_WOOD)
     mantel = round(h * 0.107)
@@ -1620,6 +1678,26 @@ def make_fireplace(w=748, h=540):
     d.rectangle((0, body_top - mantel, w - 1, body_top - mantel + m_lip * 2), fill=m_hi)
     d.line((0, body_top - m_lip, w - 1, body_top - m_lip), fill=m_sh)
     d.line((0, body_top + m_lip, w - 1, body_top + m_lip), fill=m_deep)
+
+    # Mantel-top clutter: a candle in a holder and a small framed tin, both sitting on the
+    # mantel's lit top edge. Reuses the mantel's own m_sh/m_deep/m_base tones rather than
+    # introducing new base colours — darker than the m_hi strip they sit on, so they read as
+    # silhouettes against it instead of disappearing into their own background.
+    ledge_y = body_top - mantel + m_lip * 2  # bottom of the lit top-edge strip
+    cndl_x = round(w * 0.15)
+    holder_h = max(4, round(h * 0.007))
+    stem_h = max(10, round(h * 0.020))
+    d.rectangle((cndl_x - 6, ledge_y - holder_h, cndl_x + 6, ledge_y), fill=m_deep)
+    d.rectangle((cndl_x - 3, ledge_y - holder_h - stem_h, cndl_x + 3, ledge_y - holder_h),
+                fill=m_sh)
+    d.ellipse((cndl_x - 4, ledge_y - holder_h - stem_h - 7, cndl_x + 4,
+               ledge_y - holder_h - stem_h + 1), fill=FIRE_CORE)
+
+    frm_x = round(w * 0.30)
+    frm_w, frm_h = max(16, round(w * 0.022)), max(12, round(h * 0.020))
+    d.rectangle((frm_x - frm_w // 2, ledge_y - frm_h, frm_x + frm_w // 2, ledge_y), fill=m_base)
+    d.rectangle((frm_x - frm_w // 2 + 2, ledge_y - frm_h + 2, frm_x + frm_w // 2 - 2,
+                 ledge_y - 2), fill=m_sh)
     return img
 
 
@@ -1721,7 +1799,14 @@ def make_window_frame(w=WINDOW_W, h=WINDOW_H):
 # would stretch WITH the window every time its box resizes, rather than staying a fixed-height
 # strip under it.
 def make_window_sill(w=372, h=24):
-    """A plain wood ledge sitting under the window, firelit like the sash it belongs to."""
+    """A plain wood ledge sitting under the window, firelit like the sash it belongs to.
+
+    Carries a small potted herb (2m.1), near the LEFT end on purpose: `.scene-window-sill` is
+    right-anchored, and at 768px/390px that right edge is already cropped by `.scene-layer`'s
+    own `overflow: hidden` — new detail belongs on the side that stays in frame, not the one
+    already getting cut off. Drawn straight into this canvas rather than growing it; the box's
+    CSS width/height must stay exactly what `npm run audit` expects.
+    """
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     hi, base, sh, deep = ramp(TABLE_WOOD)
@@ -1730,6 +1815,22 @@ def make_window_sill(w=372, h=24):
     d.line((0, 0, w - 1, 0), fill=hi)
     d.rectangle((0, h - 6, w - 1, h - 1), fill=deep)
     d.line((0, h - 6, w - 1, h - 6), fill=sh)
+
+    # Potted herb: a small terracotta trapezoid standing on the lit ledge (rows 1-17), three
+    # leaf blobs above its rim. `darken(TABLE_WOOD)` for the pot keeps the clay tone in-palette
+    # rather than inventing a new colour for one small object.
+    pot = darken(TABLE_WOOD, 0.55)
+    px, base_y, rim_y = 16, 17, 11
+    d.polygon([(px - 3, base_y), (px + 3, base_y), (px + 6, rim_y), (px - 6, rim_y)], fill=pot)
+    d.line((px - 6, rim_y, px + 6, rim_y), fill=darken(pot, 0.8))
+
+    leaf_hi, leaf, leaf_sh, _ = ramp(LEAF_GREEN)
+    for lx, ly, lr, tone in (
+        (px - 4, rim_y - 3, 3, leaf_sh),
+        (px, rim_y - 5, 4, leaf),
+        (px + 4, rim_y - 3, 3, leaf_hi),
+    ):
+        d.ellipse((lx - lr, ly - lr, lx + lr, ly + lr), fill=tone)
     return img
 
 
@@ -1875,6 +1976,39 @@ def make_cat_frames(count=2, w=252, h=160):
     return frames
 
 
+# A yarn ball beside the sleeping cat (creative-direction pass). A SEPARATE static prop, not
+# baked into `make_cat_frames`'s sprite strip — the cat is asleep and this doesn't move, so it
+# gets its own generator, CSS class and SceneLayer element instead of riding the cat's own
+# two-frame breathing animation. Picked over a toy mouse: HAIR_BROWN (the mouse's body colour
+# in the brief) is the cat's own fur colour, so a mouse beside him would read as a second,
+# oddly-shaped patch of cat rather than a distinct toy at this small a size. RUG_RED is already
+# in the room's palette and reads as a warm, clearly-separate object against both the cat and
+# the floorboards.
+def make_yarn_ball(w=64, h=52):
+    """A flat-shaded ball of yarn with a couple of loose-thread squiggles arcing across it —
+    the two-tone-plus-line-work every small prop in this room uses, not an outlined character
+    part, since this is an inert toy rather than something alive."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    hi, base, sh, _ = ramp(RUG_RED)
+
+    shadow = contact_shadow(round(w * 0.8), round(h * 0.22), max_alpha=90)
+    img.paste(shadow, (round(w * 0.1), h - round(h * 0.2)), shadow)
+
+    bx0, by0, bx1, by1 = round(w * 0.12), round(h * 0.08), round(w * 0.88), round(h * 0.78)
+    d.ellipse((bx0, by0, bx1, by1), fill=base)
+    d.ellipse((bx0, by0, bx1, by0 + round((by1 - by0) * 0.45)), fill=hi)
+    d.ellipse((bx0, by0 + round((by1 - by0) * 0.55), bx1, by1), fill=sh)
+
+    # Loose-thread squiggles — a shade darker than the ball, arcing across the flat fill, plus
+    # one short trailing end so it doesn't read as a plain sphere.
+    thread = darken(base)
+    d.arc((bx0 + 3, by0 - 2, bx1 - 3, by1 + 2), 205, 335, fill=thread, width=2)
+    d.arc((bx0 - 2, by0 + 6, bx1 + 2, by1 - 4), 15, 145, fill=thread, width=2)
+    d.line((bx1 - 6, by1 - 10, bx1 + round(w * 0.08), by1 + round(h * 0.06)), fill=thread, width=2)
+    return img
+
+
 def make_rug(w=680, h=140) -> Image.Image:
     """A woven rug on the floor beneath the table's near edge (Phase 2f.5).
 
@@ -1919,6 +2053,52 @@ def make_rug(w=680, h=140) -> Image.Image:
     for fx in range(4, w - 4, 7):
         d.line((fx, 0, fx, 3), fill=cream)
         d.line((fx, h - 4, fx, h - 1), fill=cream)
+    return img
+
+
+def make_floor_patch(w=400, h=80):
+    """A worn patch in the floorboards in front of the player's own seat (2m.1).
+
+    NOT baked into `make_floorboards()` — that function draws a repeating TILE, and per
+    ASSETS.md's tiling rules a one-off mark baked into a tile becomes an unmistakable polka-dot
+    grid at repeat ("no point features"). This follows the `make_rug()` convention instead: its
+    own placed PNG, laid on top of the tiled floor by `.scene-floor-patch` in the scene layer,
+    the same way the rug and woodpile already sit on top of `floor.png` without being part of
+    it.
+
+    A soft-edged rectangle, not a hard one — years of pacing wear a floor smooth and pale at
+    the centre, fading gradually into the surrounding grain, not along a ruled edge. Built the
+    same way `make_window_glass()`'s warm hearth-wash edge is: per-pixel alpha computed from
+    distance-to-edge, composited onto a transparent canvas, rather than a filled rectangle with
+    a flat alpha. No grain or fold detail on top of it on purpose — the whole point of a worn
+    patch is that foot traffic has rubbed the board figure smooth; texture here would read as
+    "extra floor", not "less floor".
+
+    **CSS placement note (not this function's concern, but why the numbers in
+    `.scene-floor-patch` are what they are):** `.hand-tray`'s background is deliberately opaque
+    (`rgba(16,11,8,0.82)`) and covers the full width up to ~91au off the floor line at minimum
+    — measured, not assumed — so a patch placed BELOW that line, the way "closer to the viewer
+    than the rug" reads literally, would be almost entirely hidden the instant a hand is dealt.
+    `.scene-floor-patch` instead sits astride the rug's own near edge, mounted AFTER `.scene-rug`
+    in `SceneLayer.tsx` so it paints over the rug there — a worn path where the player's own
+    footsteps cross the rug's front edge reads as "in front of the seat" without disappearing
+    for the entire hand.
+    """
+    _, base, _, deep = ramp(FLOOR_WOOD)
+    tone = _mix(base, deep, 0.30)
+
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    px = img.load()
+    feather = 22
+    max_alpha = 205
+    for y in range(h):
+        fy = min(y, h - 1 - y, feather) / feather
+        for x in range(w):
+            fx = min(x, w - 1 - x, feather) / feather
+            a = fx * fy
+            if a <= 0:
+                continue
+            px[x, y] = tone[:3] + (int(max_alpha * a),)
     return img
 
 
@@ -2187,6 +2367,21 @@ def make_coat_hooks(w=208, h=268):
     d.line((cx + 15, top, cx + 64, top + 50), fill=c_deep, width=5)
     for by in (top + 84, top + 124, top + 164):
         d.rectangle((cx - 7, by, cx - 2, by + 5), fill=GOLD)
+
+    # Left hook: a striped scarf draped over the peg, so it isn't left bare. Chosen over a
+    # knit hat — stripes stay legible at this sprite's small size, where a rounded hat
+    # silhouette tends to blob into the peg beneath it. The right hook stays empty; one filled
+    # hook is enough to read as "someone's been here" without crowding the rail.
+    sx, peg_y = 35, 40
+    d.rectangle((sx - 14, peg_y - 2, sx + 14, peg_y + 8), fill=RUG_RED)  # doubled over the peg
+    stripe = (RUG_RED, CLOTH_BLUE)
+    tail_h = 12
+    for i in range(7):
+        tone = stripe[i % 2]
+        y0 = peg_y + 8 + i * tail_h
+        d.rectangle((sx - 13, y0, sx - 3, y0 + tail_h - 2), fill=tone)      # longer tail
+        if i < 5:
+            d.rectangle((sx + 3, y0, sx + 13, y0 + tail_h - 2), fill=tone)  # shorter tail
     return img
 
 
@@ -2259,6 +2454,30 @@ def make_dresser(w=192, h=128):
     d.rectangle((left - 6, top - 8, right + 6, top), fill=hi)
     d.rectangle((left - 6, top - 8, right + 6, top - 6), fill=_mix(hi, PARCHMENT, 0.3))
 
+    # A folded quilt draped over the slab's near (left) corner (2m.1), hanging down over the
+    # top drawer's face. Its top edge is flush with the slab top (top - 8) and never higher —
+    # the direction review flagged the tight wall-tile band above the window, so nothing here
+    # may climb above the slab it sits on. Cloth tone is CLOTH_BLUE (already in-palette, a cool
+    # contrast against the wood) run through the same coarse checkerboard `_mix()` technique
+    # make_table_felt() uses for the gingham tablecloth, just scaled down to a small object.
+    qx0, qx1 = left - 6, left + 58
+    qy0, qy1 = top - 8, top + 32
+    q_hi, q_base, q_sh, q_deep = ramp(CLOTH_BLUE)
+    check = 10
+    light = _mix(q_base, q_hi, 0.18)
+    dark = _mix(q_base, q_sh, 0.22)
+    for qy in range(qy0, qy1):
+        band_y = ((qy - qy0) // check) % 2 == 0
+        for qx in range(qx0, qx1, check):
+            band_x = ((qx - qx0) // check) % 2 == 0
+            tone = dark if (band_x and band_y) else (light if (band_x or band_y) else q_base)
+            d.line((qx, qy, min(qx + check - 1, qx1 - 1), qy), fill=tone)
+    # 2-3 fold lines, darkened steps rather than a flat cloth — a quilt draped over a corner
+    # creases, it doesn't lie flat.
+    for fy in (qy0 + 10, qy0 + 22, qy0 + 33):
+        d.line((qx0, fy, qx1, fy), fill=darken(q_base, 0.7))
+    d.line((qx0, qy0, qx1, qy0), fill=q_hi)  # lit crest along the fold nearest the light
+
     # Three drawers, stacked, each with a routed shadow line and two pulls.
     drawer_top, drawer_bottom = top + 10, bottom - 10
     gap = 6
@@ -2316,6 +2535,27 @@ def make_chicken_frames(count=2, w=76, h=60):
             d.line((lx, by1 - 4, lx, by1 + round(h * 0.14)), fill=GOLD, width=3)
         frames.append(img)
     return frames
+
+
+# Scattered feed on the floor beside the hen (creative-direction pass). Deliberately its OWN
+# static image rather than a few dots painted into `make_chicken_frames`: that sprite sheet is
+# a two-frame strip clipped by `.scene-chicken`'s own `overflow: hidden` (the box it slides
+# behind for the peck-cycle animation), so anything baked into it would be cropped to the
+# hen's own small bounding box along with the strip. A separate element sits in its own,
+# independently-sized box instead.
+def make_feed_dots(w=48, h=20):
+    """A fixed, hand-placed scatter of small seed dots — arithmetic coordinates, not `random`,
+    so the layout is exactly reproducible run to run. Flat-shaded (no ramp/shading): at 1-2
+    file-pixels each there is no room for a highlight to read as anything but noise."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    dots = (
+        (5, 11, GOLD), (14, 5, RUG_CREAM), (23, 13, GOLD),
+        (31, 6, RUG_CREAM), (39, 12, GOLD), (10, 16, RUG_CREAM),
+    )
+    for x, y, color in dots:
+        d.ellipse((x - 2, y - 2, x + 2, y + 2), fill=color)
+    return img
 
 
 # --- The unit: true-resolution output (Phase 2f.1) ---------------------------------------- #
@@ -2465,6 +2705,10 @@ def main() -> None:
     # hearth's light shouldn't be the one object in the room untouched by it.
     save_asset(light_from(make_rug(), strength=0.12),
                os.path.join(scene_dir, "rug.png"), chunk=CHUNK_ENV)
+    # A worn patch in front of the player's own seat (2m.1) — its own placed asset, same
+    # convention as the rug above, not baked into the floor tile (see make_floor_patch()).
+    save_asset(light_from(make_floor_patch(), strength=0.12),
+               os.path.join(scene_dir, "floor_patch.png"), chunk=CHUNK_ENV)
     # Everything in the room is lit by the hearth, which sits in the LEFT margin. Applied here
     # rather than inside each generator so the light model is stated once, in one place, and
     # so it demonstrably cannot reach the card art. The fireplace and the window are their own
@@ -2507,6 +2751,12 @@ def main() -> None:
         ("coat_hooks", make_coat_hooks()),
         ("woodpile", make_woodpile()),
         ("dresser", make_dresser()),
+        # Two small static props (creative-direction pass): a yarn ball beside the cat and a
+        # scatter of feed dots beside the hen. Same loop as the furniture above — flat-shaded,
+        # single static image, no sprite-sheet frames — even though these two sit beside
+        # ANIMALS rather than furniture, because neither one itself moves.
+        ("yarn_ball", make_yarn_ball()),
+        ("feed_dots", make_feed_dots()),
     ):
         lit = light_from(sprite, strength=0.13)
         _assert_sprite_colours(lit, name)

@@ -284,6 +284,39 @@ body {
   image-rendering: pixelated;
 }
 
+/* A worn patch in the floor in front of the player's own seat (2m.1). A separate placed
+   asset, not baked into `.scene-floor`'s repeating tile — see `make_floor_patch()`'s own
+   docstring for why a point feature in a TILE would betray its repeat as a polka-dot grid.
+   Follows the rug's own convention (own element, positioned against `.scene-layer`, floor-
+   line anchored), narrower than the rug (200 vs 340au) and its near edge sits below the
+   rug's own (68 vs 80au) — closer to the viewer's edge of the floor band, per spec.
+
+   KNOWN LIMITATION, measured rather than guessed at and documented rather than shipped
+   quietly wrong, in the same spirit as `.scene-rug`'s own coordinate-mismatch note above:
+   checked at 1440x900, 768x1024 and 390x844, `.hand-tray`'s background is opaque
+   (rgba(16,11,8,0.82)) and its top edge sits at or above the rug's own near edge (80au)
+   the instant a hand is dealt, at every one of them — there is no vertical band of the floor
+   left free that is both "below the table" and "above the hand tray" while cards are in play.
+   A patch confined to the 0-80au band the rug leaves free would therefore sit entirely behind
+   the opaque tray for essentially the whole time a hand is in play, at any viewport. Straddling
+   the rug's own near edge instead (68-108au) at least keeps it clear of the table itself, and
+   it is mounted AFTER `.scene-rug` in SceneLayer.tsx so it paints OVER the rug there rather
+   than vanishing under it — reading as the worn path where the player's own feet cross the
+   rug's front edge. It is genuinely visible before a hand is dealt (packet pick) and in the
+   brief windows between hands; fully fixing the rest would mean reworking where the hand tray
+   and the floor plane meet, which is a bigger structural change than this pass. */
+.scene-floor-patch {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(68px * var(--px));
+  width: calc(200px * var(--px));
+  height: calc(40px * var(--px));
+  background-image: url('/art/scene/floor_patch.png');
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+
 /* Side scenery is now GATELESS (Phase 2f.2). It used to be `display: none` below a width
    threshold — 1240, then 1000, then 720, each one derived from some other element's size at
    the time and each one going stale the next time that element was resized. Measured at
@@ -564,6 +597,34 @@ body {
 @keyframes cat-breathe {
   to { transform: translateX(calc(-252px * var(--px))); }
 }
+/* A yarn ball beside the sleeping cat (creative-direction pass). A SEPARATE static element,
+   not part of `.scene-cat`'s own strip — that box is clipped for the breathing slide
+   animation, and a toy that never moves has no reason to share it. Floor-anchored at the same
+   `bottom` as the cat so both sit on the same floor line, and sized to stay inside the cat's
+   own [65, 145]au vertical footprint — the bounding box already verified clear of the
+   mobile-tuned action-bar states (see `.scene-chicken`'s own note on that). Placed just past
+   the cat's right edge (20 + 126 = 146au) with a small gap, as if it rolled a little way off
+   from him while he slept. */
+.scene-yarn {
+  position: absolute;
+  left: calc(150px * var(--px));
+  /* `bottom: 65au` (level with the cat's own floor line) measured out to sit ENTIRELY behind
+     the hand tray at 1440x900 — the tray's top edge lands at 91au from the viewport bottom in
+     its normal (no bid-row) state, and a 65+26=91au box has no pixel above that line. The cat
+     survives the same tray because its visible fur is concentrated in the UPPER part of its
+     145au-tall box; this prop is only 26au tall, so it needs to sit in that same upper band
+     rather than at true floor level to be visible at all during ordinary play. Raised to
+     bottom: 118au — top edge 144au, just inside the cat's own 145au top edge, and clear of
+     both the tray's 91au line AND the woodpile's own bottom log row (measured at the rendered
+     scene: its lowest logs bottom out 4au below this prop's own bottom edge at this position),
+     which a first pass at 100au sat squarely inside. */
+  bottom: calc(118px * var(--px));
+  width: calc(32px * var(--px));
+  height: calc(26px * var(--px));
+  background-image: url('/art/scene/yarn_ball.png');
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
 
 /* --- Wall and floor furniture (2g.4, re-placed in 2h.1) ---------------------------------- */
 /* All anchored to a VIEWPORT EDGE, never to the table or to each other. Every stale-geometry
@@ -782,6 +843,24 @@ body {
 @keyframes chicken-peck {
   to { transform: translateX(calc(-76px * var(--px))); }
 }
+/* Feed/seed dots scattered on the floor beside the hen (creative-direction pass). A SEPARATE
+   static element from `.scene-chicken-strip` on purpose — that strip sits inside
+   `.scene-chicken`'s own `overflow: hidden` clip for the peck-cycle slide animation, and
+   anything baked into it would be cropped along with the strip. Placed just past the hen's own
+   left edge (right: 120 + 38 = 158au), on the same `bottom: 130au` floor line the hen's own
+   CSS comment above already measured clear of the action bar across several mid-hand states —
+   reusing that number rather than re-deriving one, and kept to a 10au-tall footprint so it
+   stays well inside the hen's own [130, 160]au bounding box. */
+.scene-feed {
+  position: absolute;
+  right: calc(160px * var(--px));
+  bottom: calc(130px * var(--px));
+  width: calc(24px * var(--px));
+  height: calc(10px * var(--px));
+  background-image: url('/art/scene/feed_dots.png');
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
 /* A barely-perceptible settle, so he is not a decal. Deliberately tiny and slow — a seated
    person at rest shifts, they do not bob.
 
@@ -833,11 +912,20 @@ body {
    rug reaches up toward the felt's near edge, the woodpile and cat sit beside the hearth at
    floor level) — on the title screen there is no felt, and that cluster is exactly what the
    centered text column and the mute toggle sit on top of. Dropped rather than repositioned:
-   the fireplace and window alone are what the tagline ("a cabin, a fire") is actually about. */
+   the fireplace and window alone are what the tagline ("a cabin, a fire") is actually about.
+   The yarn ball rides along with the cat it belongs to — leaving it on-screen with the cat it
+   sits beside gone would read as a stray red smudge on the floor rather than a toy. */
 .title-scene .scene-rug,
 .title-scene .scene-woodpile,
 .title-scene .scene-cat,
+.title-scene .scene-yarn,
 .title-scene .scene-shelf {
+  display: none;
+}
+/* The floor patch (2m.1) sits in front of the player's own seat, which does not exist on the
+   title screen either — same reasoning as the rug/woodpile/cat/shelf drop above, kept as its
+   own rule rather than joining that selector list. */
+.title-scene .scene-floor-patch {
   display: none;
 }
 /* The wall-prop width gates (900px, 1560px) exist to avoid the in-game scoreboard/opponent —
