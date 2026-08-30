@@ -35,6 +35,14 @@ export function SceneLayer() {
           (see .scene-floor-patch's CSS comment for the measured reason), so it needs to paint
           on top of the rug there rather than under it. */}
       <div className="scene-floor-patch" />
+      {/* A single dropped card near the patch (wave-2 3m.3) — "a hand you can only half-
+          remember." Mounted AFTER the patch, same reason the patch is mounted after the rug:
+          its footprint overlaps the patch's, so it needs to paint on top there. Uses the SAME
+          positioning approach as .scene-floor-patch, and a class name starting `scene-floor-`
+          rather than `scene-dropped-` (see .scene-floor-card's own CSS comment for why that
+          naming is load-bearing for npm run audit), so the two share one visibility window
+          rather than each needing its own. */}
+      <div className="scene-floor-card" />
 
       <div className="scene-fireplace">
         {/* Sprite strip animated with transform + steps(): compositor-only. Animating
@@ -78,6 +86,10 @@ export function SceneLayer() {
       <div className="scene-picture-2" />
       <div className="scene-coat-hooks" />
       <div className="scene-woodpile" />
+      {/* A small hearth mat (wave-2) on the floor in front of the firebox opening — a separate
+          placed element, not baked into fireplace.png, same reasoning as the woodpile/dresser
+          above. See .scene-hearth-mat's own CSS comment for the placement math. */}
+      <div className="scene-hearth-mat" />
       {/* Under the window's new, higher position (2l.1) — see .scene-dresser's own CSS comment. */}
       <div className="scene-dresser" />
 

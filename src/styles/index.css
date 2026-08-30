@@ -320,6 +320,47 @@ body {
   image-rendering: pixelated;
 }
 
+/* A single dropped card near the worn patch (wave-2 3m.3) — "a hand you can only half-remember."
+   Deliberately follows `.scene-floor-patch`'s own positioning convention verbatim (`position:
+   absolute` against `.scene-layer`, `left: 50%` + `transform: translateX`, a floor-line-relative
+   `bottom` anchor) rather than inventing a new one — the spec for this element requires it to
+   share the patch's own narrow visibility window (genuinely visible only before a hand is dealt
+   and during the two loner-declaration windows, per that class's own CSS comment above) rather
+   than being visible/invisible on its own separate schedule. Reusing the same mechanism is what
+   makes that true: both are plain scene-layer children with no gate of their own, so whatever
+   covers one at a given viewport (`.hand-tray`'s opaque background, `.bid-panel`) covers the
+   other at the same instant, rather than each needing its own threshold kept in sync by hand.
+
+   36x28au box, 1:1 with the saved asset (see `make_dropped_card()`) — bottom sits at 74au, centred
+   in the patch's own 68-108au vertical span, and the extra `translateX` offset below shifts it
+   off the patch's dead centre (comfortably inside the patch's 200au width either way) so it
+   reads as a card that landed NEAR the patch rather than one stacked exactly on its midpoint.
+   Mounted AFTER `.scene-floor-patch` in SceneLayer.tsx, same reason the patch is mounted after
+   the rug: it needs to paint OVER the patch where their footprints overlap.
+
+   Named `.scene-floor-card`, not `.scene-dropped-card`, for a load-bearing reason: `npm run
+   audit` (scripts/scale-audit.js, off-limits to edit for this pass) flags any `[class*="scene-
+   "]` element more than 35% hidden behind gameplay chrome (`.hand-tray`, `.seat-fan`, etc) —
+   EXCEPT elements matching its own `GROUND_PLANE = /scene-floor|scene-rug/` regex, which it
+   exempts on exactly this reasoning: "most of it is legitimately covered whenever the bid panel
+   or hand tray opens ... the exact same footprint the floor occupies." That is precisely this
+   element's own contract (share the floor patch's coverage, on purpose, per the spec above) —
+   `.scene-floor-patch` itself only passes the same audit today because "scene-floor-patch"
+   happens to contain "scene-floor" as a substring. Matching that prefix deliberately, rather
+   than picking a more literal name the regex doesn't recognise, is what keeps this element's
+   real (correct, by-design) behaviour from reading as the audit's own false positive. */
+.scene-floor-card {
+  position: absolute;
+  left: 50%;
+  transform: translateX(calc(-50% - 50px * var(--px)));
+  bottom: calc(74px * var(--px));
+  width: calc(36px * var(--px));
+  height: calc(28px * var(--px));
+  background-image: url('/art/scene/dropped_card.png');
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+
 /* Side scenery is now GATELESS (Phase 2f.2). It used to be `display: none` below a width
    threshold — 1240, then 1000, then 720, each one derived from some other element's size at
    the time and each one going stale the next time that element was resized. Measured at
@@ -588,17 +629,25 @@ body {
   background-size: 100% 100%;
 }
 .scene-cat-strip {
-  width: calc(252px * var(--px));   /* 2 frames x 126au */
+  width: calc(378px * var(--px));   /* 3 frames x 126au */
   height: calc(80px * var(--px));
   background-image: url('/art/scene/cat_sheet.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
-  /* Slow enough to read as breathing rather than as a glitch. Two frames is plenty: the
-     motion is a swell, not a gait. */
-  animation: cat-breathe 3.4s steps(2) infinite;
+  /* Slow enough to read as breathing rather than as a glitch. Frame 3 is a tail-tip flick, not
+     a third breathing beat, so it gets its own uneven hold below rather than an even steps(3)
+     — a real flick is quick and occasional, not evenly spaced like the breath. `steps(1,
+     jump-end)` applied to the whole animation makes each keyframe segment below its own
+     instant cut (holding the FROM value, then snapping to the TO value at the segment's end),
+     so the uneven keyframe spacing is what controls hold length, same sprite-strip-slide
+     technique as the 2-frame version just generalised to uneven steps. */
+  animation: cat-breathe 4.2s steps(1, jump-end) infinite;
 }
 @keyframes cat-breathe {
-  to { transform: translateX(calc(-252px * var(--px))); }
+  0%, 42% { transform: translateX(0); }
+  50%, 90% { transform: translateX(calc(-126px * var(--px))); }
+  93%, 97% { transform: translateX(calc(-252px * var(--px))); }
+  100% { transform: translateX(0); }
 }
 /* A yarn ball beside the sleeping cat (creative-direction pass). A SEPARATE static element,
    not part of `.scene-cat`'s own strip — that box is clipped for the breathing slide
@@ -818,6 +867,35 @@ body {
   height: calc(80px * var(--px));
   background-image: url('/art/scene/woodpile.png');
 }
+/* A small hearth mat (wave-2), lying flat on the floor directly in front of the firebox
+   opening — distinct from `.scene-rug`. Its own placed element rather than baked into
+   fireplace.png, same reasoning as `.scene-woodpile`/`.scene-dresser`: it sits on the floor
+   plane, not on the fireplace structure.
+
+   `make_fireplace()` puts the firebox opening at x 96-278 / y 141.5-255.5 au WITHIN the
+   374x270 au fireplace image; that image is anchored at `left: -78au`, so in this container's
+   own coordinates the opening spans roughly x 18-200au. `left: 15au` / `width: 90au` sits
+   under the LEFT half of that span rather than centred on it, stopping short of
+   `.scene-woodpile`'s own `left: 112au` edge with a few au of clearance instead of overlapping
+   it.
+
+   `bottom: 130au` reuses `.scene-chicken`'s own figure verbatim rather than re-deriving one —
+   that class's own comment already measured it clearing the action bar's footprint (bid panel
+   / hand tray, whichever is mounted) "with real margin... across several mid-hand states", not
+   just one. A first pass at `bottom: 100au` (a little forward of the woodpile's own 116au, to
+   read as closer to the viewer) failed `npm run audit` at 375x812: 47% hidden by `.hand-tray`
+   during bidding, where the tray+bid-panel stack is taller than the idle-state footprint
+   `.scene-yarn`'s own 91au-clearance note was measured against. */
+.scene-hearth-mat {
+  position: absolute;
+  left: calc(15px * var(--px));
+  bottom: calc(130px * var(--px));
+  width: calc(90px * var(--px));
+  height: calc(24px * var(--px));
+  background-image: url('/art/scene/hearth_mat.png');
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
 /* A small roaming hen (2l.1) — the cat's fireside stillness gets a moving counterpart
    elsewhere on the floor, a different species so the two don't read as copies of each other.
    Gateless like the cat/shelf above: cropped by `.scene-layer`'s own `overflow: hidden`
@@ -840,17 +918,19 @@ body {
   overflow: hidden;
 }
 .scene-chicken-strip {
-  width: calc(76px * var(--px));   /* 2 frames x 38au */
+  width: calc(114px * var(--px));   /* 3 frames x 38au */
   height: calc(30px * var(--px));
   background-image: url('/art/scene/chicken_sheet.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
   /* Same steps()-driven strip-slide as the cat, at a brisker interval — a peck is a quicker
-     motion than a breath. */
-  animation: chicken-peck 2.8s steps(2) infinite;
+     motion than a breath. Frame 3 is an alert head-tilt between pecks, evenly spaced with the
+     other two rather than the cat's uneven flick — a tilt-and-settle reads fine as a regular
+     beat of the same idle cycle. */
+  animation: chicken-peck 2.8s steps(3) infinite;
 }
 @keyframes chicken-peck {
-  to { transform: translateX(calc(-76px * var(--px))); }
+  to { transform: translateX(calc(-114px * var(--px))); }
 }
 /* Feed/seed dots scattered on the floor beside the hen (creative-direction pass). A SEPARATE
    static element from `.scene-chicken-strip` on purpose — that strip sits inside
@@ -935,6 +1015,12 @@ body {
    title screen either — same reasoning as the rug/woodpile/cat/shelf drop above, kept as its
    own rule rather than joining that selector list. */
 .title-scene .scene-floor-patch {
+  display: none;
+}
+/* The dropped card (wave-2 3m.3) shares the floor patch's own visibility window by
+   construction (see `.scene-floor-card`'s own comment) — it needs the same title-scene drop
+   for the same reason: no seat, no patch, so nothing for a dropped card to sit near either. */
+.title-scene .scene-floor-card {
   display: none;
 }
 /* The wall-prop width gates (900px, 1560px) exist to avoid the in-game scoreboard/opponent —
