@@ -1135,19 +1135,22 @@ def draw_opponent_face(img: Image.Image, expression: str) -> None:
             mx0, mx1 = sorted((OPP_CX + side * 16, OPP_CX + side * 20))
             d.rectangle((mx0, my, mx1, my + 8), fill=INK)
 
-    # Reading glasses. A prior pass aimed for the gap between the hat brim and the brow ridge
-    # (~6au there, already consumed by the brow-ridge shadow at eye_y-24..eye_y-12) and never
-    # fit. The actual free space is lower, directly over the eyes themselves. Sized a couple of
-    # px past idle/rueful's own eye rectangle (ex-8, eye_y-12, ex+8, eye_y+8) on every side,
-    # not exactly matching it — an outline drawn flush with the eye's own INK fill/outline is
-    # invisible as a separate lens, it just reads as a slightly thicker eye border. The extra
-    # margin is what makes the frame legible as glasses sitting in front of the eye rather than
-    # on it, across every expression's differently-sized eye shape. Flat INK outline only (no
-    # fill, no ramp) — filled lenses this small would just read as a second pair of eyes.
+    # Reading glasses. A prior pass gave the frame margin past idle/rueful's own eye rectangle
+    # (ex-8, eye_y-12, ex+8, eye_y+8) but kept the outline INK, same as the eye fill — on
+    # happy/blink's thin-bar eyes that margin reads fine, but on idle/rueful's large filled
+    # eye rectangle an INK outline sitting a couple of px outside an INK fill is optically the
+    # same colour as the fill it's next to, and at this resolution (plus the outline's 2px
+    # width falling under the CHUNK_ENV*PX=4 snap grid) it merges into one solid block instead
+    # of reading as a separate frame — confirmed by pixel-diffing the saved PNGs. Fixed by
+    # drawing the frame in GOLD instead: distinct from both the INK eye fill and the SKIN
+    # around it on every expression, so the frame reads regardless of eye shape. Width bumped
+    # to 4 (a multiple of the snap grid) so it survives the grid consistently rather than
+    # partially vanishing depending on alignment. No fill/ramp — filled lenses this small would
+    # just read as a second pair of eyes.
     for side in (-1, 1):
         ex = OPP_CX + side * 24
-        d.rectangle((ex - 12, eye_y - 14, ex + 12, eye_y + 10), outline=INK, width=2)
-    d.line((OPP_CX - 12, eye_y - 2, OPP_CX + 12, eye_y - 2), fill=INK, width=2)
+        d.rectangle((ex - 12, eye_y - 14, ex + 12, eye_y + 10), outline=GOLD, width=4)
+    d.line((OPP_CX - 12, eye_y - 2, OPP_CX + 12, eye_y - 2), fill=GOLD, width=4)
 
 
 def _buffalo_check(img: Image.Image, base: tuple, alt: tuple, size: int) -> None:
@@ -1762,16 +1765,17 @@ def make_fireplace(w=748, h=540):
 
     # A small stack of books (wave-2), tucked into the gap between the candle and the tin —
     # measured against both: the candle's holder ends at cndl_x+6, the tin's frame starts at
-    # frm_x-frm_w//2, leaving a real but narrow strip of ledge between them. Three thin
-    # flat-shaded spines at varied heights, reusing the mantel's own m_sh/m_deep tones (plus
-    # one mix of the two) rather than a new colour, the same "silhouette against the lit
-    # strip" logic the candle/tin already use.
-    book_w, book_gap = max(3, round(w * 0.008)), max(1, round(w * 0.0027))
+    # frm_x-frm_w//2, leaving a real but narrow strip of ledge between them.
+    # Was three 3px-wide spines with 1px gaps -- confirmed illegible, blurring into a smear at
+    # both raw-asset zoom and in actual gameplay at 1440x900 and 768x1024. Two fatter spines
+    # instead, and one given a distinct hue (CLOTH_BLUE, the same distinguishing-hue trick the
+    # shelf's own leaning books already use in make_shelf()) so the pair reads as a small stack
+    # rather than one blob.
+    book_w, book_gap = max(6, round(w * 0.014)), max(1, round(w * 0.0027))
     book_x = cndl_x + 6 + max(3, round(w * 0.005))
     for i, (bh, tone) in enumerate((
-        (max(6, round(h * 0.017)), m_sh),
         (max(9, round(h * 0.025)), m_deep),
-        (max(5, round(h * 0.013)), _mix(m_sh, m_deep, 0.5)),
+        (max(6, round(h * 0.017)), _mix(CLOTH_BLUE, m_sh, 0.5)),
     )):
         bx0 = book_x + i * (book_w + book_gap)
         d.rectangle((bx0, ledge_y - bh, bx0 + book_w, ledge_y), fill=tone)
@@ -2055,9 +2059,15 @@ def make_cat_frames(count=3, w=252, h=160):
             # against the composited PNG, not just this math, before relying on it. A small
             # curled hook, offset from the body/head geometry above rather than reusing any of
             # its coordinates.
+            #
+            # Its inner vertex (was 0.94w/0.70h) is pulled in to 0.88w/0.61h so the hook's own
+            # silhouette laps onto the head ellipse's silhouette by ~15 source px instead of
+            # stopping ~15px short of it — confirmed by rasterizing both shapes and measuring
+            # their overlap, not eyeballed. Without this the tail was a disconnected blob
+            # floating near the hindquarters; the two shapes now share opaque pixels at the seam.
             parts.append((_poly([
                 (round(w * 0.86), round(h * 0.86)),
-                (round(w * 0.94), round(h * 0.70)),
+                (round(w * 0.88), round(h * 0.61)),
                 (round(w * 0.99), round(h * 0.78)),
                 (round(w * 0.93), round(h * 0.88)),
             ]), HAIR_BROWN))
@@ -2705,13 +2715,29 @@ def make_dresser(w=192, h=128):
     # breaking the "never above top-8" rule the quilt already established.
     lx1, lx0 = right - 10, right - 10 - 46
     ly0, ly1 = top - 6, top + 10
-    l_hi, l_base, l_sh, l_deep = ramp(PARCHMENT)
+    # PARCHMENT run straight through ramp() measured, on the regenerated PNG, at (198,193,174)/
+    # (209,204,184) against the slab's own lit top edge at (206,181,128) right next to it — same
+    # spirit of near-miss the quilt above was already fixed for (see its own comment: "gray-olive
+    # indistinguishable from the shadow next to it"). A flat paper tone this close in VALUE to the
+    # wood it sits on reads as a smudge, not an object, no matter how the ramp shades it. Darkened
+    # 22% before ramping — same technique as the quilt's own saturation-boosted variant, just
+    # pushing lightness instead of hue since a letter has no hue to lean on that a wood tone
+    # wouldn't also have — so the base tone itself carries a real value gap from the slab highlight
+    # rather than relying on the two 1px accent lines below to do all the separating.
+    letter_tone = darken(PARCHMENT, 0.78)
+    l_hi, l_base, l_sh, l_deep = ramp(letter_tone)
     letter = [(lx0, ly0 + 3), (lx1 - 4, ly0), (lx1, ly1 - 3), (lx0 + 4, ly1)]
     d.polygon(letter, fill=l_base, outline=l_deep)
     d.line((lx0, ly0 + 3, lx1 - 4, ly0), fill=l_hi)  # lit top edge, angled with the fold
     # A single crease a third of the way down — a letter folded once, not lying flat off the
-    # press.
-    d.line((lx0 + 2, ly0 + 8, lx1 - 3, ly0 + 5), fill=l_sh)
+    # press. Deepened from l_sh to l_deep so the fold itself reads as a definite dark line
+    # rather than another near-miss against the slab.
+    d.line((lx0 + 2, ly0 + 8, lx1 - 3, ly0 + 5), fill=l_deep)
+    # A 1px near-white rim along the letter's own left edge (2m.2 fix) — the same "separates
+    # from whatever sits against it" job the quilt's rim does above, but toward white rather
+    # than toward PARCHMENT since the letter's base tone already IS parchment; mixing further
+    # toward its own base would do nothing.
+    d.line((lx0, ly0 + 3, lx0 + 4, ly1), fill=_mix(l_hi, (255, 255, 255, 255), 0.5))
 
     # Three drawers, stacked, each with a routed shadow line and two pulls.
     drawer_top, drawer_bottom = top + 10, bottom - 10

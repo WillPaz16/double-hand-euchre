@@ -288,8 +288,8 @@ body {
    asset, not baked into `.scene-floor`'s repeating tile — see `make_floor_patch()`'s own
    docstring for why a point feature in a TILE would betray its repeat as a polka-dot grid.
    Follows the rug's own convention (own element, positioned against `.scene-layer`, floor-
-   line anchored), narrower than the rug (200 vs 340au) and its near edge sits below the
-   rug's own (68 vs 80au) — closer to the viewer's edge of the floor band, per spec.
+   line anchored), and its near edge sits below the rug's own (68 vs 80au) — closer to the
+   viewer's edge of the floor band, per spec.
 
    KNOWN LIMITATION, measured rather than guessed at and documented rather than shipped
    quietly wrong, in the same spirit as `.scene-rug`'s own coordinate-mismatch note above:
@@ -307,13 +307,25 @@ body {
    stack and cover this position at desktop width too, before a single card is even played.
    It is genuinely visible only before a hand is dealt (packet pick) and during the two
    loner-declaration windows; fully fixing the rest would mean reworking where the hand tray
-   and the floor plane meet, which is a bigger structural change than this pass. */
+   and the floor plane meet, which is a bigger structural change than this pass.
+
+   WIDTH (2m.2 fix): was 200au, dead centred — measured at 1440x900 that put BOTH long edges
+   inside the table's own front-leg footprint (`.table-leg-l`/`-r` sit at `left/right: 20%` of
+   the 280au felt, i.e. centre ±84au) — every visible pixel of the patch fell behind the legs
+   (and the seat fans between them), the same "narrower than the furniture standing on it"
+   mistake `.scene-rug` itself was fixed for in 2g.4 (see its own comment above). Widened to
+   400au — DOUBLE the natural asset size (`floor_patch.png` is itself a 200x40au file; scripts/
+   audit.ts's scale-audit requires every `background-size` to land on a WHOLE-NUMBER multiple of
+   the file's own resolution, so 300au — the first value tried, and enough on its own to clear
+   the legs — failed the audit at --px 1 with a 1.5x fractional scale. 400 is the next multiple
+   up) — centred, giving ±200au, 116au of clearance past the ±84au leg line on each side,
+   verified against an actual rendered screenshot at 1440x900, not just this arithmetic. */
 .scene-floor-patch {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   bottom: calc(68px * var(--px));
-  width: calc(200px * var(--px));
+  width: calc(400px * var(--px));
   height: calc(40px * var(--px));
   background-image: url('/art/scene/floor_patch.png');
   background-size: 100% 100%;
@@ -333,10 +345,17 @@ body {
 
    36x28au box, 1:1 with the saved asset (see `make_dropped_card()`) — bottom sits at 74au, centred
    in the patch's own 68-108au vertical span, and the extra `translateX` offset below shifts it
-   off the patch's dead centre (comfortably inside the patch's 200au width either way) so it
+   off the patch's dead centre (comfortably inside the patch's 400au width either way) so it
    reads as a card that landed NEAR the patch rather than one stacked exactly on its midpoint.
    Mounted AFTER `.scene-floor-patch` in SceneLayer.tsx, same reason the patch is mounted after
    the rug: it needs to paint OVER the patch where their footprints overlap.
+
+   OFFSET (2m.2 fix): was -50au, which — like the patch's own old 200au width — sat entirely
+   behind the table's front legs (centre ±84au, see `.scene-floor-patch`'s own fix note above)
+   at 1440x900: -50au ±18au (its own half-width) only reaches -68 to -32au, well inside the
+   ±84au leg line. -120au clears it (-138 to -102au, 18au past the leg line) while staying
+   comfortably inside the patch's new ±200au span, verified against an actual rendered
+   screenshot rather than this arithmetic alone.
 
    Named `.scene-floor-card`, not `.scene-dropped-card`, for a load-bearing reason: `npm run
    audit` (scripts/scale-audit.js, off-limits to edit for this pass) flags any `[class*="scene-
@@ -352,7 +371,7 @@ body {
 .scene-floor-card {
   position: absolute;
   left: 50%;
-  transform: translateX(calc(-50% - 50px * var(--px)));
+  transform: translateX(calc(-50% - 120px * var(--px)));
   bottom: calc(74px * var(--px));
   width: calc(36px * var(--px));
   height: calc(28px * var(--px));
@@ -612,9 +631,16 @@ body {
    hearth places at 18-200 au horizontally), so it read as a cat sitting in the fire rather
    than in front of it. Dropping it clear of the floor line puts it on the boards where a cat
    actually lies — near the warmth, not inside it. */
+/* Raised 65 -> 118au: at 65 the cat's actual opaque pixels (per make_cat_frames, raw canvas
+   252x160) missed `.scene-hearth-mat` (bottom:130-154au) almost entirely — only the ear-tips
+   (the top ~6% of the sprite's frame) reached that high, confirmed by a pixel-alpha check of
+   cat_sheet.png. The body mass (the main fur ellipse) sits at 17%-61% of the frame height
+   from the sprite's own bottom edge, i.e. ~13.5-49au above whatever `bottom` is set to. At
+   bottom:118 that places the body at ~131.5-167au, which fully spans the mat's 130-154au band
+   instead of landing on bare floorboards below it. */
 .scene-cat {
   left: calc(20px * var(--px));
-  bottom: calc(65px * var(--px));
+  bottom: calc(118px * var(--px));
   width: calc(126px * var(--px));
   height: calc(80px * var(--px));
   overflow: hidden;
