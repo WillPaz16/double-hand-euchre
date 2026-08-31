@@ -2613,6 +2613,49 @@ def make_wall_clock(size=120):
     return img
 
 
+def make_barn_star(w=112, h=112):
+    """A small tin barn star (creative-direction pass — direct user feedback: "id like to put
+    something on the wall left of the window"). Fills the bare stretch of log wall between the
+    antlers/second-picture column and the window's left edge — see `.scene-barn-star`'s own CSS
+    comment for the measured gap.
+
+    A five-pointed silhouette on purpose: the two picture frames are rectangles, the clock is a
+    disc, the antlers branch irregularly — nothing else already hanging reads as a star, so this
+    can't land as a smaller copy of a piece that's already there. Flat 2-tone shading, same
+    `ramp()` technique every other wood/metal object in this file uses, plus a single riveted
+    bolt at the centre the way a real stamped-tin star's points are joined."""
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    hi, base, sh, deep = ramp(RED)
+
+    cx, cy = w // 2, h // 2
+    r_out, r_in = w * 0.46, w * 0.185
+    angles = [(-90 + i * 36) % 360 for i in range(10)]
+    pts = [(cx + (r_out if i % 2 == 0 else r_in) * math.cos(math.radians(a)),
+            cy + (r_out if i % 2 == 0 else r_in) * math.sin(math.radians(a)))
+           for i, a in enumerate(angles)]
+    d.polygon(pts, fill=base, outline=deep)
+
+    # Two lit/shadowed arcs of edges, the same technique make_wall_clock uses (a highlight ring
+    # over one side, a shadow ring over the other, leaving the rest of the outline at its plain
+    # `deep` rim) — just traced along the star's own straight edges instead of a circle's curve.
+    for idx in range(10):
+        p0, p1 = pts[idx], pts[(idx + 1) % 10]
+        a0, a1 = angles[idx], angles[(idx + 1) % 10]
+        mid = (a0 + ((a1 - a0) % 360) / 2) % 360
+        if 200 <= mid <= 340:
+            d.line((p0, p1), fill=hi, width=3)
+        elif 20 <= mid <= 160:
+            d.line((p0, p1), fill=sh, width=3)
+
+    # A single bolt at the centre, the way a real stamped-tin star's five points are riveted
+    # together rather than cast as one piece.
+    br = max(3, round(w * 0.05))
+    d.ellipse((cx - br, cy - br, cx + br, cy + br), fill=_mix(GOLD, deep, 0.35))
+    d.ellipse((cx - br, cy - br, cx - br // 2, cy - br // 2), fill=_mix(GOLD, PARCHMENT, 0.4))
+    return img
+
+
 def make_coat_hooks(w=208, h=268):
     """A hook rail with a coat hung on it. The one object here that implies a PERSON — someone
     came in out of the snow and hung their coat up — which is a different kind of warmth from
@@ -2624,28 +2667,43 @@ def make_coat_hooks(w=208, h=268):
     r_hi, rail, r_sh, r_deep = ramp(TABLE_WOOD)
     c_hi, coat, c_sh, c_deep = ramp(COAT_GREEN)
 
-    d.rectangle((0, 0, w - 1, 22), fill=rail)
-    d.line((0, 0, w - 1, 0), fill=r_hi)
-    d.line((0, 22, w - 1, 22), fill=r_deep)
+    # Rail thickness matches `make_fireplace`'s own mantel slab exactly (70 canvas-px = 35au,
+    # the same board thickness in the same au units) and mirrors its base/highlight/shadow-line
+    # structure, so `.scene-coat-hooks` positioned flush against the mantel (see that CSS rule's
+    # own comment) reads as the SAME shelf continuing rightward rather than a second, thinner,
+    # differently-lit rail floating at an unrelated height — the "mantel doesn't stretch the
+    # whole length" complaint was two boards at two different heights, not one broken board.
+    rail_h = 70
+    d.rectangle((0, 0, w - 1, rail_h), fill=rail)
+    d.rectangle((0, 0, w - 1, 24), fill=r_hi)
+    d.line((0, 46, w - 1, 46), fill=r_sh)
+    d.line((0, rail_h, w - 1, rail_h), fill=r_deep)
     for hx in (35, w // 2, w - 37):
-        d.rectangle((hx - 5, 22, hx + 5, 40), fill=r_sh)
-        d.rectangle((hx - 10, 35, hx + 10, 42), fill=r_deep)
+        d.rectangle((hx - 5, rail_h, hx + 5, rail_h + 18), fill=r_sh)
+        d.rectangle((hx - 10, rail_h + 13, hx + 10, rail_h + 20), fill=r_deep)
+    peg_y = rail_h + 18  # dowel bottom -- shared anchor for everything hanging off any hook
 
-    # The coat, hanging from the middle hook: shoulders, body, two sleeves.
-    cx, top = w // 2, 37
-    d.polygon([(cx - 15, top), (cx + 15, top), (cx + 64, top + 50), (cx + 55, top + 74),
-               (cx + 35, top + 60), (cx + 37, h - 15), (cx - 37, h - 15), (cx - 35, top + 60),
-               (cx - 55, top + 74), (cx - 64, top + 50)], fill=coat)
+    # The coat, hanging from the middle hook: shoulders, body, two sleeves. Was a single sharp
+    # diagonal from collar straight out to the cuff (cx-15,top)->(cx-64,top+50) with no vertex
+    # between them, which is a dart/arrow, not a shoulder -- a hung coat's shoulder seam is a
+    # short, near-horizontal cap, and the sleeve hangs down roughly plumb below it rather than
+    # continuing to flare outward. Now built as two segments per side: a short cap out to the
+    # shoulder point, then the sleeve outer edge falling close to vertical, then the cuff tucking
+    # back in toward the body -- the silhouette a coat on a hook actually has.
+    cx, top = w // 2, peg_y - 3
+    d.polygon([(cx - 15, top), (cx + 15, top), (cx + 40, top + 16), (cx + 44, top + 55),
+               (cx + 30, top + 70), (cx + 37, h - 15), (cx - 37, h - 15), (cx - 30, top + 70),
+               (cx - 44, top + 55), (cx - 40, top + 16)], fill=coat)
     d.polygon([(cx - 15, top), (cx + 2, top), (cx + 2, h - 15), (cx - 12, h - 15)], fill=c_sh)
-    d.line((cx - 64, top + 50, cx - 15, top), fill=c_hi, width=5)
-    d.line((cx + 15, top, cx + 64, top + 50), fill=c_deep, width=5)
-    for by in (top + 84, top + 124, top + 164):
+    d.line((cx - 40, top + 16, cx - 15, top), fill=c_hi, width=4)
+    d.line((cx + 15, top, cx + 40, top + 16), fill=c_deep, width=4)
+    for by in (top + 40, top + 80, top + 120):
         d.rectangle((cx - 7, by, cx - 2, by + 5), fill=GOLD)
 
     # Left hook: a striped scarf draped over the peg, so it isn't left bare. Chosen over a
     # knit hat — stripes stay legible at this sprite's small size, where a rounded hat
     # silhouette tends to blob into the peg beneath it.
-    sx, peg_y = 35, 40
+    sx = 35
     d.rectangle((sx - 14, peg_y - 2, sx + 14, peg_y + 8), fill=RUG_RED)  # doubled over the peg
     stripe = (RUG_RED, CLOTH_BLUE)
     tail_h = 12
@@ -2657,20 +2715,28 @@ def make_coat_hooks(w=208, h=268):
             d.rectangle((sx + 3, y0, sx + 13, y0 + tail_h - 2), fill=tone)  # shorter tail
 
     # Right hook (wave-3): a mitten pair on their own connecting cord, the way a child's
-    # mittens are kept from getting lost — the one hook still bare after the scarf (left) and
-    # coat (middle). Two flat rectangle palms plus a small thumb notch each, no more detail
-    # than the scarf's stripes carry, in CLOTH_BLUE (already in-palette) so it reads as its own
-    # garment rather than an offcut of the coat or scarf beside it.
+    # mittens are kept from getting lost. Redesigned (creative-direction pass): the old pair
+    # was two bare rectangles joined by a straight rigid bar flush with their own top edge --
+    # at this size that read as headphone ear-cups (or a bird), and the thumb notches were tiny
+    # nubs right at the top, easy to miss as anything in particular. Now each mitten is a
+    # tapered body (wide cuff, rounded fingertip) with the cord SAGGING between the two cuffs
+    # like a real string threaded through them, and a thumb big enough to read: a full
+    # triangular wedge a third of the way down the palm, not a corner nick.
     mx = w - 37
     m_hi, mitt, m_sh, _ = ramp(CLOTH_BLUE)
-    d.line((mx - 12, peg_y + 4, mx + 12, peg_y + 4), fill=m_sh, width=2)  # connecting cord
+    cuff_top, cuff_bot, body_bot = peg_y + 6, peg_y + 13, peg_y + 33
+    d.line((mx - 11, cuff_top - 3, mx, cuff_top + 3), fill=m_sh, width=2)  # sagging cord, left half
+    d.line((mx, cuff_top + 3, mx + 11, cuff_top - 3), fill=m_sh, width=2)  # sagging cord, right half
     for side in (-1, 1):
-        cx = mx + side * 11
-        d.rectangle((cx - 7, peg_y + 2, cx + 7, peg_y + 30), fill=mitt)
-        d.rectangle((cx - 7, peg_y + 2, cx + 7, peg_y + 6), fill=m_hi)     # lit top
-        d.rectangle((cx - 7, peg_y + 24, cx + 7, peg_y + 30), fill=m_sh)  # ribbed cuff
-        d.polygon([(cx + side * 6, peg_y + 10), (cx + side * 13, peg_y + 14),
-                    (cx + side * 6, peg_y + 18)], fill=mitt)               # thumb
+        c = mx + side * 11
+        d.polygon([(c - 7, cuff_top), (c + 7, cuff_top), (c + 6, body_bot - 4),
+                   (c, body_bot), (c - 6, body_bot - 4)], fill=mitt)          # tapered palm
+        d.rectangle((c - 7, cuff_top, c + 7, cuff_bot), fill=m_sh)           # ribbed cuff (top)
+        d.rectangle((c - 7, cuff_top, c + 7, cuff_top + 2), fill=m_hi)       # lit cuff edge
+        tx = c + side * 7
+        d.polygon([(tx, cuff_bot + 3), (tx + side * 9, cuff_bot + 7),
+                   (tx + side * 9, cuff_bot + 13), (tx, cuff_bot + 11)], fill=mitt)  # thumb
+        d.line((tx, cuff_bot + 3, tx + side * 9, cuff_bot + 7), fill=m_hi, width=1)
     return img
 
 
@@ -2698,18 +2764,35 @@ def make_woodpile(w=260, h=160):
     shadow = contact_shadow(round(w * 0.9), round(h * 0.15), max_alpha=110)
     img.paste(shadow, (round(w * 0.05), h - round(h * 0.16)), shadow)
 
-    rows = ((15, 5), (33, 4), (50, 3), (68, 2))
+    # A deliberate 4-3-2-1 pyramid, each row one log narrower than the one below and centred
+    # over the base row's own footprint, so the taper reads as intentional rather than as
+    # whatever a row happened to fit. The previous per-row `inset` values (15/33/50/68) were
+    # hand-picked and never checked against the canvas: the bottom two rows' rightmost logs ran
+    # past `w` (the base row's 5th log by 55px) and were silently clipped by the canvas edge --
+    # that's the "uneven top row, stray gaps" the pile was reported as looking like. The base
+    # row's own y also ran 8px past `h` for the same reason. Both are arithmetic here instead of
+    # picked-by-eye, so a row can't silently run off either edge again.
     r = 28
-    for row, (inset, count) in enumerate(rows):
-        y = h - 20 - row * (r + 8)
+    d_ia = r * 2  # log-end diameter ("d" is already the ImageDraw handle)
+    gap = 6
+    spacing = d_ia + gap
+    row_counts = (4, 3, 2, 1)
+    base_width = (row_counts[0] - 1) * spacing + d_ia
+    left_margin = (w - base_width) // 2
+    row_step = 30
+    base_y = h - r - 4
+    for row, count in enumerate(row_counts):
+        y = base_y - row * row_step
+        row_width = (count - 1) * spacing + d_ia
+        x0 = left_margin + (base_width - row_width) // 2
         for i in range(count):
-            x = inset + i * (r * 2 + 5)
-            d.ellipse((x, y - r, x + r * 2, y + r), fill=bark)
-            d.ellipse((x + 5, y - r + 5, x + r * 2 - 5, y + r - 5), fill=face)
+            x = x0 + i * spacing
+            d.ellipse((x, y - r, x + d_ia, y + r), fill=bark)
+            d.ellipse((x + 5, y - r + 5, x + d_ia - 5, y + r - 5), fill=face)
             # Growth rings, and a split — enough to say "cut log" and no more.
-            d.ellipse((x + 12, y - r + 12, x + r * 2 - 12, y + r - 12), outline=f_sh, width=2)
+            d.ellipse((x + 12, y - r + 12, x + d_ia - 12, y + r - 12), outline=f_sh, width=2)
             d.line((x + r, y - r + 8, x + r, y + r - 8), fill=f_sh, width=2)
-            d.arc((x, y - r, x + r * 2, y + r), 200, 340, fill=b_hi, width=2)
+            d.arc((x, y - r, x + d_ia, y + r), 200, 340, fill=b_hi, width=2)
     return img
 
 
@@ -2861,6 +2944,40 @@ def make_dresser(w=192, h=128):
     # than toward PARCHMENT since the letter's base tone already IS parchment; mixing further
     # toward its own base would do nothing.
     d.line((lx0, ly0 + 3, lx0 + 4, ly1), fill=_mix(l_hi, (255, 255, 255, 255), 0.5))
+
+    # A small flower arrangement (creative-direction pass — direct user feedback: "i think
+    # flowers would look good on the dresser") in the one strip of slab still bare: the quilt
+    # covers x < 66 (qx1 = left + 58), the letter covers x >= 128 (lx0), leaving a clean ~62px
+    # gap between them. Kept in the same y-band the letter already proved safe — never above
+    # top - 8 (= 5, the slab's own top edge, see the quilt's own comment) and never at/below
+    # `top + 10` (= drawer_top, defined just below), since the drawers loop that follows draws
+    # AFTER this block and repaints the full carcass width, erasing anything lower.
+    #
+    # Built entirely from tones already used elsewhere on THIS slab, in the SAME light_from
+    # band they already appear in, rather than a new ramp() of its own — `_assert_sprite_colours`
+    # measured this sprite at 63/64 colours before this pass, so there was no budget left for a
+    # genuinely new hue. `light_from` (applied to the finished sprite in main()) shifts colour by
+    # x-position in 5 discrete bands, so reusing a colour ONLY avoids a new budget entry if it
+    # lands in a band that colour already occupies elsewhere — a value reused at a new x can
+    # still mint a new post-band colour. This gap sits entirely in band index 2 (x ~77-115 of
+    # 192): `hi`/`deep` (the carcass's own wood ramp) already cover that band via the slab's
+    # full-width top edge and the drawers' full-width bottom strips, and `q_base`/`q_sh`/`q_hi`
+    # (the quilt's blue ramp) already cover it via the ajar bottom drawer's fabric wedge
+    # (`wx = 96`, dead centre of this same band) — so the vase (wood-ramp cream/dark) and the
+    # blooms (the quilt's own blue, forget-me-nots rather than a new flower colour) cost nothing.
+    fx0, fx1 = left + 62, left + 62 + 54
+    vcx = (fx0 + fx1) // 2
+    vase_bot, vase_top = top + 9, top + 9 - 7
+    d.polygon([(vcx - 3, vase_top), (vcx + 3, vase_top), (vcx + 5, vase_bot), (vcx - 5, vase_bot)],
+              fill=hi, outline=deep)
+
+    # Three stems and flower heads fanned off the rim.
+    heads = ((vcx - 6, top - 4, q_base, q_hi), (vcx, top - 5, q_sh, q_hi),
+             (vcx + 6, top - 4, q_base, q_sh))
+    for hx, hy, tone, edge in heads:
+        d.line((vcx, vase_top, hx, hy + 3), fill=q_sh, width=2)
+        d.ellipse((hx - 3, hy - 3, hx + 3, hy + 3), fill=tone)
+        d.ellipse((hx - 3, hy - 3, hx, hy), fill=edge)  # lit-side quarter of each bloom
 
     # Three drawers, stacked, each with a routed shadow line and two pulls.
     drawer_top, drawer_bottom = top + 10, bottom - 10
@@ -3160,6 +3277,7 @@ def main() -> None:
     for name, sprite in (
         ("picture", make_framed_picture()),
         ("picture_2", make_framed_picture_small()),
+        ("barn_star", make_barn_star()),
         ("antlers", make_antlers()),
         ("clock", make_wall_clock()),
         ("coat_hooks", make_coat_hooks()),

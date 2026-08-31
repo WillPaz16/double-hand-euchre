@@ -84,6 +84,10 @@ export function SceneLayer() {
           see its CSS comment for why that reuses the antlers' already-measured margin from the
           opponent rather than deriving a new one. */}
       <div className="scene-picture-2" />
+      {/* A small tin barn star (2m.2 — direct user feedback, wall art left of the window) in
+          the bare strip between the antlers/picture-2 column and the window's left edge — see
+          .scene-barn-star's own CSS comment for the measured gap and gate reasoning. */}
+      <div className="scene-barn-star" />
       <div className="scene-coat-hooks" />
       <div className="scene-woodpile" />
       {/* A small hearth mat (wave-2) on the floor in front of the firebox opening — a separate

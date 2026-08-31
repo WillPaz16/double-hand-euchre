@@ -736,13 +736,25 @@ body {
 .scene-clock,
 .scene-antlers,
 .scene-coat-hooks,
-.scene-picture-2 {
+.scene-picture-2,
+.scene-barn-star {
   display: none;
 }
 @media (min-width: 900px) {
   .scene-picture,
-  .scene-clock,
-  .scene-coat-hooks {
+  .scene-clock {
+    display: block;
+  }
+}
+/* `.scene-barn-star` needs its own gate, lower than the antlers/coat-hooks one below: measured
+   with the star forced visible against `.table-opponent`'s real bounding rect, overlap hits 0
+   at 1124px (star.left = vw-412 vs opponent.right = vw/2+150, solved) — well below 1560, and
+   1280/1440 (the widths this whole project has been tested at) are ABOVE 1124, so reusing the
+   antlers' 1560 gate here would hide it at exactly the sizes it's most likely to be seen.
+   1200px keeps real margin (~76px) over the measured 1124px crossover without hiding it any
+   longer than the actual collision requires. */
+@media (min-width: 1200px) {
+  .scene-barn-star {
     display: block;
   }
 }
@@ -779,13 +791,25 @@ body {
   .scene-picture-2 {
     display: block;
   }
+  /* `.scene-coat-hooks` joins this gate for the same reason (2m.2's mantel-alignment fix moved
+     it from `left:8au` to `left:194au` so it reads as one continuous shelf with the fireplace's
+     own mantel — see that rule's own comment — which put it much closer to centre and into the
+     opponent's collision zone). Measured directly: `coat.right` (596px, fixed regardless of
+     viewport since it's a fixed-au left offset) vs `opponent.left` (vw/2-150) — overlap hits 0
+     at vw=1492px, so 1560 keeps ~68px of real margin, matching the antlers' own margin at this
+     same gate almost exactly. Below 1560 the mantel simply ends at the picture/clock without a
+     coat rail, the same "three props, not four" tradeoff the antlers already accept. */
+  .scene-coat-hooks {
+    display: block;
+  }
 }
 .scene-picture,
 .scene-clock,
 .scene-antlers,
 .scene-coat-hooks,
 .scene-woodpile,
-.scene-picture-2 {
+.scene-picture-2,
+.scene-barn-star {
   position: absolute;
   background-size: 100% 100%;
   image-rendering: pixelated;
@@ -808,7 +832,13 @@ body {
    opponent's head — "nothing is centred, he is the composition's middle" no longer holds once
    the only reliably free region is this one band, but the props are still clearly to the LEFT
    of him, so the room still reads as furnished on both sides once antlers join in above
-   1150px. */
+   1150px.
+
+   `.scene-coat-hooks` is the one exception to "not measured up from the floor" above (see its
+   own rule, below): it needs to track the fireplace's own mantel specifically, and the mantel
+   IS floor-relative (`.scene-fireplace` is `bottom`-anchored), so for that one prop measuring
+   from the floor is the thing with a relationship to its neighbour, not the thing without one.
+   Picture and clock have no such neighbour to track, so they stay top-anchored. */
 /* Resized 2.5x in 2j.3 (48x36 -> 120x90 au); the clock alongside it moved right to clear it. */
 .scene-picture {
   left: calc(8px * var(--px));
@@ -851,10 +881,40 @@ body {
    after coat-hooks so it paints over it) — invisible in the live game though the audit never
    catches same-scene overlaps, only chrome collisions. Dropped below the shelf instead; the
    remaining band there is a few px shorter than the coat-hooks' own height, so it settles a
-   little into the floor plane, same as the woodpile and rug already do by design. */
+   little into the floor plane, same as the woodpile and rug already do by design.
+
+   Re-anchored from `top` to `bottom` (direct user feedback: "the fireplace mantle doesnt
+   strecth the whole length of where the fire is"). `top:184au` was measured against ONE
+   viewport height and had no relationship to the fireplace at any other — `.scene-fireplace`
+   is itself `bottom`-anchored (floor-relative), so its mantel's distance from the viewport TOP
+   changes with viewport height while this box's `top` offset didn't, and at 1440x900 that put
+   the hook rail ~230px below the mantel: two boards at two unrelated heights, which is what
+   actually read as "doesn't stretch the whole length" rather than one shelf with a gap in it.
+   Bottom-anchoring puts both on the SAME floor-relative axis, so they hold together at every
+   viewport height instead of only the one this was last measured at. `bottom: 280au` is derived,
+   not eyeballed: the mantel's own slab spans image-local y 2.5-37.5au (see make_fireplace's
+   `body_top`/`mantel`/`m_lip`), and `.scene-fireplace`'s `bottom:147au`+`height:270au` puts its
+   box-top at 417au-from-floor, so the mantel's own top edge sits at 417-2.5=414.5au-from-floor.
+   `make_coat_hooks`'s rail was widened to the SAME 35au thickness as the mantel slab (see that
+   function's own comment) and sits at the very top of its box, so `bottom = 414.5 - 134
+   (box height) ≈ 280au` puts the two rails flush, reading as one continuous board. Verified with
+   `getBoundingClientRect()` at 1440x900 and 768x1024, not just by this arithmetic — see the
+   commit notes for the measured gap.
+
+   `left` moved from 8au to 194au for the same reason: at mantel height this box is now in the
+   SAME vertical band as `.scene-picture` (top:92-272px) and `.scene-clock` (top:122-242px) —
+   the old `top:184au` position was specifically chosen to sit BELOW both of them, and simply
+   changing the anchor axis without also moving sideways put the (now taller) coat-hooks box
+   67% on top of the picture. `.scene-clock`'s own right edge is at `132+60=192au`; 194au clears
+   it with a 2au gap and leaves the box's own right edge (194+104=298au) almost exactly at
+   `.scene-fireplace`'s own right edge (296au, `left:-78au`+`width:374au`) — coat hooks mounted
+   in the free strip of mantel to the right of the picture/clock column, still flush against the
+   mantel's own top edge. Confirmed clear of `.table-opponent` (which is what capped the OLD
+   beside-picture placement, per the note above) with `getBoundingClientRect()` at both 1010px
+   and 1440px — the opponent's own left edge sits well right of 298au at both widths. */
 .scene-coat-hooks {
-  left: calc(8px * var(--px));
-  top: calc(184px * var(--px));
+  left: calc(194px * var(--px));
+  bottom: calc(280px * var(--px));
   width: calc(104px * var(--px));
   height: calc(134px * var(--px));
   background-image: url('/art/scene/coat_hooks.png');
@@ -883,6 +943,36 @@ body {
   width: calc(60px * var(--px));
   height: calc(56px * var(--px));
   background-image: url('/art/scene/picture_2.png');
+}
+/* A small tin barn star (2m.2 — direct user feedback: "id like to put something on the wall
+   left of the window"). The antlers/picture-2 column above sits at `right: 240-300au`; the
+   window's own left edge (see `.scene-window`: `right: -72au` + `width: 170au`) sits at
+   `right: 98au`. That leaves a genuinely bare 142au-wide strip of wall (`right: 98-240au`)
+   between the two that the 2g.4/2l.1 furniture passes never reached — confirmed empty by eye
+   at 1440x900 before writing any of this. `right: 150au` / `width: 56au` centres this new
+   piece in that strip with real margin on both sides (52au clear of the window, 34au clear of
+   the antlers column) rather than trusting the algebra alone.
+
+   Right-anchored, not left-anchored off the antlers column — the antlers' own `right: 240au`
+   scales 1:1 with viewport width (same as the window), so anchoring off ITS edge instead of
+   the viewport's would drift the gap open or shut as the window and antlers both move. A fixed
+   `right` offset keeps this new piece's distance from the window constant at every width,
+   which is the one relationship that actually needs to hold.
+
+   Sits CLOSER to the window than the antlers column does (`right: 150` < `right: 240`), i.e.
+   further from the centred opponent than the antlers already are — the antlers need their own
+   1560px gate purely because their `right: 240` position collides with the opponent below
+   1500px (see that gate's own measured note); this piece sits outside that collision zone at
+   every width the antlers' gate already covers, so it shares the base 900px decor gate above
+   rather than needing the antlers' higher one. Verified with `getBoundingClientRect()` at
+   1010/1280/1440/1560px against both `.scene-window` and `.table-opponent` — clear at all four
+   with real margin, not just algebra. */
+.scene-barn-star {
+  right: calc(150px * var(--px));
+  top: calc(95px * var(--px));
+  width: calc(56px * var(--px));
+  height: calc(56px * var(--px));
+  background-image: url('/art/scene/barn_star.png');
 }
 /* On the floor beside the hearth, where the fire's fuel comes from. */
 /* Resized 2.5x in 2j.3 (52x32 -> 130x80 au). */
@@ -1339,12 +1429,14 @@ body {
   color: #ffd54a;
 }
 /* The 4-and-6 card scoring ritual (2e.7): a real 4 and a real 6, traditional pip grid, each
-   with a real card-back physically covering it and sliding away as the score rises — matching
-   the reference photos, not an abstract "reveal bar. The numeral is still what disambiguates
-   at a glance, but the cards are exact: the covered region is a `clip-path` polygon computed
-   in Scoreboard.tsx from the SAME row geometry the generator placed the pips against, so the
-   edge always lands between two pips (or between the two pips of one row, for an odd score),
-   never mid-pip. */
+   with a real card-back physically covering it and sliding down to overlap less as the score
+   rises — matching the reference photos. Direct user feedback on an earlier version of this
+   ("i dont want to peel back the card, i want one card to overlap the other") is why the cover
+   moves via `transform: translateY()` (a solid card sliding to a new overlap position) rather
+   than a `clip-path` wipe (a mask animating across a static image, which read as peeling). The
+   numeral is still what disambiguates the exact score at a glance; the offset is computed in
+   Scoreboard.tsx from the SAME row geometry the generator placed the pips against, so the
+   cover's edge always lands on a row boundary. */
 .score-pair {
   display: flex;
   gap: 4px;
@@ -1353,6 +1445,11 @@ body {
   position: relative;
   width: calc(30px * var(--px));
   height: calc(42px * var(--px));
+  /* The cover is the full card height even when partly revealed — sliding it down runs its
+     bottom edge past the slot's own bottom rather than shrinking it, since it's one solid
+     card, not a mask. Clipped here so that overhang doesn't paint over whatever sits below
+     the scoreboard. */
+  overflow: hidden;
 }
 .score-card-pips {
   position: absolute;
@@ -1369,7 +1466,7 @@ body {
   background-image: url('/art/score_card_back.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
-  transition: clip-path 350ms ease-out;
+  transition: transform 350ms ease-out;
 }
 
 .status-banner {
@@ -1538,6 +1635,25 @@ body {
   width: calc(280px * var(--px));
   height: calc(175px * var(--px));
 }
+/* Desktop-only bump, 280x175 -> 312x195 (creative-direction pass — direct user feedback: "i
+   think the table could be slightly larger"). Same 1.6 aspect ratio as the base box (312/195 =
+   1.6 exactly), so this is a scale-up, not a reshape — the clip-path felt shape, the trick-card
+   layout and the seat-fan positions tuned against 280x175 all still apply to a bigger version of
+   the SAME oval rather than a differently-proportioned one. +11.4% on both axes, chosen to read
+   as "visibly bigger" without reopening the collision problems the 280x175 comment above
+   documents at length (the fixed-au-box rewrite that replaced a fluid felt whose size used to
+   swing 2.25x across a single hand). Gated at `min-width: 900px` rather than folded into the
+   base rule above so it cannot touch the `max-width: 899px` portrait-phone sizes below (300x230
+   / `.table-frame-roomy`'s 320x360) — those were tuned against their own, unrelated dead-space
+   complaint and stay exactly as they were. Verified with `getBoundingClientRect()` at 1010,
+   1280, 1440 and 1560px: no collision with the trick-card layout, the seat-fans, the antlers
+   gate, or the picture/clock row at any of them. */
+@media (min-width: 900px) {
+  .table-frame {
+    width: calc(312px * var(--px));
+    height: calc(175px * var(--px));
+  }
+}
 /* Portrait phones are TALL, not wide — `.table-area` is `flex: 1; align-content: center`
    (see its own comment), so on a narrow-but-tall viewport the fixed 280x175 felt above just
    floats in the middle of a lot of leftover height, splitting it into a dead band above the
@@ -1681,11 +1797,21 @@ body {
    It was tucked into a corner while it was still rendered during play, and that produced a
    subtler bug worth recording: a corner of the layout BOX is not a corner of an ELLIPSE. At
    13%/15% the kitty tested outside ((x/a)^2 + (y/b)^2 > 1) and sat out on the rim, half over
-   the wall. Once the kitty only shows while it is live, it can simply have the centre. */
+   the wall. Once the kitty only shows while it is live, it can simply have the centre.
+
+   `top: 38%`, not 50% (2j.6): a real user screenshot showed the round-1 bid panel visually
+   cutting across the upcard's bottom edge — measured at only 17px of clearance at 1440x900/
+   1010x900 (the `.action-bar` sits out-of-flow, painted OVER the felt per the comment on
+   `.table-frame`, so a short effective viewport height thins that margin further without ever
+   resizing the felt itself). `left: 50%` stays exact centre — at x=50% the felt's ellipse
+   silhouette reaches all the way to y=0%/y=100% (the flat-topped span of the polygon above,
+   33.33%-66.67%), so there's no risk of the 13%/15% corner bug recurring; only the vertical
+   position needed to move. This trades some of the excess room below the kitty (still
+   plainly the felt's focal card) for headroom above it, rather than the centring itself. */
 .table-kitty {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 38%;
   transform: translate(-50%, -50%) rotate(-7deg);
 }
 /* The turned card lying across the deck, offset so both read as separate objects. */
@@ -1803,6 +1929,19 @@ body {
 .seat-ne { grid-area: ne; justify-self: start; }
 .seat-sw { grid-area: sw; justify-self: end; }
 .seat-se { grid-area: se; justify-self: start; }
+
+/* `select` (the packet-pick screen, before either hand is looked at) is the one phase where
+   BOTH your fans sit at full 5-card width at once with nothing picked up yet — every later
+   phase moves your selected hand into the tray (`is-empty`), which clears this pair down to
+   one fan. At that width the two rotated fans measured a 42px CARD overlap at 1280x900 (the
+   `.seat-fan` BOXES had a ~20px gap even then — `justify-content: center` plus each fan's own
+   `min-width`; it's the rotated cards spilling past their own box at the outer angles, same
+   overhang `.seat-fan`'s own comment already describes, that closed it into a collision).
+   Scoped to `.is-packet-pick` (Table.tsx sets it only during `select`) rather than a blanket
+   `.table-area` gap increase, so the nw/ne opponent row and the trick row — on the same grid,
+   same gap — don't shift. */
+.seat-sw .seat-fan.is-packet-pick { margin-right: calc(16px * var(--px)); }
+.seat-se .seat-fan.is-packet-pick { margin-left: calc(16px * var(--px)); }
 
 .seat {
   position: relative;
