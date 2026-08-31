@@ -737,7 +737,7 @@ body {
 .scene-antlers,
 .scene-coat-hooks,
 .scene-picture-2,
-.scene-barn-star {
+.scene-farm-painting {
   display: none;
 }
 @media (min-width: 900px) {
@@ -746,15 +746,18 @@ body {
     display: block;
   }
 }
-/* `.scene-barn-star` needs its own gate, lower than the antlers/coat-hooks one below: measured
-   with the star forced visible against `.table-opponent`'s real bounding rect, overlap hits 0
-   at 1124px (star.left = vw-412 vs opponent.right = vw/2+150, solved) — well below 1560, and
+/* `.scene-farm-painting` needs its own gate, lower than the antlers/coat-hooks one below:
+   measured (as the barn star it replaced) with the box forced visible against
+   `.table-opponent`'s real bounding rect, overlap hit 0 at 1124px there — well below 1560, and
    1280/1440 (the widths this whole project has been tested at) are ABOVE 1124, so reusing the
    antlers' 1560 gate here would hide it at exactly the sizes it's most likely to be seen.
-   1200px keeps real margin (~76px) over the measured 1124px crossover without hiding it any
-   longer than the actual collision requires. */
+   Re-derived for the 2m.3 resize (56x56 -> 84x44au, `right: 150 -> 127au`): the box's left edge
+   moved 20 canvas-px further left at --px:2 (from `right+width=206au` to `211au`), which nudges
+   the crossover up to ~1144px — still comfortably under this 1200px gate (~56px margin).
+   Re-verified with `getBoundingClientRect()` against `.table-opponent` after the resize, not
+   just by this arithmetic. */
 @media (min-width: 1200px) {
-  .scene-barn-star {
+  .scene-farm-painting {
     display: block;
   }
 }
@@ -809,7 +812,7 @@ body {
 .scene-coat-hooks,
 .scene-woodpile,
 .scene-picture-2,
-.scene-barn-star {
+.scene-farm-painting {
   position: absolute;
   background-size: 100% 100%;
   image-rendering: pixelated;
@@ -901,6 +904,17 @@ body {
    `getBoundingClientRect()` at 1440x900 and 768x1024, not just by this arithmetic — see the
    commit notes for the measured gap.
 
+   **Re-derived (fireplace/mantel proportion fix — direct user feedback: "mantle is still not
+   covering fireplace"):** `make_fireplace`'s mantel moved off `body_top` (which sat only 5
+   canvas-px below the image's own top edge, leaving 208 canvas-px/38% of h of plain brick
+   between the mantel's underside and the firebox opening) onto `soot_top` — the firebox's own
+   soot band, already anchored to `oy0` — instead. The mantel's slab now spans image-local y
+   77-112au (was 2.5-37.5au); same 35au thickness, just relocated. Re-run the same arithmetic
+   with the new top edge: `.scene-fireplace`'s box-top is still 417au-from-floor (its own CSS
+   box is unchanged), so the mantel's top edge now sits at 417-77=340au-from-floor, and
+   `bottom = 340 - 134 (box height) = 206au`. Re-verified with `getBoundingClientRect()` at
+   1440x900 and 1560px+, not just by this arithmetic.
+
    `left` moved from 8au to 194au for the same reason: at mantel height this box is now in the
    SAME vertical band as `.scene-picture` (top:92-272px) and `.scene-clock` (top:122-242px) —
    the old `top:184au` position was specifically chosen to sit BELOW both of them, and simply
@@ -914,7 +928,7 @@ body {
    and 1440px — the opponent's own left edge sits well right of 298au at both widths. */
 .scene-coat-hooks {
   left: calc(194px * var(--px));
-  bottom: calc(280px * var(--px));
+  bottom: calc(206px * var(--px));
   width: calc(104px * var(--px));
   height: calc(134px * var(--px));
   background-image: url('/art/scene/coat_hooks.png');
@@ -944,14 +958,21 @@ body {
   height: calc(56px * var(--px));
   background-image: url('/art/scene/picture_2.png');
 }
-/* A small tin barn star (2m.2 — direct user feedback: "id like to put something on the wall
-   left of the window"). The antlers/picture-2 column above sits at `right: 240-300au`; the
-   window's own left edge (see `.scene-window`: `right: -72au` + `width: 170au`) sits at
-   `right: 98au`. That leaves a genuinely bare 142au-wide strip of wall (`right: 98-240au`)
-   between the two that the 2g.4/2l.1 furniture passes never reached — confirmed empty by eye
-   at 1440x900 before writing any of this. `right: 150au` / `width: 56au` centres this new
-   piece in that strip with real margin on both sides (52au clear of the window, 34au clear of
-   the antlers column) rather than trusting the algebra alone.
+/* A small framed farm landscape (2m.3 — direct user feedback: "the star looks dumb, should be
+   a painting of a long farm landscape using those warm colors", replacing the barn star that
+   used to hang here). Same wall gap as before: the antlers/picture-2 column above sits at
+   `right: 240-300au`; the window's own left edge (see `.scene-window`: `right: -72au` +
+   `width: 170au`) sits at `right: 98au`. That leaves a genuinely bare 142au-wide strip of wall
+   (`right: 98-240au`) between the two that the 2g.4/2l.1 furniture passes never reached —
+   confirmed empty by eye at 1440x900 before writing any of this.
+
+   Widened from the old star's 56x56au square to 84x44au (2:1, `make_farm_painting`'s own w/h
+   halved) — a landscape painting reads as a landscape by being wider than it is tall, not by
+   being square. `right: 127au` centres the new box in the 142au strip with equal 29au margin
+   on both sides (142 - 84 = 58, split evenly) rather than trusting the algebra alone. `top`
+   dropped from 95 to 101au to keep the box's vertical CENTRE where the old square one's was
+   (95 + 56/2 = 123 = 101 + 44/2), so this doesn't open a new vertical collision the old box
+   wasn't already clear of.
 
    Right-anchored, not left-anchored off the antlers column — the antlers' own `right: 240au`
    scales 1:1 with viewport width (same as the window), so anchoring off ITS edge instead of
@@ -959,20 +980,20 @@ body {
    `right` offset keeps this new piece's distance from the window constant at every width,
    which is the one relationship that actually needs to hold.
 
-   Sits CLOSER to the window than the antlers column does (`right: 150` < `right: 240`), i.e.
+   Sits CLOSER to the window than the antlers column does (`right: 127` < `right: 240`), i.e.
    further from the centred opponent than the antlers already are — the antlers need their own
    1560px gate purely because their `right: 240` position collides with the opponent below
    1500px (see that gate's own measured note); this piece sits outside that collision zone at
    every width the antlers' gate already covers, so it shares the base 900px decor gate above
-   rather than needing the antlers' higher one. Verified with `getBoundingClientRect()` at
-   1010/1280/1440/1560px against both `.scene-window` and `.table-opponent` — clear at all four
-   with real margin, not just algebra. */
-.scene-barn-star {
-  right: calc(150px * var(--px));
-  top: calc(95px * var(--px));
-  width: calc(56px * var(--px));
-  height: calc(56px * var(--px));
-  background-image: url('/art/scene/barn_star.png');
+   rather than needing the antlers' higher one. Re-verified with `getBoundingClientRect()` at
+   1010/1280/1440/1560px against both `.scene-window` and `.table-opponent` after the resize —
+   clear at all four with real margin, not just algebra. */
+.scene-farm-painting {
+  right: calc(127px * var(--px));
+  top: calc(101px * var(--px));
+  width: calc(84px * var(--px));
+  height: calc(44px * var(--px));
+  background-image: url('/art/scene/farm_painting.png');
 }
 /* On the floor beside the hearth, where the fire's fuel comes from. */
 /* Resized 2.5x in 2j.3 (52x32 -> 130x80 au). */
@@ -1398,6 +1419,19 @@ body {
      `.score-card-slot` rule two rules up already handles every width correctly, so there is
      nothing left for this breakpoint to override. */
 }
+/* The 561-899px band falls between the two rules above: too wide for the <=560px query's own
+   `padding-inline`, too narrow for the >=900px query's `left/right: 0.5rem` (that one also
+   requires pulling the row out of flow, which isn't safe until 900px — see that rule's own
+   comment). The base rule has no horizontal inset of its own, so in this band the flex row ran
+   edge-to-edge: confirmed live at 768x1024, the dealer badge's own text ("Old-Timer (dealer)")
+   landed with its right edge EXACTLY on the viewport's right edge, 0px to spare — one sub-pixel
+   of real-world variance (font metrics, browser zoom, a scrollbar) away from actually clipping,
+   which is what direct user feedback reported seeing ("OLD-TIMER (DEAL" cut off at the edge). */
+@media (min-width: 561px) and (max-width: 899px) {
+  .scoreboard {
+    padding-inline: 0.5rem;
+  }
+}
 /* Laid out as a ROW. Stacked (portrait over label over cards over numeral) this block was
    208px tall at desktop — as much vertical space as the table itself had, for two numbers.
    The same information side by side is ~90px, and the ~120px recovered went straight into
@@ -1467,6 +1501,16 @@ body {
   background-size: 100% 100%;
   image-rendering: pixelated;
   transition: transform 350ms ease-out;
+  /* Debugging a "the cover isn't showing" report traced the transform/z-index/overflow all
+     the way down to computed styles and pixel-accurate composites: at every score the cover
+     DOES sit on top of the pips at the right offset. What actually reads poorly at the card's
+     real 30x42 (mobile) / 60x84 (desktop) au size is the back art's own fine checkerboard —
+     a couple of pixels per square, easy to misread as "nothing there" at a glance or through
+     any lossy resize. A crisp top edge is cheap insurance: it stays a solid line regardless of
+     how the checker pattern itself resamples, so the reveal boundary — "a physical card
+     overlapping" — reads even when the pattern detail doesn't. */
+  border-top: 2px solid rgba(20, 12, 6, 0.9);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35);
 }
 
 .status-banner {
@@ -1942,6 +1986,14 @@ body {
    same gap — don't shift. */
 .seat-sw .seat-fan.is-packet-pick { margin-right: calc(16px * var(--px)); }
 .seat-se .seat-fan.is-packet-pick { margin-left: calc(16px * var(--px)); }
+/* The Old-Timer's own two packets (nw/ne) get the identical treatment for the identical
+   reason -- confirmed live (not assumed): `.is-packet-pick` was already being applied here too
+   (the class is set from `view.phase === 'select'`, which is the same for every seat), but
+   nothing consumed it for nw/ne, so his pair kept the ~20px BOX gap the sw/se comment above
+   already found insufficient -- the rotated cards' own overhang past their box edges still
+   closed it into a visible collision. Same fix, mirrored. */
+.seat-nw .seat-fan.is-packet-pick { margin-right: calc(16px * var(--px)); }
+.seat-ne .seat-fan.is-packet-pick { margin-left: calc(16px * var(--px)); }
 
 .seat {
   position: relative;

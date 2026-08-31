@@ -1800,19 +1800,31 @@ def make_fireplace(w=748, h=540):
            fill=darken(WOOD_MED), width=3)
 
     # Timber mantel, overhanging the stone on both sides.
+    #
+    # Anchored to the FIREBOX (soot_top), not to body_top, which is the real fix for "mantle is
+    # still not covering fireplace" (direct user feedback). body_top sits only 5px below canvas
+    # y=0, so the old `body_top - mantel .. body_top + m_lip` placement put the whole mantel
+    # right at the top of the frame -- 208 canvas-px (38% of h) of plain brick then separated
+    # its underside from the firebox opening at oy0, so the two never read as one structure: a
+    # shelf on a tall chimney, not a mantel over a hearth. Tying the mantel's underside to
+    # soot_top instead (already computed above, right where the soot smudge begins) removes
+    # that dead brick entirely -- the mantel now caps the sooty band that sits directly on top
+    # of the firebox, with the stone ABOVE it reading as the chimney breast rather than as
+    # wasted space between two unrelated features.
     m_hi, m_base, m_sh, m_deep = ramp(TABLE_WOOD)
     mantel = round(h * 0.107)
     m_lip = max(2, round(h * 0.022))
-    d.rectangle((0, body_top - mantel, w - 1, body_top + m_lip), fill=m_base)
-    d.rectangle((0, body_top - mantel, w - 1, body_top - mantel + m_lip * 2), fill=m_hi)
-    d.line((0, body_top - m_lip, w - 1, body_top - m_lip), fill=m_sh)
-    d.line((0, body_top + m_lip, w - 1, body_top + m_lip), fill=m_deep)
+    mantel_ref_y = soot_top - m_lip
+    d.rectangle((0, mantel_ref_y - mantel, w - 1, mantel_ref_y + m_lip), fill=m_base)
+    d.rectangle((0, mantel_ref_y - mantel, w - 1, mantel_ref_y - mantel + m_lip * 2), fill=m_hi)
+    d.line((0, mantel_ref_y - m_lip, w - 1, mantel_ref_y - m_lip), fill=m_sh)
+    d.line((0, mantel_ref_y + m_lip, w - 1, mantel_ref_y + m_lip), fill=m_deep)
 
     # Mantel-top clutter: a candle in a holder and a small framed tin, both sitting on the
     # mantel's lit top edge. Reuses the mantel's own m_sh/m_deep/m_base tones rather than
     # introducing new base colours — darker than the m_hi strip they sit on, so they read as
     # silhouettes against it instead of disappearing into their own background.
-    ledge_y = body_top - mantel + m_lip * 2  # bottom of the lit top-edge strip
+    ledge_y = mantel_ref_y - mantel + m_lip * 2  # bottom of the lit top-edge strip
     # .scene-fireplace crops the leftmost 78au (156 canvas-px at this w) off-screen (see
     # src/styles/index.css, ~L356). At 0.15w the candle sat at canvas-x~112, entirely inside
     # that band and permanently invisible. 0.24w (~180) clears it with margin, and stays well
@@ -2437,11 +2449,14 @@ def make_shelf(w=300, h=160):
 
 
 def make_framed_picture(w=240, h=180):
-    """A small framed landscape — the most literal reading of "art on walls".
+    """A small framed beach sunset — the most literal reading of "art on walls".
 
-    Deliberately a DAYLIT scene: the one window in this room shows night, so a sunlit picture
-    is the only warm-and-bright note available, and it gives the palette somewhere to put the
-    greens and mid-blues that the environment's 42-degree warm arc otherwise has no room for.
+    Direct user feedback: "i want the painting above the fireplace to be of the beach sunset",
+    replacing what used to be a daylit mountain/hills scene. Still deliberately WARM and BRIGHT
+    for the same reason the old scene was: the one window in this room shows a cold night, so
+    this picture is the only place the room gets a genuinely warm-and-bright note (and now,
+    unlike the old cool-sky hills, it doesn't even need a temperature contrast of its own — the
+    whole scene leans into the same warm arc as the hearth).
 
     2j.3: resized 2.5x (96x72 -> 240x180). Every offset below is the original times 2.5."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
@@ -2452,35 +2467,57 @@ def make_framed_picture(w=240, h=180):
     d.rectangle((0, 0, w - 1, 3), fill=f_hi)
     d.rectangle((0, h - 5, w - 1, h - 1), fill=f_deep)
 
-    # The painted field, inset inside the moulding.
+    # The painted scene, inset inside the moulding.
     m = 20
-    sky_hi, sky, sky_sh, _ = ramp(PICTURE_SKY, warm=False)
-    d.rectangle((m, m, w - m - 1, h - m - 1), fill=sky)
-    d.rectangle((m, m, w - m - 1, m + 20), fill=sky_hi)
-
     horizon = h - m - 50
-    hill_hi, hill, hill_sh, hill_deep = ramp(LEAF_GREEN)
-    # Two overlapping hills, the far one lighter, so the little scene has depth of its own.
-    d.polygon([(m, horizon + 15), (m + 65, horizon - 30), (m + 135, horizon + 15)], fill=hill_hi)
-    d.polygon([(m + 75, horizon + 20), (m + 145, horizon - 35), (w - m - 1, horizon + 20)], fill=hill)
-    d.rectangle((m, horizon + 15, w - m - 1, h - m - 1), fill=hill_sh)
-    d.line((m, horizon + 15, w - m - 1, horizon + 15), fill=hill_deep)
-    # A low sun, the warm note the night room never gets.
-    d.ellipse((m + 150, m + 20, m + 150 + 30, m + 50), fill=FIRE_CORE)
+
+    # Sunset sky: warm, in a HANDFUL of discrete bands from a deep rose top down to a bright
+    # gold glow at the horizon — the same quantised-not-continuous shading `light_from` itself
+    # uses (see its own docstring): a per-row `_mix` here would pass `_assert_sprite_colours`'
+    # ceiling by itself before `light_from` even multiplies it further band-by-band.
+    sky_bands = 4
+    sky_top = _mix(FIRE_DEEP, ROSE_RED, 0.4)
+    sky_colors = [_mix(sky_top, FIRE_CORE, i / (sky_bands - 1)) for i in range(sky_bands)]
+    band_h = (horizon - m) / sky_bands
+    for i, col in enumerate(sky_colors):
+        y0 = m + round(i * band_h)
+        y1 = horizon if i == sky_bands - 1 else m + round((i + 1) * band_h)
+        d.rectangle((m, y0, w - m - 1, y1 - 1), fill=col)
+
+    # A low sun, half set into the sea — reuses the sky's own brightest (horizon-glow) band
+    # rather than introducing a new colour, since that IS the sun's own light.
+    sr = 26
+    sx, sy = w // 2, horizon
+    d.ellipse((sx - sr, sy - sr, sx + sr, sy + sr), fill=sky_colors[-1])
+
+    # Sea: a genuinely blue counterpoint to the warm sky (mixed toward NIGHT_BLUE_DEEP, not
+    # FIRE_MID — a sea mixed warm read as flat grey-brown mud rather than water when checked
+    # against the actual rendered PNG), with a reflection column under the sun (reusing that
+    # same bright sky band), one wave tone, and a narrow strip of sand along the bottom edge.
+    sea = _mix(PICTURE_SKY, NIGHT_BLUE_DEEP, 0.3)
+    d.rectangle((m, horizon, w - m - 1, h - m - 1), fill=sea)
+    d.line((m, horizon, w - m - 1, horizon), fill=INK)
+    d.polygon([(sx - 4, horizon), (sx + 4, horizon), (sx + 16, h - m - 1), (sx - 16, h - m - 1)],
+              fill=sky_colors[-1])
+    wave = _mix(sea, FIRE_CORE, 0.3)
+    for wy in range(horizon + 12, h - m - 10, 14):
+        d.line((m + 6, wy, w - m - 7, wy), fill=wave, width=2)
+    sand = _mix(TABLE_WOOD, FIRE_CORE, 0.2)
+    d.rectangle((m, h - m - 10, w - m - 1, h - m - 1), fill=sand)
     return img
 
 
 # A second, smaller frame for the same free wall column the antlers sit in (2l.1 — more art on
 # the walls, direct user feedback). Not a resized copy of make_framed_picture: that function's
-# hill/sun geometry is hand-placed in absolute pixels tuned for its 240x180 canvas specifically
-# (the hill polygons alone would run off the right edge of a frame under half that width), and
-# reworking it to scale proportionally risks nudging the shipped picture.png for no reason —
+# scene geometry is hand-placed in absolute pixels tuned for its 240x180 canvas specifically
+# (the sunset/sea shapes alone would run off the right edge of a frame under half that width),
+# and reworking it to scale proportionally risks nudging the shipped picture.png for no reason —
 # picture.png isn't cards-frozen, but "don't touch what already works" still applies. A single
 # tree silhouette is a plainer scene that is cheap to place correctly at a smaller size instead.
 def make_framed_picture_small(w=120, h=112):
     """A small framed picture: one tree against a daylit sky. Same moulding technique as
-    make_framed_picture (TABLE_WOOD frame, PICTURE_SKY field) — a second, smaller piece of art
-    for the same wall, not a different kind of object."""
+    make_framed_picture (a TABLE_WOOD frame around an inset scene) — a second, smaller piece of
+    art for the same wall, not a different kind of object."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     f_hi, f_base, f_sh, f_deep = ramp(TABLE_WOOD)
@@ -2613,46 +2650,78 @@ def make_wall_clock(size=120):
     return img
 
 
-def make_barn_star(w=112, h=112):
-    """A small tin barn star (creative-direction pass — direct user feedback: "id like to put
-    something on the wall left of the window"). Fills the bare stretch of log wall between the
-    antlers/second-picture column and the window's left edge — see `.scene-barn-star`'s own CSS
-    comment for the measured gap.
+def make_farm_painting(w=168, h=88):
+    """A small framed farm landscape (replaces the barn star — direct user feedback: "the star
+    looks dumb, should be a painting of a long farm landscape using those warm colors"). Fills
+    the same bare stretch of log wall between the antlers/second-picture column and the
+    window's left edge — see `.scene-farm-painting`'s own CSS comment for the measured gap.
 
-    A five-pointed silhouette on purpose: the two picture frames are rectangles, the clock is a
-    disc, the antlers branch irregularly — nothing else already hanging reads as a star, so this
-    can't land as a smaller copy of a piece that's already there. Flat 2-tone shading, same
-    `ramp()` technique every other wood/metal object in this file uses, plus a single riveted
-    bolt at the centre the way a real stamped-tin star's points are joined."""
+    Same framed-picture technique make_framed_picture/make_framed_picture_small already use (a
+    TABLE_WOOD moulding around an inset scene), not a new rendering approach — a wide, low
+    canvas (2:1, "long") rather than those two functions' near-square ones, since a landscape
+    reads as a landscape by being wider than it is tall. Golden-hour sky, a barn silhouette in
+    FLANNEL_RED (this file's own warm barn-red, already used for the Old-Timer's shirt) and a
+    fence line, all warmed with the same FIRE_*/GOLD tones the hearth itself uses, so the
+    painting reads as part of this room's palette rather than an unrelated cool daylight scene."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    hi, base, sh, deep = ramp(RED)
+    f_hi, f_base, f_sh, f_deep = ramp(TABLE_WOOD)
 
-    cx, cy = w // 2, h // 2
-    r_out, r_in = w * 0.46, w * 0.185
-    angles = [(-90 + i * 36) % 360 for i in range(10)]
-    pts = [(cx + (r_out if i % 2 == 0 else r_in) * math.cos(math.radians(a)),
-            cy + (r_out if i % 2 == 0 else r_in) * math.sin(math.radians(a)))
-           for i, a in enumerate(angles)]
-    d.polygon(pts, fill=base, outline=deep)
+    d.rectangle((0, 0, w - 1, h - 1), fill=f_base)
+    d.rectangle((0, 0, w - 1, 1), fill=f_hi)
+    d.rectangle((0, h - 3, w - 1, h - 1), fill=f_deep)
 
-    # Two lit/shadowed arcs of edges, the same technique make_wall_clock uses (a highlight ring
-    # over one side, a shadow ring over the other, leaving the rest of the outline at its plain
-    # `deep` rim) — just traced along the star's own straight edges instead of a circle's curve.
-    for idx in range(10):
-        p0, p1 = pts[idx], pts[(idx + 1) % 10]
-        a0, a1 = angles[idx], angles[(idx + 1) % 10]
-        mid = (a0 + ((a1 - a0) % 360) / 2) % 360
-        if 200 <= mid <= 340:
-            d.line((p0, p1), fill=hi, width=3)
-        elif 20 <= mid <= 160:
-            d.line((p0, p1), fill=sh, width=3)
+    m = 6
+    ih = h - 2 * m
+    horizon = h - m - round(ih * 0.34)
 
-    # A single bolt at the centre, the way a real stamped-tin star's five points are riveted
-    # together rather than cast as one piece.
-    br = max(3, round(w * 0.05))
-    d.ellipse((cx - br, cy - br, cx + br, cy + br), fill=_mix(GOLD, deep, 0.35))
-    d.ellipse((cx - br, cy - br, cx - br // 2, cy - br // 2), fill=_mix(GOLD, PARCHMENT, 0.4))
+    # Golden-hour sky, in a HANDFUL of discrete bands from a deep rose top to a bright gold
+    # horizon glow — quantised, not a per-row gradient, for the same reason
+    # make_framed_picture's own sunset sky is: `_assert_sprite_colours`' ceiling is measured
+    # after `light_from` multiplies whatever's here band-by-band, and a smooth per-row ramp
+    # blows that budget on its own before `light_from` even runs.
+    sky_bands = 3
+    sky_top = _mix(FIRE_DEEP, ROSE_RED, 0.4)
+    sky_colors = [_mix(sky_top, FIRE_CORE, i / (sky_bands - 1)) for i in range(sky_bands)]
+    band_h = (horizon - m) / sky_bands
+    for i, col in enumerate(sky_colors):
+        y0 = m + round(i * band_h)
+        y1 = horizon if i == sky_bands - 1 else m + round((i + 1) * band_h)
+        d.rectangle((m, y0, w - m - 1, y1 - 1), fill=col)
+
+    # A low sun sitting on the horizon, partly behind the near field below — reuses the sky's
+    # own brightest band rather than a new colour, since that IS the sun's own light.
+    sr = round(ih * 0.22)
+    sx, sy = round(w * 0.6), horizon
+    d.ellipse((sx - sr, sy - sr, sx + sr, sy + sr), fill=sky_colors[-1])
+
+    # Rolling fields, warmed off LEAF_GREEN toward gold rather than the cool green the other
+    # framed pictures' daylit hills use — this is a sunset field, not daylight grass. A distant
+    # ridge pokes up above the horizon line before the near field's flat fill covers the rest.
+    hill_hi, hill, hill_sh, _ = ramp(LEAF_GREEN)
+    hill_hi = _mix(hill_hi, GOLD, 0.4)
+    hill = _mix(hill, GOLD, 0.35)
+    hill_sh = _mix(hill_sh, FIRE_DEEP, 0.3)
+    d.polygon([(m, horizon + round(ih * 0.10)), (m + round(w * 0.28), horizon - round(ih * 0.08)),
+               (m + round(w * 0.52), horizon + round(ih * 0.05))], fill=hill_hi)
+    d.rectangle((m, horizon, w - m - 1, h - m - 1), fill=hill)
+    d.line((m, horizon, w - m - 1, horizon), fill=hill_sh)
+
+    # Barn silhouette on the near field: a gable roof over a plain body.
+    bx = m + round(w * 0.16)
+    bw, bh = round(w * 0.11), round(ih * 0.16)
+    by1 = horizon + round(ih * 0.03)
+    by0 = by1 - bh
+    d.rectangle((bx, by0, bx + bw, by1), fill=FLANNEL_RED)
+    d.polygon([(bx - 3, by0), (bx + bw // 2, by0 - round(bh * 0.6)), (bx + bw + 3, by0)],
+              fill=darken(FLANNEL_RED, 0.7))
+
+    # A post-and-rail fence walking across the near field, foreground silhouette.
+    fence_y = h - m - round(ih * 0.06)
+    for px in range(m + round(w * 0.55), w - m, round(w * 0.09)):
+        d.line((px, fence_y - round(ih * 0.10), px, fence_y), fill=WOOD_DARK, width=2)
+    d.line((m + round(w * 0.55), fence_y - round(ih * 0.06), w - m - 1, fence_y - round(ih * 0.06)),
+           fill=WOOD_DARK, width=2)
     return img
 
 
@@ -2965,19 +3034,52 @@ def make_dresser(w=192, h=128):
     # (the quilt's blue ramp) already cover it via the ajar bottom drawer's fabric wedge
     # (`wx = 96`, dead centre of this same band) — so the vase (wood-ramp cream/dark) and the
     # blooms (the quilt's own blue, forget-me-nots rather than a new flower colour) cost nothing.
-    fx0, fx1 = left + 62, left + 62 + 54
+    # Direct user feedback on the FIRST pass at this ("i think flowers would look good") was
+    # "still want a vase full of flowers on dresser" — at the dresser's actual in-game display
+    # size (`.scene-dresser`, 96x64 au *before* `--px`), the first attempt measured out to a
+    # 10x7 au vase and 6au flower heads: technically present, illegible as "a vase full of
+    # flowers" — closer to the "small blue blob the size of a drawer pull" the follow-up report
+    # named. This pass uses the FULL quilt-to-letter gap (58au instead of 54) and grows the vase
+    # and heads as far as the fixed y-band allows (still never above top-8 / at-or-below
+    # drawer_top — that band is only 18au tall regardless, so most of the size gain is
+    # horizontal: 4 bigger, more widely-fanned heads instead of 3 small tight ones), plus a
+    # small cream centre dot per bloom (reusing `hi`, already proven safe at every x-band via
+    # the slab's own full-width top edge) so each head reads as a distinct flower rather than a
+    # flat dot.
+    fx0, fx1 = left + 60, left + 60 + 58
     vcx = (fx0 + fx1) // 2
-    vase_bot, vase_top = top + 9, top + 9 - 7
-    d.polygon([(vcx - 3, vase_top), (vcx + 3, vase_top), (vcx + 5, vase_bot), (vcx - 5, vase_bot)],
-              fill=hi, outline=deep)
+    # Tall enough that a solid band of fill survives below the stems eating into its rim (a
+    # first pass at this made the vase only 9au tall AND filled it `hi` — the same tone as the
+    # slab top it sits on, so even the fill that did survive the stems/outline was invisible
+    # against its own backdrop: no contrast, just a dark outline around a patch of "more slab").
+    # Filled `deep` / outlined `hi` instead — dark body against the light slab-top and mid-tone
+    # carcass behind it reads as an actual silhouette rather than a same-tone smudge.
+    vase_bot, vase_top = top + 9, top + 9 - 14
+    d.polygon([(vcx - 3, vase_top), (vcx + 3, vase_top), (vcx + 7, vase_bot), (vcx - 7, vase_bot)],
+              fill=deep, outline=hi)
+    # A lit streak down the body (reusing the slab's own second-highlight mix verbatim, so this
+    # is free) — gives the vase a rounded read instead of a flat silhouette.
+    d.line((vcx - 2, vase_top + 3, vcx - 2, vase_bot - 1), fill=_mix(hi, PARCHMENT, 0.3))
 
-    # Three stems and flower heads fanned off the rim.
-    heads = ((vcx - 6, top - 4, q_base, q_hi), (vcx, top - 5, q_sh, q_hi),
-             (vcx + 6, top - 4, q_base, q_sh))
+    # Four stems and flower heads fanned off the rim, spread across the widened gap. Stems start
+    # from points spread along the rim width (not one shared pixel) so the fan doesn't collapse
+    # into a single blue smear where they'd otherwise all cross.
+    # Spaced apart enough that a real gap of background shows between neighbours — packed any
+    # tighter (a first pass had them 9au apart, edges nearly touching) they fused into one
+    # mottled mass at this sprite's actual resolution instead of reading as separate blooms.
+    # Capped at +-16au from centre, not wider: `light_from` bands this sprite roughly every 38au
+    # and `_assert_sprite_colours` measured a wider (+-20au) spread at 65/64 colours — a head
+    # drifting into the NEXT band mints a new post-light-shift colour even reusing an in-palette
+    # tone (see this block's own comment above on `light_from` bands), so this stays inside the
+    # one band the quilt-blue tones are already proven safe in.
+    heads = ((vcx - 16, top - 4, q_base, q_hi), (vcx - 5, top - 3, q_sh, q_hi),
+             (vcx + 6, top - 4, q_base, q_sh), (vcx + 16, top - 3, q_sh, q_base))
     for hx, hy, tone, edge in heads:
-        d.line((vcx, vase_top, hx, hy + 3), fill=q_sh, width=2)
-        d.ellipse((hx - 3, hy - 3, hx + 3, hy + 3), fill=tone)
-        d.ellipse((hx - 3, hy - 3, hx, hy), fill=edge)  # lit-side quarter of each bloom
+        stem_x0 = vcx + round((hx - vcx) * 0.35)
+        d.line((stem_x0, vase_top + 3, hx, hy + 4), fill=q_sh, width=2)
+        d.ellipse((hx - 4, hy - 4, hx + 4, hy + 4), fill=tone)
+        d.ellipse((hx - 4, hy - 4, hx, hy), fill=edge)  # lit-side quarter of each bloom
+        d.ellipse((hx - 1, hy - 1, hx + 1, hy + 1), fill=hi)  # cream centre, reads as a flower
 
     # Three drawers, stacked, each with a routed shadow line and two pulls.
     drawer_top, drawer_bottom = top + 10, bottom - 10
@@ -3277,7 +3379,7 @@ def main() -> None:
     for name, sprite in (
         ("picture", make_framed_picture()),
         ("picture_2", make_framed_picture_small()),
-        ("barn_star", make_barn_star()),
+        ("farm_painting", make_farm_painting()),
         ("antlers", make_antlers()),
         ("clock", make_wall_clock()),
         ("coat_hooks", make_coat_hooks()),
