@@ -1008,6 +1008,31 @@ def _opponent_parts():
             (OPP_CX + 118, OPP_H), (OPP_CX + 94, hy + 74),
             (OPP_CX + 58, hy + 94), (OPP_CX + 62, OPP_H),
         ]), ramp(FLANNEL_RED)[2]),
+        # Mended patch on the right sleeve (wave-3 polish). Sits inside the right sleeve quad
+        # above — verified against its actual edges at this y-range: the sleeve's inner edge
+        # runs (OPP_CX+58, hy+94) to (OPP_CX+62, OPP_H) and its outer edge runs (OPP_CX+94,
+        # hy+74) to (OPP_CX+118, OPP_H), so at hy+130..hy+156 the sleeve spans roughly
+        # OPP_CX+59..OPP_CX+112 — this patch (OPP_CX+64..+88) sits well inside that, with margin
+        # on both sides. Also well below the hand polygon (which tops out at hy+84, ends by
+        # hy+118) and well above the hem crop at OPP_H. CAP_GREEN reused from the hat — mended
+        # by someone, not matching. A single flat part like every other shape in this list, so
+        # it gets the same automatic darken()-edge band `composite_sprite` already gives every
+        # part — that IS the stitched-edge line, no separate border rectangle needed.
+        #
+        # x-position matters here beyond clearance: `light_from` relights this whole sprite in
+        # 5 discrete vertical bands (LIGHT_BANDS), and the sprite's colour budget (asserted by
+        # `_assert_sprite_colours`) was already sitting at its ceiling before this change — every
+        # base tone in a NEW band is a new final colour, not a reused one. The hat (this sprite's
+        # only other CAP_GREEN user) spans OPP_CX-58..+58, i.e. x 92..208 at OPP_W=300 — bands 1
+        # through 3 of 5 (band width 60). This patch is kept inside x 214..238, i.e. band 3 only
+        # (180..239), so its CAP_GREEN reuses a band already in the sprite instead of adding one.
+        # (An earlier draft at OPP_CX+70..+94, plus a separate darken(CAP_GREEN) border
+        # rectangle, spilled into band 4 and blew the budget — confirmed by regenerating and
+        # diffing `_assert_sprite_colours`' colour count against the pre-change baseline.)
+        (_poly([
+            (OPP_CX + 64, hy + 130), (OPP_CX + 88, hy + 130),
+            (OPP_CX + 88, hy + 156), (OPP_CX + 64, hy + 156),
+        ]), CAP_GREEN),
         # Hands: squared-off, not round. A circle of skin reads as a ball; knuckles and a
         # thumb read as a hand even at eight pixels across.
         (_poly([
@@ -1151,6 +1176,33 @@ def draw_opponent_face(img: Image.Image, expression: str) -> None:
         ex = OPP_CX + side * 24
         d.rectangle((ex - 12, eye_y - 14, ex + 12, eye_y + 10), outline=GOLD, width=4)
     d.line((OPP_CX - 12, eye_y - 2, OPP_CX + 12, eye_y - 2), fill=GOLD, width=4)
+
+    # Short pipe (wave-3 polish). Stem exits the moustache's left corner — that corner sits at
+    # (OPP_CX-48, hy+20) in `_opponent_parts`, and both stem points below land inside the
+    # moustache polygon there (checked against its actual edges: the top edge runs
+    # (OPP_CX-48,hy+20)-(OPP_CX-10,hy+10), the closing edge runs (OPP_CX-38,hy+34)-
+    # (OPP_CX-48,hy+20)) so the stem reads as emerging from it with no gap. Kept short and
+    # high: the bowl bottoms out at hy+48, well clear of the hands (top out at hy+84), the
+    # sleeves (top out at hy+74 on the outer edge, hy+94 on the inner edge nearest the bowl),
+    # and the shoulder line (flat top at hy+52, sloping down to hy+74 further out at this x).
+    #
+    # Drawn here with plain ImageDraw calls rather than as an `_opponent_parts` entry: a part
+    # in that list gets `composite_sprite`'s automatic per-part darken()-edge shadow band, and
+    # that extra tone landed in a `light_from` x-band (see LIGHT_BANDS) BOOT_DARK's shadow had
+    # never appeared in on this sprite, which pushed `_assert_sprite_colours` over its budget —
+    # confirmed by regenerating and diffing the colour count against this change reverted.
+    #
+    # Stem in INK, not BEARD_GRAY: a first pass used BEARD_GRAY to match the moustache it
+    # emerges from, but at this size the stem then read as an indistinct extension of the
+    # moustache itself rather than a separate shape — confirmed visually in the regenerated
+    # PNGs, zoomed. INK is dark enough to read as its own line against both the moustache and
+    # the skin behind it, and it's already present in this x-band (the eyes' own INK fill
+    # reaches into it on every expression), so it adds no new colour either.
+    d.polygon([
+        (OPP_CX - 46, hy + 20), (OPP_CX - 40, hy + 26),
+        (OPP_CX - 58, hy + 44), (OPP_CX - 64, hy + 38),
+    ], fill=INK)
+    d.rectangle((OPP_CX - 72, hy + 34, OPP_CX - 56, hy + 48), fill=BOOT_DARK)
 
 
 def _buffalo_check(img: Image.Image, base: tuple, alt: tuple, size: int) -> None:
@@ -1691,6 +1743,23 @@ def make_fireplace(w=748, h=540):
     d.rectangle((ox0, oy0, ox1, oy1), outline=_mix(mortar, deep, 0.6), width=lip)
     d.line((ox0 + lip, oy0 + lip, ox1 - lip, oy0 + lip), fill=_mix(deep, FIRE_DEEP, 0.45))
 
+    # A few small embers glowing in the ash (wave-3), earning the "ember" half of this bed's
+    # own name -- it was pure grey-white ash with none. Radius-3 dots, the same minimum-size
+    # point feature `make_feed_dots()` already validated against this same PX*chunk=4 authoring
+    # grid (smaller collapses to noise once snapped/halved). Warm-orange EMBER/FIRE_DEEP tones,
+    # kept few and low in the mound so they read as a couple of live coals underfoot rather than
+    # competing with the actual flame sprite (.scene-fire) positioned in this same opening.
+    # Drawn AFTER the border outline above (not before, like the ash mound itself): the outline
+    # is stroked `lip`-wide inward from the opening's edges, which silently ate an ember placed
+    # near the mound's bottom on the first pass (caught by inspecting the actual saved PNG, not
+    # a pre-snap render -- see the lesson at the top of this task).
+    for frac_x, frac_y, tone in (
+        (0.16, 0.25, EMBER), (0.47, -0.35, _mix(EMBER, FIRE_DEEP, 0.5)), (0.74, 0.15, EMBER),
+    ):
+        ex = inner_l + round((inner_r - inner_l) * frac_x)
+        ey = ash_y + round(ash_h * frac_y)
+        d.ellipse((ex - 3, ey - 3, ex + 3, ey + 3), fill=tone)
+
     # Soft soot smudge directly above the opening — a low-alpha dark band implying years of
     # smoke staining. Drawn on a transparent overlay and alpha-composited, the same pattern
     # make_window_glass uses for its warm edge wash, rather than fighting ImageDraw's flat
@@ -1870,6 +1939,28 @@ def make_window_frame(w=WINDOW_W, h=WINDOW_H):
     for i, tone in enumerate((f_hi, f_base, f_sh)):
         d.rectangle((i, i, w - 1 - i, h - 1 - i), outline=tone, width=1)
     d.rectangle((3, 3, w - 4, h - 4), outline=f_deep, width=2)
+
+    # Curtain tie-back (wave-3 polish) — the plainest surface left in this cluster, per direct
+    # review, and preferred over a moth silhouette (too small to read at this scale). Left side
+    # only, for two reasons: `.scene-window`'s CSS box is right-anchored with `right: -72px`
+    # (see index.css), so this canvas's own right ~42% (x > ~196 of 340) never appears on
+    # screen at ANY tested viewport — anything drawn past there would simply never render, crop
+    # math confirmed against the live layout, not assumed. And of the two sides that ARE
+    # visible-ish, the left has more clearance: the sill's herb pot (make_window_sill) sits
+    # almost directly under this frame's own left corner, so the hook goes mid-height and the
+    # fold is nudged right of x=0 rather than stacking straight on top of it.
+    tie_x, tie_y = 30, round(h * 0.42)
+
+    # A small fold of fabric gathered through the hook, drooping down-left — RUG_RED, already
+    # the room's warm cloth tone (rug, felt stripe), not a new colour. Drawn before the hook so
+    # the ring reads as sitting IN FRONT of the cloth pinched through it, not buried under it.
+    c_hi, c_base, c_sh, _ = ramp(RUG_RED)
+    fold = [(tie_x, tie_y - 2), (tie_x - 18, tie_y + 34), (tie_x + 4, tie_y + 42)]
+    d.polygon(fold, fill=c_base, outline=c_sh)
+    d.line((tie_x, tie_y - 2, tie_x - 18, tie_y + 34), fill=c_hi)  # lit edge along the near fold
+
+    d.ellipse((tie_x - 6, tie_y - 6, tie_x + 6, tie_y + 6), outline=GOLD, width=2)
+    d.ellipse((tie_x - 2, tie_y - 2, tie_x + 2, tie_y + 2), fill=GOLD)
     return img
 
 
@@ -2553,8 +2644,7 @@ def make_coat_hooks(w=208, h=268):
 
     # Left hook: a striped scarf draped over the peg, so it isn't left bare. Chosen over a
     # knit hat — stripes stay legible at this sprite's small size, where a rounded hat
-    # silhouette tends to blob into the peg beneath it. The right hook stays empty; one filled
-    # hook is enough to read as "someone's been here" without crowding the rail.
+    # silhouette tends to blob into the peg beneath it.
     sx, peg_y = 35, 40
     d.rectangle((sx - 14, peg_y - 2, sx + 14, peg_y + 8), fill=RUG_RED)  # doubled over the peg
     stripe = (RUG_RED, CLOTH_BLUE)
@@ -2565,6 +2655,22 @@ def make_coat_hooks(w=208, h=268):
         d.rectangle((sx - 13, y0, sx - 3, y0 + tail_h - 2), fill=tone)      # longer tail
         if i < 5:
             d.rectangle((sx + 3, y0, sx + 13, y0 + tail_h - 2), fill=tone)  # shorter tail
+
+    # Right hook (wave-3): a mitten pair on their own connecting cord, the way a child's
+    # mittens are kept from getting lost — the one hook still bare after the scarf (left) and
+    # coat (middle). Two flat rectangle palms plus a small thumb notch each, no more detail
+    # than the scarf's stripes carry, in CLOTH_BLUE (already in-palette) so it reads as its own
+    # garment rather than an offcut of the coat or scarf beside it.
+    mx = w - 37
+    m_hi, mitt, m_sh, _ = ramp(CLOTH_BLUE)
+    d.line((mx - 12, peg_y + 4, mx + 12, peg_y + 4), fill=m_sh, width=2)  # connecting cord
+    for side in (-1, 1):
+        cx = mx + side * 11
+        d.rectangle((cx - 7, peg_y + 2, cx + 7, peg_y + 30), fill=mitt)
+        d.rectangle((cx - 7, peg_y + 2, cx + 7, peg_y + 6), fill=m_hi)     # lit top
+        d.rectangle((cx - 7, peg_y + 24, cx + 7, peg_y + 30), fill=m_sh)  # ribbed cuff
+        d.polygon([(cx + side * 6, peg_y + 10), (cx + side * 13, peg_y + 14),
+                    (cx + side * 6, peg_y + 18)], fill=mitt)               # thumb
     return img
 
 
@@ -2630,6 +2736,23 @@ def make_hearth_mat(w=180, h=48):
     top, bottom = round(h * 0.12), h - round(h * 0.22)
     left, right = round(w * 0.03), w - round(w * 0.03)
     d.rectangle((left, top, right, bottom), fill=base)
+
+    # A coarse woven check (wave-3) -- the same `_mix()` checkerboard technique make_rug() and
+    # the dresser's folded quilt already use, scaled down to this mat's own small footprint.
+    # A flat square check, not the rug's diagonal diamond lattice: this is a small floor mat,
+    # not a second feature rug, so the texture stays a quiet weave rather than a braided pattern
+    # competing with it. Drawn over the base fill and BEFORE the top/bottom edge bands and inset
+    # outline below, so those redraw cleanly over the check's own edges.
+    check = 6
+    light = _mix(base, hi, 0.25)
+    dark = _mix(base, deep, 0.22)
+    for wy in range(top, bottom):
+        band_y = ((wy - top) // check) % 2 == 0
+        for wx in range(left, right, check):
+            band_x = ((wx - left) // check) % 2 == 0
+            tone = dark if (band_x and band_y) else (light if (band_x or band_y) else base)
+            d.line((wx, wy, min(wx + check - 1, right - 1), wy), fill=tone)
+
     d.rectangle((left, top, right, top + 2), fill=hi)
     d.rectangle((left, bottom - 2, right, bottom), fill=deep)
     d.rectangle((left + 4, top + 4, right - 4, bottom - 4), outline=sh, width=2)
@@ -2746,6 +2869,15 @@ def make_dresser(w=192, h=128):
     for i in range(3):
         dy0 = drawer_top + i * (dh + gap)
         dy1 = dy0 + dh
+        # Bottom drawer only, left ajar (wave-3 polish): nudged 3px down so its face reads as
+        # slightly pulled out, with a wedge of fabric caught in the gap it opens above it. The
+        # bottom, not the top — the slab above already carries the quilt+letter, and a second
+        # "something's spilling out" beat up there would compete with them for the same real
+        # estate; the bottom drawer has nothing else near it.
+        ajar = 3 if i == 2 else 0
+        orig_dy0 = dy0
+        dy0 += ajar
+        dy1 += ajar
         d.rectangle((left + 8, dy0, right - 8, dy1), fill=sh)
         d.rectangle((left + 8, dy0, right - 8, dy0 + 3), fill=_mix(sh, hi, 0.4))
         d.rectangle((left + 8, dy1 - 3, right - 8, dy1), fill=deep)
@@ -2753,6 +2885,14 @@ def make_dresser(w=192, h=128):
         for px in (left + (right - left) * 0.32, left + (right - left) * 0.68):
             d.ellipse((px - 4, pull_y - 4, px + 4, pull_y + 4), fill=GOLD)
             d.ellipse((px - 4, pull_y - 4, px + 1, pull_y + 1), fill=_mix(GOLD, PARCHMENT, 0.5))
+        if ajar:
+            # A small triangular wedge poking from the gap — reuses the quilt's own blue-family
+            # tone (q_hi/q_base/q_sh, already computed above for the quilt drape) rather than a
+            # new colour, reading as a bit of the same "junk drawer" cloth caught in the front.
+            wx = left + (right - left) * 0.5
+            wtop, wbot = orig_dy0 - 1, dy0 + 8
+            d.polygon([(wx - 9, wbot), (wx + 9, wbot), (wx, wtop)], fill=q_base, outline=q_sh)
+            d.line((wx - 9, wbot, wx, wtop), fill=q_hi)
 
     # Short plinth feet.
     for fx in (left + 6, right - 18):
