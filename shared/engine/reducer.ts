@@ -106,6 +106,19 @@ function enterDealerExchange(state: GameState): GameState {
   };
 }
 
+/** Where to land right after both hands are selected, given which blind loner tiers this
+ *  game's config has enabled. A disabled tier's window is skipped outright — not entered and
+ *  auto-passed — so turning a tier off costs zero extra clicks, not a dead "Pass" screen.
+ *  Skipping a window still has to apply the reveal flags that window's own exit would have
+ *  set (see the `PASS` handler below), or a skipped-both-tiers game would reach bidding_round1
+ *  with the upcard still hidden. */
+function enterLonerWindows(state: GameState): GameState {
+  const { blind_hand, full_blind } = state.config.lonerTiersEnabled;
+  if (full_blind) return { ...state, phase: 'loner_full_blind' };
+  if (blind_hand) return { ...state, phase: 'loner_blind_hand', upcardRevealed: true };
+  return { ...state, phase: 'bidding_round1', upcardRevealed: true, selectedHandsRevealed: true };
+}
+
 function settleScore(state: GameState): GameState {
   const maker = state.maker!;
   const defender = otherPlayer(maker);
@@ -153,12 +166,8 @@ export function reduce(state: GameState, action: Action): GameState {
         [player]: { packets: null, selectedHand, blindHand },
       };
       const bothSelected = Object.values(players).every((p) => p.selectedHand !== null);
-      return {
-        ...base,
-        players,
-        phase: bothSelected ? 'loner_full_blind' : 'select',
-        passedBy: bothSelected ? [] : base.passedBy,
-      };
+      const withPlayers = { ...base, players, passedBy: bothSelected ? [] : base.passedBy };
+      return bothSelected ? enterLonerWindows(withPlayers) : { ...withPlayers, phase: 'select' };
     }
 
     case 'DECLARE_FULL_BLIND_LONER': {
@@ -217,6 +226,15 @@ export function reduce(state: GameState, action: Action): GameState {
         // window sees it but not the player's own cards. selectedHandsRevealed now happens
         // at the end of THIS window, immediately before bidding_round1 needs to read hands.
         case 'loner_full_blind':
+          if (!base.config.lonerTiersEnabled.blind_hand) {
+            return {
+              ...base,
+              phase: 'bidding_round1',
+              passedBy: [],
+              upcardRevealed: true,
+              selectedHandsRevealed: true,
+            };
+          }
           return { ...base, phase: 'loner_blind_hand', passedBy: [], upcardRevealed: true };
         case 'loner_blind_hand':
           return { ...base, phase: 'bidding_round1', passedBy: [], selectedHandsRevealed: true };

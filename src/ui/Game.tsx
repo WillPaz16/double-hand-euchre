@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useGame } from '../game/useGame.ts';
 import { useSfx } from '../game/useSfx.ts';
 import { SceneLayer } from './SceneLayer.tsx';
@@ -7,10 +8,12 @@ import { Table } from './Table.tsx';
 import { BidPanel } from './BidPanel.tsx';
 import { HandTray } from './HandTray.tsx';
 import { LonerDim, LonerStamp } from './LonerFx.tsx';
+import { PauseMenu } from './PauseMenu.tsx';
 
-export function Game() {
-  const { view, legal, play, completedTrick, frozen, restart } = useGame();
+export function Game({ onQuit }: { onQuit: () => void }) {
+  const { view, legal, play, completedTrick, frozen, restart, quit } = useGame();
   useSfx(view);
+  const [paused, setPaused] = useState(false);
 
   return (
     <>
@@ -21,6 +24,13 @@ export function Game() {
       <LonerDim view={view} />
       <LonerStamp view={view} />
       <div className="game-root">
+      <button
+        className="game-pause-button"
+        aria-label="Pause menu"
+        onClick={() => setPaused(true)}
+      >
+        ⚙
+      </button>
       <Scoreboard view={view} />
       <StatusBanner view={view} onRestart={restart} />
       <Table view={view} completedTrick={completedTrick} />
@@ -29,6 +39,19 @@ export function Game() {
         <HandTray view={view} legal={legal} play={play} frozen={frozen} />
       </div>
       </div>
+      {paused && (
+        <PauseMenu
+          onClose={() => setPaused(false)}
+          onRestart={() => {
+            restart();
+            setPaused(false);
+          }}
+          onQuit={() => {
+            quit();
+            onQuit();
+          }}
+        />
+      )}
     </>
   );
 }

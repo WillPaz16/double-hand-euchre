@@ -89,6 +89,10 @@ export interface Config {
   stickTheDealer: boolean;
   gameTarget: number;
   lonerPoints: Record<LonerTier, number>;
+  /** Standard loner (naming trump alone in bidding) is always available — it's core euchre,
+   *  not a variant. Only the two blind tiers, which are this two-handed game's own extension
+   *  of the rule, are player-configurable. */
+  lonerTiersEnabled: Record<'blind_hand' | 'full_blind', boolean>;
 }
 
 export interface PlayerView {

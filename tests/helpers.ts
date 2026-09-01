@@ -13,14 +13,20 @@ export function selectHands(
   return s;
 }
 
-/** Passes both loner windows (full-blind, then blind-trump), landing in bidding_round1. */
+const LONER_WINDOW_PHASES = new Set(['loner_full_blind', 'loner_blind_hand']);
+
+/** Passes through whichever loner windows the state's config has actually left enabled,
+ *  landing in bidding_round1. A disabled tier's window never opens (see `enterLonerWindows`
+ *  in reducer.ts), so this loops on phase rather than assuming a fixed pass count — with the
+ *  default config that's still exactly full-blind then blind-hand, 4 passes total. */
 export function passLonerWindows(state: GameState): GameState {
   const nonDealer = otherPlayer(state.dealer);
   let s = state;
-  s = reduce(s, { type: 'PASS', player: nonDealer });
-  s = reduce(s, { type: 'PASS', player: state.dealer });
-  s = reduce(s, { type: 'PASS', player: nonDealer });
-  s = reduce(s, { type: 'PASS', player: state.dealer });
+  while (LONER_WINDOW_PHASES.has(s.phase)) {
+    s = reduce(s, { type: 'PASS', player: nonDealer });
+    if (!LONER_WINDOW_PHASES.has(s.phase)) break;
+    s = reduce(s, { type: 'PASS', player: state.dealer });
+  }
   return s;
 }
 

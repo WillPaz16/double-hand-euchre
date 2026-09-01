@@ -79,6 +79,60 @@ describe('loner declaration windows', () => {
   });
 });
 
+describe('loner tier config toggles', () => {
+  it('disabling full-blind skips its window entirely, landing straight in blind-hand', () => {
+    const config = {
+      ...DEFAULT_CONFIG,
+      lonerTiersEnabled: { ...DEFAULT_CONFIG.lonerTiersEnabled, full_blind: false },
+    };
+    const s = selectHands(newGame('seed-toggle-1', 'B', config));
+    expect(s.phase).toBe('loner_blind_hand');
+    // Skipping full-blind still has to apply the reveal that window's own exit would have —
+    // the upcard is turned before the blind-hand window opens either way.
+    expect(s.upcardRevealed).toBe(true);
+    expect(s.selectedHandsRevealed).toBe(false);
+  });
+
+  it('disabling blind-hand skips from full-blind straight to bidding_round1 on decline', () => {
+    const config = {
+      ...DEFAULT_CONFIG,
+      lonerTiersEnabled: { ...DEFAULT_CONFIG.lonerTiersEnabled, blind_hand: false },
+    };
+    let s = selectHands(newGame('seed-toggle-2', 'B', config));
+    expect(s.phase).toBe('loner_full_blind');
+    s = reduce(s, { type: 'PASS', player: 'A' });
+    s = reduce(s, { type: 'PASS', player: 'B' });
+    expect(s.phase).toBe('bidding_round1');
+    expect(s.upcardRevealed).toBe(true);
+    expect(s.selectedHandsRevealed).toBe(true);
+  });
+
+  it('disabling both tiers skips straight to bidding_round1 after hand selection', () => {
+    const config = {
+      ...DEFAULT_CONFIG,
+      lonerTiersEnabled: { blind_hand: false, full_blind: false },
+    };
+    const s = selectHands(newGame('seed-toggle-3', 'B', config));
+    expect(s.phase).toBe('bidding_round1');
+    expect(s.upcardRevealed).toBe(true);
+    expect(s.selectedHandsRevealed).toBe(true);
+    expect(legalActions(s, otherPlayer(s.dealer)).map((a) => a.type)).toEqual([
+      'ORDER_UP',
+      'ORDER_UP',
+      'PASS',
+    ]);
+  });
+
+  it('passLonerWindows still reaches bidding_round1 with a disabled tier (helper stays correct)', () => {
+    const config = {
+      ...DEFAULT_CONFIG,
+      lonerTiersEnabled: { ...DEFAULT_CONFIG.lonerTiersEnabled, full_blind: false },
+    };
+    const s = passLonerWindows(selectHands(newGame('seed-toggle-4', 'B', config)));
+    expect(s.phase).toBe('bidding_round1');
+  });
+});
+
 describe('bidding rounds', () => {
   it('round 1 order-up gives the dealer the upcard into their selected hand', () => {
     const s0 = passLonerWindows(selectHands(newGame('seed-6', 'B', DEFAULT_CONFIG)));

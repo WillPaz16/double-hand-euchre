@@ -9,8 +9,10 @@ import {
   actingHand,
   trickWinnerIndex,
 } from '../../shared/engine/index.ts';
-import type { Action, GameState, Player, TrickCard } from '../../shared/engine/types.ts';
+import type { Action, Config, GameState, Player, TrickCard } from '../../shared/engine/types.ts';
 import { chooseMove } from '../../shared/bot/index.ts';
+import { getRuleSettings } from './ruleSettings.ts';
+import { loadSavedGame, saveGame, clearSavedGame } from './savedGame.ts';
 
 export const HUMAN: Player = 'A';
 export const BOT: Player = 'B';
@@ -36,6 +38,13 @@ function freshSeed(): string {
   return `deal-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
+/** Builds a fresh Config from DEFAULT_CONFIG plus whatever rule toggles are saved in
+ *  localStorage (see ruleSettings.ts) — the settings screen only ever writes to that store,
+ *  it never touches a live GameState, so every new deal picks up the latest toggle here. */
+function buildConfig(): Config {
+  return { ...DEFAULT_CONFIG, lonerTiersEnabled: getRuleSettings() };
+}
+
 /** Drives a full local single-player game: holds engine state, auto-plays the bot's turns
  *  on a short delay, and auto-advances to the next deal once a hand settles. The human's
  *  moves are validated against legalActions() before being applied — the UI cannot submit
@@ -47,12 +56,27 @@ export function useGame(initialSeed?: string) {
   // deadlock tests depend on. Consistent with the engine's design rather than a test-only
   // hack — the whole engine is seeded for reproducibility (§4), and a replay/debug view would
   // need exactly this hook. Note only the FIRST hand is deterministic; nextDeal draws fresh.
-  const [state, setState] = useState<GameState>(() =>
-    newGame(initialSeed ?? freshSeed(), HUMAN, DEFAULT_CONFIG),
-  );
+  // A saved game only ever resumes real play, never a test — tests always pass `initialSeed`
+  // for determinism, and resuming a leftover localStorage save would make that seed a lie.
+  const [state, setState] = useState<GameState>(() => {
+    if (initialSeed === undefined) {
+      const saved = loadSavedGame();
+      if (saved) return saved;
+      return newGame(freshSeed(), HUMAN, buildConfig());
+    }
+    // Seeded (test) path: never touches localStorage, so it stays deterministic regardless
+    // of whatever settings a real session may have saved.
+    return newGame(initialSeed, HUMAN, DEFAULT_CONFIG);
+  });
   const [completedTrick, setCompletedTrick] = useState<CompletedTrick | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingSweepRef = useRef<CompletedTrick | null>(null);
+
+  // Continuous autosave (direct user request: closing the tab or hitting Quit should never
+  // lose progress). Same seed guard as the resume-on-mount above, for the same reason.
+  useEffect(() => {
+    if (initialSeed === undefined) saveGame(state);
+  }, [state, initialSeed]);
 
   /** Applies an action and, if it completed a trick, captures that trick for the UI.
    *
@@ -175,11 +199,22 @@ export function useGame(initialSeed?: string) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
     }
-    setState(newGame(freshSeed(), HUMAN, DEFAULT_CONFIG));
+    // Same determinism boundary as the mount initializer above: a seeded (test) restart must
+    // stay config-fixed rather than reading whatever a real session happens to have saved.
+    const config = initialSeed === undefined ? buildConfig() : DEFAULT_CONFIG;
+    setState(newGame(freshSeed(), HUMAN, config));
+  }, [initialSeed]);
+
+  /** Ends the current game without starting a new one, for a "Quit to title" action. The
+   *  caller is responsible for actually leaving this screen (useGame has no navigation of its
+   *  own) — this only clears the autosaved state so Title screen stops offering "Continue". */
+  const quit = useCallback(() => {
+    clearSavedGame();
   }, []);
 
   return {
     restart,
+    quit,
     view: redact(state, HUMAN),
     legal: legalActions(state, HUMAN),
     play,

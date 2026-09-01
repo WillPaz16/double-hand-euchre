@@ -35,6 +35,7 @@ function playRandomDeal(index: number): GameState {
     stickTheDealer: rand() < 0.5,
     gameTarget: 10,
     lonerPoints: { standard: 4, blind_hand: 6, full_blind: 8 },
+    lonerTiersEnabled: { blind_hand: rand() < 0.5, full_blind: rand() < 0.5 },
   };
   const dealer: Player = rand() < 0.5 ? 'A' : 'B';
   let s = newGame(`fuzz-deal-${index}`, dealer, config);

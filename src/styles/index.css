@@ -1248,6 +1248,122 @@ body {
   cursor: pointer;
   touch-action: manipulation;
 }
+.title-footer-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* --- Settings screen (title-screen only) + Pause menu (in-game) ------------------------
+   Two different surfaces sharing one visual language and one HelpPanel: SettingsScreen is a
+   full screen reached from Title (rule toggles live only here — they read next-game, not
+   mid-hand); PauseMenu is a small in-game overlay (direct user request: quit/save/restart
+   reachable mid-game too) with no rule toggles, for the same reason. */
+.settings-screen {
+  max-width: 30rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+  background: rgba(20, 14, 9, 0.55);
+  box-shadow: 0 0 40px 40px rgba(20, 14, 9, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+  min-height: 100dvh;
+}
+.settings-heading {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #ffd54a;
+  text-shadow:
+    0 0 14px rgba(255, 213, 74, 0.45),
+    0 3px 0 #3a2415;
+}
+.settings-section {
+  width: 100%;
+  text-align: left;
+}
+.settings-section h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #ffd54a;
+}
+.settings-note {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  line-height: 1.5;
+  margin: 0 0 0.5rem;
+}
+.settings-toggle-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.help-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.help-section h3 {
+  margin: 0 0 0.2rem;
+  font-size: 0.85rem;
+  color: #f0e6d6;
+}
+.help-section p {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.game-pause-button {
+  position: absolute;
+  top: max(0.25rem, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0;
+  border: 1px solid #7a5a3a;
+  background: rgba(20, 14, 9, 0.55);
+  color: #f0e6d6;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.pause-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(10, 7, 4, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.pause-menu {
+  max-width: 26rem;
+  width: 100%;
+  max-height: 90dvh;
+  overflow-y: auto;
+  background: #211710;
+  border: 2px solid #7a5a3a;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+.pause-menu-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
 
 /* --- The loner ladder (Phase 2e.8) ------------------------------------------------------ */
 /* `LonerDim` sits between the scene (-1) and the game content (1), so it darkens the room

@@ -8,4 +8,8 @@ export const DEFAULT_CONFIG: Config = {
     blind_hand: 6,
     full_blind: 8,
   },
+  lonerTiersEnabled: {
+    blind_hand: true,
+    full_blind: true,
+  },
 };
