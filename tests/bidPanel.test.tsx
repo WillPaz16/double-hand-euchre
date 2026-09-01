@@ -68,7 +68,7 @@ describe('BidPanel', () => {
     expect(play).toHaveBeenCalledWith({ type: 'ORDER_UP', player: HUMAN, loner: false });
   });
 
-  it('the "Alone" chip fires the loner action directly, one tap, no second screen', () => {
+  it('round 2 is suit-first: picking a suit stages With Partner / Alone, no immediate play()', () => {
     const play = vi.fn();
     const legal: Action[] = [
       { type: 'NAME_TRUMP', player: HUMAN, suit: 'hearts', loner: false },
@@ -76,12 +76,16 @@ describe('BidPanel', () => {
       { type: 'PASS', player: HUMAN },
     ];
     render(<BidPanel view={makeView({ phase: 'bidding_round2' })} legal={legal} play={play} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Call Hearts' }));
+    expect(play).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'With Partner' })).toBeTruthy();
+
     fireEvent.click(screen.getByRole('button', { name: /alone/i }));
     expect(play).toHaveBeenCalledTimes(1);
     expect(play).toHaveBeenCalledWith({ type: 'NAME_TRUMP', player: HUMAN, suit: 'hearts', loner: true });
   });
 
-  it('round 2 shows one row per legal suit, each with its own primary + alone controls', () => {
+  it('round 2 top level shows one suit-only button per legal suit, no alone controls yet', () => {
     const legal: Action[] = [
       { type: 'NAME_TRUMP', player: HUMAN, suit: 'hearts', loner: false },
       { type: 'NAME_TRUMP', player: HUMAN, suit: 'hearts', loner: true },
@@ -92,8 +96,22 @@ describe('BidPanel', () => {
     render(<BidPanel view={makeView({ phase: 'bidding_round2' })} legal={legal} play={vi.fn()} />);
     expect(screen.getByRole('button', { name: 'Call Hearts' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Call Clubs' })).toBeTruthy();
-    expect(screen.getAllByRole('button', { name: /alone/i })).toHaveLength(2);
+    expect(screen.queryByRole('button', { name: /alone/i })).toBeNull();
     expect(screen.getByRole('button', { name: 'Pass' })).toBeTruthy();
+  });
+
+  it('Back on the suit-picked screen returns to the suit list without playing anything', () => {
+    const play = vi.fn();
+    const legal: Action[] = [
+      { type: 'NAME_TRUMP', player: HUMAN, suit: 'hearts', loner: false },
+      { type: 'NAME_TRUMP', player: HUMAN, suit: 'hearts', loner: true },
+      { type: 'PASS', player: HUMAN },
+    ];
+    render(<BidPanel view={makeView({ phase: 'bidding_round2' })} legal={legal} play={play} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Call Hearts' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    expect(play).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Call Hearts' })).toBeTruthy();
   });
 
   it('the full-blind loner gets its OWN deliberate confirm, distinct from the trump-alone flow', () => {
