@@ -1294,15 +1294,6 @@ body {
   line-height: 1.5;
   margin: 0 0 0.5rem;
 }
-.trick-log {
-  margin: 0;
-  padding-left: 1.4rem;
-  font-size: 0.75rem;
-  line-height: 1.7;
-  opacity: 0.85;
-  max-height: 8rem;
-  overflow-y: auto;
-}
 .settings-toggle-row {
   display: flex;
   flex-wrap: wrap;
@@ -2375,6 +2366,17 @@ body {
   filter:
     drop-shadow(calc(2px * var(--px)) 0 0 #ffd54a) drop-shadow(calc(-2px * var(--px)) 0 0 #ffd54a)
     drop-shadow(0 calc(2px * var(--px)) 0 #ffd54a) drop-shadow(0 calc(-2px * var(--px)) 0 #ffd54a);
+}
+/* The LIVE leader on a trick still being played — direct user feedback that real euchre lets
+   you see who's currently ahead on the table (the cards are just sitting there), unlike the
+   settled `.is-winner` state above which gets the bigger pop-and-sweep treatment once the
+   trick is actually over. Same gold, same pixel-stepped outline technique, but a single flat
+   `box-shadow` ring instead of a 4-direction drop-shadow filter: this one has to update calmly
+   as each new card lands and might steal or lose the lead, not celebrate a single moment, so
+   no scale/pop animation — a card gaining then losing the outline mid-trick should read as
+   "oh, that's not winning anymore," not flicker like a glitch. */
+.trick-card.is-leading .card-face {
+  box-shadow: 0 0 0 calc(2px * var(--px)) #ffd54a;
 }
 .trick-card.is-winner {
   animation: winner-pop 500ms ease-out;

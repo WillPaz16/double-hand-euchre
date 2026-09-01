@@ -2,19 +2,6 @@ import { useState } from 'react';
 import { HelpPanel } from './HelpPanel.tsx';
 import { isMuted, setMuted } from '../game/audioSettings.ts';
 import { getRuleSettings } from '../game/ruleSettings.ts';
-import { HUMAN, type CompletedTrick } from '../game/useGame.ts';
-import type { Card } from '../../shared/engine/types.ts';
-
-const SUIT_SYMBOL: Record<Card['suit'], string> = {
-  clubs: '♣',
-  diamonds: '♦',
-  hearts: '♥',
-  spades: '♠',
-};
-
-function cardText(card: Card): string {
-  return `${card.rank}${SUIT_SYMBOL[card.suit]}`;
-}
 
 /** The in-game subset of Settings (direct user request: quit/save/restart reachable mid-game,
  *  not just from the title screen). Deliberately narrower than SettingsScreen — no rule
@@ -25,16 +12,22 @@ function cardText(card: Card): string {
  *  was where that lived). Sound and Help are genuinely safe to change/read at any moment, so
  *  they're the two settings duplicated here in full.
  *
+ *  Deliberately does NOT include a past-tricks review. An earlier version did (a design-critique
+ *  pass flagged the game as missing a way to review what's already been played), but real
+ *  euchre doesn't let you flip back through the discard pile mid-hand — that IS the memory
+ *  challenge this game is built around, and undoing it for convenience would have been the
+ *  wrong trade for an experienced player (direct user feedback). The actually-authentic version
+ *  of that same underlying complaint is `Table.tsx`'s winning-card highlight on the CURRENT,
+ *  still-live trick — see that file.
+ *
  *  Save itself needs no button: `useGame` autosaves after every move, so "Quit" is really
  *  "stop showing me this game", not "discard progress" — the saved copy is what Title
  *  screen's Continue button reads back. */
 export function PauseMenu({
-  trickLog,
   onClose,
   onRestart,
   onQuit,
 }: {
-  trickLog: CompletedTrick[];
   onClose: () => void;
   onRestart: () => void;
   onQuit: () => void;
@@ -94,20 +87,6 @@ export function PauseMenu({
               Quit to Title
             </button>
           </div>
-        )}
-
-        {trickLog.length > 0 && (
-          <section className="settings-section">
-            <h2>Tricks so far</h2>
-            <ol className="trick-log">
-              {trickLog.map((trick, i) => (
-                <li key={i}>
-                  {trick.cards.map((tc) => cardText(tc.card)).join('  ')} — won by{' '}
-                  {trick.winner === HUMAN ? 'you' : 'Old-Timer'}
-                </li>
-              ))}
-            </ol>
-          </section>
         )}
 
         <section className="settings-section">

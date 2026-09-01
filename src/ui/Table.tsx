@@ -5,6 +5,7 @@ import { Card, CardBack } from './Card.tsx';
 import { UpcardWheel } from './UpcardWheel.tsx';
 import { useUpcardReveal } from '../game/useUpcardReveal.ts';
 import { useOpponentExpression } from '../game/useOpponentExpression.ts';
+import { trickWinnerIndex } from '../../shared/engine/rules.ts';
 
 /** The winning card is highlighted for this long before everything sweeps away.
  *
@@ -175,6 +176,14 @@ export function Table({
   // also tells the player who took it without any extra text.
   const trick = completedTrick ? completedTrick.cards : view.currentTrick;
   const sweeping = completedTrick !== null;
+  // Direct user feedback: real euchre lets you see who's currently winning a trick still on
+  // the table (the cards are just sitting there face-up), but does NOT let you flip back
+  // through already-collected tricks — the opposite of what an earlier version of this screen
+  // did (a Pause Menu trick history, since removed). `trickWinnerIndex` already works on a
+  // partial trick (it just scores whatever's there), so the LIVE leader is exactly the same
+  // computation the engine uses to settle a finished one — no separate logic to keep in sync.
+  const liveWinnerIndex =
+    !sweeping && trick.length > 0 && view.trump ? trickWinnerIndex(trick, view.trump) : -1;
   const wheelSpinning = useUpcardReveal(view);
   const expression = useOpponentExpression(view);
 
@@ -307,7 +316,9 @@ export function Table({
                   (sweeping
                     ? ` is-sweeping sweep-${completedTrick.winner === HUMAN ? 'down' : 'up'}` +
                       (i === completedTrick.winningIndex ? ' is-winner' : '')
-                    : '')
+                    : i === liveWinnerIndex
+                      ? ' is-leading'
+                      : '')
                 }
                 style={sweeping ? { animationDelay: `${TRICK_HOLD_BEFORE_SWEEP_MS}ms` } : undefined}
               >
