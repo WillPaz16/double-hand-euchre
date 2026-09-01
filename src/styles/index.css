@@ -1569,9 +1569,6 @@ body {
     gap: 0.5rem;
     padding-inline: 0.25rem;
   }
-  .score-pair {
-    gap: 3px;
-  }
   /* 2j.2: a `width: 42px; height: 59px;` override used to live here — a 1.4x fractional
      upscale of the 30x42 au art (`--px` is already 1 below the 900px breakpoint, so the base
      rule already renders it at its true 30x42 size). Predates the `--px` system; the base
@@ -1630,9 +1627,33 @@ body {
    numeral is still what disambiguates the exact score at a glance; the offset is computed in
    Scoreboard.tsx from the SAME row geometry the generator placed the pips against, so the
    cover's edge always lands on a row boundary. */
+/* ONE stack, not two cards side by side (direct user feedback — see ScorePair's own comment
+   in Scoreboard.tsx for the full mechanic). `.score-pair` is now just the positioning context;
+   its footprint is exactly one card, and the two layers inside it (`.score-card-behind` and
+   the active `.score-card-slot`) both fill that same box, one offset behind the other. */
 .score-pair {
-  display: flex;
-  gap: 4px;
+  position: relative;
+  width: calc(30px * var(--px));
+  height: calc(42px * var(--px));
+}
+/* The OTHER card, peeking out at an angle from behind the active one — either its plain back
+   (hasn't started yet) or its own fully-revealed face (already done). Rotated rather than just
+   nudged sideways so it reads as a second physical card lying underneath, matching the fanned,
+   never-perfectly-aligned angle already used for trick cards and hand-tray fans elsewhere in
+   this room, not a fresh visual idea invented just for this. */
+.score-card-behind {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  transform: rotate(8deg) translate(calc(3px * var(--px)), calc(2px * var(--px)));
+  z-index: 1;
+}
+.score-pair .score-card-slot {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
 }
 .score-card-slot {
   position: relative;
@@ -2756,9 +2777,6 @@ body {
   }
   .score-number {
     font-size: 0.8rem;
-  }
-  .score-pair {
-    gap: 2px;
   }
   /* Bare-30x42px here used to just restate the base rule's own value in disguise (--px is
      already 1 at any viewport short enough to hit this query, so `calc(30px * var(--px))`

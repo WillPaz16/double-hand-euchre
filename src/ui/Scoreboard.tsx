@@ -69,15 +69,29 @@ function ScoreCard({
 }
 
 /** Score 0-10, split across the two cards per the ritual above: the 4 carries 0-4, the 6
- *  carries the remainder once the 4 is full. */
+ *  carries the remainder once the 4 is full.
+ *
+ *  ONE STACK, not two side-by-side cards — direct user feedback that the earlier side-by-side
+ *  layout read as two separate widgets rather than "one card overlapping another" (the whole
+ *  point of the original reference photos). Only one card is ever ACTIVE (face-up, its own
+ *  pips sliding into view via `ScoreCard`'s existing cover mechanic, untouched below): the 4
+ *  for score 0-4, the 6 for score 5-10. The other card sits BEHIND it, peeking out at an angle
+ *  — showing its plain back if it hasn't started yet (the 6, before score 5), or its own fully
+ *  revealed face if it's already done (the 4, from score 5 on: it finished at 4/4 the moment
+ *  the 6 took over, so there's nothing left to cover). */
 function ScorePair({ player, score }: { player: Player; score: number }) {
   const suit = SCORE_SUIT[player];
-  const fourRevealed = Math.min(score, 4);
-  const sixRevealed = Math.max(0, Math.min(score - 4, GAME_TARGET - 4));
+  const fourActive = score <= 4;
+  const activeRevealed = fourActive ? Math.min(score, 4) : Math.max(0, Math.min(score - 4, GAME_TARGET - 4));
+  const activeCount = fourActive ? 4 : GAME_TARGET - 4;
   return (
     <div className="score-pair">
-      <ScoreCard suit={suit} rank="4" revealed={fourRevealed} count={4} />
-      <ScoreCard suit={suit} rank="6" revealed={sixRevealed} count={GAME_TARGET - 4} />
+      {fourActive ? (
+        <img className="score-card-behind" src="/art/score_card_back.png" alt="" />
+      ) : (
+        <img className="score-card-behind" src={`/art/scoreboard/${suit}_4.png`} alt="" />
+      )}
+      <ScoreCard suit={suit} rank={fourActive ? '4' : '6'} revealed={activeRevealed} count={activeCount} />
     </div>
   );
 }
