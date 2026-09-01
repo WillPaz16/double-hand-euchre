@@ -9,33 +9,32 @@ export function HelpPanel() {
       <section className="help-section">
         <h3>The idea</h3>
         <p>
-          You control two hands at once, playing them alternately. Each round you see one hand
-          at a time and have to remember what's in the other — that's the whole twist on
-          standard euchre.
+          You're playing both sides of the table. Two hands, one at a time, and you've got to
+          keep track of what's in the one you're not looking at. That's the whole game.
         </p>
       </section>
       <section className="help-section">
         <h3>Picking your hand</h3>
         <p>
-          You're dealt two packets of 5 cards, face-down. Pick one to be your selected hand —
-          the other becomes your blind hand, unseen until later.
+          You get two packets of five, face down, no peeking. Pick one to play. The other stays
+          blind until later in the hand.
         </p>
       </section>
       <section className="help-section">
         <h3>Going alone</h3>
         <p>
-          Normally you can go alone when you name trump, sitting out your blind hand for extra
-          points if you sweep all 5 tricks. Two rarer variants let you commit earlier, with
-          less information, for a bigger payout: a blind-hand loner (trump is known, your hand
-          isn't) and a full-blind loner (nothing is known yet). Both can be turned off in
-          Settings if you'd rather stick to standard euchre.
+          You can go alone the moment you name trump, sitting your blind hand out for extra
+          points if you run the table. Two rarer calls let you commit even earlier, with even
+          less to go on: blind, before the upcard's even turned, or right after it turns but
+          before you've looked at your own hand. Bigger risk, bigger score. Turn either off in
+          Settings if that's not your speed.
         </p>
       </section>
       <section className="help-section">
         <h3>Scoring</h3>
         <p>
-          Take 3 or 4 tricks: 1 point. Sweep all 5: 2 points (more if you went alone). Fail to
-          take 3 tricks and you're euchred — the other side scores 2. First to 10 wins.
+          Win 3 or 4 tricks, that's a point. Sweep all five for two, more if you went alone.
+          Come up short of 3 and you're euchred, the other side takes 2. Race to 10.
         </p>
       </section>
     </div>

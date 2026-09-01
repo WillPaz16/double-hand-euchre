@@ -47,8 +47,9 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
         <section className="settings-section">
           <h2>Loner rules</h2>
           <p className="settings-note">
-            Standard alone (called during bidding) is always on. These two are this game's own
-            variant — turn either off to play closer to standard euchre. Takes effect next game.
+            Regular going-alone during bidding always stays on, that's just euchre. These two
+            are our own add-on, so turn either off if you'd rather keep it standard. Won't
+            touch the game you're in, only the next one you start.
           </p>
           <div className="settings-toggle-row">
             <button
