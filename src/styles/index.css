@@ -1294,6 +1294,15 @@ body {
   line-height: 1.5;
   margin: 0 0 0.5rem;
 }
+.trick-log {
+  margin: 0;
+  padding-left: 1.4rem;
+  font-size: 0.75rem;
+  line-height: 1.7;
+  opacity: 0.85;
+  max-height: 8rem;
+  overflow-y: auto;
+}
 .settings-toggle-row {
   display: flex;
   flex-wrap: wrap;
@@ -1317,11 +1326,17 @@ body {
   opacity: 0.85;
 }
 
+/* Direct user feedback via a design-critique pass: dead-centered at the top, this sat right on
+   top of StatusBanner's own centered text (measured live: pause button x706-733/y4-32 landed
+   inside the "Turned down: Clubs" row's x624-816/y8-27.5 box — a real, confirmed overlap, not a
+   hypothetical one). A first fix tried an in-flow (non-absolute) placement below 900px, on the
+   theory that nothing else is absolute there yet either — `npm run audit` caught that this
+   silently shifted the WHOLE `.game-root` column down by the button's own height, which broke
+   a real `.seat-fan`/`.scene-feed` collision at 375x812 that was clean before (68% hidden). An
+   always-absolute placement costs no layout height at any width, so that regression can't
+   recur; it just needs a genuinely clear spot at every breakpoint instead of one. */
 .game-pause-button {
   position: absolute;
-  top: max(0.25rem, env(safe-area-inset-top));
-  left: 50%;
-  transform: translateX(-50%);
   z-index: 5;
   font-size: 0.9rem;
   line-height: 1;
@@ -1332,6 +1347,43 @@ body {
   color: #f0e6d6;
   cursor: pointer;
   touch-action: manipulation;
+  /* Below 900px, defined by its own media rule right below — no base-rule top/left, since
+     nothing here holds at every width below that breakpoint (see that rule's own comment for
+     why the two positions tried before this one both failed measurement). */
+}
+/* Below 900px `.scoreboard` is still in-flow, and its score slots hug close together — the gap
+   BETWEEN them shrinks with the viewport (measured live at 390px: only 27px) and isn't centred
+   on the viewport's own midpoint either (the two slots aren't equal width, so `left:50%` landed
+   inside the "You" slot by 8px in practice, not in the gap). The band BELOW both slots and
+   ABOVE StatusBanner's first line is the one spot verified genuinely empty at this width:
+   `.score-slot` bottoms out at y54, StatusBanner's first `.status-row` starts at y73.9 —
+   confirmed via `elementFromPoint` at the true corners, not just bounding-box math. That gap's
+   position doesn't depend on dealer-badge text width the way the between-slots gap does, and
+   StatusBanner's OWN top position doesn't move when this button's height changes (this stays
+   `position:absolute`, so it can't push anything else down the way the very first attempt did). */
+@media (max-width: 899px) {
+  .game-pause-button {
+    top: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.1rem 0.3rem;
+    font-size: 0.65rem;
+  }
+}
+/* At 900px+ `.scoreboard` pulls out of flow into the corners (its own rule, above) and
+   StatusBanner rises to fill that space, centered — which is exactly the lane the button used
+   to sit in. Measured the real gap left over at 1440px: the "You" score-slot's right edge sits
+   at x254, StatusBanner's widest measured row starts at x463 — a clear ~200px band with margin
+   on both sides. `left: 22%` (316px at 1440) lands inside it without hardcoding a pixel value
+   that would drift if either neighbour's width changes. */
+@media (min-width: 900px) {
+  .game-pause-button {
+    position: absolute;
+    top: max(0.25rem, env(safe-area-inset-top));
+    left: 22%;
+    transform: none;
+    z-index: 5;
+  }
 }
 
 .pause-menu-backdrop {
