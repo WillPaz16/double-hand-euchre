@@ -1680,17 +1680,15 @@ body {
   background-image: url('/art/score_card_back.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
-  transition: transform 350ms ease-out;
-  /* Debugging a "the cover isn't showing" report traced the transform/z-index/overflow all
-     the way down to computed styles and pixel-accurate composites: at every score the cover
-     DOES sit on top of the pips at the right offset. What actually reads poorly at the card's
-     real 30x42 (mobile) / 60x84 (desktop) au size is the back art's own fine checkerboard —
-     a couple of pixels per square, easy to misread as "nothing there" at a glance or through
-     any lossy resize. A crisp top edge is cheap insurance: it stays a solid line regardless of
-     how the checker pattern itself resamples, so the reveal boundary — "a physical card
-     overlapping" — reads even when the pattern detail doesn't. */
-  border-top: 2px solid rgba(20, 12, 6, 0.9);
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35);
+  transition: clip-path 350ms ease-out;
+  /* A crisp edge along the reveal boundary is cheap insurance against the back art's own fine
+     checkerboard being hard to read at this card's small real size — see coveredClipPath's own
+     comment. `border-top` did this for the old translateY cover, but clip-path renders BEFORE
+     borders are clipped to the same shape, so a border sitting at the box's true top edge (y:0)
+     gets cut away entirely once the polygon's top boundary sits partway down the box (which is
+     every reveal past 0). `filter: drop-shadow()` operates on the actual clipped silhouette, so
+     it correctly outlines the L-shaped boundary wherever it currently sits. */
+  filter: drop-shadow(0 1px 0 rgba(20, 12, 6, 0.9)) drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
 }
 
 .status-banner {

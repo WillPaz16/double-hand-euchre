@@ -163,6 +163,16 @@ export function BidPanel({
 
   return (
     <div className="bid-panel">
+      {/* First thing a new hand shows you, before anything else — no upcard yet, no look at
+          your own cards. Direct user feedback (via a playtest pass): this reads as genuinely
+          disorienting the first time, since nothing on screen explains you're being asked to
+          gamble with zero information on purpose. One line, not a tutorial. */}
+      {view.phase === 'loner_full_blind' && (
+        <div className="bid-panel-prompt">
+          Nobody's seen a card yet, not even the upcard. This is the one moment you could call
+          it blind.
+        </div>
+      )}
       {[...trumpRows.values()].map((row) =>
         view.phase === 'bidding_round2' ? (
           // Suit only here — With Partner / Alone are staged behind picking the suit first

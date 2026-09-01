@@ -40,30 +40,46 @@ export function StatusBanner({
   if (view.phase === 'hand_complete') {
     return (
       <div className="status-banner" role="status" aria-live="polite">
-        Hand complete, dealing next hand…
+        That hand's done. Dealing the next one…
       </div>
     );
   }
   if (view.phase === 'misdeal') {
     return (
       <div className="status-banner" role="status" aria-live="polite">
-        Misdeal, redealing…
+        Misdeal. Redealing…
       </div>
     );
   }
+
+  // Loner-tier phrasing reuses the exact vocabulary LonerFx.tsx's stamp already uses ("blind
+  // hand" / "full blind") rather than inventing a second way to name the same three tiers.
+  const lonerPhrase =
+    view.lonerTier === 'standard'
+      ? ', alone'
+      : view.lonerTier === 'blind_hand'
+        ? ', alone and blind on the hand'
+        : view.lonerTier === 'full_blind'
+          ? ', alone and fully blind'
+          : '';
 
   // The upcard itself now sits on the felt (see Table.tsx) rather than floating on the wall
   // above it. What is left here is genuinely textual status, so this is one compact strip.
   return (
     <div className="status-banner" role="status" aria-live="polite">
       {view.turnedDownSuit && (
-        <div className="status-row">Turned down: {SUIT_LABEL[view.turnedDownSuit]}</div>
+        <div className="status-row">{SUIT_LABEL[view.turnedDownSuit]} got turned down.</div>
       )}
       {view.trump && (
         <div className="status-row">
-          Trump: {SUIT_LABEL[view.trump]}
-          {view.maker && <>, maker: {view.maker === HUMAN ? 'You' : 'Old-Timer'}</>}
-          {view.lonerTier && ` (${view.lonerTier.replace('_', ' ')} loner)`}
+          {SUIT_LABEL[view.trump]} is trump
+          {view.maker && (
+            <>
+              , called by {view.maker === HUMAN ? 'you' : 'Old-Timer'}
+              {lonerPhrase}
+            </>
+          )}
+          .
         </div>
       )}
       {/* Only once cards are actually being played (2i.1). This row had no phase guard, so
@@ -74,8 +90,8 @@ export function StatusBanner({
           not begun one. */}
       {view.phase === 'play' && (
         <div className="status-row">
-          Trick {view.trickNumber + 1} of 5. Tricks won: You {view.tricksWon[HUMAN]}, Old-Timer{' '}
-          {view.tricksWon[BOT]}
+          Trick {view.trickNumber + 1} of 5. You've taken {view.tricksWon[HUMAN]}, Old-Timer{' '}
+          {view.tricksWon[BOT]}.
         </div>
       )}
     </div>
