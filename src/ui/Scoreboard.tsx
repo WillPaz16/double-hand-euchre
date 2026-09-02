@@ -4,102 +4,164 @@ import { HUMAN, BOT } from '../game/useGame.ts';
 // Each player's scoring suit — a fixed choice for now (real euchre lets a player pick their
 // own suit for this; that becomes a settings option later, not part of the core rules).
 const SCORE_SUIT: Record<Player, Suit> = { A: 'hearts', B: 'spades' };
-const GAME_TARGET = 10;
 
-/** The real euchre 4-and-6 scoring ritual: the score is the SUM OF EXPOSED PIPS across a
- *  4-card and a 6-card, each with a real card-back COVERING it, like the reference photos —
- *  and direct user feedback ("the amount of pips showing is the number of points") makes that
- *  literal: every single point, including odd ones, must change how many pips are visible.
+/** The 4-and-6 scoring ritual, TWO-PHASE — re-derived from 10 reference photos of real cards
+ *  being physically overlapped (see the design history; the mockup that verified every number
+ *  below is archived alongside it). This replaces an EARLIER version of this same ritual
+ *  (`coveredClipPath`, a single 2-column grid with an L-shaped clip-path reveal) that was
+ *  invented from a description rather than measured against the photos, and read as "peeling"
+ *  rather than as one card overlapping another.
  *
- *  Pips sit in the traditional 2-column grid (a real card's actual layout: see
- *  public/art/scoreboard/*.png — e.g. the 4 is 2 rows of 2), and the cover reveals them in
- *  READING ORDER — left-to-right within a row, top row before the next — via a `clip-path`
- *  polygon that stops at the row's midpoint on an odd `revealed` count. This is a SOLID
- *  region, same card-back art, just L-shaped instead of a plain rectangle — not the abstract
- *  wipe/dissolve that "peeling" complaints were actually about; a straight-edged polygon reads
- *  exactly as physical as a rectangular one. An earlier pass here swapped this for a
- *  `translateY` slide on the (mistaken) belief that clip-path itself was the "peeling" problem,
- *  which regressed odd scores back to looking identical to the even one below them (1 point
- *  and 0 points both showed zero pips) — restoring the original mechanic, not inventing a new
- *  one.
+ *  **Phase A (score 0-6): the 6 is the counting card.** A plain card BACK covers it and peels
+ *  off, one pip at a time, in reading order (top-left first, then across, then down).
  *
- *  MUST MATCH art/generate_art.py's SCORE_PIP_Y0/Y1/SCORE_CARD_H exactly — those constants
- *  place the pip rows, and this reproduces the same boundaries to compute the cover's
- *  clip-path, so a change to one without the other misaligns the reveal with the row it's
- *  meant to stop between. Same cross-file coupling pattern as TRICK_HOLD_MS (useGame.ts /
- *  Table.tsx). Exported so tests/scoreboardGeometry.test.ts can check this against the
- *  generator's own emitted values (art/scoreboard-geometry.generated.json) instead of the two
- *  files drifting apart with nothing to notice (2h.2). */
-export const CARD_H = 84;
-export const PIP_Y0 = 6;
-export const PIP_Y1 = 78;
+ *  **Phase B (score 7-10): the 6 is spent — fully revealed, no longer counting — and IT
+ *  becomes the cover**, sliding off the 4 the same way the back did. This is the mechanic the
+ *  photos actually show: never three cards on the table, only ever two, and the SAME physical
+ *  motion (a whole card, tilted, sliding away) both times.
+ *
+ *  **The tilt is not decorative.** A cover that never rotates can only ever expose a whole row
+ *  at a time off a 2-column pip grid — reaching an ODD pip count requires bisecting a row,
+ *  which requires a real diagonal. Measuring the photos directly (PCA on each one's card
+ *  silhouette, corrected for a camera EXIF-orientation bug that cost several wrong passes
+ *  before it was found) turned up a clean mechanical rule: every EVEN reveal sits flat
+ *  (~0deg), every ODD reveal tilts to the same ~48deg — one physical card being slid off,
+ *  which cannot lean a different way partway up the same score. */
 
-/** The still-covered region, as a `clip-path` polygon on the (full-card-sized) cover element.
- *  Full rows below the current one stay entirely covered; if `revealed` is odd, the right
- *  pip of the current row does too — the left one has already been counted.
- *  Exported for tests/scoreboard.test.tsx — cheaper and more precise to assert on the actual
- *  polygon string than to parse computed styles out of jsdom, which doesn't run layout at all. */
-export function coveredClipPath(revealed: number, rows: number): string {
-  const rowH = (PIP_Y1 - PIP_Y0) / rows;
-  const fullRows = Math.floor(revealed / 2);
-  const rightPipStillCovered = revealed % 2 === 1;
-  const toPct = (y: number) => `${(100 * y) / CARD_H}%`;
-  const rowTop = toPct(PIP_Y0 + fullRows * rowH);
+type CoverTransform = { dx: number; dy: number; rot: number; scale: number };
 
-  if (rightPipStillCovered) {
-    const rowBottom = toPct(PIP_Y0 + (fullRows + 1) * rowH);
-    return (
-      `polygon(50% ${rowTop}, 100% ${rowTop}, 100% 100%, 0% 100%, ` +
-      `0% ${rowBottom}, 50% ${rowBottom})`
+// Every value below reproduces EXACTLY the stated number of the target card's pips exposed —
+// confirmed by rendering each keyframe to an offscreen canvas and sampling the actual pixel at
+// every pip position, not derived by hand. (`dx`/`dy` are fractions of the CARD's own width/
+// height, applied as a translate before rotating/scaling around the card's own centre — see
+// `coverStyle` below. `scale` is a small oversize: a same-size tilted rectangle pivoted around
+// its own centre cannot fully cover an axis-aligned same-size rectangle from every angle, so
+// each tilted keyframe is drawn slightly larger to close that gap.)
+const PHASE_A_TRANSFORM: Record<number, CoverTransform> = {
+  0: { dx: 0, dy: 0, rot: 0, scale: 1.0 },
+  1: { dx: 0.13673, dy: 0.15186, rot: 48, scale: 1.12 },
+  2: { dx: 0, dy: 0.41041, rot: 0, scale: 1.12 },
+  3: { dx: 0.30779, dy: 0.34184, rot: 48, scale: 1.12 },
+  4: { dx: 0, dy: 0.71041, rot: 0, scale: 1.12 },
+  5: { dx: 0.47886, dy: 0.53182, rot: 48, scale: 1.12 },
+  // The one true "parked" resting spot — the back is genuinely gone, not just slid far enough
+  // to look gone. A straight slide that clears the far pip column necessarily clears the near
+  // one too, so every OTHER "fully clear" look above is achieved by covering exactly one row,
+  // not by literally separating (see PHASE_A_TRANSFORM[2]/[4], which are flat, not parked).
+  6: { dx: 0.85, dy: -0.16, rot: -6, scale: 1.06 },
+};
+const PHASE_B_TRANSFORM: Record<number, CoverTransform> = {
+  // Score 6 exactly: the 6 is fully exposed (nothing covering it — see ScorePair below, this
+  // transform never applies to the 6 itself), and the 4 is just arriving, peeking out from
+  // behind at a small, flat, LEFT-shifted offset — a stack, not two cards side by side (that
+  // composition is reserved for score 10, the actual win).
+  0: { dx: -0.13, dy: -0.035, rot: 0, scale: 1.06 },
+  1: { dx: 0.19375, dy: 0.21519, rot: 48, scale: 1.12 },
+  2: { dx: 0, dy: 0.56041, rot: 0, scale: 1.12 },
+  3: { dx: 0.42197, dy: 0.46865, rot: 48, scale: 1.12 },
+  // The win: both cards fully spent, parked cleanly apart — not just another keyframe, so it
+  // gets a clean flat separation rather than a hand-picked resting angle like [6] above does.
+  4: { dx: 1.18, dy: 0, rot: 0, scale: 1.06 },
+};
+
+// `.score-pair` (the frame) has `overflow: visible` (see index.css), so a tilted cover
+// swinging past this box's own edges is never clipped — the box's size only controls how much
+// room `.score-slot`'s flex layout reserves, not what's visually allowed to paint. It was
+// first sized to the union of all 11 keyframes' rendered extents (80x88), which was correct
+// but unnecessarily generous: that made `.score-slot` tall enough to collide with the wall
+// picture/clock at wide viewports (`npm run audit`'s chrome-collision check). Shrunk back to
+// CARD size plus the same 12au margin CARD_OX/OY already use on the top-left — the anchor's
+// own position doesn't move, only the invisible bottom-right slack does.
+const FRAME_W = 54;
+const FRAME_H = 66;
+const CARD_OX = 12;
+const CARD_OY = 12;
+const CARD_W = 30;
+const CARD_H = 42;
+
+/** Positions an oversized, tilted card centred on the BASE card's own centre — `dx`/`dy` are
+ *  fractions of the card's own size, matching the calibration above exactly. CSS applies
+ *  `translate` first (moving the element's centre in the PARENT's untransformed space), then
+ *  `rotate`/`scale` around that new centre (the default `transform-origin`) — the same
+ *  composition the mockup's `ctx.translate → ctx.rotate → drawImage(oversized, centred)` used. */
+function coverStyle(t: CoverTransform): React.CSSProperties {
+  return {
+    transform:
+      `translate(calc(${t.dx} * ${CARD_W}px * var(--px)), calc(${t.dy} * ${CARD_H}px * var(--px))) ` +
+      `rotate(${t.rot}deg) scale(${t.scale})`,
+  };
+}
+
+function ScoreCardImg({
+  src,
+  className,
+  style,
+}: {
+  src: string;
+  className: string;
+  style?: React.CSSProperties;
+}) {
+  return <img className={`score-card-img ${className}`} src={src} alt="" style={style} />;
+}
+
+/** Score 0-10 for one player, split across the two cards per the two-phase ritual documented
+ *  above: the 6 counts 0-6 under a sliding back, then the spent 6 itself covers the 4 for 7-10.
+ *  `player`'s own win (`view.winner === player`) gets a small gold glow on both cards — the
+ *  actual "you won" text already lives in StatusBanner; this is just the scoreboard's own
+ *  quiet acknowledgement, not a duplicate announcement. */
+function ScorePair({ player, score, won }: { player: Player; score: number; won: boolean }) {
+  const suit = SCORE_SUIT[player];
+  const sixSrc = `/art/scoreboard/${suit}_6.png`;
+  const fourSrc = `/art/scoreboard/${suit}_4.png`;
+  const backSrc = '/art/score_card_back.png';
+
+  const anchorStyle: React.CSSProperties = {
+    left: `calc(${CARD_OX}px * var(--px))`,
+    top: `calc(${CARD_OY}px * var(--px))`,
+    width: `calc(${CARD_W}px * var(--px))`,
+    height: `calc(${CARD_H}px * var(--px))`,
+  };
+
+  let layers: React.ReactNode;
+  if (score < 6) {
+    // Phase A: the 6 counts, a back cover peels off it.
+    const t = PHASE_A_TRANSFORM[score]!;
+    layers = (
+      <>
+        <ScoreCardImg src={sixSrc} className="score-card-base" />
+        <ScoreCardImg src={backSrc} className="score-card-cover" style={coverStyle(t)} />
+      </>
+    );
+  } else if (score === 6) {
+    // The exact transition: 6 fully exposed (no cover at all), 4 only just arriving.
+    const t = PHASE_B_TRANSFORM[0]!;
+    layers = (
+      <>
+        <ScoreCardImg src={fourSrc} className="score-card-cover" style={coverStyle(t)} />
+        <ScoreCardImg src={sixSrc} className="score-card-base" />
+      </>
+    );
+  } else {
+    // Phase B: the 4 counts, the now-spent 6 itself is the cover.
+    const t = PHASE_B_TRANSFORM[score - 6]!;
+    layers = (
+      <>
+        <ScoreCardImg src={fourSrc} className="score-card-base" />
+        <ScoreCardImg src={sixSrc} className="score-card-cover" style={coverStyle(t)} />
+      </>
     );
   }
-  return `polygon(0% ${rowTop}, 100% ${rowTop}, 100% 100%, 0% 100%)`;
-}
 
-function ScoreCard({
-  suit,
-  rank,
-  revealed,
-  count,
-}: {
-  suit: Suit;
-  rank: '4' | '6';
-  revealed: number;
-  count: number;
-}) {
-  const rows = count / 2;
-  return (
-    <div className="score-card-slot">
-      <img className="score-card-pips" src={`/art/scoreboard/${suit}_${rank}.png`} alt="" />
-      <div className="score-card-cover" style={{ clipPath: coveredClipPath(revealed, rows) }} />
-    </div>
-  );
-}
+  const frameStyle: React.CSSProperties = {
+    width: `calc(${FRAME_W}px * var(--px))`,
+    height: `calc(${FRAME_H}px * var(--px))`,
+  };
 
-/** Score 0-10, split across the two cards per the ritual above: the 4 carries 0-4, the 6
- *  carries the remainder once the 4 is full.
- *
- *  ONE STACK, not two side-by-side cards — direct user feedback that the earlier side-by-side
- *  layout read as two separate widgets rather than "one card overlapping another" (the whole
- *  point of the original reference photos). Only one card is ever ACTIVE (face-up, its own
- *  pips sliding into view via `ScoreCard`'s existing cover mechanic, untouched below): the 4
- *  for score 0-4, the 6 for score 5-10. The other card sits BEHIND it, peeking out at an angle
- *  — showing its plain back if it hasn't started yet (the 6, before score 5), or its own fully
- *  revealed face if it's already done (the 4, from score 5 on: it finished at 4/4 the moment
- *  the 6 took over, so there's nothing left to cover). */
-function ScorePair({ player, score }: { player: Player; score: number }) {
-  const suit = SCORE_SUIT[player];
-  const fourActive = score <= 4;
-  const activeRevealed = fourActive ? Math.min(score, 4) : Math.max(0, Math.min(score - 4, GAME_TARGET - 4));
-  const activeCount = fourActive ? 4 : GAME_TARGET - 4;
   return (
-    <div className="score-pair">
-      {fourActive ? (
-        <img className="score-card-behind" src="/art/score_card_back.png" alt="" />
-      ) : (
-        <img className="score-card-behind" src={`/art/scoreboard/${suit}_4.png`} alt="" />
-      )}
-      <ScoreCard suit={suit} rank={fourActive ? '4' : '6'} revealed={activeRevealed} count={activeCount} />
+    <div className="score-pair" style={frameStyle}>
+      <div className={`score-card-anchor${won ? ' is-won' : ''}`} style={anchorStyle}>
+        {layers}
+      </div>
     </div>
   );
 }
@@ -116,10 +178,10 @@ export function Scoreboard({ view }: { view: PlayerView }) {
           <span className="score-label">You</span>
           <span className="score-number">{view.gameScore[HUMAN]}</span>
         </div>
-        <ScorePair player={HUMAN} score={view.gameScore[HUMAN]} />
+        <ScorePair player={HUMAN} score={view.gameScore[HUMAN]} won={view.winner === HUMAN} />
       </div>
       <div className={`score-slot${view.dealer === BOT ? ' is-dealer' : ''}`}>
-        <ScorePair player={BOT} score={view.gameScore[BOT]} />
+        <ScorePair player={BOT} score={view.gameScore[BOT]} won={view.winner === BOT} />
         <div className="score-text">
           <span className="score-label">Old-Timer</span>
           <span className="score-number">{view.gameScore[BOT]}</span>

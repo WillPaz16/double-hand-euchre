@@ -435,9 +435,12 @@ this sub-phase.
 
 ### Wall and floor furniture (Phase 2g.4)
 
-`picture.png` (48×36 au), `antlers.png` (60×40), `clock.png` (40×40), `coat_hooks.png` (42×54),
-`woodpile.png` (52×32). Placed one-offs, so **exempt from the tile rules below** — "no point
-features" exists to stop a repeating tile betraying its grid, and none of these repeat.
+`picture.png` (48×36 au), `farm_painting.png` (190×96), `clock.png` (40×40),
+`coat_hooks.png` (42×54), `woodpile.png` (52×32). Placed one-offs, so **exempt from the tile
+rules below** — "no point features" exists to stop a repeating tile betraying its grid, and
+none of these repeat. (`antlers.png` and `picture_2.png` used to live here too; both were
+removed — direct user feedback that growing `farm_painting.png` into their column made all
+three overlap, "looks dumb as hell" — in favour of the one larger painting.)
 
 Built because the span between the hearth and the window — 53% of the viewport's width —
 carried nothing but the opponent's head. Two things worth keeping:

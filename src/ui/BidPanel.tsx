@@ -173,6 +173,18 @@ export function BidPanel({
           it blind.
         </div>
       )}
+      {/* Stick-the-dealer (legal.ts's `dealerStuck`): once the other side has passed in round
+          2, the dealer's PASS is dropped from the legal set. Until now the ONLY signal of that
+          was a Pass button that silently wasn't rendered — nothing said a call had become
+          mandatory, so it read as a missing control rather than a rule. Derived from the legal
+          actions rather than re-deriving the stick-the-dealer condition here, so it can't drift
+          out of step with the engine if that rule changes or the setting is turned off. */}
+      {view.phase === 'bidding_round2' && !legal.some((a) => a.type === 'PASS') && (
+        <div className="bid-panel-prompt">
+          You must call trump. Old-Timer passed and you're the dealer, so passing isn't an
+          option this hand.
+        </div>
+      )}
       {[...trumpRows.values()].map((row) =>
         view.phase === 'bidding_round2' ? (
           // Suit only here — With Partner / Alone are staged behind picking the suit first

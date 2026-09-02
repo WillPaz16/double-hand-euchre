@@ -113,6 +113,38 @@ export function HandTray({
       a.type === 'PLAY_CARD' || a.type === 'DEALER_DISCARD',
   );
 
+  // Root cause of a real, measured bug — direct user feedback: "after a trick is collected the
+  // table size changes." `.table-frame` itself never moves (confirmed live with a
+  // ResizeObserver through several tricks); what actually collapses is THIS component: `legal`
+  // is always computed for the human (see useGame.ts), so the instant a completed trick's
+  // winner is the BOT and it leads next, `cardActions` is empty for the ~1.3s hold — and the
+  // branch below returns null, so the tray vanishes and the felt visually expands to fill the
+  // gap. That reads exactly like "the table got bigger" even though no element's own box ever
+  // changed size. Reserving this row's height during the WHOLE hold, regardless of whose turn
+  // is next, is the direct fix — deliberately not trying to guess which of the human's two
+  // hands to display instead (there is no correct answer when the bot is the one acting).
+  //
+  // Same failure mode, different trigger — direct user feedback: "the table glitch happens
+  // when old timer pulls cards." `dealer_exchange` is the ONE other phase where `legal` can be
+  // empty for a reason that has nothing to do with there being no hand to show: when the BOT is
+  // dealer, `DEALER_DISCARD` is gated to `player === state.dealer` (shared/engine/legal.ts), so
+  // `legalActions(state, HUMAN)` returns nothing for the whole time the bot is picking up the
+  // kitty and exchanging a card — the tray vanished for that window too, same felt-expands
+  // glitch, just never patched for this phase.
+  if (
+    !(cardActions.length > 0 && view.actingHand) &&
+    (frozen || view.phase === 'dealer_exchange')
+  ) {
+    return (
+      <div className="hand-tray">
+        <div className="hand-tray-label">
+          {frozen ? 'Trick complete…' : 'Old-Timer is exchanging…'}
+        </div>
+        <div className="hand-tray-cards hand-tray-cards-placeholder" aria-hidden="true" />
+      </div>
+    );
+  }
+
   if (cardActions.length > 0 && view.actingHand) {
     const fullHand =
       view.actingHand.role === 'selected' ? view.ownSelectedHand : view.ownBlindHand;

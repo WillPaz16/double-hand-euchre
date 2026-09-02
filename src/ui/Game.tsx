@@ -29,7 +29,11 @@ export function Game({ onQuit }: { onQuit: () => void }) {
         aria-label="Pause menu"
         onClick={() => setPaused(true)}
       >
-        ⚙
+        {/* The generated brass cog, not the `⚙` glyph this used to render — that was the one
+            piece of art in the game coming from the system font, so it changed shape per
+            platform and matched nothing around it. `alt=""` because the button already carries
+            its own aria-label; naming the image too would announce it twice. */}
+        <img className="game-pause-gear" src="/art/gear.png" alt="" />
       </button>
       <Scoreboard view={view} />
       <StatusBanner view={view} onRestart={restart} />

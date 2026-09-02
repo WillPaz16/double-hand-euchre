@@ -79,15 +79,14 @@ export function SceneLayer() {
           gap rather than competing with anything. */}
       <div className="scene-picture" />
       <div className="scene-clock" />
-      <div className="scene-antlers" />
-      {/* A second frame (2l.1), stacked below the antlers and sharing the same 1560px gate —
-          see its CSS comment for why that reuses the antlers' already-measured margin from the
-          opponent rather than deriving a new one. */}
-      <div className="scene-picture-2" />
-      {/* A small framed farm landscape (2m.3 — direct user feedback, replacing a barn star that
-          "looks dumb") in the bare strip between the antlers/picture-2 column and the window's
-          left edge — see .scene-farm-painting's own CSS comment for the measured gap and gate
-          reasoning. */}
+      {/* The antlers and a second small picture frame used to stack here, sharing a 1560px gate
+          against the opponent. Both removed (direct user feedback: growing the farm painting
+          into that same column made it overlap them — "overlapping, not big enough, looks dumb
+          as hell") — one big painting reading as a real piece of art beats three small frames
+          competing for the same narrow strip of wall. It reuses the antlers' own left edge
+          almost exactly (au 300 -> 299), so the already-measured opponent clearance at 1560px
+          carries over rather than needing to be re-derived — see .scene-farm-painting's own CSS
+          comment. */}
       <div className="scene-farm-painting" />
       <div className="scene-coat-hooks" />
       <div className="scene-woodpile" />

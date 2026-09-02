@@ -31,6 +31,12 @@ const VIEWPORTS = [
   { width: 812, height: 375, label: 'landscape phone' },
   { width: 1010, height: 900, label: 'px-breakpoint boundary' },
   { width: 1400, height: 900, label: 'desktop' },
+  // Past the 1440px cap on `.game-root`. Every viewport above stops at 1400, which is exactly
+  // why the unbounded-stretch bug survived: the game had no max-width at all, and the pause
+  // gear's percentage placement drifted further right the wider the window got, but nothing
+  // here ever looked above 1400 to notice. This one sits beyond the cap so it exercises the
+  // capped-and-centred path specifically, not just a wider version of the uncapped one.
+  { width: 1800, height: 1000, label: 'ultra-wide desktop' },
 ];
 
 function waitForServer(url: string, timeoutMs = 30_000): Promise<void> {

@@ -646,10 +646,20 @@ body {
   overflow: hidden;
 }
 /* Resized 2.5x in 2j.3 along with the rest of the room's furniture (60x32 -> 150x80 au). */
+/* Sized and positioned to the firebox OPENING, not the full stone surround — direct user
+   feedback after an earlier pass over-corrected: "the mantle should not span the whole
+   fireplace only the hearth". `.scene-fireplace` is left:-78au width:374au; its firebox
+   opening (make_fireplace's ox0/ox1 = `w * 0.2565` inset each side of its own 374au canvas)
+   sits at local x 96-278, i.e. ABSOLUTE x 18-200 in this same coordinate space (-78+96,
+   -78+278) — 182au wide, centred at x=109. This box is 200au wide at left:9, spanning
+   absolute 9-209: a small, deliberate overhang past the opening on each side (a real mantel
+   rests on the stone flanking the firebox, not just the opening) rather than the full 374au
+   stone width the previous pass matched. The width here and make_shelf's own drawn width must
+   agree exactly, or `background-size: 100% 100%` silently becomes a fractional scale. */
 .scene-shelf {
-  left: calc(10px * var(--px));
+  left: calc(9px * var(--px));
   bottom: calc(263px * var(--px));
-  width: calc(150px * var(--px));
+  width: calc(200px * var(--px));
   height: calc(80px * var(--px));
   background-image: url('/art/scene/shelf.png');
   background-size: 100% 100%;
@@ -734,9 +744,7 @@ body {
    information the player needs to read. Below 900px, less room; less decor. */
 .scene-picture,
 .scene-clock,
-.scene-antlers,
 .scene-coat-hooks,
-.scene-picture-2,
 .scene-farm-painting {
   display: none;
 }
@@ -746,72 +754,39 @@ body {
     display: block;
   }
 }
-/* `.scene-farm-painting` needs its own gate, lower than the antlers/coat-hooks one below:
-   measured (as the barn star it replaced) with the box forced visible against
-   `.table-opponent`'s real bounding rect, overlap hit 0 at 1124px there — well below 1560, and
-   1280/1440 (the widths this whole project has been tested at) are ABOVE 1124, so reusing the
-   antlers' 1560 gate here would hide it at exactly the sizes it's most likely to be seen.
-   Re-derived for the 2m.3 resize (56x56 -> 84x44au, `right: 150 -> 127au`): the box's left edge
-   moved 20 canvas-px further left at --px:2 (from `right+width=206au` to `211au`), which nudges
-   the crossover up to ~1144px — still comfortably under this 1200px gate (~56px margin).
-   Re-verified with `getBoundingClientRect()` against `.table-opponent` after the resize, not
-   just by this arithmetic. */
-@media (min-width: 1200px) {
-  .scene-farm-painting {
-    display: block;
-  }
-}
-/* Antlers alone need a SECOND, higher gate. They sit in the gap between the opponent and the
-   window, and that gap is not fixed-width: the opponent is centred (its edges scale with
-   viewport-width/2), while the antlers are anchored from the right edge (scaling 1:1 with
-   width) — two different rates, so the gap shrinks as the viewport narrows.
+/* The farm painting and coat-hooks share ONE gate, keyed to the centred opponent — the
+   antlers and a second small picture frame used to live in this same tier (and the farm
+   painting had its own separate, lower 1200px gate before it grew into their spot) but both
+   were removed: growing the painting into the antlers' column made them overlap (direct user
+   feedback — "overlapping, not big enough, looks dumb as hell"), and one big painting reading
+   as real wall art beats three small frames competing for the same narrow strip.
 
-   Re-verified for 2k.1's window shrink (258x182 -> 170x120 au), not just re-derived: measured
-   directly with the antlers forced visible and its bounding rect compared against
-   `.table-opponent` and `.scene-window` at a sweep of widths. The window turns out to have
-   never been the actual constraint despite the old comment's algebra treating it as the right
-   edge of the "free wall" band — at every width tested the window's left edge sat 250px+
-   clear of the antlers, both before and after this resize, because the antlers' own
-   `right: 240au` anchor keeps them well short of where the (now smaller and lower) window
-   starts. The OPPONENT is what actually collides: overlap hits 0 at exactly 1500px and grows
-   ~0.5px of margin per 1px of extra viewport width, so **1560 stays the right threshold**
-   (~30px margin, unchanged from 2j.3) even though the window that motivated raising it to
-   1560 in the first place is no longer the reason it needs to be there.
+   `.scene-farm-painting` now reuses the ANTLERS' own already-measured margin rather than
+   re-deriving one: its new left edge (au 299) sits almost exactly where the antlers' left edge
+   used to (au 300), and that position's opponent-clearance was already measured at length —
+   overlap hits 0 at vw=1500px, ~30px of margin at 1560px, so 1560 stays the right threshold.
+   Re-verified directly after the resize with `getBoundingClientRect()` against
+   `.table-opponent`, not just carried over by the coincidence of the number.
 
-   Below it: three props, not four. That is the honest cost of a room at true scale — a hearth
-   and a window sized to a real room simply consume the wall, and the frame has to give
+   `.scene-coat-hooks` joins the same gate for its own, separately-measured reason (2m.2's
+   mantel-alignment fix moved it from `left:8au` to `left:194au`, which put it much closer to
+   centre): `coat.right` (596px, fixed) vs `opponent.left` (vw/2-150) hits 0 at vw=1492px, so
+   1560 keeps ~68px of real margin there too — matching the painting's own margin at this gate
+   almost exactly, which is why both live in the same block rather than two near-identical ones.
+
+   Below 1560px: two props, not four. That is the honest cost of a room at true scale — a
+   hearth and a window sized to a real room simply consume the wall, and the frame has to give
    something up. Widening that frame is 2j.4's job, not a reason to shrink the furniture back. */
 @media (min-width: 1560px) {
-  .scene-antlers {
-    display: block;
-  }
-  /* 2l.1's second picture frame reuses this exact gate rather than deriving its own: it shares
-     the antlers' `right: 240au` column (see `.scene-picture-2` below), so it collides with the
-     opponent at exactly the same widths the antlers already do, and the antlers gate has
-     already been measured — margin ~30px at 1560px, hits 0 at 1500px. Below 1560 there is
-     already "three props, not four" for the antlers' own reasons; this stays a sibling of that
-     tradeoff rather than a new one. */
-  .scene-picture-2 {
-    display: block;
-  }
-  /* `.scene-coat-hooks` joins this gate for the same reason (2m.2's mantel-alignment fix moved
-     it from `left:8au` to `left:194au` so it reads as one continuous shelf with the fireplace's
-     own mantel — see that rule's own comment — which put it much closer to centre and into the
-     opponent's collision zone). Measured directly: `coat.right` (596px, fixed regardless of
-     viewport since it's a fixed-au left offset) vs `opponent.left` (vw/2-150) — overlap hits 0
-     at vw=1492px, so 1560 keeps ~68px of real margin, matching the antlers' own margin at this
-     same gate almost exactly. Below 1560 the mantel simply ends at the picture/clock without a
-     coat rail, the same "three props, not four" tradeoff the antlers already accept. */
+  .scene-farm-painting,
   .scene-coat-hooks {
     display: block;
   }
 }
 .scene-picture,
 .scene-clock,
-.scene-antlers,
 .scene-coat-hooks,
 .scene-woodpile,
-.scene-picture-2,
 .scene-farm-painting {
   position: absolute;
   background-size: 100% 100%;
@@ -933,66 +908,49 @@ body {
   height: calc(134px * var(--px));
   background-image: url('/art/scene/coat_hooks.png');
 }
-/* Right of the opponent, in the gap toward the window — see the min-width: 1150px gate above
-   for why this one placement needs it and the other three don't. */
-/* Repositioned in 2j.3. At `right: 143au` this now hung squarely ON the window glass — the
-   window grew from 132 to 312 au and swallowed the spot the antlers used to occupy. Moved
-   into the strip of real wall between the opponent and the window's left edge, which is the
-   only free wall left once the hearth and window are at true scale. */
-.scene-antlers {
-  right: calc(240px * var(--px));
-  top: calc(75px * var(--px));
-  width: calc(60px * var(--px));
-  height: calc(40px * var(--px));
-  background-image: url('/art/scene/antlers.png');
-}
-/* A second framed picture (2l.1 — direct user feedback, more art on the walls). Stacked
-   directly below the antlers, sharing their exact `right: 240au` / `width: 60au` horizontal
-   footprint on purpose: that footprint is the one already measured clear of the opponent at
-   1560px+ (see the gate above), so matching it exactly carries that margin over instead of
-   opening a new, unverified one a few au wider. */
-.scene-picture-2 {
-  right: calc(240px * var(--px));
-  top: calc(125px * var(--px));
-  width: calc(60px * var(--px));
-  height: calc(56px * var(--px));
-  background-image: url('/art/scene/picture_2.png');
-}
-/* A small framed farm landscape (2m.3 — direct user feedback: "the star looks dumb, should be
-   a painting of a long farm landscape using those warm colors", replacing the barn star that
-   used to hang here). Same wall gap as before: the antlers/picture-2 column above sits at
-   `right: 240-300au`; the window's own left edge (see `.scene-window`: `right: -72au` +
-   `width: 170au`) sits at `right: 98au`. That leaves a genuinely bare 142au-wide strip of wall
-   (`right: 98-240au`) between the two that the 2g.4/2l.1 furniture passes never reached —
-   confirmed empty by eye at 1440x900 before writing any of this.
+/* The antlers and a second small picture frame used to occupy this column (`right: 240au`,
+   60au wide) — both REMOVED (direct user feedback: growing the farm painting into their column
+   made all three overlap, "looks dumb as hell"). One painting now spans this entire reclaimed
+   strip: from the window's own left edge (`right: 98au`; see `.scene-window`) back to almost
+   exactly where the antlers' own left edge used to sit (`right: 300au`), a real 190au-wide
+   piece rather than three small frames competing for the same wall.
 
-   Widened from the old star's 56x56au square to 84x44au (2:1, `make_farm_painting`'s own w/h
-   halved) — a landscape painting reads as a landscape by being wider than it is tall, not by
-   being square. `right: 127au` centres the new box in the 142au strip with equal 29au margin
-   on both sides (142 - 84 = 58, split evenly) rather than trusting the algebra alone. `top`
-   dropped from 95 to 101au to keep the box's vertical CENTRE where the old square one's was
-   (95 + 56/2 = 123 = 101 + 44/2), so this doesn't open a new vertical collision the old box
-   wasn't already clear of.
+   `right: 109au` keeps the ~22px gap to the window that every earlier version of this box also
+   used. `width: 190au` reaches back to `right: 299au` — 1au short of the antlers' old left
+   edge, on purpose, so this box occupies the antlers' old footprint without literally touching
+   where their frame used to be.
 
-   Right-anchored, not left-anchored off the antlers column — the antlers' own `right: 240au`
-   scales 1:1 with viewport width (same as the window), so anchoring off ITS edge instead of
-   the viewport's would drift the gap open or shut as the window and antlers both move. A fixed
-   `right` offset keeps this new piece's distance from the window constant at every width,
-   which is the one relationship that actually needs to hold.
+   Grown in the ART, not by stretching this box: `background-size: 100% 100%` over a bigger box
+   than the sprite's own resolution would scale it fractionally, which scripts/scale-audit.js
+   rejects. `make_farm_painting`'s own w/h track this box exactly (190*2 x 95*2 raw canvas).
 
-   Sits CLOSER to the window than the antlers column does (`right: 127` < `right: 240`), i.e.
-   further from the centred opponent than the antlers already are — the antlers need their own
-   1560px gate purely because their `right: 240` position collides with the opponent below
-   1500px (see that gate's own measured note); this piece sits outside that collision zone at
-   every width the antlers' gate already covers, so it shares the base 900px decor gate above
-   rather than needing the antlers' higher one. Re-verified with `getBoundingClientRect()` at
-   1010/1280/1440/1560px against both `.scene-window` and `.table-opponent` after the resize —
-   clear at all four with real margin, not just algebra. */
+   Opponent clearance is the ANTLERS' OWN already-measured margin, not a fresh derivation: this
+   box's new left edge (au 299) sits almost exactly where the antlers' left edge used to (au
+   300), and antlers' own comment history has that position's clearance measured at length —
+   overlap hits 0 at vw=1500px, ~30px margin at 1560px. Re-verified directly with
+   `getBoundingClientRect()` against `.table-opponent` after this resize, not just carried over
+   by the coincidence of the number — see the `min-width: 1560px` gate above.
+
+   `top: 80au`, `height: 95au` — roughly centred across the combined vertical span the antlers
+   (top 75) and second picture (bottom 181) used to occupy together (centre ~128au), close
+   enough to read as one piece filling their old slot rather than sitting at an unrelated
+   height. 2:1-ish width:height keeps the "long landscape" read `make_farm_painting`'s own
+   comment describes, rather than growing square as it grew bigger. */
+/* Widened again, 190 -> 350au (direct user feedback: "art should span from close to the fire
+   place to close to the window") — past what "clear of the opponent" would allow, on purpose:
+   `.table-opponent` has NO opaque background (just his own transparent-PNG sprite, confirmed
+   in its CSS), and `SceneLayer` sits at `z-index: -1`, strictly behind all game content — so
+   this painting running BEHIND him is visually identical to a real wall-mounted piece a person
+   happens to be standing in front of, occluded only by his actual silhouette, not by a bounding
+   box. The opponent-clearance reasoning that capped every earlier version of this piece (and
+   the antlers/picture-2 before it) was solving for objects meant to read as sitting IN FRONT of
+   him — irrelevant for background wall art, which is why this can finally just be sized to the
+   wall itself instead of to his position. */
 .scene-farm-painting {
-  right: calc(127px * var(--px));
-  top: calc(101px * var(--px));
-  width: calc(84px * var(--px));
-  height: calc(44px * var(--px));
+  right: calc(109px * var(--px));
+  top: calc(80px * var(--px));
+  width: calc(350px * var(--px));
+  height: calc(96px * var(--px));
   background-image: url('/art/scene/farm_painting.png');
 }
 /* On the floor beside the hearth, where the fire's fuel comes from. */
@@ -1342,6 +1300,22 @@ body {
      nothing here holds at every width below that breakpoint (see that rule's own comment for
      why the two positions tried before this one both failed measurement). */
 }
+/* The gear is a generated sprite now, not a font glyph, so the button sizes to the IMAGE and
+   its own padding rather than to a line-box. `image-rendering: pixelated` for the same reason
+   every other sprite in the game sets it: the 32px source is drawn on the PX grid and must not
+   be smoothed when the browser scales it. `display: block` kills the inline baseline gap that
+   would otherwise pad the button unevenly at the bottom. */
+.game-pause-gear {
+  display: block;
+  /* au * --px, the same sizing every other sprite here uses — NOT a rem size. Pixel art in
+     this game must render at a whole-number multiple of its own resolution (design spec §7,
+     enforced by scripts/scale-audit.js); a rem-based size lands on whatever fractional scale
+     the root font-size happens to produce, which is exactly how the first version of this
+     rule failed the audit at all five viewports. */
+  width: calc(16px * var(--px));
+  height: calc(16px * var(--px));
+  image-rendering: pixelated;
+}
 /* Below 900px `.scoreboard` is still in-flow, and its score slots hug close together — the gap
    BETWEEN them shrinks with the viewport (measured live at 390px: only 27px) and isn't centred
    on the viewport's own midpoint either (the two slots aren't equal width, so `left:50%` landed
@@ -1498,6 +1472,19 @@ body {
   /* Containing block for the action bar below, which is taken out of flow so that mounting
      and unmounting it cannot move the table (2j.1). */
   position: relative;
+  /* Cap and centre the shell. Without this the whole game stretched to the raw viewport width
+     with nothing bounding it, so past ~1400px the scoreboard corners kept marching outward and
+     the table sat marooned in the middle — and `.game-pause-button`'s `left: 22%` (tuned and
+     measured at 1440px, per its own comment below) grew without limit in absolute pixels along
+     with it. Capping the positioning context fixes the button for free rather than needing its
+     own separate patch: 22% of a fixed 1440px is a fixed 316.8px at every width above the cap.
+     1440px is the width the button's placement was actually measured at, so the cap and that
+     measurement agree by construction.
+     `SceneLayer` is fixed, full-viewport and z-index:-1, independent of this element's width,
+     so the cabin still fills the screen edge to edge — the cap letterboxes the game content,
+     not the room behind it. */
+  max-width: 1440px;
+  margin-inline: auto;
 }
 /* --- The action bar OVERLAYS the room, it does not displace it (2j.1) -------------------- */
 /* The bid panel and the hand tray both mount and unmount during a hand, and both used to sit
@@ -1618,77 +1605,58 @@ body {
   font-weight: 700;
   color: #ffd54a;
 }
-/* The 4-and-6 card scoring ritual (2e.7): a real 4 and a real 6, traditional pip grid, each
-   with a real card-back physically covering it and sliding down to overlap less as the score
-   rises — matching the reference photos. Direct user feedback on an earlier version of this
-   ("i dont want to peel back the card, i want one card to overlap the other") is why the cover
-   moves via `transform: translateY()` (a solid card sliding to a new overlap position) rather
-   than a `clip-path` wipe (a mask animating across a static image, which read as peeling). The
-   numeral is still what disambiguates the exact score at a glance; the offset is computed in
-   Scoreboard.tsx from the SAME row geometry the generator placed the pips against, so the
-   cover's edge always lands on a row boundary. */
-/* ONE stack, not two cards side by side (direct user feedback — see ScorePair's own comment
-   in Scoreboard.tsx for the full mechanic). `.score-pair` is now just the positioning context;
-   its footprint is exactly one card, and the two layers inside it (`.score-card-behind` and
-   the active `.score-card-slot`) both fill that same box, one offset behind the other. */
+/* The 4-and-6 TWO-PHASE scoring ritual (2n.2) — replaces an earlier single-grid clip-path
+   reveal (`coveredClipPath`, removed) that was invented from a description rather than
+   measured against real reference photos, and read as the card "peeling" rather than as one
+   whole card overlapping another. See Scoreboard.tsx's own top-of-file comment for the full
+   mechanic (which card counts when, why the tilt varies) — every geometry number lives there,
+   as the single source of truth; this file only lays out the boxes that geometry positions.
+
+   `.score-pair` is the outer FRAME — sized bigger than either card (via inline style, from the
+   same FRAME_W/FRAME_H constants Scoreboard.tsx computed the geometry against) because a
+   tilted cover's own bounding box is far larger than the card and swings asymmetrically
+   (down-right, per the photos). `overflow: visible` deliberately — clipping here would cut the
+   cover off mid-swing at several scores, the exact bug an early pass shipped before the union
+   of every keyframe's extent was actually measured. `.score-card-anchor` is the CARD-sized box
+   within that frame (also inline-styled, from CARD_OX/OY/W/H) that both layers fill exactly
+   before their own transform moves them. */
 .score-pair {
   position: relative;
-  width: calc(30px * var(--px));
-  height: calc(42px * var(--px));
+  overflow: visible;
 }
-/* The OTHER card, peeking out at an angle from behind the active one — either its plain back
-   (hasn't started yet) or its own fully-revealed face (already done). Rotated rather than just
-   nudged sideways so it reads as a second physical card lying underneath, matching the fanned,
-   never-perfectly-aligned angle already used for trick cards and hand-tray fans elsewhere in
-   this room, not a fresh visual idea invented just for this. */
-.score-card-behind {
+.score-card-anchor {
+  position: absolute;
+}
+/* Both layers fill the anchor exactly at rest; `coverStyle` (Scoreboard.tsx) then translates,
+   rotates and scales the COVER layer around its own centre. `transform-origin` is left at its
+   50%/50% default on purpose — the geometry in Scoreboard.tsx was calibrated against a centre
+   pivot, not a corner one. */
+.score-card-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   image-rendering: pixelated;
-  transform: rotate(8deg) translate(calc(3px * var(--px)), calc(2px * var(--px)));
+}
+.score-card-base {
   z-index: 1;
 }
-.score-pair .score-card-slot {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-}
-.score-card-slot {
-  position: relative;
-  width: calc(30px * var(--px));
-  height: calc(42px * var(--px));
-  /* The cover is the full card height even when partly revealed — sliding it down runs its
-     bottom edge past the slot's own bottom rather than shrinking it, since it's one solid
-     card, not a mask. Clipped here so that overhang doesn't paint over whatever sits below
-     the scoreboard. */
-  overflow: hidden;
-}
-.score-card-pips {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  image-rendering: pixelated;
-}
 .score-card-cover {
-  position: absolute;
-  inset: 0;
-  /* The scoreboard's OWN back art (30x42 au), not the deck's 50x70 squashed to fit — that
-     was rendering at 1.2x. */
-  background-image: url('/art/score_card_back.png');
-  background-size: 100% 100%;
-  image-rendering: pixelated;
-  transition: clip-path 350ms ease-out;
-  /* A crisp edge along the reveal boundary is cheap insurance against the back art's own fine
-     checkerboard being hard to read at this card's small real size — see coveredClipPath's own
-     comment. `border-top` did this for the old translateY cover, but clip-path renders BEFORE
-     borders are clipped to the same shape, so a border sitting at the box's true top edge (y:0)
-     gets cut away entirely once the polygon's top boundary sits partway down the box (which is
-     every reveal past 0). `filter: drop-shadow()` operates on the actual clipped silhouette, so
-     it correctly outlines the L-shaped boundary wherever it currently sits. */
+  z-index: 2;
+  transition: transform 350ms ease-out;
+  /* Same crisp-edge insurance the old single-grid cover used — a card back's own fine
+     checkerboard pattern is easy to lose against the card face behind it at this small a real
+     size, and `filter: drop-shadow()` outlines the cover's actual silhouette (rotated or not),
+     unlike `box-shadow`, which only ever follows the box's unrotated rectangle. */
   filter: drop-shadow(0 1px 0 rgba(20, 12, 6, 0.9)) drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+}
+/* A quiet gold glow on the winning player's own two cards once `view.winner` names them — the
+   actual "you win" announcement already lives in StatusBanner (direct check: it's the only
+   place in the UI that names a winner), so this stays a small acknowledgement rather than a
+   second, competing announcement. Applies to BOTH layers so the whole pair glows as one card
+   pairing, not just whichever one happens to be drawn last. */
+.score-card-anchor.is-won .score-card-img {
+  filter: drop-shadow(0 0 6px rgba(255, 213, 74, 0.85)) drop-shadow(0 0 2px rgba(255, 213, 74, 0.6));
 }
 
 .status-banner {
@@ -1856,6 +1824,14 @@ body {
   align-self: center;
   width: calc(280px * var(--px));
   height: calc(175px * var(--px));
+  /* `.table-frame-roomy` (below, and its own media-query variants) swaps this box to a
+     genuinely different size the instant NO_HAND_PHASES starts/ends — direct user feedback:
+     "when a hand is won, the table changes sizes" (it happens every single hand: 'select' is
+     roomy, the very next phase almost always isn't). The size difference itself is deliberate
+     (filling dead space when there's no hand tray to anchor against), so this doesn't remove
+     it — it was the JUMP that read as a bug, not the resize. `--px` changing at the 900px
+     breakpoint also flows through this same width/height, so the transition smooths that too. */
+  transition: width 260ms ease, height 260ms ease;
 }
 /* Desktop-only bump, 280x175 -> 312x195 (creative-direction pass — direct user feedback: "i
    think the table could be slightly larger"). Same 1.6 aspect ratio as the base box (312/195 =
@@ -1873,7 +1849,15 @@ body {
 @media (min-width: 900px) {
   .table-frame {
     width: calc(312px * var(--px));
-    height: calc(175px * var(--px));
+    /* 195, not 175. The comment above says in as many words that this bump keeps "the same 1.6
+       aspect ratio as the base box (312/195 = 1.6 exactly)" and is "a scale-up, not a reshape"
+       — but the height shipped as 175, which makes it 1.783 and IS a reshape. The width grew
+       11.4% while the height didn't move, stretching the felt sideways: `.table-top`'s
+       clip-path is a circle rasterised on a 12x12 grid in PERCENTAGES, so a wider box doesn't
+       just make a wider oval, it flattens the corner staircase until the silhouette reads as a
+       rounded rectangle rather than a round table (direct user feedback: "why is the table
+       square now"). Restoring 195 makes the code match its own documented intent. */
+    height: calc(195px * var(--px));
   }
 }
 /* Portrait phones are TALL, not wide — `.table-area` is `flex: 1; align-content: center`
@@ -2590,6 +2574,13 @@ body {
    `align-items: flex-end` matters: rotating about a point below the card lifts the outer
    ones, and without a shared baseline the row's height would jump as the hand is played
    down. `flex-wrap` is off — a wrapped arc is not an arc. */
+/* Empty placeholder for the trick-hold window when the BOT leads next (see HandTray's own
+   comment) — same height as a real card row, no cards in it, so `.hand-tray`'s total footprint
+   stays constant through the freeze instead of collapsing. Height matches `.card-face`'s own
+   `70au * var(--px)` exactly, the same dimension a real row would be tall by. */
+.hand-tray-cards-placeholder {
+  height: calc(70px * var(--px));
+}
 .hand-tray-cards {
   display: flex;
   justify-content: center;

@@ -163,4 +163,52 @@ describe('HandTray label never prompts an action it is refusing (2i.1)', () => {
     const { container } = render(<HandTray view={view} legal={discard} play={vi.fn()} />);
     expect(container.querySelector('.hand-tray-label')?.textContent).toMatch(/discard/i);
   });
+
+  // Direct user feedback: "after a trick is collected the table size changes." Root cause,
+  // confirmed live with a ResizeObserver: `.table-frame` itself never moves — it's THIS
+  // component collapsing to nothing. `legal` (useGame.ts) is always computed for the human, so
+  // the instant a completed trick's winner is the BOT and it leads next, `cardActions` is empty
+  // for the whole ~1.3s hold, and the tray used to render null — vanishing, so the felt below
+  // visually expanded to fill the gap. Pinned here for the same reason the label bug above is:
+  // the defect only exists inside that ~1.3s window, which a live driver catches unreliably.
+  it('reserves its footprint while frozen even when the BOT leads next (2n.1)', () => {
+    // actingHand belongs to the BOT here — the human has no legal card action at all, which is
+    // exactly the state that used to make this component return null mid-freeze.
+    const view = makeView({
+      phase: 'play',
+      actingHand: { player: 'B', role: 'selected' },
+    });
+    const { container } = render(<HandTray view={view} legal={[]} play={vi.fn()} frozen />);
+    const tray = container.querySelector('.hand-tray');
+    expect(tray).not.toBeNull();
+    expect(container.querySelector('.hand-tray-label')?.textContent).toMatch(/trick complete/i);
+    // The placeholder itself doesn't need real cards — the CSS reserves the same row height —
+    // but the container must still be present so `.hand-tray`'s total footprint holds.
+    expect(container.querySelector('.hand-tray-cards')).not.toBeNull();
+  });
+
+  it('falls back to nothing when genuinely not frozen and not the human\'s turn', () => {
+    // Ordinary mid-trick "waiting on the bot" gap, not the hold — this one was never the bug
+    // and should stay exactly as it was: no reserved footprint, same as before this fix.
+    const view = makeView({ phase: 'play', actingHand: { player: 'B', role: 'selected' } });
+    const { container } = render(<HandTray view={view} legal={[]} play={vi.fn()} />);
+    expect(container.querySelector('.hand-tray')).toBeNull();
+  });
+
+  // Direct user feedback: "the table glitch happens when old timer pulls cards." Same failure
+  // mode as 2n.1 above, different trigger: DEALER_DISCARD is gated to `player === state.dealer`
+  // (shared/engine/legal.ts), so when the BOT is dealer, `legalActions(state, HUMAN)` is empty
+  // for the whole dealer_exchange window — the tray used to vanish while Old-Timer picked up
+  // the kitty and swapped a card, same felt-expands glitch as the trick-hold case.
+  it('reserves its footprint during dealer_exchange when the BOT is dealer (2o.1)', () => {
+    const view = makeView({
+      phase: 'dealer_exchange',
+      actingHand: { player: 'B', role: 'blind' },
+    });
+    const { container } = render(<HandTray view={view} legal={[]} play={vi.fn()} />);
+    const tray = container.querySelector('.hand-tray');
+    expect(tray).not.toBeNull();
+    expect(container.querySelector('.hand-tray-label')?.textContent).toMatch(/old-timer/i);
+    expect(container.querySelector('.hand-tray-cards')).not.toBeNull();
+  });
 });

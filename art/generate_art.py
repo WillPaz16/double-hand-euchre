@@ -1334,6 +1334,84 @@ def make_app_icon(size: int) -> Image.Image:
     return img
 
 
+def make_gear_icon(work: int = 32) -> Image.Image:
+    """The pause/settings button's gear — a brass cog in the cabin palette.
+
+    Replaces the `⚙` Unicode glyph the button rendered before, which was the only piece of art
+    in the game supplied by the system font: it changed shape per platform, drew in whatever
+    weight the font felt like, ignored the palette, and read as browser chrome sitting on top
+    of the game rather than as part of it.
+
+    Transparent ground and a punched-through hub, so the button's own translucent panel and
+    border show through instead of the sprite carrying a background that would double up on it.
+
+    Drawn 8x oversize and downsampled for the same reason `make_app_icon` does it: the tooth
+    polygon needs real pixel counts to come out symmetric, not icon-scale slivers. `work` is
+    the pre-`save_asset` size, so the written file is `work // PX` square — 16x16 au here.
+
+    16 au, not 32: art in this game is authored in au and displayed at `au * var(--px)`, so the
+    file size IS the mobile render size and twice it is the desktop one. A 32 au gear could
+    only render at 32px or 64px without breaking the whole-number-scale rule `scripts/
+    scale-audit.js` enforces, and both are far too big for a corner button — the first attempt
+    at that size failed the audit at every viewport by rendering at 0.475-0.575x.
+    """
+    SS = 8
+    big = work * SS
+    img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    c = big / 2
+    r_tip, r_root, r_hub = big * 0.46, big * 0.33, big * 0.19
+    # 8 teeth phased so the first points straight UP. On a pixel grid, symmetry is what makes a
+    # small sprite read as machined rather than as a blob, and 8 teeth at 45deg increments land
+    # on the four axes and four diagonals — every one of them mirror-symmetric about the
+    # sprite's own centre lines. 6 teeth (60deg) shares no such alignment and quantised
+    # visibly lopsided at this size.
+    teeth = 8
+    pitch = 2 * math.pi / teeth
+    # Alternating root/tip radii with FLAT tooth tops and square shoulders — a plain
+    # alternating-radius star polygon reads as a sunburst; the flats are what make it machined.
+    pts = []
+    for i in range(teeth):
+        a = i * pitch - math.pi / 2  # phase so tooth 0 points up, not right
+        for offset, r in (
+            (-pitch * 0.28, r_root),
+            (-pitch * 0.15, r_tip),
+            (+pitch * 0.15, r_tip),
+            (+pitch * 0.28, r_root),
+        ):
+            pts.append((c + math.cos(a + offset) * r, c + math.sin(a + offset) * r))
+    # Sized against the FINAL file, not the working canvas: the sprite is downsampled by SS
+    # here and halved again by save_asset, so a stroke picked to look right at `big` lands at
+    # a sixteenth of that on disk. big//16 leaves a real ~2px outline in the written 32px
+    # sprite; the first attempt (big//44) rendered to under a pixel and disappeared entirely.
+    stroke = max(2, big // 16)
+    draw.polygon(pts, fill=GOLD)
+    # ImageDraw's `outline=` is 1px whatever the scale, which disappears entirely in the
+    # downsample — the outline has to be a real stroked line at this working size.
+    draw.line(pts + [pts[0]], fill=INK, width=stroke, joint="curve")
+    hub = (c - r_hub, c - r_hub, c + r_hub, c + r_hub)
+    # Raw value write, not a composite — this punches the hub clear rather than tinting it.
+    draw.ellipse(hub, fill=(0, 0, 0, 0))
+    draw.ellipse(hub, outline=INK, width=stroke)
+    small = img.resize((work, work), Image.LANCZOS)
+    # Hard-quantise to the sprite's three real values. Downsampling curved geometry this far
+    # leaves a haze of blended in-between tones, and at 16 au that haze is most of the image —
+    # it reads as a smudge rather than as pixel art, and `save_asset`'s grid snap keeps the
+    # blend rather than cleaning it. Everything else in this file is drawn at final resolution
+    # from straight edges and never needs this; the gear is the one curved sprite that does.
+    px = small.load()
+    for y in range(work):
+        for x in range(work):
+            r, g, b, a = px[x, y]
+            if a < 128:
+                px[x, y] = (0, 0, 0, 0)
+                continue
+            d_gold = (r - GOLD[0]) ** 2 + (g - GOLD[1]) ** 2 + (b - GOLD[2]) ** 2
+            d_ink = (r - INK[0]) ** 2 + (g - INK[1]) ** 2 + (b - INK[2]) ** 2
+            px[x, y] = GOLD if d_gold <= d_ink else INK
+    return small
+
+
 def make_card_back(w: int = CARD_W, h: int = CARD_H, step: int = 14) -> Image.Image:
     """The card back, drawable at any size.
 
@@ -2388,11 +2466,23 @@ def make_dropped_card(w=72, h=56):
     return img
 
 
-def make_shelf(w=300, h=160):
+def make_shelf(w=400, h=160):
     """A wall shelf with clutter — jars, books, a lantern. Placed once, never tiled, so unlike
     the wall texture it may carry all the distinctive point detail it likes.
 
-    2j.3: resized 2.5x (120x64 -> 300x160). Every offset below is the original times 2.5."""
+    2j.3: resized 2.5x (120x64 -> 300x160). Every offset below is the original times 2.5, then
+    every X POSITION (not size — the items themselves stay their original drawn shape) spread
+    by a further 1.333x to reach 400 (200 au final).
+
+    First widened to 572 (286 au) to span the fireplace's full 374 au stone — direct user
+    feedback ("the mantle doesnt span the fireplace") — then corrected back down after further
+    feedback ("the mantle should not span the whole fireplace, only the hearth"): the firebox
+    OPENING itself (see make_fireplace's ox0/ox1: `w * 0.2565` inset each side of its 374 au
+    canvas) spans only 96-278 au within that stone, ~182 au wide — the clutter shelf was
+    overhanging 96 au of bare flanking stone with no fire beneath it, on the right alone. This
+    plank spans 200 au: a small, deliberate overhang past the 182 au opening on each side
+    (mantels rest on the stone flanking the firebox, not just the opening), not the full
+    374 au surround. `.scene-shelf`'s own CSS comment has the exact matching left/width."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     hi, base, sh, deep = ramp(TABLE_WOOD)
@@ -2401,31 +2491,31 @@ def make_shelf(w=300, h=160):
     d.rectangle((0, plank_y, w - 1, plank_y + 15), fill=base)
     d.line((0, plank_y, w - 1, plank_y), fill=hi)
     d.line((0, plank_y + 15, w - 1, plank_y + 15), fill=deep)
-    for bx in (25, w - 40):
+    for bx in (33, w - 53):
         d.polygon([(bx, plank_y + 15), (bx + 15, plank_y + 15), (bx + 8, h - 1)], fill=sh)
 
     # Books, leaning. A fourth spine added in 2l.1 (direct user feedback: "fuller" shelf) —
     # same leaning-book draw call as the other three, just one more (bx, bh, col) tuple.
     for i, (bx, bh, col) in enumerate((
-        (20, 65, RUG_RED), (40, 75, LEAF_GREEN), (60, 60, CLOTH_BLUE), (80, 50, STEEL),
+        (27, 65, RUG_RED), (53, 75, LEAF_GREEN), (80, 60, CLOTH_BLUE), (107, 50, STEEL),
     )):
         d.rectangle((bx, plank_y - bh, bx + 18, plank_y - 1), fill=col)
         d.rectangle((bx, plank_y - bh, bx + 18, plank_y - bh + 5), fill=_mix(col, GOLD, 0.5))
 
     # Jars.
-    for jx, jh, fill in ((110, 50, _mix(LEAF_GREEN, PARCHMENT, 0.4)), (155, 40, _mix(RUG_RED, PARCHMENT, 0.5))):
+    for jx, jh, fill in ((147, 50, _mix(LEAF_GREEN, PARCHMENT, 0.4)), (207, 40, _mix(RUG_RED, PARCHMENT, 0.5))):
         d.rectangle((jx, plank_y - jh, jx + 32, plank_y - 1), fill=fill)
         d.rectangle((jx, plank_y - jh, jx + 32, plank_y - jh + 8), fill=sh)
         d.line((jx, plank_y - jh + 13, jx + 32, plank_y - jh + 13), fill=_mix(fill, PARCHMENT, 0.5))
 
     # A small vase, 2l.1 — the one gap left on the plank, between the jars and the lantern.
-    vx, vh = 193, 35
+    vx, vh = 257, 35
     d.polygon([(vx + 4, plank_y - vh), (vx + 14, plank_y - vh), (vx + 17, plank_y - 1),
                (vx + 1, plank_y - 1)], fill=_mix(RUG_RED, INK_LIGHT, 0.35))
     d.line((vx + 4, plank_y - vh, vx + 14, plank_y - vh), fill=_mix(GOLD, PARCHMENT, 0.4))
 
     # Lantern, with a lit pane.
-    lx = 215
+    lx = 287
     d.rectangle((lx, plank_y - 70, lx + 45, plank_y - 1), fill=sh)
     d.rectangle((lx + 8, plank_y - 60, lx + 37, plank_y - 20), fill=_mix(FIRE_MID, PARCHMENT, 0.35))
     d.rectangle((lx + 12, plank_y - 55, lx + 33, plank_y - 25), fill=FIRE_CORE)
@@ -2507,101 +2597,6 @@ def make_framed_picture(w=240, h=180):
     return img
 
 
-# A second, smaller frame for the same free wall column the antlers sit in (2l.1 — more art on
-# the walls, direct user feedback). Not a resized copy of make_framed_picture: that function's
-# scene geometry is hand-placed in absolute pixels tuned for its 240x180 canvas specifically
-# (the sunset/sea shapes alone would run off the right edge of a frame under half that width),
-# and reworking it to scale proportionally risks nudging the shipped picture.png for no reason —
-# picture.png isn't cards-frozen, but "don't touch what already works" still applies. A single
-# tree silhouette is a plainer scene that is cheap to place correctly at a smaller size instead.
-def make_framed_picture_small(w=120, h=112):
-    """A small framed picture: one tree against a daylit sky. Same moulding technique as
-    make_framed_picture (a TABLE_WOOD frame around an inset scene) — a second, smaller piece of
-    art for the same wall, not a different kind of object."""
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    f_hi, f_base, f_sh, f_deep = ramp(TABLE_WOOD)
-
-    d.rectangle((0, 0, w - 1, h - 1), fill=f_base)
-    d.rectangle((0, 0, w - 1, 2), fill=f_hi)
-    d.rectangle((0, h - 4, w - 1, h - 1), fill=f_deep)
-
-    m = 10
-    sky_hi, sky, sky_sh, _ = ramp(PICTURE_SKY, warm=False)
-    d.rectangle((m, m, w - m - 1, h - m - 1), fill=sky)
-    d.rectangle((m, m, w - m - 1, m + round((h - 2 * m) * 0.2)), fill=sky_hi)
-
-    ground_y = h - m - round((h - 2 * m) * 0.22)
-    grass_hi, grass, grass_sh, grass_deep = ramp(LEAF_GREEN)
-    d.rectangle((m, ground_y, w - m - 1, h - m - 1), fill=grass)
-    d.line((m, ground_y, w - m - 1, ground_y), fill=grass_deep)
-
-    # One tree: a trunk and a round canopy, centred over the ground band.
-    cx = m + (w - 2 * m) // 2
-    trunk_w = max(3, (w - 2 * m) // 14)
-    d.rectangle((cx - trunk_w // 2, ground_y - round((h - 2 * m) * 0.18), cx + trunk_w // 2, ground_y),
-                fill=darken(TABLE_WOOD, 0.6))
-    r = round((w - 2 * m) * 0.24)
-    cy = ground_y - round((h - 2 * m) * 0.30)
-    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=grass_hi)
-    d.ellipse((cx - r + 4, cy - r + 4, cx + r - 6, cy + r - 6), fill=grass)
-    d.ellipse((cx - r // 3, cy - r // 3, cx + r // 3, cy + r // 3), fill=grass_sh)
-
-    # A low sun, same warm note make_framed_picture uses.
-    sr = max(4, round((w - 2 * m) * 0.09))
-    sx, sy = w - m - sr - 6, m + sr + 4
-    d.ellipse((sx - sr, sy - sr, sx + sr, sy + sr), fill=FIRE_CORE)
-    return img
-
-
-def make_antlers(w=120, h=80):
-    """A mounted rack on a wooden plaque. Cabin shorthand, and the one object in the room with
-    a genuinely irregular silhouette — every other thing here is a rectangle or an ellipse."""
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    p_hi, p_base, p_sh, p_deep = ramp(TABLE_WOOD)
-    b_hi, bone, b_sh, b_deep = ramp(BEARD_GRAY)
-
-    # Shield-shaped plaque. Wide, not narrow: the first pass made it ±22px against a rack
-    # spanning ±50 and it read unmistakably as a plant pot with a dead twig in it. A mount
-    # has to look like it could actually carry the thing bolted to it.
-    cx, py = w // 2, h - 26
-    d.polygon([(cx - 34, py), (cx + 34, py), (cx + 28, h - 5), (cx, h - 1), (cx - 28, h - 5)],
-              fill=p_base)
-    d.line((cx - 34, py, cx + 34, py), fill=p_hi)
-    d.polygon([(cx - 27, py + 3), (cx + 27, py + 3), (cx + 22, h - 9), (cx, h - 6),
-               (cx - 22, h - 9)], fill=p_sh)
-    d.polygon([(cx - 8, py + 2), (cx + 8, py + 2), (cx + 6, py + 12), (cx - 6, py + 12)],
-              fill=p_deep)
-
-    # Widths roughly doubled from the first pass, which measured genuinely spindly at display
-    # size — the tine tips in particular were a single floating pixel with nothing connecting
-    # them to the beam visually. A real antler beam is a substantial, weight-bearing form, not
-    # a wire; `d.ellipse` "burrs" at every joint round out where segments meet, since PIL's
-    # line-width joints stay hard mitres otherwise and read as notches rather than one branch
-    # splitting into another.
-    def burr(x, y, r):
-        d.ellipse((x - r, y - r, x + r, y + r), fill=bone)
-
-    for side in (-1, 1):
-        # Main beam, sweeping up and out.
-        beam = [(cx + side * 4, py), (cx + side * 16, py - 18), (cx + side * 30, py - 30),
-                (cx + side * 46, py - 34)]
-        for (x0, y0), (x1, y1) in zip(beam, beam[1:]):
-            d.line((x0, y0, x1, y1), fill=bone, width=9)
-        for jx, jy in beam:
-            burr(jx, jy, 5)
-        # Tines off the beam.
-        for (bx, by), (tx, ty) in (((cx + side * 16, py - 18), (cx + side * 12, py - 40)),
-                                   ((cx + side * 30, py - 30), (cx + side * 30, py - 52)),
-                                   ((cx + side * 42, py - 33), (cx + side * 50, py - 50))):
-            d.line((bx, by, tx, ty), fill=bone, width=7)
-            burr(bx, by, 4)
-            burr(tx, ty, 4)
-            d.line((tx, ty, tx + side * 2, ty - 3), fill=b_hi, width=5)
-        d.line((cx + side * 4, py, cx + side * 16, py - 18), fill=b_sh, width=3)
-    return img
-
 
 def make_wall_clock(size=120):
     """A round wall clock. Reads instantly at a glance and is the only circle on the wall.
@@ -2650,19 +2645,34 @@ def make_wall_clock(size=120):
     return img
 
 
-def make_farm_painting(w=168, h=88):
-    """A small framed farm landscape (replaces the barn star — direct user feedback: "the star
-    looks dumb, should be a painting of a long farm landscape using those warm colors"). Fills
-    the same bare stretch of log wall between the antlers/second-picture column and the
-    window's left edge — see `.scene-farm-painting`'s own CSS comment for the measured gap.
+def make_farm_painting(w=700, h=192):
+    """A framed farm landscape (replaces the barn star — direct user feedback: "the star looks
+    dumb, should be a painting of a long farm landscape using those warm colors"). Now spans the
+    WHOLE wall gap between the fireplace-side furniture and the window: it used to share that
+    wall with a small antlers plaque and a second small picture frame stacked in a column
+    (`right: 240au`), but growing this piece into their space made all three overlap (direct
+    user feedback: "overlapping, not big enough, looks dumb as hell") — both were removed
+    rather than shrinking this back down, so one real piece of art fills the space three small
+    frames used to compete for. See `.scene-farm-painting`'s own CSS comment for the exact
+    measured gap and the opponent-clearance this reuses from the antlers' old position.
 
-    Same framed-picture technique make_framed_picture/make_framed_picture_small already use (a
-    TABLE_WOOD moulding around an inset scene), not a new rendering approach — a wide, low
-    canvas (2:1, "long") rather than those two functions' near-square ones, since a landscape
-    reads as a landscape by being wider than it is tall. Golden-hour sky, a barn silhouette in
+    Same framed-picture technique make_framed_picture uses (a TABLE_WOOD moulding around an
+    inset scene), not a new rendering approach. Golden-hour sky, barn and silo silhouettes in
     FLANNEL_RED (this file's own warm barn-red, already used for the Old-Timer's shirt) and a
     fence line, all warmed with the same FIRE_*/GOLD tones the hearth itself uses, so the
-    painting reads as part of this room's palette rather than an unrelated cool daylight scene."""
+    painting reads as part of this room's palette rather than an unrelated cool daylight scene.
+
+    RE-COMPOSED for 3.65:1 (was drawn 2:1, then this box grew to 190->350au wide with no matching
+    change to what's IN it — direct user feedback: "with this resizing of the painting, the
+    artist need to revisit how the painting itself looks"). Every element below used fractions
+    of `w`, so nothing broke on the stretch, but the ORIGINAL composition was one small barn in
+    the left quarter with three flat, empty bands of sky and field filling the other three —
+    correct fractions, wrong density: a composition built for 2:1 doesn't become a panorama by
+    widening its canvas, it just shows more of its own empty middle. This version is built AS a
+    panorama: a full multi-peak ridge line the whole width (not one bump near the barn), a barn
+    AND a silo at different points along it so no quarter of the frame is empty, one tree for a
+    vertical accent against all that horizontal, and the fence spanning the full field instead
+    of just the right-hand half."""
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     f_hi, f_base, f_sh, f_deep = ramp(TABLE_WOOD)
@@ -2689,38 +2699,81 @@ def make_farm_painting(w=168, h=88):
         y1 = horizon if i == sky_bands - 1 else m + round((i + 1) * band_h)
         d.rectangle((m, y0, w - m - 1, y1 - 1), fill=col)
 
-    # A low sun sitting on the horizon, partly behind the near field below — reuses the sky's
-    # own brightest band rather than a new colour, since that IS the sun's own light.
-    sr = round(ih * 0.22)
+    # The sun sits at 0.6w in the ORIGINAL 2:1 composition (just right of centre). Kept at the
+    # same fraction — a panorama's sun doesn't need to move just because the canvas got wider.
+    sr = round(ih * 0.30)
     sx, sy = round(w * 0.6), horizon
     d.ellipse((sx - sr, sy - sr, sx + sr, sy + sr), fill=sky_colors[-1])
 
     # Rolling fields, warmed off LEAF_GREEN toward gold rather than the cool green the other
-    # framed pictures' daylit hills use — this is a sunset field, not daylight grass. A distant
-    # ridge pokes up above the horizon line before the near field's flat fill covers the rest.
+    # framed pictures' daylit hills use — this is a sunset field, not daylight grass.
     hill_hi, hill, hill_sh, _ = ramp(LEAF_GREEN)
     hill_hi = _mix(hill_hi, GOLD, 0.4)
     hill = _mix(hill, GOLD, 0.35)
     hill_sh = _mix(hill_sh, FIRE_DEEP, 0.3)
-    d.polygon([(m, horizon + round(ih * 0.10)), (m + round(w * 0.28), horizon - round(ih * 0.08)),
-               (m + round(w * 0.52), horizon + round(ih * 0.05))], fill=hill_hi)
     d.rectangle((m, horizon, w - m - 1, h - m - 1), fill=hill)
     d.line((m, horizon, w - m - 1, horizon), fill=hill_sh)
 
-    # Barn silhouette on the near field: a gable roof over a plain body.
-    bx = m + round(w * 0.16)
-    bw, bh = round(w * 0.11), round(ih * 0.16)
-    by1 = horizon + round(ih * 0.03)
-    by0 = by1 - bh
-    d.rectangle((bx, by0, bx + bw, by1), fill=FLANNEL_RED)
-    d.polygon([(bx - 3, by0), (bx + bw // 2, by0 - round(bh * 0.6)), (bx + bw + 3, by0)],
-              fill=darken(FLANNEL_RED, 0.7))
+    # A RIDGE LINE the full width — a repeating chain of low peaks (period ~0.09w, height
+    # varying peak-to-peak via a simple phase offset so it doesn't read as a mechanical zigzag),
+    # not one triangle near the barn. This is what actually makes the wide canvas read as a
+    # panorama instead of "one hill, then a lot of nothing."
+    peak_period = max(24, round(w * 0.085))
+    peak_h = ih * 0.11
+    ridge = [(m, horizon)]
+    n_peaks = (w - 2 * m) // peak_period + 1
+    for i in range(n_peaks + 1):
+        x = m + i * peak_period
+        # Every third peak taller, so the skyline has a rhythm rather than perfectly even teeth.
+        h_frac = 1.0 if i % 3 == 1 else 0.55
+        ridge.append((min(x, w - m), horizon - round(peak_h * h_frac)))
+        ridge.append((min(x + peak_period // 2, w - m), horizon))
+    ridge.append((w - m, horizon))
+    ridge.append((w - m, horizon + round(ih * 0.04)))
+    ridge.append((m, horizon + round(ih * 0.04)))
+    d.polygon(ridge, fill=hill_hi)
 
-    # A post-and-rail fence walking across the near field, foreground silhouette.
+    # Barn (left third) and silo (right third): two farm structures at different points along
+    # the ridge, not one, so neither half of a 3.65:1 frame is a bare field. Each sits with its
+    # own base ON the horizon, same as the original barn did.
+    def _barn(bx):
+        bw, bh = round(w * 0.075), round(ih * 0.30)
+        by1 = horizon + round(ih * 0.03)
+        by0 = by1 - bh
+        d.rectangle((bx, by0, bx + bw, by1), fill=FLANNEL_RED)
+        d.polygon([(bx - 3, by0), (bx + bw // 2, by0 - round(bh * 0.45)), (bx + bw + 3, by0)],
+                  fill=darken(FLANNEL_RED, 0.7))
+
+    def _silo(sx0):
+        sw, sh = round(w * 0.028), round(ih * 0.34)
+        sy1 = horizon + round(ih * 0.03)
+        sy0 = sy1 - sh
+        d.rectangle((sx0, sy0, sx0 + sw, sy1), fill=_mix(GOLD, PARCHMENT, 0.35))
+        cap = sw // 2 + 2
+        d.polygon([(sx0 - 2, sy0), (sx0 + sw // 2, sy0 - cap), (sx0 + sw + 2, sy0)],
+                   fill=darken(FLANNEL_RED, 0.55))
+
+    _barn(m + round(w * 0.14))
+    _silo(m + round(w * 0.60))
+
+    # One tree, roughly a third of the way from the right — a vertical accent breaking up a
+    # composition that is otherwise all horizontal bands and horizontal ridge.
+    tx = m + round(w * 0.84)
+    trunk_h = round(ih * 0.16)
+    ty1 = horizon + round(ih * 0.03)
+    ty0 = ty1 - trunk_h
+    d.line((tx, ty0, tx, ty1), fill=darken(TABLE_WOOD, 0.55), width=max(2, round(w * 0.006)))
+    cr = round(ih * 0.14)
+    d.ellipse((tx - cr, ty0 - cr, tx + cr, ty0 + cr // 2), fill=hill_hi)
+    d.ellipse((tx - cr + 2, ty0 - cr + 3, tx + cr - 3, ty0 + cr // 2 - 2), fill=hill)
+
+    # A post-and-rail fence walking across the WHOLE near field now, not just the right half —
+    # at 2:1 a half-width fence read as "the fence," at 3.65:1 it read as a fence that gives up
+    # partway across its own field.
     fence_y = h - m - round(ih * 0.06)
-    for px in range(m + round(w * 0.55), w - m, round(w * 0.09)):
+    for px in range(m, w - m, round(w * 0.045)):
         d.line((px, fence_y - round(ih * 0.10), px, fence_y), fill=WOOD_DARK, width=2)
-    d.line((m + round(w * 0.55), fence_y - round(ih * 0.06), w - m - 1, fence_y - round(ih * 0.06)),
+    d.line((m, fence_y - round(ih * 0.06), w - m - 1, fence_y - round(ih * 0.06)),
            fill=WOOD_DARK, width=2)
     return img
 
@@ -3298,6 +3351,7 @@ def main() -> None:
             card = make_face_card(rank, suit) if rank in FACE_RANKS else make_number_card(rank, suit)
             save_asset(card, os.path.join(cards_dir, f"{suit}_{rank}.png"), f"{suit}_{rank}")
 
+    save_asset(make_gear_icon(), os.path.join(OUT_ROOT, "gear.png"), "gear")
     save_asset(make_card_back(), os.path.join(OUT_ROOT, "card_back.png"))
     # Drawn at the scoreboard card's own size (30x42 au) rather than reusing the deck's back,
     # which would have to render at 1.2x to fit — see make_card_back's docstring.
@@ -3378,9 +3432,7 @@ def main() -> None:
     # gives away that the room's light is painted rather than modelled.
     for name, sprite in (
         ("picture", make_framed_picture()),
-        ("picture_2", make_framed_picture_small()),
         ("farm_painting", make_farm_painting()),
-        ("antlers", make_antlers()),
         ("clock", make_wall_clock()),
         ("coat_hooks", make_coat_hooks()),
         ("woodpile", make_woodpile()),
