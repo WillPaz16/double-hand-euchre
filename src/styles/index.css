@@ -1144,6 +1144,13 @@ body {
 #root {
   position: relative;
   z-index: 1;
+  /* Needed so `.game-root`'s own vertical centering (below) has a flex context to center
+     within — see that rule's own comment for the bug this exists to fix. `.title-screen`
+     (the other thing #root ever renders) sets its own explicit `height: 100dvh` regardless of
+     its parent, so becoming a flex item here doesn't change its size; verified live at both a
+     short and a very tall viewport before shipping this. */
+  display: flex;
+  flex-direction: column;
 }
 
 /* --- Title screen scene overrides -------------------------------------------------------- */
@@ -1557,6 +1564,25 @@ body {
 /* --- Phase 2a placeholder styling — no art yet, just legible and responsive. --- */
 
 .game-root {
+  /* Cap and centre the shell VERTICALLY, the same reasoning as the `max-width: 1440px` cap
+     below applied to the other axis — direct user feedback: "when we zoom out... the old man
+     isn't really at the table anymore." Root cause, confirmed live: `.table-opponent` is
+     `position: absolute; top: 0` inside `.table-area` (Table.tsx), pinned to that box's own
+     top edge — but `.table-area`'s actual game content (his card fans, the felt, the human's
+     fans) is a CSS grid using `align-content: center`, which drifts further DOWN from that
+     fixed top-0 point as `.table-area` gets taller, because centering a fixed-height block
+     inside a growing box grows the space above it. Measured: at 900-1000px viewport height
+     (this project's whole tested range until now) the fans still overlap his chest by design
+     (see Table.tsx's own comment on why that overlap is deliberate); by 1100px they've
+     separated by 20px, and by 1400px the gap is 170px — he visibly floats above an empty table.
+     Same fix as the width cap: stop the container from ever growing past the range this was
+     tuned against, and letterbox the rest — `SceneLayer` is fixed/full-viewport/z-index:-1
+     independent of this element's height, so the room still fills the screen top-to-bottom,
+     only the game CONTENT stops stretching. 1000px matches this file's own tallest previously-
+     tested viewport (`scripts/audit.ts`'s "ultra-wide desktop" case), where the overlap still
+     held with real margin (31px) rather than picking an untested round number. */
+  max-height: 1000px;
+  margin-block: auto;
   /* Same `dvh`-unsupported fallback as `.title-screen` — see that rule's own comment. */
   height: 100vh;
   height: 100dvh;
