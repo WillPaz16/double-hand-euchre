@@ -63,6 +63,11 @@ body {
   overscroll-behavior: none;
   touch-action: manipulation;
   position: relative;
+  /* Mobile Safari/Chrome paint a grey rectangle over whatever was tapped for ~300ms by
+     default — on a hand-drawn pixel-art scene, that's a flat modern-UI flash over art that
+     was deliberately built to have nothing else that looks like it. Suppressed at the root so
+     every button in the game inherits it rather than needing the same rule N times. */
+  -webkit-tap-highlight-color: transparent;
 }
 /* All ambient decoration lives in <SceneLayer>, not on `body`, so that lean mode can remove
    the entire layer with one rule and be certain nothing playable went with it. The hearth
@@ -1211,6 +1216,13 @@ body {
 .title-screen {
   /* No z-index of its own needed — it's a child of #root, which already sits above the
      SceneLayer's fixed -1. */
+  /* `100vh` first as a fallback for browsers with no `dvh` support (pre-2022 Safari/Chrome,
+     still real on older mobile hardware) — CSS drops a declaration with an unrecognised unit
+     entirely rather than falling back to anything, so with only the `dvh` line this element
+     would get NO explicit height there (falling through to `auto`, sized to content instead of
+     filling the screen) on those browsers. The second line overrides it wherever `dvh` IS
+     understood. */
+  height: 100vh;
   height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -1286,6 +1298,8 @@ body {
   align-items: center;
   gap: 1.25rem;
   text-align: center;
+  /* Same `dvh`-unsupported fallback as `.title-screen` — see that rule's own comment. */
+  min-height: 100vh;
   min-height: 100dvh;
 }
 .settings-heading {
@@ -1359,6 +1373,22 @@ body {
      nothing here holds at every width below that breakpoint (see that rule's own comment for
      why the two positions tried before this one both failed measurement). */
 }
+/* An INVISIBLE, expanded hit area — direct user feedback asked for a real mobile-UX pass;
+   measured live at 375px, this button's actual visual box is 27.6x21.2px, well under the
+   44x44px minimum every mobile touch-target guideline (WCAG 2.5.5, Apple HIG, Material)
+   converges on, and its own `max-width: 899px` rule below shrinks it FURTHER — mobile was
+   getting a SMALLER target than desktop, backwards from what mobile actually needs. Can't fix
+   this by growing the VISIBLE button: its position at narrow widths sits in a measured ~20px
+   vertical gap between the scoreboard and StatusBanner (see that media query's own comment),
+   and a visually bigger box would eat into either. `position: absolute; inset: -12px` on a
+   `content: ''` pseudo-element grows the CLICKABLE box by 24px in both dimensions without
+   adding anything to paint or to layout (absolutely-positioned, so it can't push or collide
+   with a sibling's own box) — the icon and its background stay exactly the size already tuned. */
+.game-pause-button::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+}
 /* The gear is a generated sprite now, not a font glyph, so the button sizes to the IMAGE and
    its own padding rather than to a line-box. `image-rendering: pixelated` for the same reason
    every other sprite in the game sets it: the 32px source is drawn on the PX grid and must not
@@ -1425,6 +1455,14 @@ body {
   width: 100%;
   max-height: 90dvh;
   overflow-y: auto;
+  /* Same defensive fix as `.game-root` (see that rule's own comment for the full CSS-spec
+     mechanism): `overflow-y: auto` alone silently computes `overflow-x` to `auto` too, opening
+     a horizontal scroll trap if anything inside ever runs wider than this box. Nothing here
+     currently does (`width: 100%` plus wrapped text/buttons), but the failure mode is
+     structural, not content-specific — the same audit pass that found the game-root instance
+     checked every other `overflow-y`-without-`overflow-x` rule in this file, and this was the
+     only other one. */
+  overflow-x: hidden;
   background: #211710;
   border: 2px solid #7a5a3a;
   padding: 1.5rem;
@@ -1519,6 +1557,8 @@ body {
 /* --- Phase 2a placeholder styling — no art yet, just legible and responsive. --- */
 
 .game-root {
+  /* Same `dvh`-unsupported fallback as `.title-screen` — see that rule's own comment. */
+  height: 100vh;
   height: 100dvh;
   overflow-y: auto;
   /* A real bug found root-causing direct user feedback ("i cant see my cards anymore on
@@ -2641,6 +2681,17 @@ body {
   font-family: inherit;
   font-size: 0.95rem;
   padding: 0.6rem 1rem;
+  /* Direct user feedback asked for a real mobile-UX pass; measured live, this button's own
+     box (the game's most-clicked control — every bid, pass, order-up, restart, and quit
+     confirmation shares this class) came out to 36px tall, under the 44px minimum every
+     mobile touch-target guideline converges on. `min-height` rather than more padding: padding
+     alone drifts with whatever the actual font-metric line-height turns out to be (it already
+     had 0.6rem — real padding — and still landed at 36, not the ~41px the box model alone
+     would suggest), where `min-height` guarantees the floor directly regardless of that drift. */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 0;
   border: 2px solid #7a5a3a;
   background: #3a2a1a;
