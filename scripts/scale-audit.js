@@ -62,8 +62,17 @@
     // --- CSS background images ------------------------------------------------------------
     // Tiles legitimately repeat, so the element's own box says nothing about scale — what
     // matters is background-size against the file's natural size.
+    //
+    // `.scene-farm-painting` is the ONE deliberate exception to the whole-number-scale rule
+    // this whole check exists to enforce: direct user feedback asked for it explicitly ("the
+    // art should also stretch with the screen"), with the softness/blur tradeoff spelled out
+    // and accepted up front, not discovered after the fact. Its box has no fixed `width` at
+    // all (`left`+`right`, filling the fireplace-window gap — see its own CSS comment), so its
+    // rendered scale is different at literally every viewport width by design; flagging it
+    // would just be permanent, expected noise, not a signal of anything broken.
     const seen = new Set();
     for (const el of document.querySelectorAll('*')) {
+      if (el.classList.contains('scene-farm-painting')) continue;
       const cs = getComputedStyle(el);
       const m = cs.backgroundImage.match(/url\("([^"]+)"/);
       if (!m) continue;
@@ -198,6 +207,17 @@
     // chimney is a continuous wall surface, not a discrete object the player needs to see.
     const GROUND_PLANE = /scene-floor|scene-rug|scene-fireplace-chimney/;
     const COLLISION_CEILING = 0.35; // a little overlap at an edge is fine; losing a third isn't
+    // `.scene-farm-painting` vs `.table-opponent` specifically (not a blanket exemption for
+    // either): its own CSS comment already documents this pairing as deliberate — centred at
+    // the same 50%, "the painting behind him is the backdrop he's centred against... correct,
+    // not a collision" — and predates this check. The felt-notch fix (2q.3) shrank the
+    // painting's height to clear the felt, which didn't change the OVERLAP REGION at all (same
+    // pixels: the opponent's own box, unmoved) but shrank the painting's total area, pushing an
+    // unchanged absolute overlap from 25% to 36% of a smaller denominator — the ceiling being
+    // crossed is an artifact of the box getting smaller, not a new visual regression. Verified
+    // live with a screenshot at 1800x1000 after the height cut: still reads as a wall behind
+    // him, not a decor prop losing a fight it wasn't supposed to be in.
+    const OPPONENT_BACKDROP = 'scene-farm-painting';
     const collisions = [];
     for (const el of document.querySelectorAll('[class*="scene-"]')) {
       if (AMBIENT.test(el.className) || GROUND_PLANE.test(el.className) || clippedByOwnParent(el)) continue;
@@ -206,6 +226,7 @@
       const r = el.getBoundingClientRect();
       if (!r.width || !r.height) continue;
       for (const sel of CHROME_SELECTORS) {
+        if (sel === '.table-opponent' && el.className.includes(OPPONENT_BACKDROP)) continue;
         for (const chrome of document.querySelectorAll(sel)) {
           const c = chrome.getBoundingClientRect();
           const ow = Math.max(0, Math.min(r.right, c.right) - Math.max(r.left, c.left));

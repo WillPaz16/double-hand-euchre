@@ -3550,26 +3550,26 @@ def main() -> None:
     # gives away that the room's light is painted rather than modelled.
     for name, sprite in (
         ("picture", make_framed_picture()),
-        ("farm_painting", make_farm_painting()),
-        # A genuinely smaller RENDER (roughly half the canvas — 348 wide, not 350, so the raw
-        # size stays a multiple of save_asset's chunk=2 grid — not the same PNG squeezed into a
-        # smaller box, which would be exactly the fractional-scale bug this file exists to
-        # forbid) for the 1440-1559px band, where the full-size painting still can't clear the
-        # opponent. Direct user feedback: "the big painting doesn't appear when you zoom in" —
-        # real browser zoom shrinks the effective CSS viewport, and a common 1920px monitor at
-        # 125% zoom lands at 1536px, just under the existing 1560px gate, so this was reachable
-        # at an ordinary zoom level, not just a narrow test viewport. 1440, not lower — a live
-        # measurement against the opponent's own (viewport-scaling) position, not an assumption;
-        # see `.scene-farm-painting-small`'s own CSS comment for the exact clearance math.
-        # Height 176, matching the full-size piece's own 2:1 ratio (700x352) after that was
-        # redrawn taller — kept in step rather than left at the old 96 (which would have made
-        # the small tier revert to the exact "too much white space" composition just fixed.)
-        ("farm_painting_small", make_farm_painting(348, 176)),
+        # Height 352 -> 240 raw (176 -> 120au) — the felt-notch fix's art half, see
+        # `.scene-farm-painting`'s own CSS comment. A genuinely re-rendered canvas at the new
+        # height, not the PNG squeezed into a shorter CSS box — the fractional-scale bug this
+        # exists to avoid (`npm run audit` caught a first CSS-only attempt at this: 240/176 =
+        # 1.364x, not a whole number). `make_farm_painting()` draws every element as a fraction
+        # of its own `w`/`h` (see its own docstring), so a shorter canvas re-composes rather
+        # than stretches. The separate `farm_painting_small` asset that used to live here (a
+        # smaller render for a narrower viewport band) is gone — `.scene-farm-painting` now
+        # fills its own box fluidly via CSS (`left`/`right`, no fixed `width`), so one asset
+        # covers the width range two used to.
+        ("farm_painting", make_farm_painting(700, 240)),
         ("clock", make_wall_clock()),
         ("coat_hooks", make_coat_hooks()),
         ("woodpile", make_woodpile()),
         ("hearth_mat", make_hearth_mat()),
-        ("dresser", make_dresser()),
+        # 96x64 -> 144x96au (1.5x, same ratio) — direct user feedback: "the dresser under the
+        # window is SO small." A real re-render at the new size (make_dresser() draws almost
+        # everything as a fraction of its own w/h), not a CSS stretch of the old asset, for the
+        # same whole-number-scale reason every other art resize in this file gives.
+        ("dresser", make_dresser(288, 192)),
         # Two small static props (creative-direction pass): a yarn ball beside the cat and a
         # scatter of feed dots beside the hen. Same loop as the furniture above — flat-shaded,
         # single static image, no sprite-sheet frames — even though these two sit beside

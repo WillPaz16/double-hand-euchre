@@ -22,6 +22,12 @@ const PORT = 5183; // not 5173 — avoid colliding with a dev server the user al
 /** Mirrors `--frame-cap` in index.css. Above this width `.game-root` stops growing and the
  *  whole composition — scenery included — must hold still relative to it. */
 const FRAME_CAP = 1440;
+/** Mirrors `--frame-height-cap` in index.css — the same fact on the vertical axis. Above this
+ *  height `.game-root` stops growing (letterboxed via `margin-block: auto`) and the whole
+ *  composition must hold still relative to it too, the exact bug the felt-notch shipped as:
+ *  `.scene-farm-painting` tracked the raw viewport top while the felt inside `.game-root` had
+ *  already started letterboxing away from it. */
+const FRAME_HEIGHT_CAP = 1000;
 const BASE_URL = `http://localhost:${PORT}`;
 
 // The same four viewports every phase since 2f.2 has verified at by hand: two phone
@@ -46,15 +52,23 @@ const VIEWPORTS = [
   // itself, which none of the phone-width viewports above are narrow enough to exercise.
   // 300, not 320, so there's a real 20px margin rather than sitting exactly on the boundary.
   { width: 300, height: 750, label: 'narrow phone, roomy table active' },
-  // TWO viewports past `--frame-cap` (1440px), because the FRAME-LOCK check below is a
+  // TWO viewports past `--frame-cap` (1440px), because the VIEWPORT-LOCK check below is a
   // comparison BETWEEN viewports — it needs at least two above the cap to have anything to
-  // compare. Everything above 1440 must be pixel-identical relative to the game frame; these
-  // two are what proves it. Before `--frame-inset` existed, scenery tracked the raw viewport
-  // while game chrome tracked the capped/centred `.game-root`, so the two drifted apart by
-  // (100vw - 1440) / 2 per side — measured as 120px of clock-under-scoreboard overlap at
-  // 2000px, at no tested viewport below the cap.
+  // compare. Above the cap the room and the scoreboard must both stay welded to the screen
+  // edges while the game box stops growing; these two are what proves it. The original bug:
+  // scenery tracked the viewport while the scoreboard tracked the capped/centred `.game-root`,
+  // so they drifted apart by (100vw - 1440) / 2 per side — measured as 120px of
+  // clock-under-scoreboard overlap at 2000px, at no tested viewport below the cap.
   { width: 2000, height: 1000, label: 'past frame cap' },
   { width: 2600, height: 1000, label: 'far past frame cap' },
+  // TWO viewports past `--frame-height-cap` (1000px), the vertical counterpart of the pair
+  // above — the VERTICAL VIEWPORT-LOCK check needs two heights above the cap to compare. 1800
+  // wide (not 1400) so `.scene-farm-painting` is actually on screen to check (it's gated
+  // behind `min-width: 1100px`). This pair is what catches the room floating off its own
+  // floor: measured at 1800x1700 while the room was letterboxed with the game box, the floor
+  // sat at the true bottom while the fireplace, dresser and woodpile hovered ~344px above it.
+  { width: 1800, height: 1300, label: 'past frame height cap' },
+  { width: 1800, height: 1700, label: 'far past frame height cap' },
 ];
 
 function waitForServer(url: string, timeoutMs = 30_000): Promise<void> {
@@ -136,6 +150,44 @@ async function driveToBiddingState(
   await page.waitForTimeout(600);
 }
 
+/** Given the same elements measured at two or more viewport sizes, report the ones that are
+ *  welded to NEITHER edge of their axis.
+ *
+ *  Each element contributes two readings — its distance from each edge (`[L]`/`[R]`, or
+ *  `[T]`/`[B]`) — and passing requires only that ONE of them hold still across every sampled
+ *  size. That is exactly what "anchored to a screen edge" means, and checking it this way needs
+ *  no hand-maintained table of which prop uses which edge: the fireplace hangs off the left, the
+ *  window and dresser off the right, wall art from the top, furniture from the floor, and all of
+ *  them are correct. An element that moves on BOTH edges is tracking something else entirely —
+ *  in practice the capped, centred game box — which is the bug this exists to catch.
+ */
+function edgeDrift(
+  samples: { size: number; offsets: Record<string, number> }[],
+  edges: [string, string],
+): string[] {
+  const [base, ...rest] = samples;
+  if (!base || !rest.length) return [];
+  const names = new Set(Object.keys(base.offsets).map((k) => k.replace(/ \[[LRTB]\]$/, '')));
+  const drift: string[] = [];
+  for (const name of names) {
+    const readings = edges.map((e) => {
+      const key = `${name} ${e}`;
+      const b = base.offsets[key];
+      if (b === undefined) return null;
+      const moved = rest.filter((s) => Math.abs((s.offsets[key] ?? b) - b) > 1);
+      return { edge: e, base: b, moved };
+    });
+    const known = readings.filter((r): r is NonNullable<typeof r> => r !== null);
+    if (!known.length) continue;
+    // Held still on at least one edge -> correctly anchored, nothing to report.
+    if (known.some((r) => r.moved.length === 0)) continue;
+    const worst = known[0]!;
+    const to = worst.moved.map((s) => `${s.offsets[`${name} ${worst.edge}`]}px @${s.size}`).join(', ');
+    drift.push(`    ${name}: neither edge held (${worst.edge} ${worst.base}px @${base.size} -> ${to})`);
+  }
+  return drift;
+}
+
 async function main(): Promise<void> {
   const server: ChildProcess = spawn(
     'npx',
@@ -144,6 +196,7 @@ async function main(): Promise<void> {
   );
   let failed = false;
   const frameLock: { width: number; offsets: Record<string, number> }[] = [];
+  const frameLockY: { height: number; offsets: Record<string, number> }[] = [];
 
   try {
     await waitForServer(BASE_URL);
@@ -179,26 +232,78 @@ async function main(): Promise<void> {
         const noScroll = de.scrollHeight === de.clientHeight && de.scrollWidth === de.clientWidth;
 
         // FRAME LOCK: every discrete prop's offset from the GAME FRAME's own left edge, so the
-        // post-loop check can prove those offsets don't move once past the cap. Measured
-        // against `.game-root` rather than the viewport on purpose — that is exactly the
-        // distinction that was broken, and measuring against the viewport here would happily
-        // pass while the bug was live.
+        // post-loop check can prove those offsets don't move once past the cap. Measured from
+        // the VIEWPORT's own left edge, and the left `.score-slot` is measured alongside the
+        // scenery on purpose: the room and the scoreboard are the two things that anchor to a
+        // horizontal EDGE (everything else — banner, opponent, trays, seats — is centred), so
+        // this list passing is the proof that they share one coordinate system and therefore
+        // cannot drift into each other. An earlier version measured against `.game-root`
+        // instead, which encoded the opposite (and wrong) rule: it demanded the room hold
+        // still relative to the capped box, which is exactly what left the fireplace and
+        // window floating mid-wall with bare screen beyond them.
         if (vp.width >= FRAME_CAP) {
           frameLock.push({
             width: vp.width,
             offsets: await page.evaluate(() => {
-              const root = document.querySelector('.game-root');
-              if (!root) return {};
-              const x0 = root.getBoundingClientRect().left;
               const out: Record<string, number> = {};
               for (const sel of [
                 '.scene-fireplace', '.scene-window', '.scene-picture', '.scene-clock',
                 '.scene-shelf', '.scene-coat-hooks', '.scene-dresser', '.scene-woodpile',
-                '.scene-hearth-mat', '.scene-farm-painting', '.table-frame', '.table-opponent',
+                '.scene-hearth-mat',
+              ]) {
+                for (const el of document.querySelectorAll(sel)) {
+                  if (getComputedStyle(el).display === 'none') continue;
+                  const r = el.getBoundingClientRect();
+                  // BOTH distances, because a prop is anchored to ONE edge and which one
+                  // differs per prop (the fireplace hangs off the left, the window and dresser
+                  // off the right). The comparison below asks only that ONE of the pair holds
+                  // still — that is what "welded to a screen edge" means, and it needs no
+                  // hand-maintained list of which prop uses which edge to go stale.
+                  out[`${sel} [L]`] = Math.round(r.left);
+                  out[`${sel} [R]`] = Math.round(innerWidth - r.right);
+                }
+              }
+              // Both score slots, by index — they are the two corners of the one piece of
+              // chrome that anchors to a horizontal edge, and the whole point of the fix is
+              // that they now share the room's coordinate system.
+              [...document.querySelectorAll('.score-slot')].forEach((el, i) => {
+                const r = el.getBoundingClientRect();
+                out[`.score-slot#${i} [L]`] = Math.round(r.left);
+                out[`.score-slot#${i} [R]`] = Math.round(innerWidth - r.right);
+              });
+              return out;
+            }),
+          });
+        }
+
+        // VERTICAL VIEWPORT LOCK: the same measurement rotated onto the height axis, and the
+        // check that would have caught the floating-room bug directly. The floor plane always
+        // reaches the true bottom of the screen, so anything STANDING on it has to be measured
+        // from that same bottom — props are measured by their distance from the viewport's
+        // bottom edge here for exactly that reason. When the room was briefly letterboxed with
+        // the game box, this list drifted by ~344px between the two heights below while the
+        // floor stayed put, which is precisely the gap that opened under the fireplace.
+        if (vp.height > FRAME_HEIGHT_CAP) {
+          frameLockY.push({
+            height: vp.height,
+            offsets: await page.evaluate(() => {
+              const out: Record<string, number> = {};
+              for (const sel of [
+                '.scene-floor', '.scene-fireplace', '.scene-window', '.scene-dresser',
+                '.scene-woodpile', '.scene-hearth-mat', '.scene-picture', '.scene-clock',
+                '.scene-farm-painting', '.status-banner', '.action-bar',
               ]) {
                 const el = document.querySelector(sel);
                 if (!el || getComputedStyle(el).display === 'none') continue;
-                out[sel] = Math.round(el.getBoundingClientRect().left - x0);
+                const r = el.getBoundingClientRect();
+                // Same both-edges rule as the horizontal check: wall art hangs from the top,
+                // furniture stands on the floor at the bottom, and each only has to hold ONE
+                // of them still. `.scene-floor` is the control (its bottom anchoring was never
+                // in doubt), and the banner/action-bar are included because they are the two
+                // pieces of chrome pinned to a screen edge — the ones that drifted inward when
+                // the vertical cap was on `.game-root` instead of `.table-area`.
+                out[`${sel} [T]`] = Math.round(r.top);
+                out[`${sel} [B]`] = Math.round(innerHeight - r.bottom);
               }
               return out;
             }),
@@ -230,31 +335,47 @@ async function main(): Promise<void> {
     server.kill();
   }
 
-  // FRAME LOCK (2q.1). The game has exactly two coordinate systems: the raw VIEWPORT (the
-  // room's continuous surfaces) and the capped, centred GAME FRAME (everything with a measured
-  // relationship to anything else). They are identical below `--frame-cap` and diverge above
-  // it, which is why a whole family of "it drifts / it overlaps at a big window" bugs existed
-  // and why none of them reproduced at any tested size. Every offset below is measured FROM
-  // the frame, so if a prop ever goes back to tracking the viewport its offset starts moving
+  // VIEWPORT LOCK (2q.1, corrected in 2q.4). The game has exactly two coordinate systems: the
+  // raw VIEWPORT (the ROOM — every scene prop, plus the scoreboard, which reads as a tally on
+  // that room's wall) and the capped, centred GAME BOX (the table, the opponent, the seats and
+  // the trays). They are identical below the caps and diverge above them, which is why a whole
+  // family of "it drifts / it overlaps / it floats at a big window" bugs existed and why none
+  // of them reproduced at any tested size. Every offset below is measured FROM THE VIEWPORT
+  // EDGE, so if a room element is ever moved into the game box its offset starts changing
   // between these two viewports and this fails — which no single-viewport check can see.
   if (frameLock.length >= 2) {
-    const [base, ...rest] = frameLock;
-    const drift: string[] = [];
-    for (const s of rest) {
-      for (const [sel, off] of Object.entries(s.offsets)) {
-        const b = base!.offsets[sel];
-        if (b === undefined) continue;
-        if (Math.abs(off - b) > 1) {
-          drift.push(`    ${sel}: ${b}px @${base!.width} -> ${off}px @${s.width}`);
-        }
-      }
-    }
+    const drift = edgeDrift(
+      frameLock.map((s) => ({ size: s.width, offsets: s.offsets })),
+      ['[L]', '[R]'],
+    );
     if (drift.length) {
       failed = true;
-      console.error('  FAIL  frame lock (scenery drifts from the game frame past the cap)');
+      console.error('  FAIL  viewport lock (a room element drifts from the screen edge past the cap)');
       console.error(drift.join('\n'));
     } else {
-      console.log(`  OK    frame lock (${Object.keys(base!.offsets).length} elements pinned past ${FRAME_CAP}px)`);
+      const n = new Set(Object.keys(frameLock[0]!.offsets).map((k) => k.replace(/ \[[LRTB]\]$/, ''))).size;
+      console.log(`  OK    viewport lock (${n} elements pinned past ${FRAME_CAP}px)`);
+    }
+  }
+
+  // VERTICAL VIEWPORT LOCK (2q.2, corrected in 2q.4) — the same reasoning as the horizontal
+  // check above, on the height axis. `.scene-floor` is deliberately first in the measured list:
+  // it is the one element whose bottom-edge anchoring was never in doubt, so it doubles as the
+  // control. Every other prop in the room stands ON it and must hold the same distance from the
+  // screen's bottom edge that it does — which is exactly what stopped being true when the room
+  // was briefly letterboxed with the game box, leaving the fireplace hovering above its floor.
+  if (frameLockY.length >= 2) {
+    const drift = edgeDrift(
+      frameLockY.map((s) => ({ size: s.height, offsets: s.offsets })),
+      ['[T]', '[B]'],
+    );
+    if (drift.length) {
+      failed = true;
+      console.error('  FAIL  vertical viewport lock (a room element drifts off the floor past the height cap)');
+      console.error(drift.join('\n'));
+    } else {
+      const n = new Set(Object.keys(frameLockY[0]!.offsets).map((k) => k.replace(/ \[[LRTB]\]$/, ''))).size;
+      console.log(`  OK    vertical viewport lock (${n} elements pinned past ${FRAME_HEIGHT_CAP}px)`);
     }
   }
 

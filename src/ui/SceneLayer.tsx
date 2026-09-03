@@ -100,14 +100,13 @@ export function SceneLayer() {
           almost exactly (au 300 -> 299), so the already-measured opponent clearance at 1560px
           carries over rather than needing to be re-derived — see .scene-farm-painting's own CSS
           comment. */}
+      {/* Direct user feedback: "the art should also stretch with the screen." No fixed width —
+          see `.scene-farm-painting`'s own CSS comment for how `left`/`right` alone make it fill
+          exactly the fireplace-window gap at every width, growing and shrinking with it rather
+          than swapping between two fixed-size renders (the old `farm_painting_small` tier this
+          replaced — removed along with its own art asset, since the fluid box now covers the
+          width range it existed for). */}
       <div className="scene-farm-painting" />
-      {/* A smaller render of the same piece for 1440-1559px, where the full-size painting above
-          can't yet clear the opponent — direct user feedback: "the big painting doesn't appear
-          when you zoom in," since real browser zoom (e.g. a 1920px monitor at 125%) can land
-          the effective viewport at exactly 1536px, just under the existing 1560px gate, at an
-          entirely ordinary zoom level. See `.scene-farm-painting-small`'s own CSS comment for
-          why 1440 and not lower — a live measurement, not an assumption. */}
-      <div className="scene-farm-painting-small" />
       <div className="scene-coat-hooks" />
       <div className="scene-woodpile" />
       {/* A small hearth mat (wave-2) on the floor in front of the firebox opening — a separate

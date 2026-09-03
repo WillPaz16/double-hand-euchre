@@ -40,43 +40,51 @@
 }
 
 /* ============================================================================
-   --frame-inset : ONE REFERENCE FRAME
+   ONE REFERENCE FRAME: the ROOM is the viewport, the GAME is the capped box
 
-   The game had TWO coordinate systems that silently disagreed, and that single fact is the
-   root cause behind a whole family of "it drifts / it overlaps / it doesn't fit" bugs:
+   The game has two coordinate systems, and a whole family of "it drifts / it overlaps / it
+   floats" bugs came from elements being assigned to the wrong one:
 
      - `SceneLayer` is `position: fixed; inset: 0` — the raw VIEWPORT.
-     - `.game-root` is capped at 1440px and centred — a BOX inside that viewport.
+     - The GAME BOX is capped and centred — `.game-root` at `--frame-cap` wide, and
+       `.table-area` at its own `max-height` — so the table stops growing past the range it was
+       tuned against while the room behind it keeps filling the screen.
 
-   Below 1440px the two are identical, which is why every measurement ever taken agreed and
-   every fix held. Above 1440px they diverge by `(100vw - 1440px) / 2` per side, and every
-   relationship anyone had ever measured between a scene prop and a game element started
-   drifting apart at a rate nothing in the code accounted for. Measured live at 2000px: the
-   "YOU" score tally sits at x288 (it tracks `.game-root`'s left edge) while `.scene-clock`
-   spans x264-384 (it tracks the VIEWPORT's left edge) — a 120px overlap that exists at NO
-   tested viewport below 1440 and grows without bound above it. The wall picture, shelf and
-   coat-hooks all had their clearances measured against the scoreboard the same way, so all of
-   them inherit the same drift.
+   Below the caps the two are identical, which is why every measurement ever taken agreed and
+   every fix held. Above them they diverge, and any relationship measured between a scene prop
+   and a game element starts drifting at a rate nothing in the code accounted for. Measured at
+   2000px wide: the "YOU" score tally sat at x288 (tracking `.game-root`'s left edge) while
+   `.scene-clock` spanned x264-384 (tracking the VIEWPORT) — a 120px overlap existing at NO
+   tested viewport below the cap and growing without bound above it.
 
-   `--frame-inset` is that divergence, expressed once. A prop anchored with it tracks the GAME
-   frame; a surface without it tracks the VIEWPORT. That is now a deliberate, visible choice
-   per element instead of an accident of which file the rule happened to live in:
+   **The rule: everything that is the ROOM tracks the VIEWPORT. Everything that is the GAME
+   tracks the capped box.** Not "discrete props vs continuous surfaces" — that split was tried
+   (a `--frame-inset` custom property added to every prop's offsets) and was wrong on both
+   axes, because it put the room's own walls and furniture into the game's frame:
 
-     - DISCRETE PROPS (fireplace, window, wall furniture, floor objects) use it. They were all
-       placed by measured clearance against game chrome, so they belong in the game's frame.
-       As a bonus this fixes the composition at very wide viewports: the room stays gathered
-       around the table instead of the fireplace and window sliding off to opposite edges and
-       leaving the table marooned in a sea of bare wall.
-     - CONTINUOUS SURFACES (the floor plane, the wall texture, the hearth glow and vignette)
-       do NOT. They are the room itself, they have no measured relationship to anything, and
-       they should always reach the physical edges of the screen.
+     - Horizontally it stopped the fireplace and window running off the screen edges — the
+       explicit design intent recorded in `.scene-fireplace`'s own comment ("Running it off the
+       edge keeps its true size AND returns wall to the composition"). Direct user feedback
+       caught it: at 2400px there was 324px of bare wall beyond the fireplace and 336px beyond
+       the window, both floating mid-wall instead of being cropped by the frame.
+     - Vertically it was worse, and the same feedback surfaced it: the floor plane is a
+       continuous surface that (correctly) always reached the true bottom, but every prop
+       STANDING on that floor had been pushed up with the letterbox. Measured at 1800x1700:
+       floor top at 1400px, fireplace base at 1056px, dresser at 1090, woodpile at 1118 — the
+       whole room hovering ~344px above its own floorboards.
 
-   `max(0px, ...)` clamps it to zero below the cap, so this is a strict no-op at every viewport
-   the game has ever been tuned or tested at — it only ever ADDS correct behaviour above 1440.
-   Kept in sync with `.game-root`'s own `max-width` by construction; that rule points here. */
+   The drift bug that motivated all this is fixed by moving the SCOREBOARD instead (see
+   `.scoreboard`'s own comment): it reads as a tally kept on the wall, so it belongs to the
+   room, and pinning it to the viewport corners puts it in the same coordinate system as the
+   wall furniture it kept colliding with. Two things that move together cannot drift apart —
+   which is a stronger guarantee than an inset that has to be applied to each prop by hand and
+   silently breaks the composition wherever a prop's real reference was the screen edge.
+
+   `--frame-cap` remains, but ONLY as `.game-root`'s own max-width. Nothing in `SceneLayer`
+   reads it, and the vertical cap it used to have a partner for now lives directly on
+   `.table-area` (see that rule) — the one element it was ever really about. */
 :root {
   --frame-cap: 1440px;
-  --frame-inset: max(0px, (100vw - var(--frame-cap)) / 2);
 }
 
 * {
@@ -461,10 +469,18 @@ body {
    what a miniature does, not what a piece of room-scale furniture does. Running it off the
    edge keeps its true size AND returns wall to the composition. */
 /* The chimney-breast extension above `.scene-fireplace` — see the JSX comment for the bug
-   this closes. `bottom: 401au` is where the sprite's own real masonry starts: its box top is
-   `147 + 270 = 417au` up from the floor, and the sprite's own 16au of transparent canvas
-   padding pushes the real brick down to `417 - 16 = 401au`. `top: 0` with no explicit `height`
-   is the load-bearing part — the box stretches to fill exactly the gap that exists at
+   this closes. `bottom: 383au` is where the sprite's own real masonry starts, with a small
+   deliberate overlap: its box top is `147 + 270 = 417au` up from the floor, and the sprite's
+   own transparent canvas padding pushes the real brick down to `417 - 32 = 385au` — 32, not
+   the 16 this comment used to claim. Direct user feedback ("theres a weird gap between stone,
+   why?") over a screenshot showing exactly that: a sliver of plain wall between the chimney
+   tile and the fireplace's own brick. Root cause was this very comment's own arithmetic:
+   whoever wrote 401 (`417 - 16`) never checked the PNG's actual alpha channel, and the true
+   padding is double that — confirmed directly by reading `fireplace.png`'s rows in Pillow, not
+   by re-deriving it from a description a second time (`first opaque row: y=32, 374 opaque
+   px`). 385 would touch exactly zero; 383 keeps 2au of real overlap so sub-pixel rounding at
+   odd viewport heights can never reopen the same gap by a hair. `top: 0` with no explicit
+   `height` is the load-bearing part — the box stretches to fill exactly the gap that exists at
    whatever the current viewport height is, rather than a number picked for one tested size.
 
    `background-image`, not a flat `background` colour — direct user feedback on the first
@@ -477,16 +493,16 @@ body {
    pattern `.table-top`'s felt tile already uses for a seamless repeat. */
 .scene-fireplace-chimney {
   position: absolute;
-  left: calc(var(--frame-inset) + calc(-78px * var(--px)));
+  left: calc(-78px * var(--px));
   width: calc(374px * var(--px));
   top: 0;
-  bottom: calc(401px * var(--px));
+  bottom: calc(383px * var(--px));
   background-image: url('/art/scene/chimney_tile.png');
   background-size: calc(374px * var(--px)) calc(44px * var(--px));
   background-repeat: repeat-y;
   image-rendering: pixelated;
 }
-.scene-fireplace {  left: calc(var(--frame-inset) + calc(-78px * var(--px)));
+.scene-fireplace {  left: calc(-78px * var(--px));
   bottom: calc(147px * var(--px));
   width: calc(374px * var(--px));
   height: calc(270px * var(--px));
@@ -525,7 +541,7 @@ body {
    complaint the dresser exists to fix. Width/height/right unchanged; only the floor-relative
    anchor moved. */
 .scene-window {
-  right: calc(var(--frame-inset) + calc(-72px * var(--px)));
+  right: calc(-72px * var(--px));
   bottom: calc(260px * var(--px));
   width: calc(170px * var(--px));
   height: calc(120px * var(--px));
@@ -539,7 +555,7 @@ body {
    window's bottom edge: 260 - 12 (sill height) = 248au. */
 .scene-window-sill {
   position: absolute;
-  right: calc(var(--frame-inset) + calc(-80px * var(--px)));
+  right: calc(-80px * var(--px));
   bottom: calc(248px * var(--px));
   width: calc(186px * var(--px));
   height: calc(12px * var(--px));
@@ -554,15 +570,18 @@ body {
    furniture standing against the wall rather than lying flat on it like the rug. Right-anchored
    by a fixed au offset, same as the window itself, so the two stay aligned at every viewport
    width instead of drifting apart the way a centred element would (see `.scene-rug`'s own
-   "two different rates" note for why that pairing matters). Sits with room to spare below the
-   sill (150+64=214 vs sill at 248) rather than touching it — a dresser pushed flush against a
-   windowsill is a less common arrangement than one with a hand's-width of wall between them. */
+   "two different rates" note for why that pairing matters).
+   96x64 -> 144x96au (direct user feedback: "the dresser under the window is SO small" — see
+   `make_dresser`'s own call-site comment in generate_art.py). Growing straight up ate the old
+   34au gap to the sill down to 2au (150+96=246 vs sill at 248) — moved `bottom` from 150 to
+   130au to buy back a real 22au of headroom instead, verified live with `getBoundingClientRect`
+   against `.scene-window-sill` rather than left to chance. */
 .scene-dresser {
   position: absolute;
-  right: calc(var(--frame-inset) + calc(-8px * var(--px)));
-  bottom: calc(150px * var(--px));
-  width: calc(96px * var(--px));
-  height: calc(64px * var(--px));
+  right: calc(-8px * var(--px));
+  bottom: calc(130px * var(--px));
+  width: calc(144px * var(--px));
+  height: calc(96px * var(--px));
   background-image: url('/art/scene/dresser.png');
   background-size: 100% 100%;
   image-rendering: pixelated;
@@ -708,7 +727,7 @@ body {
    from the sprite's own bottom edge, i.e. ~13.5-49au above whatever `bottom` is set to. At
    bottom:118 that places the body at ~131.5-167au, which fully spans the mat's 130-154au band
    instead of landing on bare floorboards below it. */
-.scene-cat {  left: calc(var(--frame-inset) + calc(20px * var(--px)));
+.scene-cat {  left: calc(20px * var(--px));
   bottom: calc(118px * var(--px));
   width: calc(126px * var(--px));
   height: calc(80px * var(--px));
@@ -726,7 +745,7 @@ body {
    stone width the previous pass matched. The width here and make_shelf's own drawn width must
    agree exactly, or `background-size: 100% 100%` silently becomes a fractional scale. */
 .scene-shelf {
-  left: calc(var(--frame-inset) + calc(9px * var(--px)));
+  left: calc(9px * var(--px));
   bottom: calc(263px * var(--px));
   width: calc(200px * var(--px));
   height: calc(80px * var(--px));
@@ -771,7 +790,7 @@ body {
      is already confined to (see `bottom` below) leaves no room below the woodpile's 116au
      bottom edge to relocate into. Re-verified with `getBoundingClientRect()` against
      `.scene-woodpile` at both `--px:1` and `--px:2`: zero intersection. */
-  left: calc(var(--frame-inset) + calc(250px * var(--px)));
+  left: calc(250px * var(--px));
   /* `bottom: 65au` (level with the cat's own floor line) measured out to sit ENTIRELY behind
      the hand tray at 1440x900 — the tray's top edge lands at 91au from the viewport bottom in
      its normal (no bid-row) state, and a 65+26=91au box has no pixel above that line. The cat
@@ -814,8 +833,7 @@ body {
 .scene-picture,
 .scene-clock,
 .scene-coat-hooks,
-.scene-farm-painting,
-.scene-farm-painting-small {
+.scene-farm-painting {
   display: none;
 }
 @media (min-width: 900px) {
@@ -824,55 +842,21 @@ body {
     display: block;
   }
 }
-/* A smaller RENDER of the same painting (not the same PNG in a smaller box — see
-   make_farm_painting's own call-site comment) for the 1440-1559px band the full-size piece
-   can't reach. Direct user feedback: "the big painting doesn't appear when you zoom in" — real
-   browser zoom shrinks the effective CSS viewport width, and an ordinary 1920px monitor at
-   125% zoom lands at 1536px, just under the existing 1560px gate below, so this was reachable
-   at a common zoom level, not just an unusually narrow window.
-
-   1440, NOT 900 — a live resize sweep against `.table-opponent` (whose right edge tracks
-   `vw/2 + 150`, unaffected by `.game-root`'s own `max-width: 1440px` cap since that cap only
-   constrains content AT OR ABOVE 1440px) found the box's left edge (`vw - 566`, from its
-   `right: 109au` + `width: 174au`) only clears the opponent once `vw - 566 >= vw/2 + 150`, i.e.
-   `vw >= 1432`. A first pass here assumed halving the width alone would reach all the way down
-   to the 900px `.scene-picture`/`.scene-clock` gate — measured overlap at both 900px (266px)
-   and 1200px (116px) disproved that outright; the opponent SCALES with the viewport too (he's
-   centred, not fixed), so a right-anchored box only ever buys a HIGHER floor, never an
-   unconditionally safe one, at a legible size. Getting all the way to 900px would need the
-   painting under ~41au wide — no longer recognisable as the piece it's a smaller render of.
-   1440 (verified 0px overlap live, ~4px of real margin) still directly fixes the reported
-   125%-zoom case (1536px), which is the concrete problem this tier exists for. */
-@media (min-width: 1440px) and (max-width: 1559px) {
-  .scene-farm-painting-small {
+/* `.scene-farm-painting` no longer shares a gate with `.scene-coat-hooks` — the fluid-stretch
+   rewrite (see that rule's own comment) retired the FIXED-width opponent-clearance math this
+   gate used to enforce for the painting; `.scene-coat-hooks` still needs its own, unrelated
+   1560px opponent-clearance gate (its own comment above still applies unchanged). The
+   painting's two remaining constraints are its own, both measured: not being shown so narrow it
+   stretches into a smear (checked live at 1100px width, gap ~240px/120au — already reads as a
+   long thin landscape, not a sliver), and not being shown so SHORT that its fixed bottom edge
+   meets the rising felt (see this rule's own `top`/`height` comment for the ~852px crossover
+   and why only short, never tall, viewports can reopen it). */
+@media (min-width: 1100px) and (min-height: 900px) {
+  .scene-farm-painting {
     display: block;
   }
 }
-/* The farm painting and coat-hooks share ONE gate, keyed to the centred opponent — the
-   antlers and a second small picture frame used to live in this same tier (and the farm
-   painting had its own separate, lower 1200px gate before it grew into their spot) but both
-   were removed: growing the painting into the antlers' column made them overlap (direct user
-   feedback — "overlapping, not big enough, looks dumb as hell"), and one big painting reading
-   as real wall art beats three small frames competing for the same narrow strip.
-
-   `.scene-farm-painting` now reuses the ANTLERS' own already-measured margin rather than
-   re-deriving one: its new left edge (au 299) sits almost exactly where the antlers' left edge
-   used to (au 300), and that position's opponent-clearance was already measured at length —
-   overlap hits 0 at vw=1500px, ~30px of margin at 1560px, so 1560 stays the right threshold.
-   Re-verified directly after the resize with `getBoundingClientRect()` against
-   `.table-opponent`, not just carried over by the coincidence of the number.
-
-   `.scene-coat-hooks` joins the same gate for its own, separately-measured reason (2m.2's
-   mantel-alignment fix moved it from `left:8au` to `left:194au`, which put it much closer to
-   centre): `coat.right` (596px, fixed) vs `opponent.left` (vw/2-150) hits 0 at vw=1492px, so
-   1560 keeps ~68px of real margin there too — matching the painting's own margin at this gate
-   almost exactly, which is why both live in the same block rather than two near-identical ones.
-
-   Below 1560px: two props, not four. That is the honest cost of a room at true scale — a
-   hearth and a window sized to a real room simply consume the wall, and the frame has to give
-   something up. Widening that frame is 2j.4's job, not a reason to shrink the furniture back. */
 @media (min-width: 1560px) {
-  .scene-farm-painting,
   .scene-coat-hooks {
     display: block;
   }
@@ -881,8 +865,7 @@ body {
 .scene-clock,
 .scene-coat-hooks,
 .scene-woodpile,
-.scene-farm-painting,
-.scene-farm-painting-small {
+.scene-farm-painting {
   position: absolute;
   background-size: 100% 100%;
   image-rendering: pixelated;
@@ -913,7 +896,7 @@ body {
    from the floor is the thing with a relationship to its neighbour, not the thing without one.
    Picture and clock have no such neighbour to track, so they stay top-anchored. */
 /* Resized 2.5x in 2j.3 (48x36 -> 120x90 au); the clock alongside it moved right to clear it. */
-.scene-picture {  left: calc(var(--frame-inset) + calc(8px * var(--px)));
+.scene-picture {  left: calc(8px * var(--px));
   top: calc(46px * var(--px));
   width: calc(120px * var(--px));
   height: calc(90px * var(--px));
@@ -930,7 +913,7 @@ body {
    opponent — at this size there is plenty of row left even with a real gap — so it sits a
    few au clear of the picture's right edge (128au) instead of overlapping it, and is
    vertically centred against the picture's 46-136au band rather than sharing its top. */
-.scene-clock {  left: calc(var(--frame-inset) + calc(132px * var(--px)));
+.scene-clock {  left: calc(132px * var(--px));
   top: calc(61px * var(--px));
   width: calc(60px * var(--px));
   height: calc(60px * var(--px));
@@ -994,106 +977,90 @@ body {
    mantel's own top edge. Confirmed clear of `.table-opponent` (which is what capped the OLD
    beside-picture placement, per the note above) with `getBoundingClientRect()` at both 1010px
    and 1440px — the opponent's own left edge sits well right of 298au at both widths. */
-.scene-coat-hooks {  left: calc(var(--frame-inset) + calc(194px * var(--px)));
+.scene-coat-hooks {  left: calc(194px * var(--px));
   bottom: calc(206px * var(--px));
   width: calc(104px * var(--px));
   height: calc(134px * var(--px));
   background-image: url('/art/scene/coat_hooks.png');
 }
-/* The antlers and a second small picture frame used to occupy this column (`right: 240au`,
-   60au wide) — both REMOVED (direct user feedback: growing the farm painting into their column
-   made all three overlap, "looks dumb as hell"). One painting now spans this entire reclaimed
-   strip: from the window's own left edge (`right: 98au`; see `.scene-window`) back to almost
-   exactly where the antlers' own left edge used to sit (`right: 300au`), a real 190au-wide
-   piece rather than three small frames competing for the same wall.
-
-   `right: 109au` keeps the ~22px gap to the window that every earlier version of this box also
-   used. `width: 190au` reaches back to `right: 299au` — 1au short of the antlers' old left
-   edge, on purpose, so this box occupies the antlers' old footprint without literally touching
-   where their frame used to be.
-
-   Grown in the ART, not by stretching this box: `background-size: 100% 100%` over a bigger box
-   than the sprite's own resolution would scale it fractionally, which scripts/scale-audit.js
-   rejects. `make_farm_painting`'s own w/h track this box exactly (190*2 x 95*2 raw canvas).
-
-   Opponent clearance is the ANTLERS' OWN already-measured margin, not a fresh derivation: this
-   box's new left edge (au 299) sits almost exactly where the antlers' left edge used to (au
-   300), and antlers' own comment history has that position's clearance measured at length —
-   overlap hits 0 at vw=1500px, ~30px margin at 1560px. Re-verified directly with
-   `getBoundingClientRect()` against `.table-opponent` after this resize, not just carried over
-   by the coincidence of the number — see the `min-width: 1560px` gate above.
-
-   `top: 80au`, `height: 95au` — roughly centred across the combined vertical span the antlers
-   (top 75) and second picture (bottom 181) used to occupy together (centre ~128au), close
-   enough to read as one piece filling their old slot rather than sitting at an unrelated
-   height. 2:1-ish width:height keeps the "long landscape" read `make_farm_painting`'s own
-   comment describes, rather than growing square as it grew bigger. */
-/* Widened again, 190 -> 350au (direct user feedback: "art should span from close to the fire
-   place to close to the window") — past what "clear of the opponent" would allow, on purpose:
-   `.table-opponent` has NO opaque background (just his own transparent-PNG sprite, confirmed
-   in its CSS), and `SceneLayer` sits at `z-index: -1`, strictly behind all game content — so
-   this painting running BEHIND him is visually identical to a real wall-mounted piece a person
-   happens to be standing in front of, occluded only by his actual silhouette, not by a bounding
-   box. The opponent-clearance reasoning that capped every earlier version of this piece (and
-   the antlers/picture-2 before it) was solving for objects meant to read as sitting IN FRONT of
-   him — irrelevant for background wall art, which is why this can finally just be sized to the
-   wall itself instead of to his position. */
-/* Height 96 -> 176au (2:1, was 3.65:1) — direct user feedback: "the picture in the back isn't
-   tall enough and leaves too much white space / wall space." Measured live: the wall band this
-   piece hangs in (ceiling to floor) is ~350au tall, so a 96-tall piece used barely a quarter of
-   it. `top` stays 80au — that already centred the OLD, shorter piece within the antlers/
-   picture-2 slot (see the comment above), and 80 + 176/2 = 168 lands close enough to this
-   band's own true centre (175) that it didn't need to move. See `make_farm_painting`'s own
-   docstring for why the ART's proportions changed too, not just this box. */
-/* CENTRED in the actual gap between the fireplace and the window, not right-anchored to the
-   window — direct user feedback: "it should be central and dynamic to the window and
-   fireplace." The two props anchor to OPPOSITE viewport edges (fireplace: `left: -78au` +
-   `width: 374au`, right edge 296au from the left; window: `right: -72au` + `width: 170au`,
-   left edge 98au from the right), so a right-anchored painting drifts steadily further from
-   the fireplace as the viewport widens — the gap between them isn't fixed, only the window
-   side of it was being tracked. The gap's true centre, worked out from those same two edges:
-   `(296au + (100vw - 98au)) / 2 = 50vw + 99au`. This box is 350au wide, so its own left edge
-   sits at that centre minus half its width: `50% - 76au`. Coincidentally (not by design) this
-   places it almost exactly where `.table-opponent` already sits (also centred at 50%) — which
-   is correct, not a collision: the painting behind him is the backdrop he's centred against. */
+/* TRUE FLUID STRETCH (direct user feedback: "the art should also stretch with the screen" —
+   confirmed explicitly against the alternative of just adding another fixed-size tier: the
+   user wants the box itself to grow/shrink continuously with the viewport, accepting that a
+   raster PNG stretched this way won't hold a crisp integer pixel scale the way everything else
+   in this room does). `left` AND `right` are both set to the fireplace's own right edge (296au
+   — `left:-78au` + `width:374au`) and the window's own left edge (98au — `right:-72au` +
+   `width:170au`), with NO `width` property at all: an absolutely positioned box with both
+   edges set and no explicit width fills exactly the space between them, automatically, at
+   every viewport width — no centring formula to keep in sync, no second fixed-size asset for a
+   narrower band (the old `farm_painting_small` tier this replaced, and its own PNG, are gone).
+   `background-size: 100% 100%` (shared rule below) is what makes the SAME image stretch to
+   fill that ever-changing box instead of tiling or cropping.
+   This also retires the old opponent-clearance width gate entirely: that math existed to stop
+   a FIXED 350au box from overlapping `.table-opponent` at narrower widths, which no longer
+   applies once the box's own width already tracks the available gap — and the overlap that
+   does still happen (he's centred over the same wall this fills) was already established as
+   deliberate backdrop, not a collision (see `scale-audit.js`'s `OPPONENT_BACKDROP` exemption).
+   `min-width: 1100px` (gate below) exists only so the box isn't shown so narrow it stretches
+   into an unrecognisable smear — checked live, the gap is ~120au (240px) at 1100px width,
+   already visibly a "long thin landscape" rather than a sliver.
+   `max-width` + `margin-inline: auto` CLAMP that stretch and centre the box in whatever gap is
+   left over (an absolutely-positioned box with both `left` and `right` set plus auto inline
+   margins centres itself inside them). A clamp is needed at all because the room reaching the
+   true screen edges widens the fireplace-to-window gap without bound on an ultrawide (1612px at
+   2400px viewport); unclamped, this 350x120au art would stretch to 4.6x horizontal against 2x
+   vertical, elongating the barn and tree badly.
+   600au (1200px at desktop, ~1.71x the art's own undistorted 700px width) was chosen by looking
+   at the alternatives live at 2400px rather than by arithmetic. The first pass clamped at 450au
+   (900px): safe on distortion, but it left two 356px strips of bare wall between the painting
+   and the fireplace/window, and a review panel independently flagged exactly that hollow — "an
+   empty stretch of plain striped wallpaper on both sides", reading as the room drifting apart
+   rather than one space. 725au (1450px) closes the gap to 81px a side but visibly squats the
+   barn and flattens the tree at 2.07x. 600au is the balance point, and it has a real threshold
+   behind it rather than being split-the-difference: the gap is 1132px at a 1920px viewport, so
+   at or below that width the box fills the wall COMPLETELY and no hollow exists at all — the
+   residual ~206px a side only appears past 1920, where the wall is genuinely too wide for one
+   piece of art to carry alone. Below the clamp it still stretches continuously with the window,
+   exactly as asked.
+   `top`/`height` handle the VERTICAL half of this independently — see their own comment. */
+/* `top: 54au` (was 80au) — direct user feedback: "the art is way too low." The felt-clearance
+   fix (2q.3) cut this box's height 176->120au but left `top` untouched, so the shorter piece
+   sat low in its own wall band with visible dead space above it, unlike `.scene-picture`/
+   `.scene-clock` which sit close to the top of theirs. Moving `top` up ALSO buys back felt
+   clearance rather than spending it (a shorter box starting higher ends higher too). Checked
+   against `.status-banner` (the thing moving `top` up risks trading a felt-notch for) — banner
+   bottom sits at 75px, this box's top at 108px, a real 33px margin, confirmed live.
+   Now that scenery is viewport-anchored on BOTH axes (see the reference-frame comment at the
+   top of this file), the felt only ever moves DOWN and away from this box as the window gets
+   taller — so tall viewports are safe by construction and only SHORT ones can reopen the notch.
+   This box's bottom is fixed at 348px; the felt's top tracks roughly `vh/2 - 78`, so they meet
+   at about 852px of viewport height. The `min-height: 900px` half of the gate below is that
+   floor with real margin (24px, measured), replacing the `min-height: 1000px` the earlier
+   `--frame-inset-y` version needed. */
 .scene-farm-painting {
-  left: calc(50% - 76px * var(--px));
-  top: calc(80px * var(--px));
-  width: calc(350px * var(--px));
-  height: calc(176px * var(--px));
+  left: calc(296px * var(--px));
+  right: calc(98px * var(--px));
+  max-width: calc(600px * var(--px));
+  margin-inline: auto;
+  top: calc(54px * var(--px));
+  height: calc(120px * var(--px));
   background-image: url('/art/scene/farm_painting.png');
-}
-/* The 1440-1559px stand-in for the piece above — same right edge (anchored to the window gap,
-   same as the full size), vertically re-centred within roughly the same band (80 + (176-88)/2)
-   since it's half the height, matching the full piece's own 2:1 ratio. Narrower (174 vs 350au)
-   is what buys the clearance: its LEFT edge sits at 109+174=283au from the viewport's right
-   edge, well short of the full piece's 109+350=459au — the opponent has real room to its right
-   at widths where the full piece would already be overlapping him. */
-/* Same centring formula as the full-size piece, just for this box's own (half) width: gap
-   centre `50vw + 99au` minus half of 174au = `50% + 12au`. */
-.scene-farm-painting-small {
-  left: calc(50% + 12px * var(--px));
-  top: calc(124px * var(--px));
-  width: calc(174px * var(--px));
-  height: calc(88px * var(--px));
-  background-image: url('/art/scene/farm_painting_small.png');
 }
 /* On the floor beside the hearth, where the fire's fuel comes from. */
 /* Resized 2.5x in 2j.3 (52x32 -> 130x80 au). */
 .scene-woodpile {
-  left: calc(var(--frame-inset) + calc(112px * var(--px)));
+  left: calc(112px * var(--px));
   bottom: calc(116px * var(--px));
   width: calc(130px * var(--px));
   height: calc(80px * var(--px));
   background-image: url('/art/scene/woodpile.png');
 }
 /* Direct user feedback asking for a root-cause pass on things "dependent on objects they
-   shouldn't be dependent on" — this is the second confirmed instance of the SAME class the
-   `--frame-inset` fix closed, just between two DIFFERENT layout systems than that one. The
-   woodpile is anchored by a fixed au offset from the game frame's edge; the SW seat (whose
-   fan this collides with) is positioned by `.table-area`'s own CSS GRID, which tracks the
-   FELT's dynamic centre and width — nothing ties those two together, so nothing guaranteed
-   they'd ever stay clear of each other.
+   shouldn't be dependent on" — the same CLASS of bug as the room/game-box coordinate split at
+   the top of this file, but between two different layout systems again. The woodpile is
+   anchored by a fixed au offset from the viewport edge; the SW seat (whose fan this collides
+   with) is positioned by `.table-area`'s own CSS GRID, which tracks the FELT's dynamic centre
+   and width — nothing ties those two together, so nothing guaranteed they'd ever stay clear of
+   each other.
 
    Measured live, sweeping width with an EMPTY sw seat-fan visible (the state a hand actually
    reaches once one of the player's two hands has been exhausted mid-play — the state that
@@ -1131,7 +1098,7 @@ body {
    `.scene-yarn`'s own 91au-clearance note was measured against. */
 .scene-hearth-mat {
   position: absolute;
-  left: calc(var(--frame-inset) + calc(15px * var(--px)));
+  left: calc(15px * var(--px));
   bottom: calc(130px * var(--px));
   width: calc(90px * var(--px));
   height: calc(24px * var(--px));
@@ -1154,7 +1121,7 @@ body {
    prop this small can safely sit. */
 .scene-chicken {
   position: absolute;
-  right: calc(var(--frame-inset) + calc(120px * var(--px)));
+  right: calc(120px * var(--px));
   bottom: calc(130px * var(--px));
   width: calc(38px * var(--px));
   height: calc(30px * var(--px));
@@ -1185,7 +1152,7 @@ body {
    stays well inside the hen's own [130, 160]au bounding box. */
 .scene-feed {
   position: absolute;
-  right: calc(var(--frame-inset) + calc(160px * var(--px)));
+  right: calc(160px * var(--px));
   bottom: calc(130px * var(--px));
   width: calc(24px * var(--px));
   height: calc(10px * var(--px));
@@ -1663,25 +1630,18 @@ body {
 /* --- Phase 2a placeholder styling — no art yet, just legible and responsive. --- */
 
 .game-root {
-  /* Cap and centre the shell VERTICALLY, the same reasoning as the `max-width: 1440px` cap
-     below applied to the other axis — direct user feedback: "when we zoom out... the old man
-     isn't really at the table anymore." Root cause, confirmed live: `.table-opponent` is
-     `position: absolute; top: 0` inside `.table-area` (Table.tsx), pinned to that box's own
-     top edge — but `.table-area`'s actual game content (his card fans, the felt, the human's
-     fans) is a CSS grid using `align-content: center`, which drifts further DOWN from that
-     fixed top-0 point as `.table-area` gets taller, because centering a fixed-height block
-     inside a growing box grows the space above it. Measured: at 900-1000px viewport height
-     (this project's whole tested range until now) the fans still overlap his chest by design
-     (see Table.tsx's own comment on why that overlap is deliberate); by 1100px they've
-     separated by 20px, and by 1400px the gap is 170px — he visibly floats above an empty table.
-     Same fix as the width cap: stop the container from ever growing past the range this was
-     tuned against, and letterbox the rest — `SceneLayer` is fixed/full-viewport/z-index:-1
-     independent of this element's height, so the room still fills the screen top-to-bottom,
-     only the game CONTENT stops stretching. 1000px matches this file's own tallest previously-
-     tested viewport (`scripts/audit.ts`'s "ultra-wide desktop" case), where the overlap still
-     held with real margin (31px) rather than picking an untested round number. */
-  max-height: 1000px;
-  margin-block: auto;
+  /* NO vertical cap here. There used to be one (`max-height: 1000px; margin-block: auto`), and
+     it was the right diagnosis applied to the wrong element — see `.table-area`'s own
+     `max-height`, which is where that cap lives now and what it was always actually about.
+     Capping the whole SHELL letterboxed the status banner and the action bar along with the
+     table, pulling both away from the screen edges they are supposed to be pinned to: measured
+     at 1800x1300, the banner descended 150px into `.scene-clock` (55% hidden) and the action
+     bar rose off the bottom into the woodpile, yarn and feed (62%, 100%, 100% hidden). Those
+     collisions were live in committed code and invisible only because nothing tested above
+     1000px tall. With the cap moved down onto `.table-area`, this element is simply the full
+     viewport height again, so the banner sits at the true top and the action bar at the true
+     bottom — the placement both of their own comments already claim ("pinned to the bottom
+     because that is where a thumb reaches"). */
   /* Same `dvh`-unsupported fallback as `.title-screen` — see that rule's own comment. */
   height: 100vh;
   height: 100dvh;
@@ -1720,9 +1680,12 @@ body {
      `SceneLayer` is fixed, full-viewport and z-index:-1, independent of this element's width,
      so the cabin still fills the screen edge to edge — the cap letterboxes the game content,
      not the room behind it. */
-  /* THE literal cap, and the one `--frame-inset` is derived from — scene props anchor to this
-     same box (see that variable's own comment), so the two coordinate systems cannot drift
-     apart the way they silently did before. Changing this number moves the scenery with it. */
+  /* THE literal cap. It bounds the GAME BOX only — the table, the opponent, the seats and the
+     trays. Nothing in `SceneLayer` reads it, and the scoreboard deliberately escapes it
+     (`position: fixed`, see its own comment): the room and its wall tally both belong to the
+     viewport, not to this box. See the reference-frame comment at the top of this file for why
+     that split is the one that holds. Changing this number resizes the game content; it does
+     not move the room. */
   max-width: var(--frame-cap);
   margin-inline: auto;
   /* A real regression from the vertical-centering fix above (making `#root` a flex column):
@@ -1786,10 +1749,23 @@ body {
 /* Wide enough for the corners to be genuinely clear of the centred status text: pulled out of
    the flow, it stops costing a full horizontal band of height — height the opponent needs to
    sit across the table at a believable size. In the corners it also reads as a tally kept on
-   the wall, which is nearer to how you'd actually score this game. */
+   the wall, which is nearer to how you'd actually score this game.
+   `fixed`, not `absolute` — i.e. the true VIEWPORT corners, not `.game-root`'s capped ones.
+   Two pieces of direct user feedback converge on this, and so does the drift bug at the top of
+   this file. (1) "i liked the scoring on the outer edge of the screen": as an `absolute` child
+   of the capped `.game-root` it drifted inward once past `--frame-cap` — measured at 2400px,
+   488px in from each screen edge. (2) The scoreboard is the ONLY game chrome anchored to a
+   horizontal EDGE rather than to centre (banner, opponent, trays and seats are all centred), so
+   it was also the only chrome the edge-anchored wall furniture could ever collide with — the
+   `.scene-clock`-under-`.score-slot` overlap that the `--frame-inset` experiment was built to
+   solve. Pinning it to the viewport puts it in the SAME coordinate system as that furniture,
+   so the two now move together and cannot drift apart at any width — the same fix, applied to
+   the one element that was actually in the wrong frame instead of to the fifteen that weren't.
+   `pointer-events: none` (already below) is what keeps a full-width fixed bar from swallowing
+   clicks meant for the room or the table behind it. */
 @media (min-width: 900px) {
   .scoreboard {
-    position: absolute;
+    position: fixed;
     top: max(0.25rem, env(safe-area-inset-top));
     left: 0.5rem;
     right: 0.5rem;
@@ -2010,11 +1986,20 @@ body {
    when they pass, pick it up when he calls trump... funny things periodically." Square corners
    and a stepped tail rather than a rounded balloon — this room has no curves anywhere art-side
    (the felt's own clip-path is a stepped rasterised circle, not a smooth one, for the same
-   reason), so a smooth speech bubble would be the one soft shape in the whole scene. Palette
-   and border weight match `.bid-button` exactly rather than inventing a new one — this is
-   dialogue, not a new UI surface. Positioned off his RIGHT shoulder, clear of both the centred
-   `.table-opponent` sprite and the top-right `.score-slot`/dealer-chip corner (checked live at
-   every audited viewport). */
+   reason), so a smooth speech bubble would be the one soft shape in the whole scene. Positioned
+   off his RIGHT shoulder, clear of both the centred `.table-opponent` sprite and the top-right
+   `.score-slot`/dealer-chip corner (checked live at every audited viewport).
+   Palette used to match `.bid-button` exactly (`#3a2a1a`/`#7a5a3a`) — direct user feedback
+   ("old man text bubble needs work") plus a live screenshot showed why: `.bid-button` always
+   sits on the action bar's own solid dark panel, a controlled background its colours were
+   tuned against, while this bubble floats directly over the busy, variably-lit brick wall (and
+   now the farm painting behind it too) with no panel of its own — the same dark brown read as
+   almost invisible there, closer to a smudge than a bubble. A brighter gold border (matching
+   the room's one existing accent colour, `#ffd54a` — the title heading, `.seat-count`, every
+   button's own focus/hover state — rather than inventing a second accent) plus a real drop
+   shadow for depth fixes it without changing the shape language. Checked live side by side: the
+   old palette was genuinely hard to pick out against the wall; this one reads as a bubble from
+   across the room. */
 .table-opponent-speech {
   position: absolute;
   top: calc(10px * var(--px));
@@ -2024,8 +2009,9 @@ body {
   font-size: 0.8rem;
   line-height: 1.3;
   color: #f0e6d6;
-  background: #3a2a1a;
-  border: 2px solid #7a5a3a;
+  background: #4a3520;
+  border: 2px solid #ffd54a;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.4);
   z-index: 2;
   animation: speech-pop 180ms ease-out;
 }
@@ -2036,9 +2022,9 @@ body {
   bottom: calc(10px * var(--px));
   width: calc(8px * var(--px));
   height: calc(8px * var(--px));
-  background: #3a2a1a;
-  border-left: 2px solid #7a5a3a;
-  border-bottom: 2px solid #7a5a3a;
+  background: #4a3520;
+  border-left: 2px solid #ffd54a;
+  border-bottom: 2px solid #ffd54a;
 }
 @keyframes speech-pop {
   0% { opacity: 0; transform: scale(0.85); }
@@ -2063,6 +2049,26 @@ body {
   flex: 1;
   align-content: center;
   min-height: 0;
+  /* THE vertical cap — direct user feedback: "when we zoom out... the old man isn't really at
+     the table anymore." Root cause, confirmed live: `.table-opponent` is `position: absolute;
+     top: 0` inside THIS box (Table.tsx), pinned to its own top edge — but the actual game
+     content (his card fans, the felt, yours) is the CSS grid below using `align-content:
+     center`, which drifts further DOWN from that fixed top-0 point as this box gets taller,
+     because centring a fixed-height block inside a growing box grows the space above it.
+     Measured: at 900-1000px viewport height the fans still overlap his chest by design (see
+     Table.tsx's own comment on why that overlap is deliberate); by 1100px they've separated by
+     20px, and by 1400px the gap is 170px — he visibly floats above an empty table.
+     910px is this box's own measured height at the 1000px viewport the whole layout was tuned
+     against (909px live, rounded), so at or below that range this is a strict no-op — it only
+     stops the growth that pulls him off the table.
+     It lives HERE, not on `.game-root`, because this box is the only thing the bug was ever
+     about. Capping the shell instead dragged the status banner and the action bar off the
+     screen edges with it (see `.game-root`'s own comment for the measured collisions that
+     caused). `margin-block: auto` centres the capped box in whatever leftover height the
+     column has, so the extra room past the cap becomes visible floor above and below the
+     table rather than a jammed-to-the-top composition. */
+  max-height: 910px;
+  margin-block: auto;
   position: relative;
   /* Reserves the band his head occupies ABOVE the fans, and is tuned so the felt's top edge
      lands INSIDE his sprite rather than below it — a gap there would leave his chest's bottom
@@ -2481,6 +2487,60 @@ body {
 .trick-card.at-se { --x: 65%; --y: 60%; --rot: 10deg; }
 
 /* --- Seats ---------------------------------------------------------------------------- */
+/* Direct user feedback: "your hands should lay on table." The grid's own `gap: 0.3rem` between
+   rows (see `.table-area`) put each seat only ~10px from `.table-frame`'s BOUNDING BOX edge —
+   which reads as floating, because the felt's own silhouette (`.table-top`'s clip-path, see
+   that rule's own comment) is a stepped near-circle, not a rectangle: the box's near/far edges
+   are mostly TRANSPARENT except a narrow centre band, so the visible tan surface at a seat's
+   actual x-position starts well below the box's own top edge, not at it. Measured live at
+   1800x1000: the nw fan's own left edge sits at 20.9% of the felt's width, and the clip-path's
+   opaque boundary there only opens up 65px into the felt from its top — the ~10px box gap left
+   a real, visible band of bare wall/floor between the cards and any tan felt at all.
+   Pulling each seat 27au (54px at desktop's `--px:2`) toward the felt (fan+label together, via
+   `margin`, so their own relative spacing is untouched) doesn't fully clear that 65px figure
+   for the OUTERMOST card tips, but doesn't need to: seats render at `z-index: 2`, above the
+   felt, so nothing here is ever actually clipped by `.table-top`'s mask the way scenery sitting
+   BEHIND the felt would be — this is purely about how much visible tan surface sits under the
+   cards. Checked live at 55px (desktop) and again at mobile's `--px:1` (27px, half — the same
+   au value scaling down with the smaller felt rather than a flat number overshooting it): the
+   fan's near half sits solidly over opaque felt at both, reading as resting on the table rather
+   than floating above it. */
+.seat-nw, .seat-ne { margin-bottom: calc(-27px * var(--px)); }
+.seat-sw, .seat-se { margin-top: calc(-27px * var(--px)); }
+/* `npm run audit` caught what the live check above didn't: at 375x812, pulling `.seat-sw`/
+   `.seat-se` up by the full 27px ate into `.scene-yarn`/`.scene-feed`'s own clearance — both
+   already confined to a tight "tray-clearance band" between the felt and the hand-tray/bid-
+   panel overlay (see their own comments), with as little as 6px of margin from the fan's OLD
+   position to begin with. The full pull-toward-the-felt effect and that pre-existing tight
+   floor-decor clearance can't both fit in the narrowest portrait width at once. Scaled back to
+   6px here rather than reopening the yarn/feed clearance those props were separately, already
+   measured against — the same "less room, less decor" trade the woodpile's own 649px cutoff
+   already makes, just for the decor's neighbour instead of the decor itself. */
+@media (max-width: 899px) {
+  .seat-sw, .seat-se { margin-top: -6px; }
+}
+/* `npm run audit` caught a SECOND, more surprising collision at 300x750 ("narrow phone, roomy
+   table active"): `.scene-hearth-mat` 39% hidden by `.seat-fan` — with `.seat-sw`'s own
+   `margin-top` confirmed live at exactly `0px`, i.e. the 6px fix above had nothing to do with
+   it. Root cause traced with `getComputedStyle` at the exact failing state (added temporarily
+   to scale-audit.js's own collision report, then removed): `.seat-nw`/`.seat-ne` STILL carried
+   the full, unconditional `-27px * var(--px)` margin-bottom this whole rule started with — and
+   `.table-area` centres its three grid row tracks as ONE block (`align-content: center`, see
+   its own comment). A negative margin shrinks the row's own effective height (grid auto-sizing
+   uses each item's margin BOX), so pulling the nw/ne row's content up ALSO shrinks the total
+   height being centred, which shifts EVERY row's absolute position — including sw/se, despite
+   its own margin never changing. Confirmed directly: removing every margin rule here (nw/ne
+   included) made 300x750 pass; restoring only sw/se's still failed identically. nw/ne needed
+   the exact same narrow-width scale-back sw/se already has, for a reason that has nothing to
+   do with nw/ne's own collision risk and everything to do with keeping the grid's centring
+   math from moving anything it wasn't asked to. */
+@media (max-width: 899px) {
+  .seat-nw, .seat-ne { margin-bottom: -6px; }
+}
+@media (max-width: 349px) {
+  .seat-nw, .seat-ne { margin-bottom: 0; }
+  .seat-sw, .seat-se { margin-top: 0; }
+}
 .seat-nw { grid-area: nw; justify-self: end; }
 .seat-ne { grid-area: ne; justify-self: start; }
 .seat-sw { grid-area: sw; justify-self: end; }
