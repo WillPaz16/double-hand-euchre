@@ -44,6 +44,19 @@ export function SceneLayer() {
           rather than each needing its own. */}
       <div className="scene-floor-card" />
 
+      {/* Direct user feedback: "fireplace brick should always touch top of screen." The
+          sprite itself is a fixed-au, floor-anchored box (bottom: 147au, height: 270au) with
+          its own 16au of transparent canvas padding above the real masonry — confirmed live
+          even at an already-shipped, already-tested viewport (1400x900) the visible brick
+          started 98px down from the true top, and that gap only grows as viewport height
+          grows, since nothing about the sprite's own size responds to it. A real chimney
+          breast continues to the ceiling; this closes that gap with the masonry's own dark
+          mortar tone (sampled directly from the PNG, not eyeballed) rather than trying to draw
+          a PNG tall enough for an unbounded viewport, which no fixed asset can ever be. `top:0`
+          plus `bottom` (not an explicit `height`) is what makes it track ANY viewport height
+          automatically — the box's own height becomes "however much room happens to exist"
+          rather than a number chosen for one tested size. */}
+      <div className="scene-fireplace-chimney" />
       <div className="scene-fireplace">
         {/* Sprite strip animated with transform + steps(): compositor-only. Animating
             background-position instead would repaint every frame — see ASSETS.md. */}

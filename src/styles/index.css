@@ -420,6 +420,20 @@ body {
    never actually applied to these two: at `left: 6au` the hearth was fully in frame, which is
    what a miniature does, not what a piece of room-scale furniture does. Running it off the
    edge keeps its true size AND returns wall to the composition. */
+/* The chimney-breast extension above `.scene-fireplace` — see the JSX comment for the bug
+   this closes. `bottom: 401au` is where the sprite's own real masonry starts: its box top is
+   `147 + 270 = 417au` up from the floor, and the sprite's own 16au of transparent canvas
+   padding pushes the real brick down to `417 - 16 = 401au`. `top: 0` with no explicit `height`
+   is the load-bearing part — the box stretches to fill exactly the gap that exists at
+   whatever the current viewport height is, rather than a number picked for one tested size. */
+.scene-fireplace-chimney {
+  position: absolute;
+  left: calc(-78px * var(--px));
+  width: calc(374px * var(--px));
+  top: 0;
+  bottom: calc(401px * var(--px));
+  background: rgb(74, 63, 53);
+}
 .scene-fireplace {
   left: calc(-78px * var(--px));
   bottom: calc(147px * var(--px));
@@ -984,8 +998,19 @@ body {
    picture-2 slot (see the comment above), and 80 + 176/2 = 168 lands close enough to this
    band's own true centre (175) that it didn't need to move. See `make_farm_painting`'s own
    docstring for why the ART's proportions changed too, not just this box. */
+/* CENTRED in the actual gap between the fireplace and the window, not right-anchored to the
+   window — direct user feedback: "it should be central and dynamic to the window and
+   fireplace." The two props anchor to OPPOSITE viewport edges (fireplace: `left: -78au` +
+   `width: 374au`, right edge 296au from the left; window: `right: -72au` + `width: 170au`,
+   left edge 98au from the right), so a right-anchored painting drifts steadily further from
+   the fireplace as the viewport widens — the gap between them isn't fixed, only the window
+   side of it was being tracked. The gap's true centre, worked out from those same two edges:
+   `(296au + (100vw - 98au)) / 2 = 50vw + 99au`. This box is 350au wide, so its own left edge
+   sits at that centre minus half its width: `50% - 76au`. Coincidentally (not by design) this
+   places it almost exactly where `.table-opponent` already sits (also centred at 50%) — which
+   is correct, not a collision: the painting behind him is the backdrop he's centred against. */
 .scene-farm-painting {
-  right: calc(109px * var(--px));
+  left: calc(50% - 76px * var(--px));
   top: calc(80px * var(--px));
   width: calc(350px * var(--px));
   height: calc(176px * var(--px));
@@ -997,8 +1022,10 @@ body {
    is what buys the clearance: its LEFT edge sits at 109+174=283au from the viewport's right
    edge, well short of the full piece's 109+350=459au — the opponent has real room to its right
    at widths where the full piece would already be overlapping him. */
+/* Same centring formula as the full-size piece, just for this box's own (half) width: gap
+   centre `50vw + 99au` minus half of 174au = `50% + 12au`. */
 .scene-farm-painting-small {
-  right: calc(109px * var(--px));
+  left: calc(50% + 12px * var(--px));
   top: calc(124px * var(--px));
   width: calc(174px * var(--px));
   height: calc(88px * var(--px));
@@ -1365,8 +1392,6 @@ body {
    always-absolute placement costs no layout height at any width, so that regression can't
    recur; it just needs a genuinely clear spot at every breakpoint instead of one. */
 .game-pause-button {
-  position: absolute;
-  z-index: 5;
   font-size: 0.9rem;
   line-height: 1;
   padding: 0.35rem 0.5rem;
@@ -1376,21 +1401,19 @@ body {
   color: #f0e6d6;
   cursor: pointer;
   touch-action: manipulation;
-  /* Below 900px, defined by its own media rule right below — no base-rule top/left, since
-     nothing here holds at every width below that breakpoint (see that rule's own comment for
-     why the two positions tried before this one both failed measurement). */
+  /* Position (fixed, bottom-right, same at every width) lives in its own rule below — see
+     that rule for why the top band was abandoned entirely rather than re-tuned a fourth time. */
 }
 /* An INVISIBLE, expanded hit area — direct user feedback asked for a real mobile-UX pass;
    measured live at 375px, this button's actual visual box is 27.6x21.2px, well under the
    44x44px minimum every mobile touch-target guideline (WCAG 2.5.5, Apple HIG, Material)
-   converges on, and its own `max-width: 899px` rule below shrinks it FURTHER — mobile was
-   getting a SMALLER target than desktop, backwards from what mobile actually needs. Can't fix
-   this by growing the VISIBLE button: its position at narrow widths sits in a measured ~20px
-   vertical gap between the scoreboard and StatusBanner (see that media query's own comment),
-   and a visually bigger box would eat into either. `position: absolute; inset: -12px` on a
-   `content: ''` pseudo-element grows the CLICKABLE box by 24px in both dimensions without
-   adding anything to paint or to layout (absolutely-positioned, so it can't push or collide
-   with a sibling's own box) — the icon and its background stay exactly the size already tuned. */
+   converges on. Kept after the move to the bottom-right corner: the corner has room to spare,
+   but growing the VISIBLE button would make a deliberately quiet control louder than the
+   gameplay it sits beside, and the guideline is about the touch target, not the paint.
+   `position: absolute; inset: -12px` on a `content: ''` pseudo-element grows the CLICKABLE box
+   by 24px in both dimensions without adding anything to paint or to layout (absolutely-
+   positioned, so it can't push or collide with a sibling's own box) — the icon and its
+   background stay exactly the size already tuned. */
 .game-pause-button::before {
   content: '';
   position: absolute;
@@ -1412,38 +1435,44 @@ body {
   height: calc(16px * var(--px));
   image-rendering: pixelated;
 }
-/* Below 900px `.scoreboard` is still in-flow, and its score slots hug close together — the gap
-   BETWEEN them shrinks with the viewport (measured live at 390px: only 27px) and isn't centred
-   on the viewport's own midpoint either (the two slots aren't equal width, so `left:50%` landed
-   inside the "You" slot by 8px in practice, not in the gap). The band BELOW both slots and
-   ABOVE StatusBanner's first line is the one spot verified genuinely empty at this width:
-   `.score-slot` bottoms out at y54, StatusBanner's first `.status-row` starts at y73.9 —
-   confirmed via `elementFromPoint` at the true corners, not just bounding-box math. That gap's
-   position doesn't depend on dealer-badge text width the way the between-slots gap does, and
-   StatusBanner's OWN top position doesn't move when this button's height changes (this stays
-   `position:absolute`, so it can't push anything else down the way the very first attempt did). */
+/* BOTTOM-RIGHT corner, at every width — direct user feedback: "settings is overlapping, i
+   think that should be in bottom right corner."
+
+   Every previous placement put this button in the crowded TOP band and then hunted for a gap
+   between the scoreboard and the status banner: first between the two score slots, then below
+   both of them, then (at 900px+) at `left: 22%` in the space StatusBanner's centred text
+   leaves. Each was measured correctly at the viewport it was tuned at and each drifted at
+   others, because all three neighbours in that band size themselves from their own CONTENT
+   (dealer-badge text, up to three status rows, the score tallies) — there is no stable gap
+   there to aim at, which is the actual lesson from three failed attempts rather than a fourth
+   set of coordinates.
+
+   At 900px+ the bottom-right corner has no such competition: `.action-bar` is
+   `left: 0; right: 0` but its CONTENTS (bid panel, hand tray) are centred columns that never
+   reach the corner — the hand tray's own cards measured a 745px right edge inside a 1012px-wide
+   bar at 1400px, leaving the corner genuinely empty. `position: fixed`, not `absolute`, so it
+   anchors to the VIEWPORT rather than to `.game-root` — which is now both width- AND
+   height-capped (see that rule), so an absolute corner would float inward on a large screen
+   instead of sitting in the real corner the feedback asked for. `z-index: 6` puts it just
+   above `.action-bar`'s own 5, since it now shares that region rather than sitting above it. */
+.game-pause-button {
+  position: fixed;
+  right: max(0.5rem, env(safe-area-inset-right));
+  bottom: max(0.5rem, env(safe-area-inset-bottom));
+  z-index: 6;
+}
+/* On a phone the hand tray is NOT a centred column — it spans the full width, so the corner
+   the desktop rule relies on being empty is occupied by the last card in your own hand.
+   Measured live at 375x812 before this rule existed: the button overlapped that card by a real
+   232px². Lifted clear of the tray's own top edge instead of nudged sideways — sideways just
+   trades which card it covers, and every horizontal position in a full-width tray is over
+   SOMETHING. `bottom` is measured from the tray's own height (`.hand-tray`'s label row plus
+   `.hand-tray-cards`' 70au card height, both fixed au) plus a small gap, so it tracks the tray
+   rather than a hardcoded pixel guess; the tray is the tallest thing `.action-bar` ever holds
+   at this width, so clearing it clears the bid panel too. */
 @media (max-width: 899px) {
   .game-pause-button {
-    top: 56px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0.1rem 0.3rem;
-    font-size: 0.65rem;
-  }
-}
-/* At 900px+ `.scoreboard` pulls out of flow into the corners (its own rule, above) and
-   StatusBanner rises to fill that space, centered — which is exactly the lane the button used
-   to sit in. Measured the real gap left over at 1440px: the "You" score-slot's right edge sits
-   at x254, StatusBanner's widest measured row starts at x463 — a clear ~200px band with margin
-   on both sides. `left: 22%` (316px at 1440) lands inside it without hardcoding a pixel value
-   that would drift if either neighbour's width changes. */
-@media (min-width: 900px) {
-  .game-pause-button {
-    position: absolute;
-    top: max(0.25rem, env(safe-area-inset-top));
-    left: 22%;
-    transform: none;
-    z-index: 5;
+    bottom: calc(96px * var(--px) + max(0.5rem, env(safe-area-inset-bottom)));
   }
 }
 
@@ -1614,17 +1643,27 @@ body {
   position: relative;
   /* Cap and centre the shell. Without this the whole game stretched to the raw viewport width
      with nothing bounding it, so past ~1400px the scoreboard corners kept marching outward and
-     the table sat marooned in the middle — and `.game-pause-button`'s `left: 22%` (tuned and
-     measured at 1440px, per its own comment below) grew without limit in absolute pixels along
-     with it. Capping the positioning context fixes the button for free rather than needing its
-     own separate patch: 22% of a fixed 1440px is a fixed 316.8px at every width above the cap.
-     1440px is the width the button's placement was actually measured at, so the cap and that
-     measurement agree by construction.
+     the table sat marooned in the middle. (This cap also used to be what kept the pause
+     button's old percentage-based placement from drifting; that button now anchors to the
+     viewport's own bottom-right corner instead and no longer depends on this cap at all — see
+     its own rule.)
      `SceneLayer` is fixed, full-viewport and z-index:-1, independent of this element's width,
      so the cabin still fills the screen edge to edge — the cap letterboxes the game content,
      not the room behind it. */
   max-width: 1440px;
   margin-inline: auto;
+  /* A real regression from the vertical-centering fix above (making `#root` a flex column):
+     `margin-inline: auto` centres a plain block by first filling the available width and THEN
+     letting the max-width cap shrink it — but on a FLEX item, an auto cross-axis margin does
+     the opposite; it makes the item shrink-to-content instead of stretching, unless the item
+     also has an explicit width. Confirmed live: `.game-root` measured 624px wide at a 1400px
+     viewport (this element's own CONTENT width, i.e. the table), not ~1400px — which pulled
+     the scoreboard, the pause button, and everything else positioned relative to it inward
+     toward the centre of the screen, right where direct user feedback landed ("i liked the
+     scoring on the outer edge of the screen", "settings is overlapping"). `width: 100%`
+     restores the fill-then-cap behaviour explicitly rather than relying on flexbox's default
+     cross-axis sizing, which is what silently changed under it. */
+  width: 100%;
 }
 /* --- The action bar OVERLAYS the room, it does not displace it (2j.1) -------------------- */
 /* The bid panel and the hand tray both mount and unmount during a hand, and both used to sit
