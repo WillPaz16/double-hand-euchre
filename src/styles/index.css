@@ -1075,6 +1075,29 @@ body {
   height: calc(80px * var(--px));
   background-image: url('/art/scene/woodpile.png');
 }
+/* Direct user feedback asking for a root-cause pass on things "dependent on objects they
+   shouldn't be dependent on" — this is the second confirmed instance of the SAME class the
+   `--frame-inset` fix closed, just between two DIFFERENT layout systems than that one. The
+   woodpile is anchored by a fixed au offset from the game frame's edge; the SW seat (whose
+   fan this collides with) is positioned by `.table-area`'s own CSS GRID, which tracks the
+   FELT's dynamic centre and width — nothing ties those two together, so nothing guaranteed
+   they'd ever stay clear of each other.
+
+   Measured live, sweeping width with an EMPTY sw seat-fan visible (the state a hand actually
+   reaches once one of the player's two hands has been exhausted mid-play — the state that
+   originally surfaced this, not a contrived one): real overlap at 320, 375, 414, 500 and
+   600px — essentially the whole phone-portrait range — peaking at 2800px² around 414-500px,
+   clean only at 650px+. Not fixable by nudging the woodpile's own position: the seat SWEEPS
+   through a ~200px horizontal range across this same width band (grid-centred against a felt
+   that's simultaneously growing), so no single fixed offset for the woodpile dodges it
+   everywhere in the range the way a small nudge closes a one-width collision. Hidden below
+   650px instead — the same "fewer props, honestly, rather than a collision" trade this file
+   already makes for other narrow-viewport decor. */
+@media (max-width: 649px) {
+  .scene-woodpile {
+    display: none;
+  }
+}
 /* A small hearth mat (wave-2), lying flat on the floor directly in front of the firebox
    opening — distinct from `.scene-rug`. Its own placed element rather than baked into
    fireplace.png, same reasoning as `.scene-woodpile`/`.scene-dresser`: it sits on the floor
