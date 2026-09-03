@@ -21,6 +21,7 @@
     "shared",
     "src",
     "tests",
-    "scripts"
+    "scripts",
+    "server"
   ]
 }

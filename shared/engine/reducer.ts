@@ -1,6 +1,7 @@
 import type { Action, Card, Config, GameState, HandId, Player } from './types.ts';
 import { deal } from './deck.ts';
 import { otherPlayer, legalActions, actingHand } from './legal.ts';
+import { sameAction } from './action.ts';
 import { trickWinnerIndex } from './rules.ts';
 
 function cardsEqual(a: Card, b: Card): boolean {
@@ -56,7 +57,11 @@ function assertLegal(state: GameState, action: Action): void {
         ? state.dealer
         : actingHand(state)!.player;
   const legal = legalActions(state, player);
-  const found = legal.some((a) => JSON.stringify(a) === JSON.stringify(action));
+  // Structural comparison, not `JSON.stringify` equality — see `sameAction`'s own docstring.
+  // This is the authoritative legality guard every action passes through, including ones that
+  // arrived over a socket and were re-parsed, where key order is the sender's choice and not
+  // ours.
+  const found = legal.some((a) => sameAction(a, action));
   if (!found) {
     throw new Error(`illegal action ${JSON.stringify(action)} in phase ${state.phase}`);
   }
