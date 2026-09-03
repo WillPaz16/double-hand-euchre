@@ -972,24 +972,31 @@ body {
    the antlers/picture-2 before it) was solving for objects meant to read as sitting IN FRONT of
    him — irrelevant for background wall art, which is why this can finally just be sized to the
    wall itself instead of to his position. */
+/* Height 96 -> 176au (2:1, was 3.65:1) — direct user feedback: "the picture in the back isn't
+   tall enough and leaves too much white space / wall space." Measured live: the wall band this
+   piece hangs in (ceiling to floor) is ~350au tall, so a 96-tall piece used barely a quarter of
+   it. `top` stays 80au — that already centred the OLD, shorter piece within the antlers/
+   picture-2 slot (see the comment above), and 80 + 176/2 = 168 lands close enough to this
+   band's own true centre (175) that it didn't need to move. See `make_farm_painting`'s own
+   docstring for why the ART's proportions changed too, not just this box. */
 .scene-farm-painting {
   right: calc(109px * var(--px));
   top: calc(80px * var(--px));
   width: calc(350px * var(--px));
-  height: calc(96px * var(--px));
+  height: calc(176px * var(--px));
   background-image: url('/art/scene/farm_painting.png');
 }
-/* The 900-1559px stand-in for the piece above — same right edge (anchored to the window gap,
-   same as the full size), vertically re-centred within roughly the same band (80 + (96-48)/2)
-   since it's half the height. Narrower (174 vs 350au) is what buys the clearance: its LEFT
-   edge sits at 109+174=283au from the viewport's right edge, well short of the full piece's
-   109+350=459au — the opponent has real room to its right at widths where the full piece
-   would already be overlapping him. */
+/* The 1440-1559px stand-in for the piece above — same right edge (anchored to the window gap,
+   same as the full size), vertically re-centred within roughly the same band (80 + (176-88)/2)
+   since it's half the height, matching the full piece's own 2:1 ratio. Narrower (174 vs 350au)
+   is what buys the clearance: its LEFT edge sits at 109+174=283au from the viewport's right
+   edge, well short of the full piece's 109+350=459au — the opponent has real room to its right
+   at widths where the full piece would already be overlapping him. */
 .scene-farm-painting-small {
   right: calc(109px * var(--px));
-  top: calc(104px * var(--px));
+  top: calc(124px * var(--px));
   width: calc(174px * var(--px));
-  height: calc(48px * var(--px));
+  height: calc(88px * var(--px));
   background-image: url('/art/scene/farm_painting_small.png');
 }
 /* On the floor beside the hearth, where the fire's fuel comes from. */

@@ -2705,7 +2705,7 @@ def make_wall_clock(size=120):
     return img
 
 
-def make_farm_painting(w=700, h=192):
+def make_farm_painting(w=700, h=352):
     """A framed farm landscape (replaces the barn star — direct user feedback: "the star looks
     dumb, should be a painting of a long farm landscape using those warm colors"). Now spans the
     WHOLE wall gap between the fireplace-side furniture and the window: it used to share that
@@ -2722,17 +2722,28 @@ def make_farm_painting(w=700, h=192):
     fence line, all warmed with the same FIRE_*/GOLD tones the hearth itself uses, so the
     painting reads as part of this room's palette rather than an unrelated cool daylight scene.
 
-    RE-COMPOSED for 3.65:1 (was drawn 2:1, then this box grew to 190->350au wide with no matching
-    change to what's IN it — direct user feedback: "with this resizing of the painting, the
-    artist need to revisit how the painting itself looks"). Every element below used fractions
-    of `w`, so nothing broke on the stretch, but the ORIGINAL composition was one small barn in
-    the left quarter with three flat, empty bands of sky and field filling the other three —
-    correct fractions, wrong density: a composition built for 2:1 doesn't become a panorama by
-    widening its canvas, it just shows more of its own empty middle. This version is built AS a
-    panorama: a full multi-peak ridge line the whole width (not one bump near the barn), a barn
-    AND a silo at different points along it so no quarter of the frame is empty, one tree for a
-    vertical accent against all that horizontal, and the fence spanning the full field instead
-    of just the right-hand half."""
+    RE-COMPOSED TWICE now, both times the same lesson learned the hard way. First for 3.65:1
+    (this box grew 190->350au wide with no matching change to what was IN it — "the artist
+    need to revisit how the painting itself looks"): every element below used fractions of `w`,
+    so nothing broke on the stretch, but the composition was one small barn in the left quarter
+    with three flat, empty bands of sky and field filling the rest — correct fractions, wrong
+    density. Fixed by building it AS a panorama: a full multi-peak ridge, a barn AND a silo, a
+    tree, a fence spanning the whole field.
+
+    Second time, same lesson, the OTHER axis: direct user feedback that the finished piece
+    "isn't tall enough and leaves too much white space / wall space" — the frame itself sat in
+    a much taller gap on the wall than its own 192-tall canvas used (measured live: the wall
+    band between ceiling and floor is ~350au tall; the painting was 96). Doubling the canvas
+    height alone would have reproduced the EXACT width-axis mistake above one dimension later —
+    the ridge/ground fractions below are all relative to `ih`, so they'd have scaled up in
+    lockstep with a taller canvas and left the SKY (already 66% of the frame) even more
+    conspicuously empty, the same "more of its own empty middle" failure just rotated 90
+    degrees. So this pass changes TWO things together, not just the canvas: the ground's own
+    share of the frame grows from 34% to 46% (a taller frame needs more happening below the
+    horizon, not a taller strip of the same thin field), and the sky gets actual content —
+    three simple clouds — instead of staying a bare gradient now that there's real room for the
+    eye to notice it's bare.
+    """
     img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     f_hi, f_base, f_sh, f_deep = ramp(TABLE_WOOD)
@@ -2743,7 +2754,7 @@ def make_farm_painting(w=700, h=192):
 
     m = 6
     ih = h - 2 * m
-    horizon = h - m - round(ih * 0.34)
+    horizon = h - m - round(ih * 0.46)
 
     # Golden-hour sky, in a HANDFUL of discrete bands from a deep rose top to a bright gold
     # horizon glow — quantised, not a per-row gradient, for the same reason
@@ -2759,9 +2770,21 @@ def make_farm_painting(w=700, h=192):
         y1 = horizon if i == sky_bands - 1 else m + round((i + 1) * band_h)
         d.rectangle((m, y0, w - m - 1, y1 - 1), fill=col)
 
+    # Three simple clouds, flat-shaded lozenges lighter than whichever sky band they sit in —
+    # a taller frame gives the sky enough real estate that leaving it a bare gradient reads as
+    # unfinished rather than as a clean sunset (the same complaint that started this pass, just
+    # inside the painting instead of around it). Kept to the TOP band only, well clear of the
+    # sun and the ridge, so they read as distant weather, not clutter competing with either.
+    cloud_col = _mix(sky_colors[0], PARCHMENT, 0.5)
+    for cx_frac, cy_frac, cw_frac in ((0.14, 0.22, 0.10), (0.34, 0.15, 0.07), (0.78, 0.20, 0.09)):
+        ccx, ccy = round(w * cx_frac), m + round(ih * cy_frac)
+        ccw, cch = round(w * cw_frac), max(3, round(ih * cw_frac * 0.28))
+        d.ellipse((ccx - ccw, ccy - cch, ccx + ccw, ccy + cch), fill=cloud_col)
+        d.ellipse((ccx - ccw // 2, ccy - cch - cch // 2, ccx + ccw, ccy + cch // 2), fill=cloud_col)
+
     # The sun sits at 0.6w in the ORIGINAL 2:1 composition (just right of centre). Kept at the
     # same fraction — a panorama's sun doesn't need to move just because the canvas got wider.
-    sr = round(ih * 0.30)
+    sr = round(ih * 0.22)
     sx, sy = round(w * 0.6), horizon
     d.ellipse((sx - sr, sy - sr, sx + sr, sy + sr), fill=sky_colors[-1])
 
@@ -2796,8 +2819,18 @@ def make_farm_painting(w=700, h=192):
     # Barn (left third) and silo (right third): two farm structures at different points along
     # the ridge, not one, so neither half of a 3.65:1 frame is a bare field. Each sits with its
     # own base ON the horizon, same as the original barn did.
+    #
+    # WIDTH keyed off `ih`, not `w`, unlike everything else in this function — found live after
+    # the height-rebalancing pass above: with width still a fraction of `w` (unchanged) and
+    # height a fraction of the now much taller `ih`, both structures rendered as thin, tall
+    # towers (the barn's own roof read as a spire, not a barn) the moment `h` grew. Basing
+    # WIDTH on `ih` too keeps each structure's own width:height ratio constant regardless of
+    # how tall the overall canvas is — the actual bug, not the ridge/fence/tree fractions
+    # above, which stayed fine because they were never anchored to `w` alone in a way that
+    # implied a fixed shape.
     def _barn(bx):
-        bw, bh = round(w * 0.075), round(ih * 0.30)
+        bh = round(ih * 0.30)
+        bw = round(ih * 0.26)
         by1 = horizon + round(ih * 0.03)
         by0 = by1 - bh
         d.rectangle((bx, by0, bx + bw, by1), fill=FLANNEL_RED)
@@ -2805,7 +2838,8 @@ def make_farm_painting(w=700, h=192):
                   fill=darken(FLANNEL_RED, 0.7))
 
     def _silo(sx0):
-        sw, sh = round(w * 0.028), round(ih * 0.34)
+        sh = round(ih * 0.34)
+        sw = round(ih * 0.10)
         sy1 = horizon + round(ih * 0.03)
         sy0 = sy1 - sh
         d.rectangle((sx0, sy0, sx0 + sw, sy1), fill=_mix(GOLD, PARCHMENT, 0.35))
@@ -3494,8 +3528,8 @@ def main() -> None:
     for name, sprite in (
         ("picture", make_framed_picture()),
         ("farm_painting", make_farm_painting()),
-        # A genuinely smaller RENDER (roughly half the canvas — 348, not 350, so the raw size
-        # stays a multiple of save_asset's chunk=2 grid — not the same PNG squeezed into a
+        # A genuinely smaller RENDER (roughly half the canvas — 348 wide, not 350, so the raw
+        # size stays a multiple of save_asset's chunk=2 grid — not the same PNG squeezed into a
         # smaller box, which would be exactly the fractional-scale bug this file exists to
         # forbid) for the 1440-1559px band, where the full-size painting still can't clear the
         # opponent. Direct user feedback: "the big painting doesn't appear when you zoom in" —
@@ -3504,7 +3538,10 @@ def main() -> None:
         # at an ordinary zoom level, not just a narrow test viewport. 1440, not lower — a live
         # measurement against the opponent's own (viewport-scaling) position, not an assumption;
         # see `.scene-farm-painting-small`'s own CSS comment for the exact clearance math.
-        ("farm_painting_small", make_farm_painting(348, 96)),
+        # Height 176, matching the full-size piece's own 2:1 ratio (700x352) after that was
+        # redrawn taller — kept in step rather than left at the old 96 (which would have made
+        # the small tier revert to the exact "too much white space" composition just fixed.)
+        ("farm_painting_small", make_farm_painting(348, 176)),
         ("clock", make_wall_clock()),
         ("coat_hooks", make_coat_hooks()),
         ("woodpile", make_woodpile()),
