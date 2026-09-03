@@ -11,7 +11,7 @@ import { LonerDim, LonerStamp } from './LonerFx.tsx';
 import { PauseMenu } from './PauseMenu.tsx';
 
 export function Game({ onQuit }: { onQuit: () => void }) {
-  const { view, legal, play, completedTrick, frozen, restart, quit } = useGame();
+  const { view, legal, play, completedTrick, frozen, restart, quit, lastBotAction } = useGame();
   useSfx(view);
   const [paused, setPaused] = useState(false);
 
@@ -37,7 +37,7 @@ export function Game({ onQuit }: { onQuit: () => void }) {
       </button>
       <Scoreboard view={view} />
       <StatusBanner view={view} onRestart={restart} />
-      <Table view={view} completedTrick={completedTrick} />
+      <Table view={view} completedTrick={completedTrick} lastBotAction={lastBotAction} />
       <div className="action-bar">
         <BidPanel view={view} legal={legal} play={play} />
         <HandTray view={view} legal={legal} play={play} frozen={frozen} />

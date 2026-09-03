@@ -441,6 +441,7 @@ GLYPHS = {
     "A": ["..#..", ".#.#.", "#...#", "#...#", "#####", "#...#", "#...#"],
     "4": ["...#.", "..##.", ".#.#.", "#..#.", "#####", "...#.", "...#."],
     "6": [".##..", "#....", "#....", "####.", "#...#", "#...#", ".###."],
+    "D": ["####.", "#...#", "#...#", "#...#", "#...#", "#...#", "####."],
 }
 GLYPH_SCALE = 2
 
@@ -1409,6 +1410,65 @@ def make_gear_icon(work: int = 32) -> Image.Image:
             d_gold = (r - GOLD[0]) ** 2 + (g - GOLD[1]) ** 2 + (b - GOLD[2]) ** 2
             d_ink = (r - INK[0]) ** 2 + (g - INK[1]) ** 2 + (b - INK[2]) ** 2
             px[x, y] = GOLD if d_gold <= d_ink else INK
+    return small
+
+
+def make_dealer_chip(work: int = 40) -> Image.Image:
+    """A small wooden token marking whose deal it is (2o.2) — direct user feedback: "i think we
+    need a dealer chip on the table to show players who was the dealer." Real euchre uses
+    whatever is at hand for this (a coin, a button); this room already has a woodworking
+    palette (WOOD_DARK/MED/LIGHT, the shelf, the table legs) rather than a card-suit motif, so a
+    carved wooden disc reads as furniture from THIS cabin rather than a poker-night prop
+    borrowed from a different game.
+
+    Same 8x-supersample-then-hard-quantise technique as `make_gear_icon`, for the same reason:
+    a circle drawn straight at final size leaves a blended haze at the rim that reads as a
+    smudge, not a coin. Quantises to THREE colours here (INK rim, WOOD_MED face, WOOD_LIGHT
+    groove), not the gear's two, for the same bevelled-coin look real wooden tokens have.
+
+    `work` is the PRE-`save_asset` size like every other sprite in this file (`save_asset`
+    halves it by PX=2), so 40 here is 20 au on disk — bigger than the gear's 16 au: a table
+    prop has to compete with actual cards on the felt, not sit quietly in a corner button, so
+    it needs to read from across a much bigger box. Still a whole 8/16/20/40-style number so
+    `scripts/scale-audit.js`'s whole-pixel-scale rule holds at every `--px`.
+    """
+    SS = 8
+    big = work * SS
+    img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    c = big / 2
+    r_outer, r_inner = big * 0.47, big * 0.40
+    stroke = max(2, big // 16)
+    # The disc itself: a dark rim (INK) around a lighter wood face (WOOD_MED), same two-tone
+    # coin construction real wooden tokens use so the edge reads as a bevel, not a flat sticker.
+    draw.ellipse((c - r_outer, c - r_outer, c + r_outer, c + r_outer), fill=INK)
+    draw.ellipse((c - r_inner, c - r_inner, c + r_inner, c + r_inner), fill=WOOD_MED)
+    # A thin inner ring, WOOD_LIGHT, for the carved-groove look the shelf's own edge trim uses.
+    r_ring = big * 0.32
+    draw.ellipse(
+        (c - r_ring, c - r_ring, c + r_ring, c + r_ring), outline=WOOD_LIGHT, width=stroke
+    )
+    small = img.resize((work, work), Image.LANCZOS)
+    # Hard-quantise to the disc's four real values — see make_gear_icon's own comment for why
+    # this step exists at all (a LANCZOS downsample of curved geometry leaves blended
+    # in-between tones that are most of the image at this size).
+    palette = [INK, WOOD_MED, WOOD_LIGHT]
+    px = small.load()
+    for y in range(work):
+        for x in range(work):
+            r, g, b, a = px[x, y]
+            if a < 128:
+                px[x, y] = (0, 0, 0, 0)
+                continue
+            best = min(palette, key=lambda col: (r - col[0]) ** 2 + (g - col[1]) ** 2 + (b - col[2]) ** 2)
+            px[x, y] = best
+    # The 'D' glyph, drawn AFTER quantising and at final resolution (unlike the disc, it's
+    # already straight-edged, so it doesn't need the supersample pass) — centred by eye against
+    # the glyph's own 5x7 cell at GLYPH_SCALE 1 (the disc is only 20px across; GLYPH_SCALE 2's
+    # 10px-wide letter would run past the inner ring).
+    fdraw = ImageDraw.Draw(small)
+    glyph_w, glyph_h = 5 * 2, 7 * 2  # GLYPHS cells are 5x7, drawn here at scale=2
+    draw_glyph(fdraw, (work - glyph_w) // 2, (work - glyph_h) // 2, GLYPHS["D"], GOLD, scale=2)
     return small
 
 
@@ -3352,6 +3412,7 @@ def main() -> None:
             save_asset(card, os.path.join(cards_dir, f"{suit}_{rank}.png"), f"{suit}_{rank}")
 
     save_asset(make_gear_icon(), os.path.join(OUT_ROOT, "gear.png"), "gear")
+    save_asset(make_dealer_chip(), os.path.join(OUT_ROOT, "dealer_chip.png"), "dealer_chip")
     save_asset(make_card_back(), os.path.join(OUT_ROOT, "card_back.png"))
     # Drawn at the scoreboard card's own size (30x42 au) rather than reusing the deck's back,
     # which would have to render at 1.2x to fit — see make_card_back's docstring.
@@ -3433,6 +3494,17 @@ def main() -> None:
     for name, sprite in (
         ("picture", make_framed_picture()),
         ("farm_painting", make_farm_painting()),
+        # A genuinely smaller RENDER (roughly half the canvas — 348, not 350, so the raw size
+        # stays a multiple of save_asset's chunk=2 grid — not the same PNG squeezed into a
+        # smaller box, which would be exactly the fractional-scale bug this file exists to
+        # forbid) for the 1440-1559px band, where the full-size painting still can't clear the
+        # opponent. Direct user feedback: "the big painting doesn't appear when you zoom in" —
+        # real browser zoom shrinks the effective CSS viewport, and a common 1920px monitor at
+        # 125% zoom lands at 1536px, just under the existing 1560px gate, so this was reachable
+        # at an ordinary zoom level, not just a narrow test viewport. 1440, not lower — a live
+        # measurement against the opponent's own (viewport-scaling) position, not an assumption;
+        # see `.scene-farm-painting-small`'s own CSS comment for the exact clearance math.
+        ("farm_painting_small", make_farm_painting(348, 96)),
         ("clock", make_wall_clock()),
         ("coat_hooks", make_coat_hooks()),
         ("woodpile", make_woodpile()),

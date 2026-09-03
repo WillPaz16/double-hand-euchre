@@ -1,10 +1,11 @@
-import type { Card as CardType, HandId, PlayerView } from '../../shared/engine/types.ts';
+import type { Action, Card as CardType, HandId, PlayerView } from '../../shared/engine/types.ts';
 import { HUMAN, BOT } from '../game/useGame.ts';
 import type { CompletedTrick } from '../game/useGame.ts';
 import { Card, CardBack } from './Card.tsx';
 import { UpcardWheel } from './UpcardWheel.tsx';
 import { useUpcardReveal } from '../game/useUpcardReveal.ts';
 import { useOpponentExpression } from '../game/useOpponentExpression.ts';
+import { useOpponentSpeech } from '../game/useOpponentSpeech.ts';
 import { trickWinnerIndex } from '../../shared/engine/rules.ts';
 
 /** The winning card is highlighted for this long before everything sweeps away.
@@ -167,9 +168,11 @@ const KITTY_PHASES = new Set([
 export function Table({
   view,
   completedTrick,
+  lastBotAction,
 }: {
   view: PlayerView;
   completedTrick: CompletedTrick | null;
+  lastBotAction: Action | null;
 }) {
   // A finished trick is held by useGame and shown here after the engine has moved on —
   // otherwise the trick-winning card is never rendered at all. Sweeping toward the winner
@@ -186,6 +189,7 @@ export function Table({
     !sweeping && trick.length > 0 && view.trump ? trickWinnerIndex(trick, view.trump) : -1;
   const wheelSpinning = useUpcardReveal(view);
   const expression = useOpponentExpression(view);
+  const speech = useOpponentSpeech(view, lastBotAction);
 
   return (
     <div className="table-area">
@@ -201,6 +205,18 @@ export function Table({
         aria-hidden="true"
         draggable={false}
       />
+      {/* Direct user feedback: "i want the old man to say pass when they pass, pick it up when
+          he calls trump... say like other funny things periodically, or after a good hand."
+          `role="status"`/`aria-live="polite"` for the same reason StatusBanner's rows have it —
+          a screen-reader user should hear his line the same beat a sighted player reads it,
+          not just see it appear silently. Keyed on the text itself so React replays the CSS
+          pop-in animation for every new line, including a same-pool repeat after the no-repeat
+          window (`pick()` only avoids the IMMEDIATELY previous line, not all history). */}
+      {speech && (
+        <div className="table-opponent-speech" role="status" aria-live="polite" key={speech}>
+          {speech}
+        </div>
+      )}
       {SEATS.map(({ hand, at }) => {
         // "acting" (gold highlight + turn order) and "held" (picked up, seat empty) used to
         // be the same boolean. They're related but not identical now that a hand can be held
@@ -325,6 +341,21 @@ export function Table({
                 <Card card={played.card} />
               </div>
             ))}
+          </div>
+
+          {/* Direct user feedback: "i think we need a dealer chip on the table to show players
+              who was the dealer." Scoreboard.tsx's own "(dealer)" text label already says this,
+              but it sits in the corner alongside the score, a different glance than the felt
+              itself — a physical marker where the cards actually are matches how a real table
+              would mark it. `is-south`/`is-north` rather than a per-seat position: the human
+              always sits south and the bot always sits north (SEATS above), so the dealer is
+              always exactly one of two sides, never one of four seats, regardless of which of
+              a player's two hands is selected/blind. */}
+          <div
+            className={`table-dealer-chip is-${view.dealer === HUMAN ? 'south' : 'north'}`}
+            title={`${view.dealer === HUMAN ? 'You' : 'Old-Timer'} dealt this hand`}
+          >
+            <img src="/art/dealer_chip.png" alt="Dealer" className="dealer-chip-img" />
           </div>
         </div>
       </div>

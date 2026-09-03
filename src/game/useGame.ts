@@ -71,6 +71,12 @@ export function useGame(initialSeed?: string) {
   const [completedTrick, setCompletedTrick] = useState<CompletedTrick | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingSweepRef = useRef<CompletedTrick | null>(null);
+  // The bot's most recently chosen action — presentation only (drives useOpponentSpeech's
+  // reaction to a pass/order-up/trump call), never read by the reducer. `PLAY_CARD` actions
+  // are excluded: this exists to react to BIDDING moments specifically (direct user feedback:
+  // "i want the old man to say pass when they pass, pick it up when he calls trump"), and
+  // every play-phase card already gets its own visual — it lands on the felt.
+  const [lastBotAction, setLastBotAction] = useState<Action | null>(null);
 
   // Continuous autosave (direct user request: closing the tab or hitting Quit should never
   // lose progress). Same seed guard as the resume-on-mount above, for the same reason.
@@ -157,7 +163,9 @@ export function useGame(initialSeed?: string) {
           const legal = legalActions(s, BOT);
           if (legal.length === 0) return s; // a human move raced ahead of this timer
           const view = redact(s, BOT);
-          return applyAction(s, chooseMove(view, legal));
+          const action = chooseMove(view, legal);
+          if (action.type !== 'PLAY_CARD') setLastBotAction(action);
+          return applyAction(s, action);
         });
       }, BOT_DELAY_MS);
     }
@@ -195,6 +203,7 @@ export function useGame(initialSeed?: string) {
   const restart = useCallback(() => {
     setCompletedTrick(null);
     pendingSweepRef.current = null;
+    setLastBotAction(null);
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
@@ -220,5 +229,6 @@ export function useGame(initialSeed?: string) {
     play,
     completedTrick,
     frozen: completedTrick !== null,
+    lastBotAction,
   };
 }

@@ -745,12 +745,37 @@ body {
 .scene-picture,
 .scene-clock,
 .scene-coat-hooks,
-.scene-farm-painting {
+.scene-farm-painting,
+.scene-farm-painting-small {
   display: none;
 }
 @media (min-width: 900px) {
   .scene-picture,
   .scene-clock {
+    display: block;
+  }
+}
+/* A smaller RENDER of the same painting (not the same PNG in a smaller box — see
+   make_farm_painting's own call-site comment) for the 1440-1559px band the full-size piece
+   can't reach. Direct user feedback: "the big painting doesn't appear when you zoom in" — real
+   browser zoom shrinks the effective CSS viewport width, and an ordinary 1920px monitor at
+   125% zoom lands at 1536px, just under the existing 1560px gate below, so this was reachable
+   at a common zoom level, not just an unusually narrow window.
+
+   1440, NOT 900 — a live resize sweep against `.table-opponent` (whose right edge tracks
+   `vw/2 + 150`, unaffected by `.game-root`'s own `max-width: 1440px` cap since that cap only
+   constrains content AT OR ABOVE 1440px) found the box's left edge (`vw - 566`, from its
+   `right: 109au` + `width: 174au`) only clears the opponent once `vw - 566 >= vw/2 + 150`, i.e.
+   `vw >= 1432`. A first pass here assumed halving the width alone would reach all the way down
+   to the 900px `.scene-picture`/`.scene-clock` gate — measured overlap at both 900px (266px)
+   and 1200px (116px) disproved that outright; the opponent SCALES with the viewport too (he's
+   centred, not fixed), so a right-anchored box only ever buys a HIGHER floor, never an
+   unconditionally safe one, at a legible size. Getting all the way to 900px would need the
+   painting under ~41au wide — no longer recognisable as the piece it's a smaller render of.
+   1440 (verified 0px overlap live, ~4px of real margin) still directly fixes the reported
+   125%-zoom case (1536px), which is the concrete problem this tier exists for. */
+@media (min-width: 1440px) and (max-width: 1559px) {
+  .scene-farm-painting-small {
     display: block;
   }
 }
@@ -787,7 +812,8 @@ body {
 .scene-clock,
 .scene-coat-hooks,
 .scene-woodpile,
-.scene-farm-painting {
+.scene-farm-painting,
+.scene-farm-painting-small {
   position: absolute;
   background-size: 100% 100%;
   image-rendering: pixelated;
@@ -952,6 +978,19 @@ body {
   width: calc(350px * var(--px));
   height: calc(96px * var(--px));
   background-image: url('/art/scene/farm_painting.png');
+}
+/* The 900-1559px stand-in for the piece above — same right edge (anchored to the window gap,
+   same as the full size), vertically re-centred within roughly the same band (80 + (96-48)/2)
+   since it's half the height. Narrower (174 vs 350au) is what buys the clearance: its LEFT
+   edge sits at 109+174=283au from the viewport's right edge, well short of the full piece's
+   109+350=459au — the opponent has real room to its right at widths where the full piece
+   would already be overlapping him. */
+.scene-farm-painting-small {
+  right: calc(109px * var(--px));
+  top: calc(104px * var(--px));
+  width: calc(174px * var(--px));
+  height: calc(48px * var(--px));
+  background-image: url('/art/scene/farm_painting_small.png');
 }
 /* On the floor beside the hearth, where the fire's fuel comes from. */
 /* Resized 2.5x in 2j.3 (52x32 -> 130x80 au). */
@@ -1674,7 +1713,8 @@ body {
      whole hand; it also absorbs the pre-existing 1-row/2-row wobble as the trump line appears.
      `em`, not `rem`, so it tracks the 0.8rem lean-mode override instead of over-reserving
      height on the viewport that can least afford it. The rarer three-row case (a turned-down
-     suit AND named trump) still grows by a row — a smaller, rarer shift than the one removed. */
+     suit AND named trump) still grows by a row here — see the `min-width: 900px` override
+     below for why that isn't fixed in THIS rule too. */
   min-height: 2.85em;
   justify-content: center;
 }
@@ -1687,6 +1727,25 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+/* Closes the rarer three-row gap the base rule's own comment admits and accepts: a turned-down
+   suit AND named trump AND (once play starts) the trick row, all at once — direct user feedback
+   ("the table shift is still glitching") confirmed this still pushed `.table-frame` down live,
+   even after the base 2-row reservation shipped. Not raised in the base rule for every
+   viewport: `.status-banner` stays in-flow at every width (unlike `.scoreboard`, which pulls
+   out of flow here too), so extra reserved height pushes `.table-area` down everywhere it
+   applies — and at 375x812 portrait, that extra ~23px reopened a `.seat-fan`/`.scene-yarn`
+   collision that was already fought over once (see that rule's own 375x812 note) and has no
+   spare margin left. 900px+ has room to spare (confirmed clean via `npm run audit` with this
+   applied); narrower viewports keep the smaller, already-accepted trade instead of a new
+   regression. Measured directly (a detached probe with real row markup): 2 rows = 43.3px,
+   3 rows = 66.5px, ratio 1.536 — applied to the base rule's 2.85em rather than guessing a
+   round number. There is no fourth simultaneous row anywhere in StatusBanner.tsx's default
+   branch, so three is the true ceiling here, not another still-uncovered case. */
+@media (min-width: 900px) {
+  .status-banner {
+    min-height: 4.38em;
+  }
 }
 
 /* ============================================================================
@@ -1732,6 +1791,48 @@ body {
   image-rendering: pixelated;
   z-index: 0;
   pointer-events: none;
+}
+
+/* The Old-Timer's speech bubble (2o.3) — direct user feedback: "i want the old man to say pass
+   when they pass, pick it up when he calls trump... funny things periodically." Square corners
+   and a stepped tail rather than a rounded balloon — this room has no curves anywhere art-side
+   (the felt's own clip-path is a stepped rasterised circle, not a smooth one, for the same
+   reason), so a smooth speech bubble would be the one soft shape in the whole scene. Palette
+   and border weight match `.bid-button` exactly rather than inventing a new one — this is
+   dialogue, not a new UI surface. Positioned off his RIGHT shoulder, clear of both the centred
+   `.table-opponent` sprite and the top-right `.score-slot`/dealer-chip corner (checked live at
+   every audited viewport). */
+.table-opponent-speech {
+  position: absolute;
+  top: calc(10px * var(--px));
+  left: calc(50% + 78px * var(--px));
+  max-width: calc(150px * var(--px));
+  padding: 0.45rem 0.65rem;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: #f0e6d6;
+  background: #3a2a1a;
+  border: 2px solid #7a5a3a;
+  z-index: 2;
+  animation: speech-pop 180ms ease-out;
+}
+.table-opponent-speech::after {
+  content: '';
+  position: absolute;
+  left: calc(-8px * var(--px));
+  bottom: calc(10px * var(--px));
+  width: calc(8px * var(--px));
+  height: calc(8px * var(--px));
+  background: #3a2a1a;
+  border-left: 2px solid #7a5a3a;
+  border-bottom: 2px solid #7a5a3a;
+}
+@keyframes speech-pop {
+  0% { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .table-opponent-speech { animation: none; }
 }
 
 .table-area {
@@ -2027,6 +2128,42 @@ body {
   top: calc(8px * var(--px));
   transform: rotate(12deg);
   filter: drop-shadow(0 calc(2px * var(--px)) 0 rgba(0, 0, 0, 0.5));
+}
+
+/* The dealer chip (2o.2) — a small wooden token marking whose deal it is, direct user
+   feedback: "i think we need a dealer chip on the table." Positioned in PERCENT, like
+   `.table-kitty` and every `.trick-card.at-*` compass slot, not as a px offset from the box
+   edge — `.table-top`'s clip-path is a stepped ELLIPSE, not the box it's drawn in, and a
+   literal box corner sits well outside that silhouette (`.table-kitty`'s own comment already
+   documents this exact trap: "a corner of the layout BOX is not a corner of an ELLIPSE").
+   First attempt here used a px corner offset and the chip was invisible, entirely clipped.
+   78%/20% (and its mirror, 78%/80%) sit inside the polygon with real margin at every one of
+   its stepped bands (checked directly against the coordinate list above, not just eyeballed)
+   and clear of both the kitty (50%/38%) and every trick-card slot (35-65% x, 40-60% y) — the
+   same free corner real estate `.table-kitty`'s own comment identifies, just the other one.
+   `is-south`/`is-north` swap which corner it sits in — near whichever side actually dealt, not
+   a single fixed spot with a rotating label, since a real chip physically moves to sit in
+   front of the dealer. */
+.table-dealer-chip {
+  position: absolute;
+  left: 78%;
+  width: calc(20px * var(--px));
+  height: calc(20px * var(--px));
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 calc(2px * var(--px)) 0 rgba(0, 0, 0, 0.5));
+  transition: top 260ms ease;
+}
+.table-dealer-chip.is-north {
+  top: 20%;
+}
+.table-dealer-chip.is-south {
+  top: 80%;
+}
+.dealer-chip-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
 }
 
 /* The upcard reveal wheel (Phase 2e.8) — occupies the same spot the real upcard lands in, so
