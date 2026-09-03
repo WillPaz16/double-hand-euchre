@@ -19,6 +19,9 @@ import { readFileSync } from 'node:fs';
 
 const AUDIT_SRC = readFileSync(new URL('./scale-audit.js', import.meta.url), 'utf8');
 const PORT = 5183; // not 5173 — avoid colliding with a dev server the user already has open
+/** Mirrors `--frame-cap` in index.css. Above this width `.game-root` stops growing and the
+ *  whole composition — scenery included — must hold still relative to it. */
+const FRAME_CAP = 1440;
 const BASE_URL = `http://localhost:${PORT}`;
 
 // The same four viewports every phase since 2f.2 has verified at by hand: two phone
@@ -43,6 +46,15 @@ const VIEWPORTS = [
   // itself, which none of the phone-width viewports above are narrow enough to exercise.
   // 300, not 320, so there's a real 20px margin rather than sitting exactly on the boundary.
   { width: 300, height: 750, label: 'narrow phone, roomy table active' },
+  // TWO viewports past `--frame-cap` (1440px), because the FRAME-LOCK check below is a
+  // comparison BETWEEN viewports — it needs at least two above the cap to have anything to
+  // compare. Everything above 1440 must be pixel-identical relative to the game frame; these
+  // two are what proves it. Before `--frame-inset` existed, scenery tracked the raw viewport
+  // while game chrome tracked the capped/centred `.game-root`, so the two drifted apart by
+  // (100vw - 1440) / 2 per side — measured as 120px of clock-under-scoreboard overlap at
+  // 2000px, at no tested viewport below the cap.
+  { width: 2000, height: 1000, label: 'past frame cap' },
+  { width: 2600, height: 1000, label: 'far past frame cap' },
 ];
 
 function waitForServer(url: string, timeoutMs = 30_000): Promise<void> {
@@ -131,6 +143,7 @@ async function main(): Promise<void> {
     { cwd: new URL('..', import.meta.url).pathname, stdio: 'ignore' },
   );
   let failed = false;
+  const frameLock: { width: number; offsets: Record<string, number> }[] = [];
 
   try {
     await waitForServer(BASE_URL);
@@ -165,6 +178,33 @@ async function main(): Promise<void> {
         }));
         const noScroll = de.scrollHeight === de.clientHeight && de.scrollWidth === de.clientWidth;
 
+        // FRAME LOCK: every discrete prop's offset from the GAME FRAME's own left edge, so the
+        // post-loop check can prove those offsets don't move once past the cap. Measured
+        // against `.game-root` rather than the viewport on purpose — that is exactly the
+        // distinction that was broken, and measuring against the viewport here would happily
+        // pass while the bug was live.
+        if (vp.width >= FRAME_CAP) {
+          frameLock.push({
+            width: vp.width,
+            offsets: await page.evaluate(() => {
+              const root = document.querySelector('.game-root');
+              if (!root) return {};
+              const x0 = root.getBoundingClientRect().left;
+              const out: Record<string, number> = {};
+              for (const sel of [
+                '.scene-fireplace', '.scene-window', '.scene-picture', '.scene-clock',
+                '.scene-shelf', '.scene-coat-hooks', '.scene-dresser', '.scene-woodpile',
+                '.scene-hearth-mat', '.scene-farm-painting', '.table-frame', '.table-opponent',
+              ]) {
+                const el = document.querySelector(sel);
+                if (!el || getComputedStyle(el).display === 'none') continue;
+                out[sel] = Math.round(el.getBoundingClientRect().left - x0);
+              }
+              return out;
+            }),
+          });
+        }
+
         const wheelOk = wheelResult === undefined || (wheelResult as { ok: boolean }).ok;
         const ok = (result as { ok: boolean }).ok && noScroll && wheelOk;
         const label = `${vp.width}x${vp.height} (${vp.label})`;
@@ -188,6 +228,34 @@ async function main(): Promise<void> {
     }
   } finally {
     server.kill();
+  }
+
+  // FRAME LOCK (2q.1). The game has exactly two coordinate systems: the raw VIEWPORT (the
+  // room's continuous surfaces) and the capped, centred GAME FRAME (everything with a measured
+  // relationship to anything else). They are identical below `--frame-cap` and diverge above
+  // it, which is why a whole family of "it drifts / it overlaps at a big window" bugs existed
+  // and why none of them reproduced at any tested size. Every offset below is measured FROM
+  // the frame, so if a prop ever goes back to tracking the viewport its offset starts moving
+  // between these two viewports and this fails — which no single-viewport check can see.
+  if (frameLock.length >= 2) {
+    const [base, ...rest] = frameLock;
+    const drift: string[] = [];
+    for (const s of rest) {
+      for (const [sel, off] of Object.entries(s.offsets)) {
+        const b = base!.offsets[sel];
+        if (b === undefined) continue;
+        if (Math.abs(off - b) > 1) {
+          drift.push(`    ${sel}: ${b}px @${base!.width} -> ${off}px @${s.width}`);
+        }
+      }
+    }
+    if (drift.length) {
+      failed = true;
+      console.error('  FAIL  frame lock (scenery drifts from the game frame past the cap)');
+      console.error(drift.join('\n'));
+    } else {
+      console.log(`  OK    frame lock (${Object.keys(base!.offsets).length} elements pinned past ${FRAME_CAP}px)`);
+    }
   }
 
   if (failed) {

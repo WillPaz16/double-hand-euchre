@@ -39,6 +39,46 @@
   }
 }
 
+/* ============================================================================
+   --frame-inset : ONE REFERENCE FRAME
+
+   The game had TWO coordinate systems that silently disagreed, and that single fact is the
+   root cause behind a whole family of "it drifts / it overlaps / it doesn't fit" bugs:
+
+     - `SceneLayer` is `position: fixed; inset: 0` — the raw VIEWPORT.
+     - `.game-root` is capped at 1440px and centred — a BOX inside that viewport.
+
+   Below 1440px the two are identical, which is why every measurement ever taken agreed and
+   every fix held. Above 1440px they diverge by `(100vw - 1440px) / 2` per side, and every
+   relationship anyone had ever measured between a scene prop and a game element started
+   drifting apart at a rate nothing in the code accounted for. Measured live at 2000px: the
+   "YOU" score tally sits at x288 (it tracks `.game-root`'s left edge) while `.scene-clock`
+   spans x264-384 (it tracks the VIEWPORT's left edge) — a 120px overlap that exists at NO
+   tested viewport below 1440 and grows without bound above it. The wall picture, shelf and
+   coat-hooks all had their clearances measured against the scoreboard the same way, so all of
+   them inherit the same drift.
+
+   `--frame-inset` is that divergence, expressed once. A prop anchored with it tracks the GAME
+   frame; a surface without it tracks the VIEWPORT. That is now a deliberate, visible choice
+   per element instead of an accident of which file the rule happened to live in:
+
+     - DISCRETE PROPS (fireplace, window, wall furniture, floor objects) use it. They were all
+       placed by measured clearance against game chrome, so they belong in the game's frame.
+       As a bonus this fixes the composition at very wide viewports: the room stays gathered
+       around the table instead of the fireplace and window sliding off to opposite edges and
+       leaving the table marooned in a sea of bare wall.
+     - CONTINUOUS SURFACES (the floor plane, the wall texture, the hearth glow and vignette)
+       do NOT. They are the room itself, they have no measured relationship to anything, and
+       they should always reach the physical edges of the screen.
+
+   `max(0px, ...)` clamps it to zero below the cap, so this is a strict no-op at every viewport
+   the game has ever been tuned or tested at — it only ever ADDS correct behaviour above 1440.
+   Kept in sync with `.game-root`'s own `max-width` by construction; that rule points here. */
+:root {
+  --frame-cap: 1440px;
+  --frame-inset: max(0px, (100vw - var(--frame-cap)) / 2);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -428,14 +468,13 @@ body {
    whatever the current viewport height is, rather than a number picked for one tested size. */
 .scene-fireplace-chimney {
   position: absolute;
-  left: calc(-78px * var(--px));
+  left: calc(var(--frame-inset) + calc(-78px * var(--px)));
   width: calc(374px * var(--px));
   top: 0;
   bottom: calc(401px * var(--px));
   background: rgb(74, 63, 53);
 }
-.scene-fireplace {
-  left: calc(-78px * var(--px));
+.scene-fireplace {  left: calc(var(--frame-inset) + calc(-78px * var(--px)));
   bottom: calc(147px * var(--px));
   width: calc(374px * var(--px));
   height: calc(270px * var(--px));
@@ -474,7 +513,7 @@ body {
    complaint the dresser exists to fix. Width/height/right unchanged; only the floor-relative
    anchor moved. */
 .scene-window {
-  right: calc(-72px * var(--px));
+  right: calc(var(--frame-inset) + calc(-72px * var(--px)));
   bottom: calc(260px * var(--px));
   width: calc(170px * var(--px));
   height: calc(120px * var(--px));
@@ -488,7 +527,7 @@ body {
    window's bottom edge: 260 - 12 (sill height) = 248au. */
 .scene-window-sill {
   position: absolute;
-  right: calc(-80px * var(--px));
+  right: calc(var(--frame-inset) + calc(-80px * var(--px)));
   bottom: calc(248px * var(--px));
   width: calc(186px * var(--px));
   height: calc(12px * var(--px));
@@ -508,7 +547,7 @@ body {
    windowsill is a less common arrangement than one with a hand's-width of wall between them. */
 .scene-dresser {
   position: absolute;
-  right: calc(-8px * var(--px));
+  right: calc(var(--frame-inset) + calc(-8px * var(--px)));
   bottom: calc(150px * var(--px));
   width: calc(96px * var(--px));
   height: calc(64px * var(--px));
@@ -657,8 +696,7 @@ body {
    from the sprite's own bottom edge, i.e. ~13.5-49au above whatever `bottom` is set to. At
    bottom:118 that places the body at ~131.5-167au, which fully spans the mat's 130-154au band
    instead of landing on bare floorboards below it. */
-.scene-cat {
-  left: calc(20px * var(--px));
+.scene-cat {  left: calc(var(--frame-inset) + calc(20px * var(--px)));
   bottom: calc(118px * var(--px));
   width: calc(126px * var(--px));
   height: calc(80px * var(--px));
@@ -676,7 +714,7 @@ body {
    stone width the previous pass matched. The width here and make_shelf's own drawn width must
    agree exactly, or `background-size: 100% 100%` silently becomes a fractional scale. */
 .scene-shelf {
-  left: calc(9px * var(--px));
+  left: calc(var(--frame-inset) + calc(9px * var(--px)));
   bottom: calc(263px * var(--px));
   width: calc(200px * var(--px));
   height: calc(80px * var(--px));
@@ -721,7 +759,7 @@ body {
      is already confined to (see `bottom` below) leaves no room below the woodpile's 116au
      bottom edge to relocate into. Re-verified with `getBoundingClientRect()` against
      `.scene-woodpile` at both `--px:1` and `--px:2`: zero intersection. */
-  left: calc(250px * var(--px));
+  left: calc(var(--frame-inset) + calc(250px * var(--px)));
   /* `bottom: 65au` (level with the cat's own floor line) measured out to sit ENTIRELY behind
      the hand tray at 1440x900 — the tray's top edge lands at 91au from the viewport bottom in
      its normal (no bid-row) state, and a 65+26=91au box has no pixel above that line. The cat
@@ -863,8 +901,7 @@ body {
    from the floor is the thing with a relationship to its neighbour, not the thing without one.
    Picture and clock have no such neighbour to track, so they stay top-anchored. */
 /* Resized 2.5x in 2j.3 (48x36 -> 120x90 au); the clock alongside it moved right to clear it. */
-.scene-picture {
-  left: calc(8px * var(--px));
+.scene-picture {  left: calc(var(--frame-inset) + calc(8px * var(--px)));
   top: calc(46px * var(--px));
   width: calc(120px * var(--px));
   height: calc(90px * var(--px));
@@ -881,8 +918,7 @@ body {
    opponent — at this size there is plenty of row left even with a real gap — so it sits a
    few au clear of the picture's right edge (128au) instead of overlapping it, and is
    vertically centred against the picture's 46-136au band rather than sharing its top. */
-.scene-clock {
-  left: calc(132px * var(--px));
+.scene-clock {  left: calc(var(--frame-inset) + calc(132px * var(--px)));
   top: calc(61px * var(--px));
   width: calc(60px * var(--px));
   height: calc(60px * var(--px));
@@ -946,8 +982,7 @@ body {
    mantel's own top edge. Confirmed clear of `.table-opponent` (which is what capped the OLD
    beside-picture placement, per the note above) with `getBoundingClientRect()` at both 1010px
    and 1440px — the opponent's own left edge sits well right of 298au at both widths. */
-.scene-coat-hooks {
-  left: calc(194px * var(--px));
+.scene-coat-hooks {  left: calc(var(--frame-inset) + calc(194px * var(--px)));
   bottom: calc(206px * var(--px));
   width: calc(104px * var(--px));
   height: calc(134px * var(--px));
@@ -1034,7 +1069,7 @@ body {
 /* On the floor beside the hearth, where the fire's fuel comes from. */
 /* Resized 2.5x in 2j.3 (52x32 -> 130x80 au). */
 .scene-woodpile {
-  left: calc(112px * var(--px));
+  left: calc(var(--frame-inset) + calc(112px * var(--px)));
   bottom: calc(116px * var(--px));
   width: calc(130px * var(--px));
   height: calc(80px * var(--px));
@@ -1061,7 +1096,7 @@ body {
    `.scene-yarn`'s own 91au-clearance note was measured against. */
 .scene-hearth-mat {
   position: absolute;
-  left: calc(15px * var(--px));
+  left: calc(var(--frame-inset) + calc(15px * var(--px)));
   bottom: calc(130px * var(--px));
   width: calc(90px * var(--px));
   height: calc(24px * var(--px));
@@ -1084,7 +1119,7 @@ body {
    prop this small can safely sit. */
 .scene-chicken {
   position: absolute;
-  right: calc(120px * var(--px));
+  right: calc(var(--frame-inset) + calc(120px * var(--px)));
   bottom: calc(130px * var(--px));
   width: calc(38px * var(--px));
   height: calc(30px * var(--px));
@@ -1115,7 +1150,7 @@ body {
    stays well inside the hen's own [130, 160]au bounding box. */
 .scene-feed {
   position: absolute;
-  right: calc(160px * var(--px));
+  right: calc(var(--frame-inset) + calc(160px * var(--px)));
   bottom: calc(130px * var(--px));
   width: calc(24px * var(--px));
   height: calc(10px * var(--px));
@@ -1650,7 +1685,10 @@ body {
      `SceneLayer` is fixed, full-viewport and z-index:-1, independent of this element's width,
      so the cabin still fills the screen edge to edge — the cap letterboxes the game content,
      not the room behind it. */
-  max-width: 1440px;
+  /* THE literal cap, and the one `--frame-inset` is derived from — scene props anchor to this
+     same box (see that variable's own comment), so the two coordinate systems cannot drift
+     apart the way they silently did before. Changing this number moves the scenery with it. */
+  max-width: var(--frame-cap);
   margin-inline: auto;
   /* A real regression from the vertical-centering fix above (making `#root` a flex column):
      `margin-inline: auto` centres a plain block by first filling the available width and THEN
