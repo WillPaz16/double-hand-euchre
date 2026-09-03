@@ -37,6 +37,12 @@ const VIEWPORTS = [
   // here ever looked above 1400 to notice. This one sits beyond the cap so it exercises the
   // capped-and-centred path specifically, not just a wider version of the uncapped one.
   { width: 1800, height: 1000, label: 'ultra-wide desktop' },
+  // Narrower than every phone above (375+) and tall enough to engage `.table-frame-roomy`
+  // (needs `min-height: 700px`) — direct user feedback ("i cant see my cards anymore on
+  // screen") traced to `.table-frame-roomy` (320px wide) exceeding viewports narrower than
+  // itself, which none of the phone-width viewports above are narrow enough to exercise.
+  // 300, not 320, so there's a real 20px margin rather than sitting exactly on the boundary.
+  { width: 300, height: 750, label: 'narrow phone, roomy table active' },
 ];
 
 function waitForServer(url: string, timeoutMs = 30_000): Promise<void> {
@@ -143,11 +149,21 @@ async function main(): Promise<void> {
         });
 
         const result = await page.evaluate(AUDIT_SRC);
+        // `scrollWidth`/`clientWidth` added alongside the pre-existing height check — direct
+        // user feedback ("i cant see my cards anymore on screen") traced to a real bug this
+        // check would have caught: `.game-root`'s `overflow-y: auto` was silently forcing
+        // `overflow-x` to compute as `auto` too (a CSS spec quirk — one axis `visible` and the
+        // other not computes the `visible` one to `auto`), which at narrow widths let
+        // `.table-frame-roomy` open a HORIZONTAL scroll container whose left-overflowing
+        // content was permanently unreachable (`scrollLeft` can't go negative). The pre-
+        // existing check only ever compared height, so this shipped invisibly.
         const de = await page.evaluate(() => ({
           scrollHeight: document.documentElement.scrollHeight,
           clientHeight: document.documentElement.clientHeight,
+          scrollWidth: document.documentElement.scrollWidth,
+          clientWidth: document.documentElement.clientWidth,
         }));
-        const noScroll = de.scrollHeight === de.clientHeight;
+        const noScroll = de.scrollHeight === de.clientHeight && de.scrollWidth === de.clientWidth;
 
         const wheelOk = wheelResult === undefined || (wheelResult as { ok: boolean }).ok;
         const ok = (result as { ok: boolean }).ok && noScroll && wheelOk;
@@ -162,7 +178,7 @@ async function main(): Promise<void> {
             console.error(JSON.stringify(wheelResult, null, 2));
           }
           if (!(result as { ok: boolean }).ok || !noScroll) {
-            console.error(JSON.stringify({ ...(result as object), noScroll }, null, 2));
+            console.error(JSON.stringify({ ...(result as object), noScroll, ...de }, null, 2));
           }
         }
         await page.close();

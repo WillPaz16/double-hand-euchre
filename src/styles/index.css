@@ -1084,6 +1084,19 @@ body {
   background-size: 100% 100%;
   image-rendering: pixelated;
 }
+/* Below 348px the human's now-EMPTY seat-fan slot (`.seat-fan.is-empty` — the cards moved to
+   the hand tray, but the seat still holds its footprint) drifts left into this prop: both are
+   centred/edge-anchored elements that scale at different rates as the viewport narrows
+   (`fan.right = vw/2 - 10`, `feed.left = vw - 184`), and they cross at exactly vw=348 — found
+   live via `npm run audit`'s narrow-phone viewport (2p.2), not derived by eye. 350, not 348,
+   for 2px of real margin rather than sitting exactly on the boundary. Ten dots of feed on the
+   floor losing a fight with an empty card slot is the honest cost at this width, the same
+   trade every other narrow-viewport decor gate in this file already makes. */
+@media (max-width: 349px) {
+  .scene-feed {
+    display: none;
+  }
+}
 /* A barely-perceptible settle, so he is not a decal. Deliberately tiny and slow — a seated
    person at rest shifts, they do not bob.
 
@@ -1501,6 +1514,21 @@ body {
 .game-root {
   height: 100dvh;
   overflow-y: auto;
+  /* A real bug found root-causing direct user feedback ("i cant see my cards anymore on
+     screen"): CSS's own spec has a quirk where setting ONLY `overflow-y` doesn't leave
+     `overflow-x` at its default `visible` — per spec, if one axis is `visible` and the other
+     isn't, the `visible` axis computes to `auto` instead. Confirmed live (`getComputedStyle`):
+     this rule alone was making `overflow-x` compute to `auto`, with nothing here ever setting
+     it on purpose. At narrow widths where `.table-frame-roomy` (320px, 'select'/loner phases)
+     is wider than the viewport, that turned `.game-root` into its OWN horizontal scroll
+     container — and content overflowing past its START edge (left, in this LTR layout) is
+     outside the reachable scroll range entirely, not just off-screen: `scrollLeft` cannot go
+     negative, so it can never be scrolled INTO view. `scripts/audit.ts`'s own no-scroll check
+     only ever compared `scrollHeight`/`clientHeight` (vertical) — it had no equivalent
+     horizontal check, so this shipped and stayed invisible to it. Setting `overflow-x: hidden`
+     explicitly restores the ACTUAL intent (`overflow-y: auto` as a vertical safety net only)
+     instead of accidentally opening a second, unreachable scroll axis. */
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
