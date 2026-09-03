@@ -188,7 +188,15 @@
     // the first time: the floor 60-74% "hidden", which is what the overlay is FOR, not a
     // regression. Same reasoning as the felt legitimately covering the rug's near edge, two
     // paragraphs up — a correct composition, not a collision.
-    const GROUND_PLANE = /scene-floor|scene-rug/;
+    //
+    // `.scene-fireplace-chimney` joins this exemption for the identical reason, found live: it
+    // gained a real `background-image` (a tiled brick texture, replacing a flat `background`
+    // colour, which set `background-color` not `background-image`, so it never entered this
+    // loop at all — see the `backgroundImage === 'none'` skip below). StatusBanner sitting in
+    // front of it at 1010/1400px width is the CEILING WALL correctly showing through behind
+    // chrome that has always been in front of the wall everywhere else on screen too — the
+    // chimney is a continuous wall surface, not a discrete object the player needs to see.
+    const GROUND_PLANE = /scene-floor|scene-rug|scene-fireplace-chimney/;
     const COLLISION_CEILING = 0.35; // a little overlap at an edge is fine; losing a third isn't
     const collisions = [];
     for (const el of document.querySelectorAll('[class*="scene-"]')) {

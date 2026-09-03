@@ -2001,6 +2001,28 @@ def make_fireplace(w=748, h=540):
     return img
 
 
+def make_chimney_tile(w=748, h=540):
+    """A seamlessly-repeating vertical strip of the fireplace's own masonry, for
+    `.scene-fireplace-chimney` (index.css) to tile upward to the ceiling at any viewport
+    height. Direct user feedback on the first version of that fix, which used a single flat
+    sampled colour instead of this: "the extension of the fireplace looks like shit and isnt
+    even an extension" — correctly; a flat fill has no coursing, no mortar joints, nothing
+    that reads as the SAME wall continuing, only a colour-matched rectangle glued above it.
+
+    Crops two real courses (one full running-bond period — row 2 is offset from row 1, so a
+    single course would repeat with every joint in the same place, which is what real
+    brickwork never does) directly from `make_fireplace()`'s own raw output, y=64 to y=152 —
+    the band between the surround's real top edge (y=64: the first 64px is the sprite's own
+    transparent canvas padding, `.scene-fireplace-chimney`'s CSS comment cites this same
+    number) and where the mantel begins (y=152), so nothing here is redrawn or approximated;
+    it is the wall, read again. Verified seamless by tiling it 6x before shipping this, not
+    assumed — running-bond coursing is exactly the kind of pattern that looks fine drawn once
+    and reveals a misaligned joint the moment it actually repeats.
+    """
+    fireplace = make_fireplace(w, h)
+    return fireplace.crop((0, 64, w, 152))
+
+
 # Sized from the table as ruler (2j.3): a ~100cm-wide window at ~1 au = 3.2mm is ~312 au, and
 # au = canvas/2. Supersedes 2f.4's stylised 2.2x — see make_fireplace's docstring for why the
 # room, not the person, turned out to be the thing that was mis-scaled.
@@ -3475,6 +3497,7 @@ def main() -> None:
     scene_dir = os.path.join(OUT_ROOT, "scene")
     os.makedirs(scene_dir, exist_ok=True)
     save_asset(make_fireplace(), os.path.join(scene_dir, "fireplace.png"), chunk=CHUNK_ENV)
+    save_asset(make_chimney_tile(), os.path.join(scene_dir, "chimney_tile.png"), chunk=CHUNK_ENV)
     save_asset(make_sprite_sheet(make_fire_frames()),
                os.path.join(scene_dir, "fire_sheet.png"), chunk=CHUNK_ENV)
     save_asset(make_window_glass(), os.path.join(scene_dir, "window_glass.png"), chunk=CHUNK_ENV)

@@ -465,14 +465,26 @@ body {
    `147 + 270 = 417au` up from the floor, and the sprite's own 16au of transparent canvas
    padding pushes the real brick down to `417 - 16 = 401au`. `top: 0` with no explicit `height`
    is the load-bearing part — the box stretches to fill exactly the gap that exists at
-   whatever the current viewport height is, rather than a number picked for one tested size. */
+   whatever the current viewport height is, rather than a number picked for one tested size.
+
+   `background-image`, not a flat `background` colour — direct user feedback on the first
+   version of this fix: "the extension of the fireplace looks like shit and isnt even an
+   extension." A flat fill has no coursing or mortar joints, so it read as a colour-matched
+   rectangle glued above the real sprite, not as the same wall continuing. `chimney_tile.png`
+   (see `make_chimney_tile()`'s own docstring) is two real courses cropped directly from
+   `make_fireplace()`'s own output — the wall, read again, not redrawn — sized to its true
+   374x44au and repeated vertically, the same `background-size` + `background-repeat: repeat-y`
+   pattern `.table-top`'s felt tile already uses for a seamless repeat. */
 .scene-fireplace-chimney {
   position: absolute;
   left: calc(var(--frame-inset) + calc(-78px * var(--px)));
   width: calc(374px * var(--px));
   top: 0;
   bottom: calc(401px * var(--px));
-  background: rgb(74, 63, 53);
+  background-image: url('/art/scene/chimney_tile.png');
+  background-size: calc(374px * var(--px)) calc(44px * var(--px));
+  background-repeat: repeat-y;
+  image-rendering: pixelated;
 }
 .scene-fireplace {  left: calc(var(--frame-inset) + calc(-78px * var(--px)));
   bottom: calc(147px * var(--px));
