@@ -33,7 +33,7 @@ SKIN_WARM = (216, 174, 142, 255)   # ruddier, weathered. Pulled back from (222,1
                                    # covering it.
 SKIN_TAN = (198, 146, 104, 255)
 SKIN_DEEP = (156, 106, 74, 255)
-SKIN_FAIR = (240, 212, 190, 255)   # the child's — pale enough that blonde hair still reads
+SKIN_FAIR = (234, 202, 180, 255)   # the child's — pale enough that blonde hair still reads
                                    # DARKER than the face it frames, which is what stops a
                                    # blonde head becoming one undifferentiated light mass.
                                    # Deliberately LESS saturated than SKIN: `ramp()` multiplies
@@ -203,6 +203,21 @@ RAMP_STEPS = (
     (-0.100, -9.0, 1.06),
     (-0.190, -16.0, 1.10),
 )
+
+
+def _desat(c, t):
+    """Pull a colour t of the way toward its own luminance grey, keeping its lightness.
+
+    `ramp()` MULTIPLIES saturation on the way down (RAMP_STEPS: 1.06 at shadow, 1.10 at deep).
+    That is right for cloth — a red coat's shadow really is a richer red — and wrong for skin.
+    Measured on the Regular's face at 8x: base SKIN_WARM (216,174,142), R-G gap 42; his shadow
+    came back (206,131,101), R-G gap **75**. Almost the same lightness, nearly double the
+    chroma. A face built out of that does not read as modelled, it reads as blotchy pink, which
+    is exactly the word the client used. Desaturating the shadow instead of darkening it
+    further is what turns those patches back into shading.
+    """
+    y = round(0.30 * c[0] + 0.59 * c[1] + 0.11 * c[2])
+    return _mix(c, (y, y, y, c[3]), t)
 
 
 def ramp(color, warm=True):
@@ -1031,7 +1046,8 @@ class Avatar:
                  hem_x=112, arm_x=118,
                  # --- face proportion --------------------------------------------------------
                  eye_dx=24, eye_w=8, eye_up=12, eye_dn=8, brow_dy=0, nose_w=4, nose_dy=0,
-                 mouth_w=20, brow_colour=None, brow_h=8, accent=None, extras=()):
+                 mouth_w=20, brow_colour=None, brow_h=8, accent=None, shadow_desat=0.0,
+                 extras=()):
         self.key = key
         self.coat = coat                    # shoulders/chest
         self.placket = placket              # centre panel, so the chest isn't one flat mass
@@ -1088,6 +1104,11 @@ class Avatar:
         # knob because these are the marks that must NOT be sampled from the skin ramp —
         # they only work by being the one thing on the sprite that is not skin or cloth.
         self.accent = accent
+        # How far this character's skin SHADOWS are pulled back toward neutral before they
+        # are drawn. 0.0 is `ramp()` raw, which is what the Old-Timer shipped with and what
+        # keeps him byte-identical; everyone else needs some, and the warmer the base tone
+        # the more (see `_desat`).
+        self.shadow_desat = shadow_desat
         self.extras = extras            # per-character detail passes, by name
 
 
@@ -1098,6 +1119,7 @@ AVATARS = {
         "old_timer", FLANNEL_RED, BOOT_DARK, "trapper", CAP_GREEN, HAT_FUR,
         facial="moustache", facial_colour=BEARD_GRAY, chest="star",
         glasses=True, pipe=True, age_lines=True, check=True,
+        extras=("brow_ridge",),
     ),
     # --- The Card Sharp ------------------------------------------------------------------
     # The one character with no headwear at all: BLACK hair down past the jaw IS her
@@ -1123,9 +1145,9 @@ AVATARS = {
         head_rx=56, head_ry=64, head_dy=-8, neck_w=20, shoulder_x=84, shoulder_in=54,
         hem_x=100, arm_x=106,
         eye_dx=26, eye_w=8, eye_up=10, eye_dn=6, brow_dy=-2, nose_w=3, nose_dy=-2, mouth_w=16,
-        brow_h=4, accent=ROSE_RED,
-        extras=("sheen", "lashes", "lips", "beauty_mark", "earring", "garters", "brooch",
-                "ring"),
+        brow_h=4, accent=ROSE_RED, shadow_desat=0.30,
+        extras=("cheekbone", "nostrils", "philtrum", "lashes", "lips", "beauty_mark",
+                "sheen", "earring", "garters", "brooch", "ring"),
     ),
     # --- The Kid -------------------------------------------------------------------------
     # A child is not a small adult, and the difference is entirely proportion, so this is the
@@ -1147,9 +1169,10 @@ AVATARS = {
         soft_features=True, skin=SKIN_FAIR,
         head_rx=58, head_ry=56, head_dy=10, neck_w=16, shoulder_x=74, shoulder_in=46,
         hem_x=90, arm_x=96,
-        eye_dx=22, eye_w=9, eye_up=12, eye_dn=8, brow_dy=8, nose_w=3, nose_dy=-6, mouth_w=14,
-        brow_colour=_mix(HAIR_BLOND, HAIR_BROWN, 0.55), brow_h=4, accent=ROSE_RED,
-        extras=("knit", "ribbons", "freckles", "buttons", "gap_tooth"),
+        eye_dx=22, eye_w=9, eye_up=12, eye_dn=8, brow_dy=8, nose_w=4, nose_dy=8, mouth_w=14,
+        brow_colour=_mix(HAIR_BLOND, HAIR_BROWN, 0.75), brow_h=4, accent=ROSE_RED,
+        shadow_desat=0.40,
+        extras=("nostrils", "blush", "freckles", "knit", "ribbons", "buttons", "gap_tooth"),
     ),
     # --- The Regular ---------------------------------------------------------------------
     # "Average" is a trap: the previous cast failed review precisely because everyone was drawn
@@ -1169,7 +1192,9 @@ AVATARS = {
         head_rx=60, head_ry=70, head_dy=2, neck_w=32, shoulder_x=104, shoulder_in=68,
         hem_x=118, arm_x=124,
         eye_dx=25, eye_w=8, eye_up=11, eye_dn=8, brow_dy=0, nose_w=4, nose_dy=2, mouth_w=20,
-        extras=("ears", "stubble", "collar", "braces", "pocket", "ring"),
+        shadow_desat=0.40,
+        extras=("cheekbone", "nostrils", "bridge", "laugh_lines", "cleft", "philtrum", "ears",
+                "stubble", "collar", "braces", "pocket", "ring"),
     ),
 }
 
@@ -1554,6 +1579,18 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     hy = OPP_HEAD_CY + av.head_dy
     eye_y = hy - 8 + av.brow_dy
     skin_hi, _, skin_sh, skin_deep = ramp(av.skin)
+    # Desaturated, then pulled back toward the base by the same knob — ONE skin shadow for
+    # the whole face. Both steps matter and both are identities at shadow_desat 0, so the
+    # Old-Timer is untouched. The second step is why the jaw plane stopped being a grey slab
+    # pasted over one cheek; keeping it as a SEPARATE softened tone instead cost a colour in
+    # every band it crossed and put the Regular at 66 of 64.
+    skin_sh = _mix(av.skin, _desat(skin_sh, av.shadow_desat), 1.0 - av.shadow_desat * 0.5)
+    skin_deep = _desat(skin_deep, av.shadow_desat)
+    # And the highlight pulled back toward the base by the same knob. `ramp()` overshoots
+    # upward as hard as it oversaturates downward, and on a bare face the nose ridge came
+    # back as a white-ish block stuck between the eyes. At shadow_desat 0 this is the
+    # identity, which is what keeps the Old-Timer's lit brow ridge exactly as drawn.
+    skin_hi = _mix(av.skin, skin_hi, 1.0 - av.shadow_desat * 0.5)
     # Horizontal distances scaled to this head's width, exactly as `_avatar_parts` does. At the
     # Old-Timer's head_rx=62 this is the identity, which is what lets the modelling below be
     # parameterised without moving a single pixel of his sprite.
@@ -1562,6 +1599,38 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     # Stubble, before the features rather than with the other extras at the foot of this
     # function: it is a SURFACE the mouth and nose sit on, and drawn in extras order it painted
     # straight over his mouth.
+    if "cheekbone" in av.extras:
+        # An actual cheekbone: a lit plane on the hearth side, a hollow under BOTH cheekbones,
+        # and a jaw line on the shaded side. She had the largest unmodelled expanse of skin of
+        # the four and the most headroom to spend on it — this is three named planes where
+        # there was one flat field.
+        # All three planes mixed halfway back toward the base tone. At full ramp strength the
+        # lit plane was a spotlight on her cheek and the hollows were two dark blocks that read
+        # as sideburns. A cheekbone is a TURN in a surface; the shape has to be readable and
+        # the step across it small.
+        # A soft-featured face wants the planes mixed back toward the base; a weathered one
+        # can take them at full strength — and taking them at full strength means reusing two
+        # tones the sprite already has, so the Regular's cheekbone costs nothing at all. Same
+        # trick as his jug ears last round.
+        lit = _mix(av.skin, skin_hi, 0.85) if av.soft_features else skin_hi
+        hollow = _mix(av.skin, skin_sh, 0.55) if av.soft_features else skin_sh
+        d.polygon([(OPP_CX - hxx(44), hy - 6), (OPP_CX - hxx(20), hy + 2),
+                   (OPP_CX - hxx(24), hy + 12), (OPP_CX - hxx(44), hy + 6)], fill=lit)
+        for side in (-1, 1):
+            d.polygon([(OPP_CX + side * hxx(46), hy + 16), (OPP_CX + side * hxx(24), hy + 22),
+                       (OPP_CX + side * hxx(28), hy + 30), (OPP_CX + side * hxx(44), hy + 28)],
+                      fill=hollow)
+        d.polygon([(OPP_CX + hxx(42), hy + 34), (OPP_CX + hxx(22), hy + 52),
+                   (OPP_CX + hxx(30), hy + 56), (OPP_CX + hxx(44), hy + 40)], fill=hollow)
+    if "blush" in av.extras:
+        # Two tidy round patches, not a smear. Her cheeks were carrying the seam between two
+        # `light_from` bands and nothing else, and on a face that pale a band edge with no
+        # feature near it reads as a smudge of dirt. A blush is a thing you can name sitting
+        # exactly where the seam was.
+        for side in (-1, 1):
+            for dx, dy, w in ((30, 6, 16), (26, 14, 20), (32, 22, 12)):
+                x0, x1 = sorted((OPP_CX + side * hxx(dx), OPP_CX + side * hxx(dx + w)))
+                d.rectangle((x0, hy + dy, x1, hy + dy + 8), fill=_mix(av.skin, BLUSH, 0.42))
     if "stubble" in av.extras:
         # Three days of it, on the JAW ONLY and in the skin's own deep tone. Two failures got it
         # here. Run up to the cheekbones (hy+6) it was a beard, not stubble. Mixed toward INK it
@@ -1595,20 +1664,50 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
             bx0, bx1 = sorted((OPP_CX + side * (av.eye_dx - av.eye_w - 8),
                                OPP_CX + side * (av.eye_dx + av.eye_w + 8)))
             d.rectangle((bx0, eye_y - 18, bx1, eye_y - 14), fill=skin_sh)
-            d.rectangle((bx0, eye_y - 22, bx1, eye_y - 18), fill=skin_hi)
+            if "brow_ridge" in av.extras:
+                d.rectangle((bx0, eye_y - 22, bx1, eye_y - 18), fill=skin_hi)
     else:
+        # Mixed back toward the base by the same knob. This polygon covers a third of the
+        # face; at full shadow strength on the Regular it stopped being a jaw plane and became
+        # a grey slab pasted over one cheek. `_mix(skin, skin_sh, 1.0)` is skin_sh exactly, so
+        # the Old-Timer (shadow_desat 0) gets the identical fill he always had.
         d.polygon([(OPP_CX + 20, hy - 20), (OPP_CX + 52, hy - 28), (OPP_CX + 56, hy + 16),
                    (OPP_CX + 28, hy + 40), (OPP_CX + 16, hy + 24)], fill=skin_sh)
         # Brow ridge: the face's strongest form, and what makes a head read as bone not egg.
         d.rectangle((OPP_CX - 48, eye_y - 20, OPP_CX + 48, eye_y - 12), fill=skin_sh)
-        d.rectangle((OPP_CX - 48, eye_y - 24, OPP_CX + 48, eye_y - 20), fill=skin_hi)
+        if "brow_ridge" in av.extras:
+            # The LIT top of the brow ridge. On the Old-Timer this band is entirely covered by
+            # his hat brim and hair, which is the only reason it survived three rounds: on a
+            # bare forehead a full-width light horizontal does not read as bone, it reads as a
+            # pale STRIPE painted across the head — the same defect as the "white sweatband"
+            # already fixed once on the soft-featured branch. Opt-in now, and only he opts in.
+            d.rectangle((OPP_CX - 48, eye_y - 24, OPP_CX + 48, eye_y - 20), fill=skin_hi)
     # Nose: a lit ridge with its own shadow to the right, and a nostril line under it. It STOPS
     # ABOVE THE MOUSTACHE (which `_opponent_parts` draws from hy+10) — the first pass ran it to
     # hy+12 and split the moustache in half with a skin-coloured bar straight down the middle.
-    nb = hy + 4 + av.nose_dy
+    # Anchored to eye_y, NOT to hy. This was a real bug and the Kid was where it showed: her
+    # `brow_dy=+8` moves the whole feature cluster down the face, so her eyes sat at hy while
+    # the nose base stayed pinned at hy+4 — a nose eight pixels tall, ending level with the
+    # bottom of her own eyes. That is the client's "her nose is nearly invisible": it was not
+    # low-contrast, it was almost not drawn. At the Old-Timer's brow_dy=0, eye_y is hy-8 and
+    # this expression is hy+4 exactly as before, so his sprite is untouched.
+    nb = eye_y + 12 + av.nose_dy
     d.rectangle((OPP_CX - av.nose_w, eye_y - 8, OPP_CX + av.nose_w, nb), fill=skin_hi)
     d.rectangle((OPP_CX + av.nose_w, eye_y - 4, OPP_CX + av.nose_w + 8, nb), fill=skin_sh)
-    d.rectangle((OPP_CX - av.nose_w - 4, nb - 4, OPP_CX + av.nose_w + 8, nb), fill=skin_deep)
+    if "nostrils" in av.extras:
+        # A nostril each side of the tip rather than one dark bar under it. The bar was the
+        # whole nose at this size — the client's "the nose barely registers" — because a bar
+        # has no shape to read. Tip shadow first, then two 4px holes in it.
+        d.rectangle((OPP_CX - av.nose_w - 4, nb - 4, OPP_CX + av.nose_w + 8, nb), fill=skin_sh)
+        for side in (-1, 1):
+            nx0, nx1 = sorted((OPP_CX + side * (av.nose_w + 4), OPP_CX + side * (av.nose_w + 8)))
+            d.rectangle((nx0, nb - 4, nx1, nb), fill=skin_deep)
+        if "bridge" in av.extras:
+            # A kink in the bridge. Every ordinary bloke's nose has been hit by something.
+            d.rectangle((OPP_CX - av.nose_w - 4, eye_y + 4, OPP_CX - av.nose_w, eye_y + 12),
+                        fill=skin_sh)
+    else:
+        d.rectangle((OPP_CX - av.nose_w - 4, nb - 4, OPP_CX + av.nose_w + 8, nb), fill=skin_deep)
     # Age lines — the whole point of a character called the Old-Timer. Crow's feet only: the
     # nasolabial folds this originally also carried ran straight through the moustache, and
     # the brow ridge, cheekbone and crow's feet already do the work. Kept to 4px marks, since
@@ -1686,8 +1785,14 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         #
         # Not INK. A full-strength black slot at rest reads as an open mouth, or as a slot; a
         # line mixed most of the way to the skin reads as lips closed.
+        # A mouth with an UPPER and a LOWER lip, not a single 4px bar. The bar was legible as
+        # "there is a mouth here" and nothing more; two rows plus a highlight is a shape, and a
+        # shape is a thing the player can name.
+        base_lip = lip if "lips" in av.extras else _mix(av.skin, INK, 0.62)
         d.rectangle((OPP_CX - mw + 4, my, OPP_CX + mw - 4, my + 4),
-                    fill=lip if "lips" in av.extras else _mix(av.skin, INK, 0.62))
+                    fill=_mix(base_lip, INK, 0.4))
+        d.rectangle((OPP_CX - mw + 8, my + 4, OPP_CX + mw - 8, my + 8), fill=base_lip)
+        d.rectangle((OPP_CX - 8, my + 4, OPP_CX, my + 8), fill=_mix(base_lip, skin_hi, 0.45))
 
     # Reading glasses. A prior pass gave the frame margin past idle/rueful's own eye rectangle
     # (ex-8, eye_y-12, ex+8, eye_y+8) but kept the outline INK, same as the eye fill — on
@@ -1735,6 +1840,21 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     # drawn here rather than as `_avatar_parts` entries so they don't each pick up
     # `composite_sprite`'s automatic per-part shadow band, which is what pushed the pipe over
     # the colour budget when it was tried as a part (see its own note below).
+    if "philtrum" in av.extras:
+        # The groove between nose and lip, plus the shadow the lower lip casts on the chin.
+        # Two four-pixel marks, and they are most of what turns a mouth stuck on a face into a
+        # mouth set into one.
+        d.rectangle((OPP_CX - 4, hy + 30, OPP_CX, hy + 38), fill=skin_sh)
+        d.rectangle((OPP_CX - 12, hy + 52, OPP_CX + 12, hy + 56), fill=skin_sh)
+    if "laugh_lines" in av.extras:
+        # Nasolabial folds. The Old-Timer earns half his read from crow's feet; this is the
+        # same idea one age bracket down, and it is the cheapest "lived-in" mark there is.
+        for side in (-1, 1):
+            d.polygon([(OPP_CX + side * hxx(14), hy + 16), (OPP_CX + side * hxx(20), hy + 16),
+                       (OPP_CX + side * hxx(30), hy + 44), (OPP_CX + side * hxx(24), hy + 44)],
+                      fill=skin_sh)
+    if "cleft" in av.extras:
+        d.rectangle((OPP_CX - 4, hy + 58, OPP_CX + 4, hy + 68), fill=skin_sh)
     if "beauty_mark" in av.extras:
         # ROUND 2 MERGE, from Designer A. Four pixels high on the cheek, in the hair's own
         # colour so it costs nothing. It is doing the job my earring was doing — breaking the
@@ -1793,7 +1913,7 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     if "freckles" in av.extras:
         for fx, fy in ((-22, 6), (-12, 12), (14, 8), (24, 14), (-2, 16)):
             d.rectangle((OPP_CX + hxx(fx), hy + fy, OPP_CX + hxx(fx) + 4, hy + fy + 4),
-                        fill=_mix(av.skin, skin_deep, 0.45))
+                        fill=_mix(av.skin, skin_deep, 0.7))
     if "gap_tooth" in av.extras and expression == "happy":
         # A gap in the front teeth, visible only when she grins. The one detail in this cast
         # that exists in a single expression — a child missing a tooth is a fact about her, and
