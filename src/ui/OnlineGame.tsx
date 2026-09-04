@@ -10,7 +10,7 @@ import { HandTray } from './HandTray.tsx';
 import { LonerDim, LonerStamp } from './LonerFx.tsx';
 import { PauseMenu } from './PauseMenu.tsx';
 import type { RoomCode } from '../../shared/net/protocol.ts';
-import { OpponentNameProvider } from './opponentName.tsx';
+import { OpponentIdentityProvider } from './opponentIdentity.tsx';
 
 /** The same board as single-player, driven by the server instead of a local reducer.
  *
@@ -35,7 +35,7 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
   const opponentLabel = game.opponentName ?? 'Opponent';
 
   return (
-    <OpponentNameProvider name={opponentLabel}>
+    <OpponentIdentityProvider name={opponentLabel} avatar={game.opponentAvatar}>
       <SceneLayer />
       {game.view && <LonerDim view={game.view} />}
       {game.view && <LonerStamp view={game.view} />}
@@ -87,7 +87,7 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
           }}
         />
       )}
-    </OpponentNameProvider>
+    </OpponentIdentityProvider>
   );
 }
 

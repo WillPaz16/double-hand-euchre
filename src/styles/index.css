@@ -3292,3 +3292,53 @@ body {
   font-size: 0.9rem;
   width: 12ch;
 }
+
+/* --- Avatar picker ------------------------------------------------------------------------ */
+/* The portraits ARE the control, so the native radio is hidden and the image carries the
+   selected state. `appearance: none` rather than `display: none`: a removed input is not
+   focusable, which would make the whole picker unreachable by keyboard. */
+.avatar-picker {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+.avatar-row {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 0.4rem;
+}
+.avatar-option {
+  display: block;
+  cursor: pointer;
+  border: 2px solid transparent;
+  background: rgba(16, 11, 8, 0.5);
+  line-height: 0;
+}
+.avatar-option input {
+  appearance: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.avatar-option img {
+  /* Cropped to the head: at 150x140 au the full sprite is mostly coat, and four coats in a row
+     tell you far less than four faces do. `object-position: top` keeps the head, not the chest. */
+  width: calc(46px * var(--px));
+  height: calc(40px * var(--px));
+  object-fit: cover;
+  object-position: top;
+  image-rendering: pixelated;
+}
+.avatar-option.is-chosen {
+  border-color: #ffd54a;
+  background: rgba(255, 213, 74, 0.12);
+}
+/* Focus has to be visible on the LABEL, since the input itself is visually hidden. */
+.avatar-option:has(input:focus-visible) {
+  outline: 2px solid #ffd54a;
+  outline-offset: 2px;
+}

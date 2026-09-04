@@ -1,6 +1,6 @@
 import type { Player, PlayerView, Suit } from '../../shared/engine/types.ts';
 import { otherPlayer } from '../../shared/engine/legal.ts';
-import { useOpponentName } from './opponentName.tsx';
+import { useOpponentName } from './opponentIdentity.tsx';
 
 // Each player's scoring suit — a fixed choice for now (real euchre lets a player pick their
 // own suit for this; that becomes a settings option later, not part of the core rules).

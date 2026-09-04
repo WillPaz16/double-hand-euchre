@@ -1,4 +1,5 @@
 import type { Action, CompletedTrick, Player, PlayerView } from '../engine/types.ts';
+import type { AvatarKey } from './avatars.ts';
 
 /** A short human-shareable room code ("say it down the phone" length, not a UUID). */
 export type RoomCode = string;
@@ -15,7 +16,7 @@ export type ClientMessage =
    *  same `clientId` after a dropped connection reclaims the same seat and resyncs — that is
    *  the whole reconnect story, and why the seat is keyed on `clientId` rather than on the
    *  socket. */
-  | { t: 'hello'; code: RoomCode; clientId: ClientId; name?: string }
+  | { t: 'hello'; code: RoomCode; clientId: ClientId; name?: string; avatar?: string }
   | { t: 'action'; action: Action };
 
 export type ServerMessage =
@@ -39,6 +40,10 @@ export type ServerMessage =
        *  stored client-side because it belongs to THEM: it arrives when they join and changes
        *  when they rejoin under a different one. */
       opponentName: string | null;
+      /** Which character to draw across the table. Always a valid key — the server coerces
+       *  anything it doesn't recognise, so a client can never make the other player's board
+       *  point at an image that doesn't exist. */
+      opponentAvatar: AvatarKey;
     }
   /** A refused `hello` or `action`, with a reason fit to show a player. The client stays
    *  connected; a rejected action simply did not happen. */

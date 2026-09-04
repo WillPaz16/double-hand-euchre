@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Action, PlayerView, Suit } from '../../shared/engine/types.ts';
-import { useOpponentName } from './opponentName.tsx';
+import { useOpponentName } from './opponentIdentity.tsx';
 
 const SUIT_LABEL: Record<string, string> = {
   clubs: 'Clubs',

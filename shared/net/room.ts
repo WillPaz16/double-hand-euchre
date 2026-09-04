@@ -18,6 +18,7 @@ import type {
   TrickCard,
 } from '../engine/types.ts';
 import type { ClientId, RoomCode } from './protocol.ts';
+import { DEFAULT_AVATAR, type AvatarKey } from './avatars.ts';
 
 export const SEATS: Player[] = ['A', 'B'];
 
@@ -34,6 +35,8 @@ export interface Room {
   connected: Record<Player, boolean>;
   /** Display name per seat, null until that player supplies one. */
   names: Record<Player, string | null>;
+  /** Chosen character per seat. */
+  avatars: Record<Player, AvatarKey>;
 }
 
 export type RoomResult<T> = { ok: true; value: T } | { ok: false; error: string };
@@ -57,6 +60,7 @@ export function createRoom(
     seats: { A: null, B: null },
     connected: { A: false, B: false },
     names: { A: null, B: null },
+    avatars: { A: DEFAULT_AVATAR, B: DEFAULT_AVATAR },
   };
 }
 
@@ -77,6 +81,7 @@ export function join(
   room: Room,
   clientId: ClientId,
   name: string | null = null,
+  avatar: AvatarKey = DEFAULT_AVATAR,
 ): RoomResult<{ room: Room; seat: Player }> {
   const existing = seatOf(room, clientId);
   if (existing) {
@@ -86,6 +91,7 @@ export function join(
         connected: { ...room.connected, [existing]: true },
         // A returning player may have changed their name; keep the old one if they sent none.
         names: { ...room.names, [existing]: name ?? room.names[existing] },
+        avatars: { ...room.avatars, [existing]: avatar },
       },
       seat: existing,
     });
@@ -98,6 +104,7 @@ export function join(
       seats: { ...room.seats, [free]: clientId },
       connected: { ...room.connected, [free]: true },
       names: { ...room.names, [free]: name },
+      avatars: { ...room.avatars, [free]: avatar },
     },
     seat: free,
   });
@@ -197,6 +204,11 @@ export function opponentPresent(room: Room, seat: Player): boolean {
 export function opponentName(room: Room, seat: Player): string | null {
   const other: Player = seat === 'A' ? 'B' : 'A';
   return room.names[other];
+}
+
+export function opponentAvatar(room: Room, seat: Player): AvatarKey {
+  const other: Player = seat === 'A' ? 'B' : 'A';
+  return room.avatars[other];
 }
 
 /** Re-exported for callers that hold a Room and want the raw state (the server's deal-advance

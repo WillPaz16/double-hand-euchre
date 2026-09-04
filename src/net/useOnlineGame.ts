@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Action, CompletedTrick, Player, PlayerView } from '../../shared/engine/types.ts';
 import type { ClientMessage, RoomCode, ServerMessage } from '../../shared/net/protocol.ts';
+import { DEFAULT_AVATAR, type AvatarKey } from '../../shared/net/avatars.ts';
 import { getClientId } from './clientId.ts';
-import { getPlayerName } from './playerName.ts';
+import { getPlayerAvatar, getPlayerName } from './playerName.ts';
 import { TRICK_HOLD_MS } from '../game/useGame.ts';
 
 /** Where the authoritative server lives. Defaults to the local dev server; set
@@ -29,6 +30,8 @@ export interface OnlineGame {
   opponentPresent: boolean;
   /** What to call the other player. Null until they arrive or if they gave no name. */
   opponentName: string | null;
+  /** Which character to draw across the table. */
+  opponentAvatar: AvatarKey;
   status: ConnectionStatus;
   /** Set when the server refused something worth showing the player. */
   notice: string | null;
@@ -49,6 +52,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
   const [seat, setSeat] = useState<Player | null>(null);
   const [opponentPresent, setOpponentPresent] = useState(false);
   const [opponentName, setOpponentName] = useState<string | null>(null);
+  const [opponentAvatar, setOpponentAvatar] = useState<AvatarKey>(DEFAULT_AVATAR);
   const [status, setStatus] = useState<ConnectionStatus>('connecting');
   const [notice, setNotice] = useState<string | null>(null);
   const [completedTrick, setCompletedTrick] = useState<CompletedTrick | null>(null);
@@ -107,6 +111,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
           code,
           clientId: getClientId(),
           ...(getPlayerName() ? { name: getPlayerName()! } : {}),
+          avatar: getPlayerAvatar(),
         };
         self.send(JSON.stringify(hello));
       };
@@ -130,6 +135,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
           setLegal(msg.legal);
           setOpponentPresent(msg.opponentPresent);
           setOpponentName(msg.opponentName);
+          setOpponentAvatar(msg.opponentAvatar);
           if (msg.completedTrick) setCompletedTrick(msg.completedTrick);
           return;
         }
@@ -193,6 +199,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
     code,
     opponentPresent,
     opponentName,
+    opponentAvatar,
     status,
     notice,
     leave,

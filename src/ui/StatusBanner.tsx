@@ -1,6 +1,6 @@
 import type { PlayerView } from '../../shared/engine/types.ts';
 import { otherPlayer } from '../../shared/engine/legal.ts';
-import { useOpponentName } from './opponentName.tsx';
+import { useOpponentName } from './opponentIdentity.tsx';
 
 const SUIT_LABEL: Record<string, string> = {
   clubs: 'Clubs',

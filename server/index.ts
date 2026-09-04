@@ -22,6 +22,7 @@ import { DEFAULT_CONFIG } from '../shared/engine/index.ts';
 import type { CompletedTrick, Player } from '../shared/engine/types.ts';
 import type { ClientId, ClientMessage, RoomCode, ServerMessage } from '../shared/net/protocol.ts';
 import { cleanName, normaliseRoomCode } from '../shared/net/protocol.ts';
+import { toAvatarKey } from '../shared/net/avatars.ts';
 import {
   advanceDeal,
   bothSeated,
@@ -30,6 +31,7 @@ import {
   join,
   legalFor,
   needsDealAdvance,
+  opponentAvatar,
   opponentName,
   opponentPresent,
   seatOf,
@@ -93,6 +95,7 @@ function broadcast(live: Live, completedTrick: CompletedTrick | null = null): vo
       opponentPresent: opponentPresent(live.room, seat),
       completedTrick,
       opponentName: opponentName(live.room, seat),
+      opponentAvatar: opponentAvatar(live.room, seat),
     });
   }
 }
@@ -182,7 +185,7 @@ wss.on('connection', (socket) => {
 
       // Names are cleaned server-side too: a client is free to send anything, and this is
       // text that will be rendered on someone ELSE's screen.
-      const joined = join(live.room, msg.clientId, cleanName(msg.name));
+      const joined = join(live.room, msg.clientId, cleanName(msg.name), toAvatarKey(msg.avatar));
       if (!joined.ok) {
         send(socket, { t: 'rejected', reason: joined.error });
         return;
@@ -229,6 +232,7 @@ wss.on('connection', (socket) => {
         opponentPresent: opponentPresent(live.room, boundSeat),
         completedTrick: null,
         opponentName: opponentName(live.room, boundSeat),
+        opponentAvatar: opponentAvatar(live.room, boundSeat),
       });
       return;
     }

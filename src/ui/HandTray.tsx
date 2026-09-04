@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import type { Action, Card as CardType, PlayerView } from '../../shared/engine/types.ts';
 import { Card } from './Card.tsx';
 import { BIDDING_PHASES } from './Table.tsx';
-import { useOpponentName } from './opponentName.tsx';
+import { useOpponentName } from './opponentIdentity.tsx';
 
 /** The pickup motion (2e.5): a hand travels from ITS SEAT into the tray, rather than the
  *  tray just appearing — "like I'm physically picking them up." Replaces the earlier

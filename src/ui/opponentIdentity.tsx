@@ -1,4 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react';
+import { DEFAULT_AVATAR, type AvatarKey } from '../../shared/net/avatars.ts';
 
 /** What to call the player across the table.
  *
@@ -17,8 +18,28 @@ import { createContext, useContext, type ReactNode } from 'react';
  *  screen wraps a provider. */
 const OpponentNameContext = createContext<string>('Old-Timer');
 
-export function OpponentNameProvider({ name, children }: { name: string; children: ReactNode }) {
-  return <OpponentNameContext.Provider value={name}>{children}</OpponentNameContext.Provider>;
+/** Which character the opponent chose. Same default reasoning as the name: single-player is
+ *  the Old-Timer and always was, so solo renders no provider and nothing changes. */
+const OpponentAvatarContext = createContext<AvatarKey>(DEFAULT_AVATAR);
+
+export function OpponentIdentityProvider({
+  name,
+  avatar,
+  children,
+}: {
+  name: string;
+  avatar: AvatarKey;
+  children: ReactNode;
+}) {
+  return (
+    <OpponentNameContext.Provider value={name}>
+      <OpponentAvatarContext.Provider value={avatar}>{children}</OpponentAvatarContext.Provider>
+    </OpponentNameContext.Provider>
+  );
+}
+
+export function useOpponentAvatar(): AvatarKey {
+  return useContext(OpponentAvatarContext);
 }
 
 export function useOpponentName(): string {

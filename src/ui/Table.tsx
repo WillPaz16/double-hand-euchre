@@ -6,7 +6,8 @@ import type {
   PlayerView,
 } from '../../shared/engine/types.ts';
 import { otherPlayer } from '../../shared/engine/legal.ts';
-import { useOpponentName } from './opponentName.tsx';
+import { useOpponentAvatar, useOpponentName } from './opponentIdentity.tsx';
+import { avatarSrc } from '../../shared/net/avatars.ts';
 import type { CompletedTrick } from '../game/useGame.ts';
 import { Card, CardBack } from './Card.tsx';
 import { UpcardWheel } from './UpcardWheel.tsx';
@@ -189,6 +190,7 @@ export function Table({
   lastBotAction: Action | null;
 }) {
   const opponentName = useOpponentName();
+  const opponentAvatar = useOpponentAvatar();
   // A finished trick is held by useGame and shown here after the engine has moved on —
   // otherwise the trick-winning card is never rendered at all. Sweeping toward the winner
   // also tells the player who took it without any extra text.
@@ -215,7 +217,7 @@ export function Table({
           and 226px from the two card fans that are supposed to be his. */}
       <img
         className="table-opponent"
-        src={`/art/opponent_${expression}.png`}
+        src={avatarSrc(opponentAvatar, expression)}
         alt=""
         aria-hidden="true"
         draggable={false}
