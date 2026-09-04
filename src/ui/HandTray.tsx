@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import type { Action, Card as CardType, PlayerView } from '../../shared/engine/types.ts';
 import { Card } from './Card.tsx';
 import { BIDDING_PHASES } from './Table.tsx';
+import { useOpponentName } from './opponentName.tsx';
 
 /** The pickup motion (2e.5): a hand travels from ITS SEAT into the tray, rather than the
  *  tray just appearing — "like I'm physically picking them up." Replaces the earlier
@@ -107,6 +108,7 @@ export function HandTray({
    *  disabled rather than silently swallowing a click the player thinks landed. */
   frozen?: boolean;
 }) {
+  const opponentName = useOpponentName();
   const cardActions = legal.filter(
     (a): a is Extract<Action, { type: 'PLAY_CARD' | 'DEALER_DISCARD' }> =>
       a.type === 'PLAY_CARD' || a.type === 'DEALER_DISCARD',
@@ -137,7 +139,7 @@ export function HandTray({
     return (
       <div className="hand-tray">
         <div className="hand-tray-label">
-          {frozen ? 'Trick complete…' : 'Old-Timer is exchanging…'}
+          {frozen ? 'Trick complete…' : `${opponentName} is exchanging…`}
         </div>
         <div className="hand-tray-cards hand-tray-cards-placeholder" aria-hidden="true" />
       </div>

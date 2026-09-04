@@ -6,6 +6,7 @@ import type {
   PlayerView,
 } from '../../shared/engine/types.ts';
 import { otherPlayer } from '../../shared/engine/legal.ts';
+import { useOpponentName } from './opponentName.tsx';
 import type { CompletedTrick } from '../game/useGame.ts';
 import { Card, CardBack } from './Card.tsx';
 import { UpcardWheel } from './UpcardWheel.tsx';
@@ -187,6 +188,7 @@ export function Table({
   completedTrick: CompletedTrick | null;
   lastBotAction: Action | null;
 }) {
+  const opponentName = useOpponentName();
   // A finished trick is held by useGame and shown here after the engine has moved on —
   // otherwise the trick-winning card is never rendered at all. Sweeping toward the winner
   // also tells the player who took it without any extra text.
@@ -366,7 +368,7 @@ export function Table({
               a player's two hands is selected/blind. */}
           <div
             className={`table-dealer-chip is-${view.dealer === view.you ? 'south' : 'north'}`}
-            title={`${view.dealer === view.you ? 'You' : 'Old-Timer'} dealt this hand`}
+            title={`${view.dealer === view.you ? 'You' : opponentName} dealt this hand`}
           >
             <img src="/art/dealer_chip.png" alt="Dealer" className="dealer-chip-img" />
           </div>

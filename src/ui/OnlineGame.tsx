@@ -10,6 +10,7 @@ import { HandTray } from './HandTray.tsx';
 import { LonerDim, LonerStamp } from './LonerFx.tsx';
 import { PauseMenu } from './PauseMenu.tsx';
 import type { RoomCode } from '../../shared/net/protocol.ts';
+import { OpponentNameProvider } from './opponentName.tsx';
 
 /** The same board as single-player, driven by the server instead of a local reducer.
  *
@@ -29,8 +30,12 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
   const waiting =
     !game.view || game.status !== 'connected' || !game.opponentPresent;
 
+  // Falls back to a neutral word rather than to the Old-Timer: the player across the table is
+  // a person, and if they gave no name "Opponent" is honest where a character's name is not.
+  const opponentLabel = game.opponentName ?? 'Opponent';
+
   return (
-    <>
+    <OpponentNameProvider name={opponentLabel}>
       <SceneLayer />
       {game.view && <LonerDim view={game.view} />}
       {game.view && <LonerStamp view={game.view} />}
@@ -82,7 +87,7 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
           }}
         />
       )}
-    </>
+    </OpponentNameProvider>
   );
 }
 

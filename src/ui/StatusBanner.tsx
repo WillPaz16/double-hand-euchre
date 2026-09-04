@@ -1,5 +1,6 @@
 import type { PlayerView } from '../../shared/engine/types.ts';
 import { otherPlayer } from '../../shared/engine/legal.ts';
+import { useOpponentName } from './opponentName.tsx';
 
 const SUIT_LABEL: Record<string, string> = {
   clubs: 'Clubs',
@@ -15,6 +16,7 @@ export function StatusBanner({
   view: PlayerView;
   onRestart?: () => void;
 }) {
+  const opponentName = useOpponentName();
   // This is the game's entire TEXTUAL state channel — trump called, who's making, tricks won,
   // hand/game outcome — and until now announced none of it to a screen reader: trump gets
   // named, a trick is won, the game ends, and nothing is spoken unless the player is already
@@ -25,7 +27,8 @@ export function StatusBanner({
   // already present in the accessibility tree, not retroactively when a differently-keyed
   // subtree swaps in, so it can't be hoisted to one wrapper above the phase branches.
   if (view.phase === 'game_over') {
-    const message = view.winner === view.you ? 'You win the game!' : 'Old-Timer wins the game.';
+    const message =
+      view.winner === view.you ? 'You win the game!' : `${opponentName} wins the game.`;
     return (
       <div className="status-banner big" role="status" aria-live="polite">
         <div>{message}</div>
@@ -75,7 +78,7 @@ export function StatusBanner({
           {SUIT_LABEL[view.trump]} is trump
           {view.maker && (
             <>
-              , called by {view.maker === view.you ? 'you' : 'Old-Timer'}
+              , called by {view.maker === view.you ? 'you' : opponentName}
               {lonerPhrase}
             </>
           )}
@@ -90,7 +93,7 @@ export function StatusBanner({
           not begun one. */}
       {view.phase === 'play' && (
         <div className="status-row">
-          Trick {view.trickNumber + 1} of 5. You've taken {view.tricksWon[view.you]}, Old-Timer{' '}
+          Trick {view.trickNumber + 1} of 5. You've taken {view.tricksWon[view.you]}, {opponentName}{' '}
           {view.tricksWon[otherPlayer(view.you)]}.
         </div>
       )}

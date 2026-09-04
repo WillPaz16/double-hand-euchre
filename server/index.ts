@@ -21,7 +21,7 @@ import { WebSocketServer, type WebSocket } from 'ws';
 import { DEFAULT_CONFIG } from '../shared/engine/index.ts';
 import type { CompletedTrick, Player } from '../shared/engine/types.ts';
 import type { ClientId, ClientMessage, RoomCode, ServerMessage } from '../shared/net/protocol.ts';
-import { normaliseRoomCode } from '../shared/net/protocol.ts';
+import { cleanName, normaliseRoomCode } from '../shared/net/protocol.ts';
 import {
   advanceDeal,
   bothSeated,
@@ -30,12 +30,14 @@ import {
   join,
   legalFor,
   needsDealAdvance,
+  opponentName,
   opponentPresent,
   seatOf,
   submit,
   viewFor,
   type Room,
 } from '../shared/net/room.ts';
+import { loadRooms, saveRooms } from './store.ts';
 
 const PORT = Number(process.env.PORT) || 8787;
 /** Matches the single-player pacing in useGame — long enough to read the hand that just ended. */
@@ -51,7 +53,24 @@ interface Live {
   emptySince?: number;
 }
 
+/** Rooms restored from the last snapshot, each with no sockets: the games are back, their
+ *  players are not, until each client reconnects and reclaims its seat by clientId. */
 const rooms = new Map<RoomCode, Live>();
+for (const [code, room] of loadRooms()) rooms.set(code, { room, sockets: {} });
+
+/** Snapshots are debounced rather than written on every mutation. A busy hand is several
+ *  messages a second and each write is a full serialise-and-rename; coalescing them costs at
+ *  most this long of progress in a crash, which for a card game is a fraction of one turn. */
+const SAVE_DEBOUNCE_MS = 1000;
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+
+function scheduleSave(): void {
+  if (saveTimer) return;
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    saveRooms(new Map([...rooms].map(([code, live]) => [code, live.room])));
+  }, SAVE_DEBOUNCE_MS);
+}
 
 function freshSeed(): string {
   return `deal-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -73,6 +92,7 @@ function broadcast(live: Live, completedTrick: CompletedTrick | null = null): vo
       legal: legalFor(live.room, seat),
       opponentPresent: opponentPresent(live.room, seat),
       completedTrick,
+      opponentName: opponentName(live.room, seat),
     });
   }
 }
@@ -100,6 +120,7 @@ function armDealTimer(live: Live): void {
 function settle(live: Live, completedTrick: CompletedTrick | null = null): void {
   broadcast(live, completedTrick);
   armDealTimer(live);
+  scheduleSave();
 }
 
 function parse(raw: string): ClientMessage | null {
@@ -159,7 +180,9 @@ wss.on('connection', (socket) => {
         rooms.set(code, live);
       }
 
-      const joined = join(live.room, msg.clientId);
+      // Names are cleaned server-side too: a client is free to send anything, and this is
+      // text that will be rendered on someone ELSE's screen.
+      const joined = join(live.room, msg.clientId, cleanName(msg.name));
       if (!joined.ok) {
         send(socket, { t: 'rejected', reason: joined.error });
         return;
@@ -205,6 +228,7 @@ wss.on('connection', (socket) => {
         legal: legalFor(live.room, boundSeat),
         opponentPresent: opponentPresent(live.room, boundSeat),
         completedTrick: null,
+        opponentName: opponentName(live.room, boundSeat),
       });
       return;
     }
@@ -241,9 +265,20 @@ setInterval(() => {
     if (live.emptySince && now - live.emptySince > EMPTY_ROOM_TTL_MS) {
       if (live.dealTimer) clearTimeout(live.dealTimer);
       rooms.delete(code);
+      scheduleSave();
     }
   }
 }, 60_000).unref();
+
+/** Flush on the way out so an ordinary restart (deploy, Ctrl-C) loses nothing at all, rather
+ *  than up to one debounce window. `once` per signal: a second Ctrl-C should still kill it. */
+for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+  process.once(signal, () => {
+    if (saveTimer) clearTimeout(saveTimer);
+    saveRooms(new Map([...rooms].map(([code, live]) => [code, live.room])));
+    process.exit(0);
+  });
+}
 
 httpServer.listen(PORT, () => {
   console.log(`euchre server listening on :${PORT}`);

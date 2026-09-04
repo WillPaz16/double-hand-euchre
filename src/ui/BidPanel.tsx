@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Action, PlayerView, Suit } from '../../shared/engine/types.ts';
+import { useOpponentName } from './opponentName.tsx';
 
 const SUIT_LABEL: Record<string, string> = {
   clubs: 'Clubs',
@@ -49,6 +50,7 @@ export function BidPanel({
   legal: Action[];
   play: (a: Action) => void;
 }) {
+  const opponentName = useOpponentName();
   // The biggest bet in the game — zero information, for the whole hand, no way back once
   // committed (RULES.md §2: a declaration can't be revisited). The loner ladder's design
   // spec calls for this one specifically to "demand a deliberate confirm"; the other two
@@ -181,8 +183,8 @@ export function BidPanel({
           out of step with the engine if that rule changes or the setting is turned off. */}
       {view.phase === 'bidding_round2' && !legal.some((a) => a.type === 'PASS') && (
         <div className="bid-panel-prompt">
-          You must call trump. Old-Timer passed and you're the dealer, so passing isn't an
-          option this hand.
+          You must call trump. {opponentName} passed and you're the dealer, so passing isn't
+          an option this hand.
         </div>
       )}
       {[...trumpRows.values()].map((row) =>

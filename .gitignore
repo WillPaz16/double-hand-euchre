@@ -7,3 +7,7 @@ dist/
 # Python bytecode from running the art generators
 __pycache__/
 *.pyc
+
+# Server room snapshots — live game state, machine-local, never source.
+.rooms.json
+.rooms.json.tmp

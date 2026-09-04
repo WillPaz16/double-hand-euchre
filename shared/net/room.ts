@@ -32,6 +32,8 @@ export interface Room {
    *  to come back" rather than the seat silently opening up to a stranger who happens to know
    *  the code. */
   connected: Record<Player, boolean>;
+  /** Display name per seat, null until that player supplies one. */
+  names: Record<Player, string | null>;
 }
 
 export type RoomResult<T> = { ok: true; value: T } | { ok: false; error: string };
@@ -54,6 +56,7 @@ export function createRoom(
     state: newGame(seed, dealer, config),
     seats: { A: null, B: null },
     connected: { A: false, B: false },
+    names: { A: null, B: null },
   };
 }
 
@@ -70,11 +73,20 @@ export function bothSeated(room: Room): boolean {
  *  Reclaiming is checked BEFORE looking for a free seat, so a reconnecting player always lands
  *  back in their own chair holding their own cards — never in the empty one, which would hand
  *  them their opponent's hand and, with it, the whole game. */
-export function join(room: Room, clientId: ClientId): RoomResult<{ room: Room; seat: Player }> {
+export function join(
+  room: Room,
+  clientId: ClientId,
+  name: string | null = null,
+): RoomResult<{ room: Room; seat: Player }> {
   const existing = seatOf(room, clientId);
   if (existing) {
     return ok({
-      room: { ...room, connected: { ...room.connected, [existing]: true } },
+      room: {
+        ...room,
+        connected: { ...room.connected, [existing]: true },
+        // A returning player may have changed their name; keep the old one if they sent none.
+        names: { ...room.names, [existing]: name ?? room.names[existing] },
+      },
       seat: existing,
     });
   }
@@ -85,6 +97,7 @@ export function join(room: Room, clientId: ClientId): RoomResult<{ room: Room; s
       ...room,
       seats: { ...room.seats, [free]: clientId },
       connected: { ...room.connected, [free]: true },
+      names: { ...room.names, [free]: name },
     },
     seat: free,
   });
@@ -179,6 +192,11 @@ export function legalFor(room: Room, seat: Player): Action[] {
 export function opponentPresent(room: Room, seat: Player): boolean {
   const other: Player = seat === 'A' ? 'B' : 'A';
   return room.seats[other] !== null && room.connected[other];
+}
+
+export function opponentName(room: Room, seat: Player): string | null {
+  const other: Player = seat === 'A' ? 'B' : 'A';
+  return room.names[other];
 }
 
 /** Re-exported for callers that hold a Room and want the raw state (the server's deal-advance

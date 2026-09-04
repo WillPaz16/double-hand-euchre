@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Action, CompletedTrick, Player, PlayerView } from '../../shared/engine/types.ts';
 import type { ClientMessage, RoomCode, ServerMessage } from '../../shared/net/protocol.ts';
 import { getClientId } from './clientId.ts';
+import { getPlayerName } from './playerName.ts';
 import { TRICK_HOLD_MS } from '../game/useGame.ts';
 
 /** Where the authoritative server lives. Defaults to the local dev server; set
@@ -26,6 +27,8 @@ export interface OnlineGame {
   seat: Player | null;
   code: RoomCode;
   opponentPresent: boolean;
+  /** What to call the other player. Null until they arrive or if they gave no name. */
+  opponentName: string | null;
   status: ConnectionStatus;
   /** Set when the server refused something worth showing the player. */
   notice: string | null;
@@ -45,6 +48,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
   const [legal, setLegal] = useState<Action[]>([]);
   const [seat, setSeat] = useState<Player | null>(null);
   const [opponentPresent, setOpponentPresent] = useState(false);
+  const [opponentName, setOpponentName] = useState<string | null>(null);
   const [status, setStatus] = useState<ConnectionStatus>('connecting');
   const [notice, setNotice] = useState<string | null>(null);
   const [completedTrick, setCompletedTrick] = useState<CompletedTrick | null>(null);
@@ -98,7 +102,12 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
         if (cancelled) return;
         retry = RECONNECT_MIN_MS;
         setStatus('connected');
-        const hello: ClientMessage = { t: 'hello', code, clientId: getClientId() };
+        const hello: ClientMessage = {
+          t: 'hello',
+          code,
+          clientId: getClientId(),
+          ...(getPlayerName() ? { name: getPlayerName()! } : {}),
+        };
         self.send(JSON.stringify(hello));
       };
 
@@ -120,6 +129,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
           setView(msg.view);
           setLegal(msg.legal);
           setOpponentPresent(msg.opponentPresent);
+          setOpponentName(msg.opponentName);
           if (msg.completedTrick) setCompletedTrick(msg.completedTrick);
           return;
         }
@@ -182,6 +192,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
     seat,
     code,
     opponentPresent,
+    opponentName,
     status,
     notice,
     leave,

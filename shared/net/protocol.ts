@@ -15,7 +15,7 @@ export type ClientMessage =
    *  same `clientId` after a dropped connection reclaims the same seat and resyncs — that is
    *  the whole reconnect story, and why the seat is keyed on `clientId` rather than on the
    *  socket. */
-  | { t: 'hello'; code: RoomCode; clientId: ClientId }
+  | { t: 'hello'; code: RoomCode; clientId: ClientId; name?: string }
   | { t: 'action'; action: Action };
 
 export type ServerMessage =
@@ -35,6 +35,10 @@ export type ServerMessage =
       legal: Action[];
       opponentPresent: boolean;
       completedTrick: CompletedTrick | null;
+      /** What to call the other player, or null if they haven't given a name. Sent rather than
+       *  stored client-side because it belongs to THEM: it arrives when they join and changes
+       *  when they rejoin under a different one. */
+      opponentName: string | null;
     }
   /** A refused `hello` or `action`, with a reason fit to show a player. The client stays
    *  connected; a rejected action simply did not happen. */
@@ -60,4 +64,17 @@ export function normaliseRoomCode(input: string): RoomCode | null {
   if (trimmed.length !== ROOM_CODE_LENGTH) return null;
   if (![...trimmed].every((c) => CODE_ALPHABET.includes(c))) return null;
   return trimmed;
+}
+
+/** Display names are shown to the other player, so they are bounded and trimmed here — once,
+ *  where both the client and the server can call the same function, rather than trusted from
+ *  whatever a client happens to send. React escapes text nodes, so the risk is nuisance
+ *  (a wall of characters breaking the scoreboard) rather than injection.
+ *  Returns null for anything that is empty after trimming, which the UI reads as "no name". */
+export const MAX_NAME_LENGTH = 16;
+
+export function cleanName(raw: unknown): string | null {
+  if (typeof raw !== 'string') return null;
+  const trimmed = raw.replace(/\s+/g, ' ').trim().slice(0, MAX_NAME_LENGTH);
+  return trimmed.length > 0 ? trimmed : null;
 }

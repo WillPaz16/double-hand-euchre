@@ -3283,3 +3283,12 @@ body {
   color: #ff9b8a;
   margin: 0;
 }
+/* The name field is free text, so it gets ordinary word spacing rather than the room code's
+   wide per-character tracking (which exists to make four characters readable aloud). */
+.lobby-input-name {
+  letter-spacing: normal;
+  text-indent: 0;
+  text-transform: none;
+  font-size: 0.9rem;
+  width: 12ch;
+}

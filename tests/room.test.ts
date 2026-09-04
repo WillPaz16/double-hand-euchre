@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   advanceDeal,
+  opponentName,
   bothSeated,
   createRoom,
   disconnect,
@@ -161,6 +162,36 @@ describe('room authority', () => {
       expect(v.opponentSelectedHand).toBeNull();
       expect(v.opponentBlindHand).toBeNull();
     }
+  });
+});
+
+describe('display names', () => {
+  it('records a name per seat and reports the OTHER seat\'s to each player', () => {
+    const a = join(room(), 'client-a', 'Ada');
+    if (!a.ok) throw new Error(a.error);
+    const b = join(a.value.room, 'client-b', 'Bo');
+    if (!b.ok) throw new Error(b.error);
+    const r = b.value.room;
+
+    // Each side is told who is across the table, never their own name back.
+    expect(opponentName(r, 'A')).toBe('Bo');
+    expect(opponentName(r, 'B')).toBe('Ada');
+  });
+
+  it('leaves the name null when none is given', () => {
+    const r = seated(); // joins without names
+    expect(opponentName(r, 'A')).toBeNull();
+    expect(opponentName(r, 'B')).toBeNull();
+  });
+
+  it('keeps the existing name when a reconnecting client sends none', () => {
+    const a = join(room(), 'client-a', 'Ada');
+    if (!a.ok) throw new Error(a.error);
+    const dropped = disconnect(a.value.room, 'client-a');
+    const back = join(dropped, 'client-a'); // no name this time
+    expect(back.ok).toBe(true);
+    if (!back.ok) return;
+    expect(back.value.room.names.A).toBe('Ada');
   });
 });
 

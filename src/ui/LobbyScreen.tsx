@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { SceneLayer } from './SceneLayer.tsx';
-import { makeRoomCode, normaliseRoomCode } from '../../shared/net/protocol.ts';
+import { makeRoomCode, normaliseRoomCode, MAX_NAME_LENGTH } from '../../shared/net/protocol.ts';
+import { getPlayerName, setPlayerName } from '../net/playerName.ts';
 import type { RoomCode } from '../../shared/net/protocol.ts';
 
 /** Create-or-join. There is deliberately no distinction on the server: `hello` creates the room
@@ -14,6 +15,7 @@ export function LobbyScreen({
   onBack: () => void;
 }) {
   const [typed, setTyped] = useState('');
+  const [name, setName] = useState(() => getPlayerName() ?? '');
   const [error, setError] = useState<string | null>(null);
 
   const join = () => {
@@ -32,6 +34,26 @@ export function LobbyScreen({
       <p className="title-tagline">
         One of you starts a table and reads out the code. The other types it in.
       </p>
+
+      {/* Optional on purpose: a friend you are already on the phone to does not need to type
+          their name in to play a hand of cards. Persisted so it is asked for at most once. */}
+      <div className="lobby-join">
+        <label className="lobby-label" htmlFor="player-name">
+          your name (optional)
+        </label>
+        <input
+          id="player-name"
+          className="lobby-input lobby-input-name"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+            setPlayerName(e.target.value);
+          }}
+          maxLength={MAX_NAME_LENGTH}
+          autoComplete="nickname"
+          spellCheck={false}
+        />
+      </div>
 
       <button className="title-play-button" onClick={() => onJoin(makeRoomCode())}>
         Start a Table

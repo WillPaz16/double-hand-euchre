@@ -67,6 +67,16 @@ class Client {
         const [found] = this.queue.splice(idx, 1);
         return found as Extract<ServerMessage, { t: T }>;
       }
+      // Surface a refusal instead of timing out on it. Waiting for `seated` while the server
+      // has already said "that is not a valid room code" otherwise fails as a bare timeout,
+      // which says nothing about the actual cause — hit three times during development, every
+      // time by putting an excluded glyph (0/O/1/I) in a test room code.
+      if (t !== 'rejected') {
+        const refusal = this.queue.find((m) => m.t === 'rejected');
+        if (refusal && refusal.t === 'rejected') {
+          throw new Error(`server refused while awaiting ${t}: ${refusal.reason}`);
+        }
+      }
       if (Date.now() > deadline) throw new Error(`timed out waiting for ${t}`);
       await new Promise((r) => setTimeout(r, 20));
     }

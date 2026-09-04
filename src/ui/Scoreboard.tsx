@@ -1,5 +1,6 @@
 import type { Player, PlayerView, Suit } from '../../shared/engine/types.ts';
 import { otherPlayer } from '../../shared/engine/legal.ts';
+import { useOpponentName } from './opponentName.tsx';
 
 // Each player's scoring suit — a fixed choice for now (real euchre lets a player pick their
 // own suit for this; that becomes a settings option later, not part of the core rules).
@@ -174,6 +175,7 @@ export function Scoreboard({ view }: { view: PlayerView }) {
   // Relative to the viewer, not to seat 'A' — see seatsFor() in Table.tsx.
   const you = view.you;
   const them = otherPlayer(you);
+  const opponentName = useOpponentName();
   return (
     <div className="scoreboard">
       <div className={`score-slot${view.dealer === you ? ' is-dealer' : ''}`}>
@@ -186,7 +188,7 @@ export function Scoreboard({ view }: { view: PlayerView }) {
       <div className={`score-slot${view.dealer === them ? ' is-dealer' : ''}`}>
         <ScorePair player={them} score={view.gameScore[them]} won={view.winner === them} />
         <div className="score-text">
-          <span className="score-label">Old-Timer</span>
+          <span className="score-label">{opponentName}</span>
           <span className="score-number">{view.gameScore[them]}</span>
         </div>
 
