@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Action, PlayerView, Suit } from '../../shared/engine/types.ts';
-import { BOT } from './useGame.ts';
+import { otherPlayer } from '../../shared/engine/legal.ts';
 
 const SPEECH_MS = 2800;
 
@@ -108,7 +108,7 @@ export function useOpponentSpeech(view: PlayerView, lastBotAction: Action | null
     if (prevPhase === view.phase) return;
 
     if (view.phase === 'hand_complete' || view.phase === 'game_over') {
-      const botWon = view.winner ? view.winner === BOT : view.tricksWon[BOT] > view.tricksWon.A;
+      const botWon = view.winner ? view.winner === otherPlayer(view.you) : view.tricksWon[otherPlayer(view.you)] > view.tricksWon[view.you];
       if (view.phase === 'game_over') {
         // The game's own outcome only happens once — always worth a line.
         say(pick(botWon ? GAME_WIN_LINES : GAME_LOSE_LINES, lastLineRef.current));

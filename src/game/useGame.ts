@@ -9,7 +9,14 @@ import {
   actingHand,
   trickWinnerIndex,
 } from '../../shared/engine/index.ts';
-import type { Action, Config, GameState, Player, TrickCard } from '../../shared/engine/types.ts';
+import type {
+  Action,
+  CompletedTrick,
+  Config,
+  GameState,
+  Player,
+  TrickCard,
+} from '../../shared/engine/types.ts';
 import { chooseMove } from '../../shared/bot/index.ts';
 import { getRuleSettings } from './ruleSettings.ts';
 import { loadSavedGame, saveGame, clearSavedGame } from './savedGame.ts';
@@ -27,12 +34,11 @@ const NEXT_DEAL_DELAY_MS = 1500;
  *  if the two drift apart. */
 export const TRICK_HOLD_MS = 1300;
 
-/** A trick that has just been won, held by the UI after the engine has already moved on. */
-export interface CompletedTrick {
-  cards: TrickCard[];
-  winner: Player;
-  winningIndex: number;
-}
+/** Re-exported, not redeclared: this moved to shared types once the SERVER had to produce it
+ *  too (a networked client cannot rebuild a completed trick from the state it receives — see
+ *  the type's own docstring). Kept exported from here so existing importers don't have to care
+ *  where it lives. */
+export type { CompletedTrick };
 
 function freshSeed(): string {
   return `deal-${Date.now()}-${Math.random().toString(36).slice(2)}`;

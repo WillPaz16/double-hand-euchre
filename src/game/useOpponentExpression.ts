@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Player, PlayerView } from '../../shared/engine/types.ts';
-import { HUMAN, BOT } from './useGame.ts';
+import { otherPlayer } from '../../shared/engine/legal.ts';
 
 export type Expression = 'idle' | 'happy' | 'rueful' | 'blink';
 
@@ -35,15 +35,15 @@ export function useOpponentExpression(view: PlayerView): Expression {
 
   useEffect(() => {
     const prev = prevTricksRef.current;
-    if (view.tricksWon[BOT] > prev[BOT]) react('happy');
-    else if (view.tricksWon[HUMAN] > prev[HUMAN]) react('rueful');
-    prevTricksRef.current = { A: view.tricksWon[HUMAN], B: view.tricksWon[BOT] };
+    if (view.tricksWon[otherPlayer(view.you)] > prev[otherPlayer(view.you)]) react('happy');
+    else if (view.tricksWon[view.you] > prev[view.you]) react('rueful');
+    prevTricksRef.current = { [view.you]: view.tricksWon[view.you], [otherPlayer(view.you)]: view.tricksWon[otherPlayer(view.you)] } as Record<'A' | 'B', number>;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view.tricksWon[HUMAN], view.tricksWon[BOT]]);
+  }, [view.tricksWon[view.you], view.tricksWon[otherPlayer(view.you)]]);
 
   useEffect(() => {
     if (view.phase === 'hand_complete' || view.phase === 'game_over') {
-      const botWon = view.winner ? view.winner === BOT : view.tricksWon[BOT] > view.tricksWon[HUMAN];
+      const botWon = view.winner ? view.winner === otherPlayer(view.you) : view.tricksWon[otherPlayer(view.you)] > view.tricksWon[view.you];
       react(botWon ? 'happy' : 'rueful');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -19,7 +19,7 @@
 import { createServer } from 'node:http';
 import { WebSocketServer, type WebSocket } from 'ws';
 import { DEFAULT_CONFIG } from '../shared/engine/index.ts';
-import type { Player } from '../shared/engine/types.ts';
+import type { CompletedTrick, Player } from '../shared/engine/types.ts';
 import type { ClientId, ClientMessage, RoomCode, ServerMessage } from '../shared/net/protocol.ts';
 import { normaliseRoomCode } from '../shared/net/protocol.ts';
 import {
@@ -63,7 +63,7 @@ function send(socket: WebSocket, msg: ServerMessage): void {
 
 /** Pushes the authoritative state to every connected seat, each redacted for its own eyes.
  *  One function, called after every mutation — clients are never asked to derive anything. */
-function broadcast(live: Live): void {
+function broadcast(live: Live, completedTrick: CompletedTrick | null = null): void {
   for (const seat of ['A', 'B'] as const) {
     const socket = live.sockets[seat];
     if (!socket) continue;
@@ -72,6 +72,7 @@ function broadcast(live: Live): void {
       view: viewFor(live.room, seat),
       legal: legalFor(live.room, seat),
       opponentPresent: opponentPresent(live.room, seat),
+      completedTrick,
     });
   }
 }
@@ -96,8 +97,8 @@ function armDealTimer(live: Live): void {
   }, NEXT_DEAL_DELAY_MS);
 }
 
-function settle(live: Live): void {
-  broadcast(live);
+function settle(live: Live, completedTrick: CompletedTrick | null = null): void {
+  broadcast(live, completedTrick);
   armDealTimer(live);
 }
 
@@ -203,11 +204,12 @@ wss.on('connection', (socket) => {
         view: viewFor(live.room, boundSeat),
         legal: legalFor(live.room, boundSeat),
         opponentPresent: opponentPresent(live.room, boundSeat),
+        completedTrick: null,
       });
       return;
     }
-    live.room = result.value;
-    settle(live);
+    live.room = result.value.room;
+    settle(live, result.value.completedTrick);
   });
 
   socket.on('close', () => {
@@ -215,9 +217,16 @@ wss.on('connection', (socket) => {
     const live = rooms.get(boundCode);
     if (!live) return;
     const seat = seatOf(live.room, boundClient);
-    // Only drop the socket if it is still the CURRENT one for that seat: a replaced socket
-    // closing later must not unseat the connection that replaced it.
-    if (seat && live.sockets[seat] === socket) delete live.sockets[seat];
+    // A replaced socket closing later must not unseat the connection that replaced it. This
+    // guard has to cover the DISCONNECT as well as the socket map, which is the bug it was
+    // written for and originally only half-fixed: `disconnect()` ran unconditionally, so a
+    // stale close marked the seat away while a perfectly healthy socket was sitting in
+    // `live.sockets`. The opponent then saw "waiting for the other player" over a board that
+    // was actually live. Reproduced with two clients where one had reconnected; it also fires
+    // in React StrictMode, whose deliberate mount/unmount/remount makes every dev session
+    // replace its socket once.
+    if (!seat || live.sockets[seat] !== socket) return;
+    delete live.sockets[seat];
     live.room = disconnect(live.room, boundClient);
     if (Object.keys(live.sockets).length === 0) live.emptySince = Date.now();
     settle(live);

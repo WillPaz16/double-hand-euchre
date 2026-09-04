@@ -1,5 +1,11 @@
-import type { Action, Card as CardType, HandId, PlayerView } from '../../shared/engine/types.ts';
-import { HUMAN, BOT } from '../game/useGame.ts';
+import type {
+  Action,
+  Card as CardType,
+  HandId,
+  Player,
+  PlayerView,
+} from '../../shared/engine/types.ts';
+import { otherPlayer } from '../../shared/engine/legal.ts';
 import type { CompletedTrick } from '../game/useGame.ts';
 import { Card, CardBack } from './Card.tsx';
 import { UpcardWheel } from './UpcardWheel.tsx';
@@ -37,19 +43,26 @@ type Seat = 'sw' | 'se' | 'nw' | 'ne';
  *  not change with seating. Under two-sided seating that ring zig-zags between north and
  *  south instead of walking round a rim, so turn order is no longer readable from position
  *  alone. The `.acting` highlight is load-bearing here, not decorative. */
-const SEATS: { hand: HandId; at: Seat }[] = [
-  { hand: { player: HUMAN, role: 'selected' }, at: 'sw' },
-  { hand: { player: HUMAN, role: 'blind' }, at: 'se' },
-  { hand: { player: BOT, role: 'selected' }, at: 'nw' },
-  { hand: { player: BOT, role: 'blind' }, at: 'ne' },
-];
+/** Seats are relative to WHOEVER IS LOOKING: you always sit south, your opponent always north.
+ *  This used to be a module constant keyed on HUMAN ('A'), which was correct only because the
+ *  local player was always seat A. Online, half of all players are seat B — for them a fixed
+ *  table would seat their own hands opposite them and label the opponent's cards as theirs. */
+function seatsFor(you: Player): { hand: HandId; at: Seat }[] {
+  const them = otherPlayer(you);
+  return [
+    { hand: { player: you, role: 'selected' }, at: 'sw' },
+    { hand: { player: you, role: 'blind' }, at: 'se' },
+    { hand: { player: them, role: 'selected' }, at: 'nw' },
+    { hand: { player: them, role: 'blind' }, at: 'ne' },
+  ];
+}
 
 function sameHand(a: HandId, b: HandId): boolean {
   return a.player === b.player && a.role === b.role;
 }
 
-function seatOf(hand: HandId): Seat {
-  return SEATS.find((s) => sameHand(s.hand, hand))?.at ?? 'nw';
+function seatOf(hand: HandId, you: Player): Seat {
+  return seatsFor(you).find((s) => sameHand(s.hand, hand))?.at ?? 'nw';
 }
 
 /** The hand's own cards, if this player is allowed to see them face-up ON THE TABLE right
@@ -94,7 +107,7 @@ export const NO_HAND_PHASES = new Set(['select', 'loner_full_blind', 'loner_blin
  *  than trusting it stays correct across future edits to phase lists. */
 export function visibleCards(view: PlayerView, hand: HandId): CardType[] | null {
   if (DEAL_OVER_PHASES.has(view.phase)) {
-    if (hand.player === HUMAN) {
+    if (hand.player === view.you) {
       return hand.role === 'selected' ? view.ownSelectedHand : view.ownBlindHand;
     }
     return hand.role === 'selected' ? view.opponentSelectedHand : view.opponentBlindHand;
@@ -121,7 +134,7 @@ export function visibleCards(view: PlayerView, hand: HandId): CardType[] | null 
  *  the fix is to stop moving cards that were never going anywhere rather than to make the
  *  highlight louder. */
 export function isHeld(view: PlayerView, hand: HandId): boolean {
-  if (hand.player !== HUMAN) return false;
+  if (hand.player !== view.you) return false;
   if (view.actingHand && sameHand(view.actingHand, hand)) return true;
   return (
     hand.role === 'selected' &&
@@ -217,7 +230,7 @@ export function Table({
           {speech}
         </div>
       )}
-      {SEATS.map(({ hand, at }) => {
+      {seatsFor(view.you).map(({ hand, at }) => {
         // "acting" (gold highlight + turn order) and "held" (picked up, seat empty) used to
         // be the same boolean. They're related but not identical now that a hand can be held
         // during bidding, where nobody is "acting" in the RULES.md §6 turn-order sense at
@@ -328,9 +341,9 @@ export function Table({
               <div
                 key={i}
                 className={
-                  `trick-card at-${seatOf(played.handId)}` +
+                  `trick-card at-${seatOf(played.handId, view.you)}` +
                   (sweeping
-                    ? ` is-sweeping sweep-${completedTrick.winner === HUMAN ? 'down' : 'up'}` +
+                    ? ` is-sweeping sweep-${completedTrick.winner === view.you ? 'down' : 'up'}` +
                       (i === completedTrick.winningIndex ? ' is-winner' : '')
                     : i === liveWinnerIndex
                       ? ' is-leading'
@@ -352,8 +365,8 @@ export function Table({
               always exactly one of two sides, never one of four seats, regardless of which of
               a player's two hands is selected/blind. */}
           <div
-            className={`table-dealer-chip is-${view.dealer === HUMAN ? 'south' : 'north'}`}
-            title={`${view.dealer === HUMAN ? 'You' : 'Old-Timer'} dealt this hand`}
+            className={`table-dealer-chip is-${view.dealer === view.you ? 'south' : 'north'}`}
+            title={`${view.dealer === view.you ? 'You' : 'Old-Timer'} dealt this hand`}
           >
             <img src="/art/dealer_chip.png" alt="Dealer" className="dealer-chip-img" />
           </div>

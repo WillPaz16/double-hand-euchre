@@ -181,8 +181,70 @@ async function main(): Promise<void> {
   offTurn.close();
   intruder.close();
 
+  await playAFullTrick();
+
   console.log(failures === 0 ? '\nsmoke test passed' : `\nsmoke test FAILED (${failures})`);
   process.exit(failures === 0 ? 0 : 1);
+}
+
+/** Drives two clients through bidding into real card play, far enough to complete a trick.
+ *
+ *  This is the check that matters most for the wire format, because a completed trick is the
+ *  one piece of state a client provably CANNOT derive: the engine appends the winning card and
+ *  sweeps the trick in the same call, so it appears in no state any client ever receives. If
+ *  the server does not send it, a remote player simply never sees which card took the trick.
+ *  Nothing short of playing a real hand exercises that. */
+async function playAFullTrick(): Promise<void> {
+  console.log('\n  -- driving a full hand --');
+  const code = 'TR2K';
+  const p1 = new Client('full-a');
+  const p2 = new Client('full-b');
+  await Promise.all([p1.open(), p2.open()]);
+  p1.send({ t: 'hello', code, clientId: p1.clientId });
+  await p1.next('seated');
+  p2.send({ t: 'hello', code, clientId: p2.clientId });
+  await p2.next('seated');
+  await sleep(250);
+
+  let sawTrick: (typeof p1 extends never ? never : ReturnType<typeof Object>) | null = null;
+  let completed = null as null | { winner: string; cards: unknown[] };
+  let reachedPlay = false;
+
+  // Play whichever seat is on turn, always taking the first legal action. Bounded so a rules
+  // bug shows up as a failed assertion rather than a hung script.
+  for (let step = 0; step < 120; step++) {
+    const s1 = p1.lastSync();
+    const s2 = p2.lastSync();
+    if (s1?.view.phase === 'play' || s2?.view.phase === 'play') reachedPlay = true;
+    for (const s of [s1, s2]) {
+      if (s?.completedTrick && !completed) {
+        completed = { winner: s.completedTrick.winner, cards: s.completedTrick.cards };
+      }
+    }
+    if (completed) break;
+
+    const actor = s1 && s1.legal.length > 0 ? p1 : s2 && s2.legal.length > 0 ? p2 : null;
+    if (!actor) {
+      await sleep(120); // waiting on a server-side deal advance
+      continue;
+    }
+    const sync = actor === p1 ? s1! : s2!;
+    actor.send({ t: 'action', action: sync.legal[0]! });
+    await sleep(120);
+  }
+
+  check('the hand reaches the play phase', reachedPlay);
+  check('a completed trick is delivered over the wire', completed !== null);
+  if (completed) {
+    check(
+      'the completed trick carries every card played to it',
+      completed.cards.length >= 2,
+      `${completed.cards.length} cards, winner ${completed.winner}`,
+    );
+  }
+
+  p1.close();
+  p2.close();
 }
 
 main().catch((e) => {

@@ -1,5 +1,5 @@
 import type { PlayerView } from '../../shared/engine/types.ts';
-import { HUMAN, BOT } from '../game/useGame.ts';
+import { otherPlayer } from '../../shared/engine/legal.ts';
 
 const SUIT_LABEL: Record<string, string> = {
   clubs: 'Clubs',
@@ -25,7 +25,7 @@ export function StatusBanner({
   // already present in the accessibility tree, not retroactively when a differently-keyed
   // subtree swaps in, so it can't be hoisted to one wrapper above the phase branches.
   if (view.phase === 'game_over') {
-    const message = view.winner === HUMAN ? 'You win the game!' : 'Old-Timer wins the game.';
+    const message = view.winner === view.you ? 'You win the game!' : 'Old-Timer wins the game.';
     return (
       <div className="status-banner big" role="status" aria-live="polite">
         <div>{message}</div>
@@ -75,7 +75,7 @@ export function StatusBanner({
           {SUIT_LABEL[view.trump]} is trump
           {view.maker && (
             <>
-              , called by {view.maker === HUMAN ? 'you' : 'Old-Timer'}
+              , called by {view.maker === view.you ? 'you' : 'Old-Timer'}
               {lonerPhrase}
             </>
           )}
@@ -90,8 +90,8 @@ export function StatusBanner({
           not begun one. */}
       {view.phase === 'play' && (
         <div className="status-row">
-          Trick {view.trickNumber + 1} of 5. You've taken {view.tricksWon[HUMAN]}, Old-Timer{' '}
-          {view.tricksWon[BOT]}.
+          Trick {view.trickNumber + 1} of 5. You've taken {view.tricksWon[view.you]}, Old-Timer{' '}
+          {view.tricksWon[otherPlayer(view.you)]}.
         </div>
       )}
     </div>

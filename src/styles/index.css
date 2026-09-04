@@ -3194,3 +3194,92 @@ body {
      coincidence rather than by construction. Dropped the override; the base `.score-card-slot`
      rule already produces the same result and can't drift out of sync with it now. */
 }
+
+/* --- Multiplayer: lobby and connection overlay ------------------------------------------- */
+/* Reuses the title screen's own layout (`.title-screen`) rather than inventing a second
+   full-screen shell, so the room is framed identically whether you're starting a solo game or
+   joining a friend's table. Only the bits that have no title-screen equivalent live here. */
+.lobby-join {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.lobby-label {
+  font-size: 0.7rem;
+  opacity: 0.75;
+}
+.lobby-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+.lobby-input {
+  font-family: inherit;
+  /* Room codes are four characters and read aloud, so they get the same generous tracking the
+     scoreboard's own numerals use — a code you can't read back is a code you can't share. */
+  font-size: 1.4rem;
+  letter-spacing: 0.35em;
+  text-indent: 0.35em;
+  text-transform: uppercase;
+  width: 6.5ch;
+  text-align: center;
+  color: #ffd54a;
+  background: #241a12;
+  border: 2px solid #7a5a3a;
+  padding: 0.4rem 0.5rem;
+}
+.lobby-input:focus-visible {
+  outline: 2px solid #ffd54a;
+  outline-offset: 2px;
+}
+.lobby-error {
+  font-size: 0.7rem;
+  color: #ff9b8a;
+  max-width: 26ch;
+  text-align: center;
+}
+
+/* The overlay covers the board whenever the game cannot actually be played — connecting,
+   reconnecting, or waiting for the other player. Deliberately covering rather than sitting
+   beside it: a board you cannot act on is worse than no board, because every card on it invites
+   a tap that will be refused. */
+.net-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(16, 11, 8, 0.82);
+  padding: 1rem;
+}
+.net-overlay-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  background: #241a12;
+  border: 2px solid #7a5a3a;
+  padding: 1.25rem 1.5rem;
+  max-width: 32ch;
+}
+.net-overlay-code {
+  font-size: 2rem;
+  letter-spacing: 0.35em;
+  text-indent: 0.35em;
+  color: #ffd54a;
+  text-shadow: 0 0 14px rgba(255, 213, 74, 0.45);
+  margin: 0;
+}
+.net-overlay-text {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 0;
+}
+.net-overlay-notice {
+  font-size: 0.7rem;
+  color: #ff9b8a;
+  margin: 0;
+}

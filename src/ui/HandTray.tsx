@@ -2,7 +2,6 @@ import { useLayoutEffect, useRef } from 'react';
 import type { Action, Card as CardType, PlayerView } from '../../shared/engine/types.ts';
 import { Card } from './Card.tsx';
 import { BIDDING_PHASES } from './Table.tsx';
-import { HUMAN } from '../game/useGame.ts';
 
 /** The pickup motion (2e.5): a hand travels from ITS SEAT into the tray, rather than the
  *  tray just appearing — "like I'm physically picking them up." Replaces the earlier
@@ -192,7 +191,7 @@ export function HandTray({
     // Same seat-key convention as the acting-hand branch above, so PickupTray's FLIP
     // animation finds the right `data-seat` origin (Table.tsx tags every seat, not just the
     // acting one) regardless of which branch is rendering.
-    const trayKey = `${HUMAN}-selected`;
+    const trayKey = `${view.you}-selected`;
     return (
       <div className="hand-tray">
         <div className="hand-tray-label">Your hand</div>

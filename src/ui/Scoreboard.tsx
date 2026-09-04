@@ -1,5 +1,5 @@
 import type { Player, PlayerView, Suit } from '../../shared/engine/types.ts';
-import { HUMAN, BOT } from '../game/useGame.ts';
+import { otherPlayer } from '../../shared/engine/legal.ts';
 
 // Each player's scoring suit — a fixed choice for now (real euchre lets a player pick their
 // own suit for this; that becomes a settings option later, not part of the core rules).
@@ -171,20 +171,23 @@ function ScorePair({ player, score, won }: { player: Player; score: number; won:
  *  Table.tsx), reacting with the same `useOpponentExpression` states, so the portrait was
  *  literally a second copy of the same man on the same screen. */
 export function Scoreboard({ view }: { view: PlayerView }) {
+  // Relative to the viewer, not to seat 'A' — see seatsFor() in Table.tsx.
+  const you = view.you;
+  const them = otherPlayer(you);
   return (
     <div className="scoreboard">
-      <div className={`score-slot${view.dealer === HUMAN ? ' is-dealer' : ''}`}>
+      <div className={`score-slot${view.dealer === you ? ' is-dealer' : ''}`}>
         <div className="score-text">
           <span className="score-label">You</span>
-          <span className="score-number">{view.gameScore[HUMAN]}</span>
+          <span className="score-number">{view.gameScore[you]}</span>
         </div>
-        <ScorePair player={HUMAN} score={view.gameScore[HUMAN]} won={view.winner === HUMAN} />
+        <ScorePair player={you} score={view.gameScore[you]} won={view.winner === you} />
       </div>
-      <div className={`score-slot${view.dealer === BOT ? ' is-dealer' : ''}`}>
-        <ScorePair player={BOT} score={view.gameScore[BOT]} won={view.winner === BOT} />
+      <div className={`score-slot${view.dealer === them ? ' is-dealer' : ''}`}>
+        <ScorePair player={them} score={view.gameScore[them]} won={view.winner === them} />
         <div className="score-text">
           <span className="score-label">Old-Timer</span>
-          <span className="score-number">{view.gameScore[BOT]}</span>
+          <span className="score-number">{view.gameScore[them]}</span>
         </div>
 
       </div>

@@ -1,0 +1,81 @@
+import { useState } from 'react';
+import { SceneLayer } from './SceneLayer.tsx';
+import { makeRoomCode, normaliseRoomCode } from '../../shared/net/protocol.ts';
+import type { RoomCode } from '../../shared/net/protocol.ts';
+
+/** Create-or-join. There is deliberately no distinction on the server: `hello` creates the room
+ *  if it isn't there, so "host" and "guest" are the same operation and neither player has to go
+ *  first. The only difference here is whether the code is generated or typed. */
+export function LobbyScreen({
+  onJoin,
+  onBack,
+}: {
+  onJoin: (code: RoomCode) => void;
+  onBack: () => void;
+}) {
+  const [typed, setTyped] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const join = () => {
+    const code = normaliseRoomCode(typed);
+    if (!code) {
+      setError('A room code is four letters or numbers.');
+      return;
+    }
+    onJoin(code);
+  };
+
+  return (
+    <div className="title-screen">
+      <SceneLayer />
+      <h1 className="title-heading">Play a Friend</h1>
+      <p className="title-tagline">
+        One of you starts a table and reads out the code. The other types it in.
+      </p>
+
+      <button className="title-play-button" onClick={() => onJoin(makeRoomCode())}>
+        Start a Table
+      </button>
+
+      <div className="lobby-join">
+        <label className="lobby-label" htmlFor="room-code">
+          or join with a code
+        </label>
+        <div className="lobby-row">
+          <input
+            id="room-code"
+            className="lobby-input"
+            value={typed}
+            onChange={(e) => {
+              setTyped(e.target.value);
+              setError(null);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') join();
+            }}
+            maxLength={4}
+            autoComplete="off"
+            autoCapitalize="characters"
+            spellCheck={false}
+            aria-describedby={error ? 'room-code-error' : undefined}
+            aria-invalid={error ? true : undefined}
+          />
+          <button className="bid-button" onClick={join}>
+            Join
+          </button>
+        </div>
+        {/* role=alert so a screen reader hears the problem the moment it appears, rather than
+            only if the user happens to navigate back to the field. */}
+        {error && (
+          <p id="room-code-error" className="lobby-error" role="alert">
+            {error}
+          </p>
+        )}
+      </div>
+
+      <button className="title-settings-button" onClick={onBack}>
+        Back
+      </button>
+    </div>
+  );
+}

@@ -144,12 +144,14 @@ describe('room authority', () => {
     expect(res.ok).toBe(true);
     if (!res.ok) return;
 
-    const next = res.value;
+    const next = res.value.room;
     expect(next.state).not.toBe(r.state); // pure: a new state, not a mutation
     expect(r.state.phase).toBe('select'); // original untouched
 
     expect(viewFor(next, 'A').you).toBe('A');
     expect(viewFor(next, 'B').you).toBe('B');
+    // Nothing was swept: SELECT_HAND cannot complete a trick.
+    expect(res.value.completedTrick).toBeNull();
   });
 
   it('never leaks the opponent hand into a seat view mid-deal', () => {

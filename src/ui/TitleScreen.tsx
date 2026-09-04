@@ -11,10 +11,12 @@ export function TitleScreen({
   onPlay,
   onContinue,
   onSettings,
+  onPlayFriend,
 }: {
   onPlay: () => void;
   onContinue: () => void;
   onSettings: () => void;
+  onPlayFriend: () => void;
 }) {
   // A finished game isn't "in progress" — Continue resuming straight into a game-over screen
   // would read as broken, so a game_over save doesn't count here. Play still clears it either
@@ -58,6 +60,9 @@ export function TitleScreen({
               onClick={canContinue ? () => setConfirmingNewGame(true) : onPlay}
             >
               {canContinue ? 'New Game' : 'Play'}
+            </button>
+            <button className="title-play-button" onClick={onPlayFriend}>
+              Play a Friend
             </button>
             <div className="title-footer-row">
               <button className="title-mute-toggle" onClick={onSettings}>

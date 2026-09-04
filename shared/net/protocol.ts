@@ -1,4 +1,4 @@
-import type { Action, Player, PlayerView } from '../engine/types.ts';
+import type { Action, CompletedTrick, Player, PlayerView } from '../engine/types.ts';
 
 /** A short human-shareable room code ("say it down the phone" length, not a UUID). */
 export type RoomCode = string;
@@ -24,7 +24,18 @@ export type ServerMessage =
   /** The authoritative state, already redacted for the recipient. `legal` is the server's own
    *  `legalActions` for that seat, so the client never has to derive playability itself and
    *  cannot disagree with the server about it. */
-  | { t: 'sync'; view: PlayerView; legal: Action[]; opponentPresent: boolean }
+  /** `completedTrick` is non-null on exactly the sync that follows the card which took a
+   *  trick. Without it a remote player never sees the winning card at all: the engine sweeps
+   *  the trick in the same call that appends that card, so it is absent from every state the
+   *  client receives. Sent rather than derived because the client provably cannot reconstruct
+   *  it — see `CompletedTrick`'s own docstring. */
+  | {
+      t: 'sync';
+      view: PlayerView;
+      legal: Action[];
+      opponentPresent: boolean;
+      completedTrick: CompletedTrick | null;
+    }
   /** A refused `hello` or `action`, with a reason fit to show a player. The client stays
    *  connected; a rejected action simply did not happen. */
   | { t: 'rejected'; reason: string };

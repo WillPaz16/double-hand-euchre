@@ -40,15 +40,19 @@ function play(bank: Record<SoundName, HTMLAudioElement>, name: SoundName) {
 /** Watches the redacted view for the moments worth a sound: a card landing, a trick won, a
  *  euchre, the game won, and the shuffle at the top of a new deal. No new engine state — every
  *  trigger is derived from a `view` transition, the same pattern as useOpponentExpression. */
-export function useSfx(view: PlayerView): void {
+/** `view` is nullable because the ONLINE client has no state until the server's first sync
+ *  lands — there is simply nothing to make a sound about yet. Every read below is guarded
+ *  rather than the hook being called conditionally, which the rules of hooks forbid. */
+export function useSfx(view: PlayerView | null): void {
   const bank = useSoundBank();
   const prev = useRef({
-    trickCardCount: view.currentTrick.length,
-    tricksWon: view.tricksWon.A + view.tricksWon.B,
-    phase: view.phase,
+    trickCardCount: view?.currentTrick.length ?? 0,
+    tricksWon: view ? view.tricksWon.A + view.tricksWon.B : 0,
+    phase: view?.phase ?? null,
   });
 
   useEffect(() => {
+    if (!view) return;
     const p = prev.current;
 
     if (view.currentTrick.length > p.trickCardCount) {
@@ -73,5 +77,5 @@ export function useSfx(view: PlayerView): void {
 
     prev.current = { trickCardCount: view.currentTrick.length, tricksWon: tricksWonTotal, phase: view.phase };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view.currentTrick.length, view.tricksWon.A, view.tricksWon.B, view.phase]);
+  }, [view?.currentTrick.length, view?.tricksWon.A, view?.tricksWon.B, view?.phase]);
 }

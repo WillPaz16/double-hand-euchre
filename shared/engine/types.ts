@@ -39,6 +39,20 @@ export interface TrickCard {
   card: Card;
 }
 
+/** A trick that has just been won, reconstructed for display after the engine has moved on.
+ *
+ *  `reduce()` appends the final card and clears `currentTrick` within the SAME call, so a full
+ *  trick never exists in committed state — the card that actually WON is never in any state a
+ *  renderer can see. Locally `useGame` rebuilds it from the pre-action state; over a network the
+ *  client cannot, because by the time the new state arrives both the cleared trick and the
+ *  winning card are gone. So whoever applies the action has to hand this out, which is why it
+ *  lives in shared types rather than in the React layer that first needed it. */
+export interface CompletedTrick {
+  cards: TrickCard[];
+  winner: Player;
+  winningIndex: number;
+}
+
 export interface GameState {
   phase: Phase;
   seed: string;

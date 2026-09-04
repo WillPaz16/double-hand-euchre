@@ -1,5 +1,22 @@
-import { legalActions, newGame, nextDeal, reduce, redact, sameAction } from '../engine/index.ts';
-import type { Action, Config, GameState, Player, PlayerView } from '../engine/types.ts';
+import {
+  actingHand,
+  legalActions,
+  newGame,
+  nextDeal,
+  reduce,
+  redact,
+  sameAction,
+  trickWinnerIndex,
+} from '../engine/index.ts';
+import type {
+  Action,
+  CompletedTrick,
+  Config,
+  GameState,
+  Player,
+  PlayerView,
+  TrickCard,
+} from '../engine/types.ts';
 import type { ClientId, RoomCode } from './protocol.ts';
 
 export const SEATS: Player[] = ['A', 'B'];
@@ -90,7 +107,11 @@ export function disconnect(room: Room, clientId: ClientId): Room {
  *
  *  This matters more than it looks: `PLAY_CARD` and `DEALER_DISCARD` carry no `player` field at
  *  all, so attribution CANNOT come from the message. It comes from which socket sent it. */
-export function submit(room: Room, clientId: ClientId, action: Action): RoomResult<Room> {
+export function submit(
+  room: Room,
+  clientId: ClientId,
+  action: Action,
+): RoomResult<{ room: Room; completedTrick: CompletedTrick | null }> {
   const seat = seatOf(room, clientId);
   if (!seat) return err('You are not seated in this room.');
   if (!bothSeated(room)) return err('Waiting for another player.');
@@ -99,7 +120,36 @@ export function submit(room: Room, clientId: ClientId, action: Action): RoomResu
   if (!legal.some((a) => sameAction(a, action))) {
     return err('That move is not legal right now.');
   }
-  return ok({ ...room, state: reduce(room.state, action) });
+
+  const before = room.state;
+  const after = reduce(before, action);
+  return ok({
+    room: { ...room, state: after },
+    completedTrick: winningTrick(before, after, action),
+  });
+}
+
+/** Rebuilds the trick that `reduce()` just swept away, so the server can hand it to both
+ *  clients. Mirrors `useGame`'s local reconstruction and exists for the same reason — the
+ *  winning card is never present in any committed state — but here it is the only way a remote
+ *  player can ever see which card took the trick. */
+function winningTrick(
+  before: GameState,
+  after: GameState,
+  action: Action,
+): CompletedTrick | null {
+  if (action.type !== 'PLAY_CARD') return null;
+  if (after.trickNumber <= before.trickNumber) return null;
+  if (!before.trump) return null;
+  const hand = actingHand(before);
+  if (!hand) return null;
+
+  const cards: TrickCard[] = [...before.currentTrick, { handId: hand, card: action.card }];
+  return {
+    cards,
+    winner: after.tricksWon.A > before.tricksWon.A ? 'A' : 'B',
+    winningIndex: trickWinnerIndex(cards, before.trump),
+  };
 }
 
 /** True when the deal has settled and the room is waiting to be moved on to the next one.
