@@ -22,6 +22,12 @@ WOOD_DARK = (46, 30, 18, 255)
 WOOD_MED = (84, 55, 33, 255)
 WOOD_LIGHT = (108, 72, 46, 255)
 SKIN = (238, 194, 150, 255)
+# Four people should not share one complexion. These cost nothing against
+# `_assert_sprite_colours`: each sprite is measured on its own, and a character using a
+# different base tone SWAPS a colour rather than adding one.
+SKIN_WARM = (222, 168, 126, 255)   # ruddier, weathered
+SKIN_TAN = (198, 146, 104, 255)
+SKIN_DEEP = (156, 106, 74, 255)
 BLUSH = (223, 138, 118, 255)
 BEARD_GRAY = (196, 190, 178, 255)
 HAIR_AUBURN = (140, 74, 38, 255)
@@ -987,7 +993,13 @@ class Avatar:
     def __init__(self, key, coat, placket, headwear, headwear_main, headwear_trim,
                  facial="none", facial_colour=BEARD_GRAY, hair=None, hair_style="none",
                  chest="none", glasses=False, pipe=False, age_lines=False, check=False,
-                 soft_features=False):
+                 soft_features=False, skin=SKIN,
+                 # --- build: what actually stops four characters being one character ---------
+                 head_rx=62, head_ry=66, head_dy=0, neck_w=26, shoulder_x=96, shoulder_in=62,
+                 hem_x=112, arm_x=118,
+                 # --- face proportion --------------------------------------------------------
+                 eye_dx=24, eye_w=8, eye_up=12, eye_dn=8, brow_dy=0, nose_w=4, nose_dy=0,
+                 mouth_w=20, extras=()):
         self.key = key
         self.coat = coat                    # shoulders/chest
         self.placket = placket              # centre panel, so the chest isn't one flat mass
@@ -1009,6 +1021,29 @@ class Avatar:
         # way, plus hair and no facial hair, rather than with lashes, lipstick or bows: those
         # are cliches, and at 150x140 au with a 4px grid they are also illegible mush.
         self.soft_features = soft_features
+        self.skin = skin
+        # A hat and a coat colour are a costume. What makes someone a different PERSON at this
+        # size is the shape under the costume: how wide the shoulders are, how long the neck is,
+        # how big and how round the head is, how far apart the eyes sit. The first pass at this
+        # cast shared one head ellipse, one shoulder polygon, one eye spacing and one skin tone
+        # between all four, and read exactly like what it was — one man in four hats.
+        self.head_rx = head_rx
+        self.head_ry = head_ry
+        self.head_dy = head_dy          # +down. Longer neck = head sits higher.
+        self.neck_w = neck_w
+        self.shoulder_x = shoulder_x    # outer shoulder point
+        self.shoulder_in = shoulder_in  # where the shoulder line meets the neck
+        self.hem_x = hem_x              # width at the crop line
+        self.arm_x = arm_x
+        self.eye_dx = eye_dx
+        self.eye_w = eye_w
+        self.eye_up = eye_up
+        self.eye_dn = eye_dn
+        self.brow_dy = brow_dy
+        self.nose_w = nose_w
+        self.nose_dy = nose_dy
+        self.mouth_w = mouth_w
+        self.extras = extras            # per-character detail passes, by name
 
 
 AVATARS = {
@@ -1024,10 +1059,19 @@ AVATARS = {
     # Warm brown over a cream collar, under a red kerchief. Was CLOTH_BLUE, which put her in
     # the same cool blue-grey family as the card sharp's wool coat — from across the table the
     # two bodies read as the same person with a different head. Warmth also simply suits her.
+    # Round rather than long: a head WIDER than it is tall, a short neck, and shoulders
+    # between the card sharp's and the woodsman's. Larger eyes, lower brow, short nose — the
+    # proportions of a face people read as open and warm rather than as a set of angles.
+    # Detail: an apron bib on a shoulder strap, glasses pushed up out of the way, rolled
+    # cuffs, a button row, freckles.
     "homesteader": Avatar(
         "homesteader", WOOD_MED, PARCHMENT, "kerchief", ROSE_RED, PARCHMENT,
         facial="none", hair=HAIR_AUBURN, hair_style="braid", chest="none",
-        soft_features=True,
+        soft_features=True, skin=SKIN_TAN,
+        head_rx=64, head_ry=60, head_dy=4, neck_w=26, shoulder_x=98, shoulder_in=64,
+        hem_x=114, arm_x=120,
+        eye_dx=23, eye_w=9, eye_up=13, eye_dn=9, brow_dy=2, nose_w=4, nose_dy=-4, mouth_w=19,
+        extras=("apron", "apron_pocket", "cuffs", "buttons", "freckles"),
     ),
     # The one character with no headwear at all: long dark hair IS her silhouette, which is
     # what separates her from three hatted heads at a glance.
@@ -1036,16 +1080,38 @@ AVATARS = {
     # BOOT_DARK coat and BOOT_DARK hair, and the two merged into a single dark mass the moment
     # the hair reached the shoulder line — the hair simply vanished. Dark hair needs a light
     # garment behind it, so STEEL carries the shoulders and the hair reads against it.
+    # Tall and narrow: the smallest head, the narrowest shoulders and the longest neck in the
+    # set (head_dy -8 lifts it off the collar), which is what reads as poise from across a
+    # table. Eyes set slightly wider and smaller than everyone else's, high brow, deep skin.
+    # Detail to match the Old-Timer's: sleeve garters, a throat brooch, a ring, a loose strand.
     "card_sharp": Avatar(
         "card_sharp", STEEL, BOOT_DARK, "none", STEEL, STEEL,
         facial="none", hair=BOOT_DARK, hair_style="long", chest="chain",
-        soft_features=True,
+        soft_features=True, skin=SKIN_DEEP,
+        head_rx=54, head_ry=64, head_dy=-8, neck_w=20, shoulder_x=84, shoulder_in=54,
+        hem_x=100, arm_x=106,
+        eye_dx=26, eye_w=7, eye_up=10, eye_dn=7, brow_dy=-2, nose_w=3, nose_dy=-2, mouth_w=17,
+        extras=("garters", "brooch", "ring", "strand"),
     ),
     # Mustard beanie and a full beard: the only rounded skull-hugging hat and the only large
     # beard mass, so he reads even where the bowler and trapper both have hard horizontals.
+    # The big one: largest head, widest shoulders, thickest neck, and it sits LOW (head_dy 6)
+    # so he reads as hunched over the table rather than sitting up at it. Small close-set eyes
+    # under a heavy brow. Detail: braces, a ribbed knit beanie, a scar through one eyebrow,
+    # and a moustache a shade lighter than the beard so the beard is not one flat mass.
+    #
+    # He carried knit ribbing on the beanie too, and it was cut rather than the braces: a shape
+    # crossing the chest lands in five `light_from` bands and costs a final colour in each, so
+    # the two together came to 65 of 64. Braces are a bigger, more characterful read than a
+    # texture on a hat, so the hat lost.
     "woodsman": Avatar(
         "woodsman", CAP_GREEN, BOOT_DARK, "beanie", GOLD, BOOT_DARK,
         facial="beard", facial_colour=HAIR_BROWN, chest="none", check=True,
+        skin=SKIN_WARM,
+        head_rx=66, head_ry=68, head_dy=6, neck_w=34, shoulder_x=110, shoulder_in=70,
+        hem_x=124, arm_x=128,
+        eye_dx=22, eye_w=8, eye_up=11, eye_dn=7, brow_dy=4, nose_w=6, nose_dy=2, mouth_w=18,
+        extras=("braces", "scar", "beard_stache"),
     ),
 }
 
@@ -1062,16 +1128,31 @@ def _avatar_parts(av):
     that this function emitted before it was parameterised — order matters because
     `composite_sprite` paints in sequence and every part shadows the ones under it, so a
     reordering would change his sprite even with identical shapes."""
-    hy = OPP_HEAD_CY
+    # `sy` is the BODY anchor and never moves: everyone is sitting at the same table, so the
+    # shoulder line is at the same height on screen for all four. `hy` is the HEAD centre and
+    # does move — that difference is the neck length, and it is most of why a character reads
+    # as tall and poised or short and hunched.
+    sy = OPP_HEAD_CY
+    hy = OPP_HEAD_CY + av.head_dy
+
+    def hx(v):
+        """Horizontal distance scaled to this head's width."""
+        return round(v * av.head_rx / 62)
+
+    def vy(v):
+        """Vertical distance scaled to this head's height."""
+        return round(v * av.head_ry / 66)
+
     parts = [
         # Shoulders/chest, running off the bottom of the canvas — the felt crops it.
         (_poly([
-            (OPP_CX - 96, hy + 74), (OPP_CX - 62, hy + 52), (OPP_CX + 62, hy + 52),
-            (OPP_CX + 96, hy + 74), (OPP_CX + 112, OPP_H), (OPP_CX - 112, OPP_H),
+            (OPP_CX - av.shoulder_x, sy + 74), (OPP_CX - av.shoulder_in, sy + 52),
+            (OPP_CX + av.shoulder_in, sy + 52), (OPP_CX + av.shoulder_x, sy + 74),
+            (OPP_CX + av.hem_x, OPP_H), (OPP_CX - av.hem_x, OPP_H),
         ]), av.coat),
         # A darker placket so the chest is not one flat red mass at this size.
         (_poly([
-            (OPP_CX - 12, hy + 56), (OPP_CX + 12, hy + 56),
+            (OPP_CX - 12, sy + 56), (OPP_CX + 12, sy + 56),
             (OPP_CX + 16, OPP_H), (OPP_CX - 16, OPP_H),
         ]), av.placket),
         # A small tin star pinned to the chest (creative-direction pass). Sits left of the
@@ -1082,13 +1163,13 @@ def _avatar_parts(av):
         # as free: below the shoulder line (hy+52) and clear of the placket and hand zone.
     ]
     if av.chest == "star":
-        parts.append((_poly(_star_points(OPP_CX - 34, hy + 70, 12, 5)), GOLD))
+        parts.append((_poly(_star_points(OPP_CX - 34, sy + 70, 12, 5)), GOLD))
     elif av.chest == "chain":
         # A watch chain: two short links swagged across the waistcoat, not a drawn curve —
         # a 1px arc would vanish at this size and under the 4px snap grid.
         parts.append((_poly([
-            (OPP_CX - 40, hy + 62), (OPP_CX - 8, hy + 74),
-            (OPP_CX - 8, hy + 80), (OPP_CX - 40, hy + 68),
+            (OPP_CX - 40, sy + 62), (OPP_CX - 8, sy + 74),
+            (OPP_CX - 8, sy + 80), (OPP_CX - 40, sy + 68),
         ]), GOLD))
     parts += [
         # Forearms and hands, resting on the table (2g.5). He was a floating BUST: shoulders
@@ -1101,12 +1182,12 @@ def _avatar_parts(av):
         # invisible against the body behind them, so all that showed were two skin ovals
         # floating on his chest, reading unmistakably as buttons. An arm needs an edge.
         (_poly([
-            (OPP_CX - 118, OPP_H), (OPP_CX - 94, hy + 74),
-            (OPP_CX - 58, hy + 94), (OPP_CX - 62, OPP_H),
+            (OPP_CX - av.arm_x, OPP_H), (OPP_CX - (av.shoulder_x - 2), sy + 74),
+            (OPP_CX - 58, sy + 94), (OPP_CX - 62, OPP_H),
         ]), ramp(av.coat)[2]),
         (_poly([
-            (OPP_CX + 118, OPP_H), (OPP_CX + 94, hy + 74),
-            (OPP_CX + 58, hy + 94), (OPP_CX + 62, OPP_H),
+            (OPP_CX + av.arm_x, OPP_H), (OPP_CX + (av.shoulder_x - 2), sy + 74),
+            (OPP_CX + 58, sy + 94), (OPP_CX + 62, OPP_H),
         ]), ramp(av.coat)[2]),
         # Mended patch on the right sleeve (wave-3 polish). Sits inside the right sleeve quad
         # above — verified against its actual edges at this y-range: the sleeve's inner edge
@@ -1132,27 +1213,27 @@ def _avatar_parts(av):
     ]
     if av.key == "old_timer":
         parts.append((_poly([
-            (OPP_CX + 64, hy + 130), (OPP_CX + 88, hy + 130),
-            (OPP_CX + 88, hy + 156), (OPP_CX + 64, hy + 156),
+            (OPP_CX + 64, sy + 130), (OPP_CX + 88, sy + 130),
+            (OPP_CX + 88, sy + 156), (OPP_CX + 64, sy + 156),
         ]), CAP_GREEN))
     parts += [
         # Hands: squared-off, not round. A circle of skin reads as a ball; knuckles and a
         # thumb read as a hand even at eight pixels across.
         (_poly([
-            (OPP_CX - 88, hy + 92), (OPP_CX - 52, hy + 84), (OPP_CX - 44, hy + 100),
-            (OPP_CX - 52, hy + 118), (OPP_CX - 84, hy + 116),
-        ]), SKIN),
+            (OPP_CX - 88, sy + 92), (OPP_CX - 52, sy + 84), (OPP_CX - 44, sy + 100),
+            (OPP_CX - 52, sy + 118), (OPP_CX - 84, sy + 116),
+        ]), av.skin),
         (_poly([
-            (OPP_CX + 88, hy + 92), (OPP_CX + 52, hy + 84), (OPP_CX + 44, hy + 100),
-            (OPP_CX + 52, hy + 118), (OPP_CX + 84, hy + 116),
-        ]), SKIN),
+            (OPP_CX + 88, sy + 92), (OPP_CX + 52, sy + 84), (OPP_CX + 44, sy + 100),
+            (OPP_CX + 52, sy + 118), (OPP_CX + 84, sy + 116),
+        ]), av.skin),
         # Neck, behind the head so the jaw reads as sitting on it.
         (_poly([
-            (OPP_CX - 26, hy + 34), (OPP_CX + 26, hy + 34),
-            (OPP_CX + 30, hy + 60), (OPP_CX - 30, hy + 60),
-        ]), SKIN),
-        (_ellipse(OPP_CX - OPP_HEAD_RX, hy - OPP_HEAD_RY,
-                  OPP_CX + OPP_HEAD_RX, hy + OPP_HEAD_RY), SKIN),
+            (OPP_CX - av.neck_w, hy + 34), (OPP_CX + av.neck_w, hy + 34),
+            (OPP_CX + av.neck_w + 4, sy + 60), (OPP_CX - av.neck_w - 4, sy + 60),
+        ]), av.skin),
+        (_ellipse(OPP_CX - av.head_rx, hy - av.head_ry,
+                  OPP_CX + av.head_rx, hy + av.head_ry), av.skin),
     ]
 
     # Hair, under the headwear so the hat edge always wins where they meet.
@@ -1179,13 +1260,14 @@ def _avatar_parts(av):
             # is snapped to a 4px grid — a single traced silhouette loses its shape to the snap,
             # whereas blocks that are already grid-aligned keep theirs exactly.
             parts.append((_poly([
-                (OPP_CX - 66, hy - 30), (OPP_CX - 52, hy - 66), (OPP_CX, hy - 78),
-                (OPP_CX + 52, hy - 66), (OPP_CX + 66, hy - 30),
+                (OPP_CX - hx(66), hy - vy(30)), (OPP_CX - hx(52), hy - vy(66)),
+                (OPP_CX, hy - vy(78)), (OPP_CX + hx(52), hy - vy(66)),
+                (OPP_CX + hx(66), hy - vy(30)),
             ]), av.hair))
             for side in (-1, 1):
-                x0, x1 = sorted((OPP_CX + side * 40, OPP_CX + side * 70))
+                x0, x1 = sorted((OPP_CX + side * hx(44), OPP_CX + side * hx(72)))
                 parts.append((_poly([
-                    (x0, hy - 40), (x1, hy - 40), (x1, hy + 76), (x0, hy + 64),
+                    (x0, hy - vy(40)), (x1, hy - vy(40)), (x1, hy + vy(76)), (x0, hy + vy(64)),
                 ]), av.hair))
         elif av.hair_style == "sideburns":
             for side in (-1, 1):
@@ -1205,11 +1287,15 @@ def _avatar_parts(av):
         # A full beard is a JAW SHAPE, not hair texture: it replaces the chin silhouette, which
         # is what makes it read instantly against the clean-shaven and moustached heads.
         # Tapered to a jaw rather than squared off: the first pass ran the full width down to
-        # hy+68 and read as a bib hung under the chin instead of hair growing on one.
+        # hy+68 and read as a bib hung under the chin instead of hair growing on one. It also
+        # started at hy+2, level with the bottom of the eyes, so it swallowed the cheeks and
+        # left nowhere for an expression to happen. It now starts below the nose and covers the
+        # jaw, which is where a beard actually grows.
         parts.append((_poly([
-            (OPP_CX - 50, hy + 8), (OPP_CX - 40, hy + 2), (OPP_CX + 40, hy + 2),
-            (OPP_CX + 50, hy + 8), (OPP_CX + 40, hy + 44), (OPP_CX + 16, hy + 58),
-            (OPP_CX - 16, hy + 58), (OPP_CX - 40, hy + 44),
+            (OPP_CX - hx(52), hy + vy(22)), (OPP_CX - hx(42), hy + vy(14)),
+            (OPP_CX + hx(42), hy + vy(14)), (OPP_CX + hx(52), hy + vy(22)),
+            (OPP_CX + hx(42), hy + vy(52)), (OPP_CX + hx(16), hy + vy(64)),
+            (OPP_CX - hx(16), hy + vy(64)), (OPP_CX - hx(42), hy + vy(52)),
         ]), av.facial_colour))
     elif av.facial == "thin":
         parts.append((_poly([
@@ -1225,14 +1311,14 @@ def _avatar_parts(av):
         # collapsed into a single grey stripe.
         parts += [
             (_poly([
-                (OPP_CX - 58, hy - 52), (OPP_CX - 58, hy - 80), (OPP_CX, hy - 96),
-                (OPP_CX + 58, hy - 80), (OPP_CX + 58, hy - 52),
+                (OPP_CX - hx(58), hy - vy(52)), (OPP_CX - hx(58), hy - vy(80)), (OPP_CX, hy - vy(96)),
+                (OPP_CX + hx(58), hy - vy(80)), (OPP_CX + hx(58), hy - vy(52)),
             ]), av.headwear_main),
-            (_ellipse(OPP_CX - 72, hy - 48, OPP_CX - 38, hy - 4), av.headwear_trim),
-            (_ellipse(OPP_CX + 38, hy - 48, OPP_CX + 72, hy - 4), av.headwear_trim),
+            (_ellipse(OPP_CX - hx(72), hy - vy(48), OPP_CX - hx(38), hy - vy(4)), av.headwear_trim),
+            (_ellipse(OPP_CX + hx(38), hy - vy(48), OPP_CX + hx(72), hy - vy(4)), av.headwear_trim),
             (_poly([
-                (OPP_CX - 60, hy - 58), (OPP_CX + 60, hy - 58),
-                (OPP_CX + 60, hy - 44), (OPP_CX - 60, hy - 44),
+                (OPP_CX - hx(60), hy - vy(58)), (OPP_CX + hx(60), hy - vy(58)),
+                (OPP_CX + hx(60), hy - vy(44)), (OPP_CX - hx(60), hy - vy(44)),
             ]), av.headwear_trim),
         ]
     elif av.headwear == "kerchief":
@@ -1240,17 +1326,17 @@ def _avatar_parts(av):
         # than a horizontal band — the one shape in the set with no straight brim at all.
         parts += [
             (_poly([
-                (OPP_CX - 64, hy - 16), (OPP_CX - 40, hy - 76), (OPP_CX + 40, hy - 76),
-                (OPP_CX + 64, hy - 16), (OPP_CX + 44, hy - 26), (OPP_CX - 44, hy - 26),
+                (OPP_CX - hx(64), hy - vy(16)), (OPP_CX - hx(40), hy - vy(76)), (OPP_CX + hx(40), hy - vy(76)),
+                (OPP_CX + hx(64), hy - vy(16)), (OPP_CX + hx(44), hy - vy(26)), (OPP_CX - hx(44), hy - vy(26)),
             ]), av.headwear_main),
             # Knot and tail off the shaded side.
             (_poly([
-                (OPP_CX + 54, hy - 30), (OPP_CX + 78, hy - 22),
-                (OPP_CX + 70, hy + 2), (OPP_CX + 52, hy - 8),
+                (OPP_CX + hx(54), hy - vy(30)), (OPP_CX + hx(78), hy - vy(22)),
+                (OPP_CX + hx(70), hy + vy(2)), (OPP_CX + hx(52), hy - vy(8)),
             ]), av.headwear_main),
             (_poly([
-                (OPP_CX - 44, hy - 30), (OPP_CX + 44, hy - 30),
-                (OPP_CX + 44, hy - 22), (OPP_CX - 44, hy - 22),
+                (OPP_CX - hx(44), hy - vy(30)), (OPP_CX + hx(44), hy - vy(30)),
+                (OPP_CX + hx(44), hy - vy(22)), (OPP_CX - hx(44), hy - vy(22)),
             ]), av.headwear_trim),
         ]
     elif av.headwear == "bowler":
@@ -1269,20 +1355,22 @@ def _avatar_parts(av):
         ]
     elif av.headwear == "beanie":
         # Hugs the skull and ends in a bobble — no brim anywhere, which is what separates it
-        # from the bowler at a glance.
+        # from the bowler at a glance. The band sits well clear of the brow: at its first
+        # height it landed 4px above the eyes, and between it and a beard that began at the eye
+        # line his face was a letterboxed strip with no room to hold an expression.
         # Sat 8px lower than first drawn: the bobble was an ellipse from hy-104, and with
         # hy=92 that is y=-12 — entirely off the top of the canvas, so the one shape that makes
         # a beanie a beanie was invisible. Anything above hy-92 is off-canvas here.
         parts += [
             (_poly([
-                (OPP_CX - 58, hy - 30), (OPP_CX - 50, hy - 66), (OPP_CX, hy - 80),
-                (OPP_CX + 50, hy - 66), (OPP_CX + 58, hy - 30),
+                (OPP_CX - hx(58), hy - vy(30)), (OPP_CX - hx(50), hy - vy(66)), (OPP_CX, hy - vy(80)),
+                (OPP_CX + hx(50), hy - vy(66)), (OPP_CX + hx(58), hy - vy(30)),
             ]), av.headwear_main),
             (_poly([
-                (OPP_CX - 60, hy - 36), (OPP_CX + 60, hy - 36),
-                (OPP_CX + 60, hy - 18), (OPP_CX - 60, hy - 18),
+                (OPP_CX - hx(60), hy - vy(46)), (OPP_CX + hx(60), hy - vy(46)),
+                (OPP_CX + hx(60), hy - vy(28)), (OPP_CX - hx(60), hy - vy(28)),
             ]), av.headwear_trim),
-            (_ellipse(OPP_CX - 14, hy - 92, OPP_CX + 14, hy - 72), av.headwear_trim),
+            (_ellipse(OPP_CX - hx(14), hy - vy(92), OPP_CX + hx(14), hy - vy(72)), av.headwear_trim),
         ]
     return parts
 
@@ -1309,18 +1397,22 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     to it afterwards.
     """
     d = ImageDraw.Draw(img)
-    hy = OPP_HEAD_CY
-    eye_y = hy - 8
-    skin_hi, _, skin_sh, skin_deep = ramp(SKIN)
+    hy = OPP_HEAD_CY + av.head_dy
+    eye_y = hy - 8 + av.brow_dy
+    skin_hi, _, skin_sh, skin_deep = ramp(av.skin)
 
     # --- Modelling, under the features. Warm light from the left (hearth), so the right side
     # of the face carries the shadow — consistent with light_from's direction. ---
     # Cheekbone and jaw shadow down the shaded side.
     if av.soft_features:
         # A narrower cheek shadow that stops short of the jaw, so the face keeps its form
-        # without the heavy blocked-in jawline.
-        d.polygon([(OPP_CX + 22, hy - 16), (OPP_CX + 48, hy - 22), (OPP_CX + 50, hy + 8),
-                   (OPP_CX + 26, hy + 22)], fill=skin_sh)
+        # without the heavy blocked-in jawline. Mixed halfway back toward the base tone rather
+        # than using the full shadow: `ramp()` scales its shadow from the base, so on the
+        # deeper complexion the same polygon landed dark enough to read as a bruise rather than
+        # as modelling.
+        soft_sh = _mix(av.skin, skin_sh, 0.55)
+        d.polygon([(OPP_CX + 24, hy - 12), (OPP_CX + 44, hy - 18), (OPP_CX + 46, hy + 6),
+                   (OPP_CX + 28, hy + 18)], fill=soft_sh)
         d.rectangle((OPP_CX - 44, eye_y - 18, OPP_CX + 44, eye_y - 14), fill=skin_sh)
         d.rectangle((OPP_CX - 44, eye_y - 22, OPP_CX + 44, eye_y - 18), fill=skin_hi)
     else:
@@ -1332,42 +1424,46 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     # Nose: a lit ridge with its own shadow to the right, and a nostril line under it. It STOPS
     # ABOVE THE MOUSTACHE (which `_opponent_parts` draws from hy+10) — the first pass ran it to
     # hy+12 and split the moustache in half with a skin-coloured bar straight down the middle.
-    d.rectangle((OPP_CX - 4, eye_y - 8, OPP_CX + 4, hy + 4), fill=skin_hi)
-    d.rectangle((OPP_CX + 4, eye_y - 4, OPP_CX + 12, hy + 4), fill=skin_sh)
-    d.rectangle((OPP_CX - 8, hy, OPP_CX + 12, hy + 4), fill=skin_deep)
+    nb = hy + 4 + av.nose_dy
+    d.rectangle((OPP_CX - av.nose_w, eye_y - 8, OPP_CX + av.nose_w, nb), fill=skin_hi)
+    d.rectangle((OPP_CX + av.nose_w, eye_y - 4, OPP_CX + av.nose_w + 8, nb), fill=skin_sh)
+    d.rectangle((OPP_CX - av.nose_w - 4, nb - 4, OPP_CX + av.nose_w + 8, nb), fill=skin_deep)
     # Age lines — the whole point of a character called the Old-Timer. Crow's feet only: the
     # nasolabial folds this originally also carried ran straight through the moustache, and
     # the brow ridge, cheekbone and crow's feet already do the work. Kept to 4px marks, since
     # a wrinkle drawn thinner than the grid is noise rather than detail.
     if av.age_lines:
         for side in (-1, 1):
-            tx = OPP_CX + side * 44
+            tx = OPP_CX + side * (av.eye_dx + 20)
             for dy in (-8, 0, 8):
                 x0, x1 = sorted((tx, tx + side * 12))
                 d.rectangle((x0, eye_y + dy, x1, eye_y + dy + 4), fill=skin_sh)
 
     # --- Features. Rectangles, on the grid. ---
     for side in (-1, 1):
-        ex = OPP_CX + side * 24
+        ex = OPP_CX + side * av.eye_dx
         if expression == "happy":
             # Closed-and-creased: a flat bar with a lift at the outer end.
-            d.rectangle((ex - 12, eye_y, ex + 12, eye_y + 4), fill=INK)
-            hx0, hx1 = sorted((ex + side * 12, ex + side * 16))
+            d.rectangle((ex - av.eye_w - 4, eye_y, ex + av.eye_w + 4, eye_y + 4), fill=INK)
+            hx0, hx1 = sorted((ex + side * (av.eye_w + 4), ex + side * (av.eye_w + 8)))
             d.rectangle((hx0, eye_y - 4, hx1, eye_y), fill=INK)
         elif expression == "blink":
-            d.rectangle((ex - 12, eye_y - 4, ex + 12, eye_y), fill=INK)
+            d.rectangle((ex - av.eye_w - 4, eye_y - 4, ex + av.eye_w + 4, eye_y), fill=INK)
         else:
-            d.rectangle((ex - 8, eye_y - 12, ex + 8, eye_y + 8), fill=INK)
-            d.rectangle((ex - 8, eye_y - 12, ex - 4, eye_y - 8), fill=(255, 255, 255, 255))
+            d.rectangle((ex - av.eye_w, eye_y - av.eye_up, ex + av.eye_w, eye_y + av.eye_dn),
+                        fill=INK)
+            d.rectangle((ex - av.eye_w, eye_y - av.eye_up, ex - av.eye_w + 4, eye_y - av.eye_up + 4),
+                        fill=(255, 255, 255, 255))
         # Eye socket shadow, so the eye sits IN the head rather than on it.
-        d.rectangle((ex - 12, eye_y + 8, ex + 12, eye_y + 12), fill=skin_sh)
+        d.rectangle((ex - av.eye_w - 4, eye_y + av.eye_dn, ex + av.eye_w + 4,
+                     eye_y + av.eye_dn + 4), fill=skin_sh)
 
     # Brows follow the character: grey on the Old-Timer, otherwise their own hair colour,
     # so a young face doesn't get an old man's eyebrows.
     brow = BEARD_GRAY if av.age_lines else (av.hair or av.facial_colour)
     by = eye_y - 24
     for side in (-1, 1):
-        x_out, x_in = OPP_CX + side * 44, OPP_CX + side * 12
+        x_out, x_in = OPP_CX + side * (av.eye_dx + 20), OPP_CX + side * (av.eye_dx - 12)
         if expression == "rueful":
             d.line((x_out, by - 8, x_in, by + 4), fill=brow, width=8)
         elif expression == "happy":
@@ -1376,15 +1472,16 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
             d.line((x_out, by, x_in, by), fill=brow, width=8)
 
     my = hy + 40
+    mw = av.mouth_w
     if expression == "happy":
-        d.rectangle((OPP_CX - 20, my, OPP_CX + 20, my + 8), fill=INK)
+        d.rectangle((OPP_CX - mw, my, OPP_CX + mw, my + 8), fill=INK)
         for side in (-1, 1):
-            mx0, mx1 = sorted((OPP_CX + side * 20, OPP_CX + side * 24))
+            mx0, mx1 = sorted((OPP_CX + side * mw, OPP_CX + side * (mw + 4)))
             d.rectangle((mx0, my - 8, mx1, my), fill=INK)
     elif expression == "rueful":
-        d.rectangle((OPP_CX - 16, my + 8, OPP_CX + 16, my + 12), fill=INK)
+        d.rectangle((OPP_CX - mw + 4, my + 8, OPP_CX + mw - 4, my + 12), fill=INK)
         for side in (-1, 1):
-            mx0, mx1 = sorted((OPP_CX + side * 16, OPP_CX + side * 20))
+            mx0, mx1 = sorted((OPP_CX + side * (mw - 4), OPP_CX + side * mw))
             d.rectangle((mx0, my, mx1, my + 8), fill=INK)
 
     # Reading glasses. A prior pass gave the frame margin past idle/rueful's own eye rectangle
@@ -1401,8 +1498,9 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     # just read as a second pair of eyes.
     if av.glasses:
         for side in (-1, 1):
-            ex = OPP_CX + side * 24
-            d.rectangle((ex - 12, eye_y - 14, ex + 12, eye_y + 10), outline=GOLD, width=4)
+            ex = OPP_CX + side * av.eye_dx
+            d.rectangle((ex - av.eye_w - 4, eye_y - 14, ex + av.eye_w + 4, eye_y + 10),
+                        outline=GOLD, width=4)
         d.line((OPP_CX - 12, eye_y - 2, OPP_CX + 12, eye_y - 2), fill=GOLD, width=4)
 
     # Short pipe (wave-3 polish). Stem exits the moustache's left corner — that corner sits at
@@ -1426,6 +1524,97 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     # PNGs, zoomed. INK is dark enough to read as its own line against both the moustache and
     # the skin behind it, and it's already present in this x-band (the eyes' own INK fill
     # reaches into it on every expression), so it adds no new colour either.
+    # --- Per-character detail ----------------------------------------------------------------
+    # The Old-Timer earns his read from SPECIFICS: glasses, a pipe, crow's feet, a tin star, a
+    # mended patch. Without an equivalent, the others are a hat and a coat colour. These are
+    # drawn here rather than as `_avatar_parts` entries so they don't each pick up
+    # `composite_sprite`'s automatic per-part shadow band, which is what pushed the pipe over
+    # the colour budget when it was tried as a part (see its own note below).
+    hxx = lambda v: round(v * av.head_rx / 62)
+    if "strand" in av.extras:
+        # A loose strand escaping the hair, falling across the temple. The one asymmetric mark
+        # on her: everything else about this face is mirrored, so a single off-centre line is
+        # what stops it reading as a mannequin.
+        d.polygon([
+            (OPP_CX - hxx(30), hy - 44), (OPP_CX - hxx(22), hy - 44),
+            (OPP_CX - hxx(34), hy + 2), (OPP_CX - hxx(42), hy + 2),
+        ], fill=av.hair)
+    if "brooch" in av.extras:
+        # At the throat, where a high collar closes.
+        d.rectangle((OPP_CX - 6, OPP_HEAD_CY + 44, OPP_CX + 6, OPP_HEAD_CY + 56), fill=GOLD)
+        d.rectangle((OPP_CX - 2, OPP_HEAD_CY + 48, OPP_CX + 2, OPP_HEAD_CY + 52), fill=INK)
+    if "garters" in av.extras:
+        # Sleeve garters — the card player's own tell, and the reason the shirt cuff never
+        # slips over the cards. One band per forearm, following the sleeve angle.
+        for side in (-1, 1):
+            x0, x1 = sorted((OPP_CX + side * 66, OPP_CX + side * 96))
+            d.polygon([(x0, OPP_HEAD_CY + 124), (x1, OPP_HEAD_CY + 112),
+                       (x1, OPP_HEAD_CY + 128), (x0, OPP_HEAD_CY + 140)], fill=BOOT_DARK)
+    if "ring" in av.extras:
+        d.rectangle((OPP_CX + 58, OPP_HEAD_CY + 96, OPP_CX + 66, OPP_HEAD_CY + 104), fill=GOLD)
+    if "apron" in av.extras:
+        # A bib on a shoulder strap. The strap is what makes it an apron rather than a pale
+        # panel on a dress — it crosses the shoulder line, so the eye reads it as worn OVER.
+        d.polygon([(OPP_CX - 34, OPP_HEAD_CY + 96), (OPP_CX + 34, OPP_HEAD_CY + 96),
+                   (OPP_CX + 40, OPP_H), (OPP_CX - 40, OPP_H)], fill=PARCHMENT)
+        d.polygon([(OPP_CX - 30, OPP_HEAD_CY + 62), (OPP_CX - 18, OPP_HEAD_CY + 60),
+                   (OPP_CX - 22, OPP_HEAD_CY + 98), (OPP_CX - 34, OPP_HEAD_CY + 98)],
+                  fill=PARCHMENT)
+    if "buttons" in av.extras:
+        for by_ in (OPP_HEAD_CY + 108, OPP_HEAD_CY + 132, OPP_HEAD_CY + 156):
+            d.rectangle((OPP_CX - 4, by_, OPP_CX + 4, by_ + 8), fill=ramp(WOOD_MED)[3])
+    if "cuffs" in av.extras:
+        # Rolled sleeves: she works, and a cuff band at the wrist says so in four pixels.
+        for side in (-1, 1):
+            x0, x1 = sorted((OPP_CX + side * 62, OPP_CX + side * 92))
+            d.polygon([(x0, OPP_HEAD_CY + 118), (x1, OPP_HEAD_CY + 106),
+                       (x1, OPP_HEAD_CY + 118), (x0, OPP_HEAD_CY + 130)], fill=PARCHMENT)
+    if "freckles" in av.extras:
+        for fx, fy in ((-22, 6), (-12, 12), (14, 8), (24, 14), (-2, 16)):
+            d.rectangle((OPP_CX + fx, hy + fy, OPP_CX + fx + 4, hy + fy + 4), fill=skin_sh)
+    if "apron_pocket" in av.extras:
+        # A stitched pocket across the apron. This slot first held reading glasses pushed up on
+        # her forehead, which failed twice over: her kerchief comes down to within about 9px of
+        # her eyebrows, so there was nowhere for them to sit, and pale STEEL frames on a red
+        # scarf fought every warm tone she has. A pocket is hers, sits in empty cloth, and
+        # needs no room on a crowded face.
+        d.rectangle((OPP_CX - 26, OPP_HEAD_CY + 120, OPP_CX + 26, OPP_HEAD_CY + 124),
+                    fill=ramp(PARCHMENT)[2])
+        d.rectangle((OPP_CX - 26, OPP_HEAD_CY + 124, OPP_CX - 22, OPP_HEAD_CY + 152),
+                    fill=ramp(PARCHMENT)[2])
+        d.rectangle((OPP_CX + 22, OPP_HEAD_CY + 124, OPP_CX + 26, OPP_HEAD_CY + 152),
+                    fill=ramp(PARCHMENT)[2])
+    if "braces" in av.extras:
+        # Braces over the shirt: two verticals crossing the chest, which also breaks up the
+        # widest torso in the set. Tan leather, not BOOT_DARK — dark straps over a dark buffalo
+        # check disappeared into the plaid completely, which is a detail costing colours and
+        # buying nothing. Then WOOD_LIGHT, which read fine and tripped `_assert_sprite_colours`
+        # at 65 of 64 — a new base tone lands in every `light_from` band it crosses, and the
+        # chest crosses several. The coat's own highlight is already present in exactly those
+        # bands, so it separates from the dark check squares for free.
+        for side in (-1, 1):
+            x0, x1 = sorted((OPP_CX + side * 26, OPP_CX + side * 42))
+            d.polygon([(x0, OPP_HEAD_CY + 60), (x1, OPP_HEAD_CY + 60),
+                       (x1 + side * 8, OPP_H), (x0 + side * 8, OPP_H)], fill=ramp(av.coat)[0])
+    if "ribbed_knit" in av.extras:
+        # Ribbing on the CROWN, in the crown's own shade. Drawn across the brow band first,
+        # where the band is dark and the rows were light: at that contrast, sitting directly on
+        # his eyebrows, they read as a row of spikes rather than as wool. On the crown, in a
+        # neighbouring tone, they read as knit and stay out of the face entirely.
+        for rx_ in range(-40, 41, 12):
+            d.rectangle((OPP_CX + rx_, hy - 74, OPP_CX + rx_ + 4, hy - 42),
+                        fill=ramp(av.headwear_main)[2])
+    if "scar" in av.extras:
+        # Through the brow, in the skin's own deep tone rather than anything redder: a scar is
+        # a change in the surface, and at four pixels wide a red mark reads as a fresh wound.
+        d.rectangle((OPP_CX + 20, hy - 32, OPP_CX + 24, hy - 20), fill=_mix(av.skin, skin_deep, 0.6))
+    if "beard_stache" in av.extras:
+        # A moustache a shade lighter than the beard, so the largest mass of hair on any of
+        # these faces is not one flat brown block.
+        d.polygon([(OPP_CX - 34, hy + 20), (OPP_CX + 34, hy + 20),
+                   (OPP_CX + 26, hy + 36), (OPP_CX - 26, hy + 36)],
+                  fill=ramp(av.facial_colour)[0])
+
     if av.pipe:
         d.polygon([
             (OPP_CX - 46, hy + 20), (OPP_CX - 40, hy + 26),
