@@ -1031,7 +1031,7 @@ class Avatar:
                  hem_x=112, arm_x=118,
                  # --- face proportion --------------------------------------------------------
                  eye_dx=24, eye_w=8, eye_up=12, eye_dn=8, brow_dy=0, nose_w=4, nose_dy=0,
-                 mouth_w=20, brow_colour=None, extras=()):
+                 mouth_w=20, brow_colour=None, brow_h=8, accent=None, extras=()):
         self.key = key
         self.coat = coat                    # shoulders/chest
         self.placket = placket              # centre panel, so the chest isn't one flat mass
@@ -1080,6 +1080,14 @@ class Avatar:
         # invisible at 8px, and the brow is where three of the four expressions actually happen,
         # so she would have had one expression and three variations of it.
         self.brow_colour = brow_colour
+        # Brow WEIGHT. 8px is a man's brow and it was the only one on offer; at 4px the same
+        # line reads as a woman's. Half the merge note about the Card Sharp reading
+        # androgynous was this one number.
+        self.brow_h = brow_h
+        # One saturated colour per character for lips / ribbons / ties. Kept as a single
+        # knob because these are the marks that must NOT be sampled from the skin ramp —
+        # they only work by being the one thing on the sprite that is not skin or cloth.
+        self.accent = accent
         self.extras = extras            # per-character detail passes, by name
 
 
@@ -1115,7 +1123,9 @@ AVATARS = {
         head_rx=56, head_ry=64, head_dy=-8, neck_w=20, shoulder_x=84, shoulder_in=54,
         hem_x=100, arm_x=106,
         eye_dx=26, eye_w=8, eye_up=10, eye_dn=6, brow_dy=-2, nose_w=3, nose_dy=-2, mouth_w=16,
-        extras=("sheen", "earring", "garters", "brooch", "ring"),
+        brow_h=4, accent=ROSE_RED,
+        extras=("sheen", "lashes", "lips", "beauty_mark", "earring", "garters", "brooch",
+                "ring"),
     ),
     # --- The Kid -------------------------------------------------------------------------
     # A child is not a small adult, and the difference is entirely proportion, so this is the
@@ -1133,13 +1143,13 @@ AVATARS = {
     # gap in her front teeth that only shows when she grins.
     "kid": Avatar(
         "kid", KNIT_TEAL, PARCHMENT, "none", KNIT_TEAL, KNIT_TEAL,
-        facial="none", hair=HAIR_BLOND, hair_style="bunches", chest="none",
+        facial="none", hair=HAIR_BLOND, hair_style="plaits", chest="none",
         soft_features=True, skin=SKIN_FAIR,
         head_rx=58, head_ry=56, head_dy=10, neck_w=16, shoulder_x=74, shoulder_in=46,
         hem_x=90, arm_x=96,
         eye_dx=22, eye_w=9, eye_up=12, eye_dn=8, brow_dy=8, nose_w=3, nose_dy=-6, mouth_w=14,
-        brow_colour=_mix(HAIR_BLOND, HAIR_BROWN, 0.55),
-        extras=("ribbons", "freckles", "buttons", "gap_tooth"),
+        brow_colour=_mix(HAIR_BLOND, HAIR_BROWN, 0.55), brow_h=4, accent=ROSE_RED,
+        extras=("knit", "ribbons", "freckles", "buttons", "gap_tooth"),
     ),
     # --- The Regular ---------------------------------------------------------------------
     # "Average" is a trap: the previous cast failed review precisely because everyone was drawn
@@ -1159,7 +1169,7 @@ AVATARS = {
         head_rx=60, head_ry=70, head_dy=2, neck_w=32, shoulder_x=104, shoulder_in=68,
         hem_x=118, arm_x=124,
         eye_dx=25, eye_w=8, eye_up=11, eye_dn=8, brow_dy=0, nose_w=4, nose_dy=2, mouth_w=20,
-        extras=("stubble", "collar", "braces", "pocket", "ring"),
+        extras=("ears", "stubble", "collar", "braces", "pocket", "ring"),
     ),
 }
 
@@ -1280,10 +1290,30 @@ def _avatar_parts(av):
             (OPP_CX - av.neck_w, hy + 34), (OPP_CX + av.neck_w, hy + 34),
             (OPP_CX + av.neck_w + 4, sy + 60), (OPP_CX - av.neck_w - 4, sy + 60),
         ]), av.skin),
-        (_ellipse(OPP_CX - av.head_rx, hy - av.head_ry,
-                  OPP_CX + av.head_rx, hy + av.head_ry), av.skin),
     ]
 
+    # --- BEHIND the head -------------------------------------------------------------------
+    # Long hair and plaits get a halo ellipse painted before the skull, so what survives is a
+    # RIM of hair around the face plus whatever hangs past it. That rim is where hair volume
+    # comes from; hair drawn only in front of the head is a wig sitting on a ball. (The
+    # Old-Timer has neither hair nor ears here, so this block emits nothing for him and his
+    # part order is exactly what it was.)
+    if av.hair is not None and av.hair_style in ("long", "plaits"):
+        halo = 14 if av.hair_style == "long" else 10
+        parts.append((_ellipse(OPP_CX - av.head_rx - halo, hy - av.head_ry - vy(12),
+                               OPP_CX + av.head_rx + halo, hy + av.head_ry - vy(4)), av.hair))
+    if "ears" in av.extras:
+        # Jug ears, drawn before the skull so only the part that sticks out past it shows. The
+        # plainest possible specific, which is this character's whole brief — and pushed out
+        # far enough to actually break the silhouette, because an ear tucked inside the head
+        # outline is an ear nobody can see.
+        for side in (-1, 1):
+            ex_ = OPP_CX + side * (av.head_rx - 2)
+            parts.append((_ellipse(ex_ - 14, hy - vy(4), ex_ + 14, hy + vy(28)), av.skin))
+    parts.append((_ellipse(OPP_CX - av.head_rx, hy - av.head_ry,
+                           OPP_CX + av.head_rx, hy + av.head_ry), av.skin))
+
+    # --- IN FRONT of the head --------------------------------------------------------------
     # Hair, under the headwear so the hat edge always wins where they meet.
     if av.hair is not None:
         if av.hair_style == "braid":
@@ -1303,60 +1333,65 @@ def _avatar_parts(av):
                 (OPP_CX - 50, hy + 78), (OPP_CX - 72, hy + 74),
             ]), av.hair))
         elif av.hair_style == "long":
-            # A skull cap over the top of the head, two temple wedges framing the forehead, and
-            # two lengths falling past the jaw onto the shoulders. Drawn as blocks rather than
-            # one outline because every shape here is snapped to a 4px grid — a single traced
-            # silhouette loses its shape to the snap, whereas blocks that are already
-            # grid-aligned keep theirs exactly.
+            # ROUND 2 MERGE, from Designer A. Mine was a flat "skull cap" — a plateau with a
+            # sheen on it and no hairline, which the review called out and which was my own
+            # stated regret. A's construction is better and this is theirs, re-fitted to my
+            # head numbers:
             #
-            # THE SPLIT INTO CAP + WEDGES IS THE FIX FOR THE VERSION BEFORE THIS. One crown
-            # polygon ran full-width down to hy-30. Her brows are drawn at hy-34. So the hair
-            # covered the brows: she had no forehead, no eyebrows, and therefore — since three
-            # of the four expressions are carried by the brow — no expressions. The cap now
-            # stops at hy-vy(52) and only the WEDGES come down past it, at the temples, outside
-            # hx(38). Everything between is forehead.
+            #   * volume comes from the HALO ellipse behind the skull (above), not from the
+            #     front piece. That rim is what makes hair look like it has a head inside it.
+            #   * the front piece is ONE swept shape, not two mirrored wings meeting at a
+            #     centre seam. A tried mirrored halves first and got a skin-coloured wedge at
+            #     the crown where the two polygons failed to meet — at this size that wedge
+            #     does not read as a parting, it reads as bare scalp. A single piece cannot
+            #     have a seam. The part is implied by the sweep instead of drawn as a gap.
+            #
+            # It sweeps low over the shaded (right) side and its lowest inner point is
+            # hy-vy(40); her brows are at hy-34, so it clears them by 5px at the worst point.
             parts.append((_poly([
-                (OPP_CX - hx(64), hy - vy(46)), (OPP_CX - hx(52), hy - vy(72)),
-                (OPP_CX, hy - vy(82)), (OPP_CX + hx(52), hy - vy(72)),
-                (OPP_CX + hx(64), hy - vy(46)),
-                (OPP_CX + hx(64), hy - vy(52)), (OPP_CX - hx(64), hy - vy(52)),
+                (OPP_CX - hx(64), hy - vy(22)), (OPP_CX - hx(62), hy - vy(62)),
+                (OPP_CX - hx(8), hy - vy(78)), (OPP_CX + hx(58), hy - vy(64)),
+                (OPP_CX + hx(64), hy - vy(18)),
+                (OPP_CX + hx(48), hy - vy(40)), (OPP_CX, hy - vy(58)),
+                (OPP_CX - hx(54), hy - vy(46)),
+            ]), av.hair))
+            # The lengths, falling past the jaw onto the shoulders.
+            for side in (-1, 1):
+                x0, x1 = sorted((OPP_CX + side * hx(50), OPP_CX + side * hx(80)))
+                parts.append((_poly([
+                    (x0, hy - vy(40)), (x1, hy - vy(46)), (x1, hy + vy(84)), (x0, hy + vy(66)),
+                ]), av.hair))
+        elif av.hair_style == "plaits":
+            # ROUND 2 MERGE, from Designer A, replacing my round bunches. A's plait is three
+            # segments per side, each shorter and narrower than the last, stepping down and
+            # slightly in, with a ribbon tie at each end. That taper-and-step is what a braid
+            # IS at this size — a single fat block level with the jaw reads as an ear muff,
+            # which is the exact failure I hit twice with bunches and A hit once with braids.
+            #
+            # THE ONE THING I CHANGED FROM A'S: the outward offsets. A's build has wider
+            # shoulders than mine; on my narrow-shouldered child, plaits hugging the skull
+            # would collapse the head silhouette below the shoulder silhouette and lose the
+            # head-wider-than-shoulders ratio that the review called the only true "child" cue
+            # in either cast. The first segment therefore pushes out to head_rx+34, not +28.
+            R = av.head_rx
+            parts.append((_poly([
+                (OPP_CX - R + 2, hy - av.head_ry + vy(10)),
+                (OPP_CX + R - 2, hy - av.head_ry + vy(10)),
+                (OPP_CX + R - 6, hy - vy(26)), (OPP_CX - R + 6, hy - vy(30)),
             ]), av.hair))
             for side in (-1, 1):
-                x0, x1 = sorted((OPP_CX + side * hx(38), OPP_CX + side * hx(64)))
                 parts.append((_poly([
-                    (x0, hy - vy(56)), (x1, hy - vy(56)), (x1, hy - vy(18)), (x0, hy - vy(30)),
+                    (OPP_CX + side * (R - 6), hy - vy(14)), (OPP_CX + side * (R + 30), hy - vy(22)),
+                    (OPP_CX + side * (R + 42), hy + vy(18)), (OPP_CX + side * (R + 4), hy + vy(22)),
                 ]), av.hair))
-            # The falls. Held out at hx(50) rather than hx(44): at the closer spacing the two
-            # dark lengths pinched the face to about 40px of visible width and the whole head
-            # read as a hood with a slot in it.
-            for side in (-1, 1):
-                x0, x1 = sorted((OPP_CX + side * hx(50), OPP_CX + side * hx(76)))
                 parts.append((_poly([
-                    (x0, hy - vy(44)), (x1, hy - vy(48)), (x1, hy + vy(80)), (x0, hy + vy(64)),
+                    (OPP_CX + side * (R + 6), hy + vy(16)), (OPP_CX + side * (R + 30), hy + vy(12)),
+                    (OPP_CX + side * (R + 28), hy + vy(50)), (OPP_CX + side * (R + 8), hy + vy(52)),
                 ]), av.hair))
-        elif av.hair_style == "bunches":
-            # A child's hair: a fringe straight across the brow and two bunches tied out at the
-            # sides. The bunches are the point — they push PAST the head silhouette on both
-            # sides, which is a shape no hat in this set makes and no adult here has, so she is
-            # identifiable as black-on-white before any colour arrives.
-            parts.append((_poly([
-                (OPP_CX - hx(60), hy - vy(42)), (OPP_CX - hx(56), hy - vy(60)),
-                (OPP_CX, hy - vy(66)), (OPP_CX + hx(56), hy - vy(60)),
-                (OPP_CX + hx(60), hy - vy(42)), (OPP_CX + hx(56), hy - vy(38)),
-                (OPP_CX + hx(4), hy - vy(46)), (OPP_CX - hx(56), hy - vy(42)),
-            ]), av.hair))
-            # Bunches, tied HIGH and swept up-and-out. Two earlier placements failed, both for
-            # the same reason — height:
-            #   * level with the brow and starting inside the skull (hx 46), they merged into
-            #     the fringe and the head was one blonde helmet;
-            #   * out at hx(54) but hanging BELOW the eye line, they sat exactly where ears sit
-            #     and read as protruding ears, not hair.
-            # Tied above the eye line and rising as they go out is the shape that can only be
-            # hair someone gathered — and high bunches are a child's, where a low tie is an
-            # adult's. This is the single most load-bearing shape on the character.
-            for side in (-1, 1):
-                x0, x1 = sorted((OPP_CX + side * hx(48), OPP_CX + side * hx(98)))
-                parts.append((_ellipse(x0, hy - vy(62), x1, hy - vy(6)), av.hair))
+                parts.append((_poly([
+                    (OPP_CX + side * (R + 10), hy + vy(46)), (OPP_CX + side * (R + 26), hy + vy(44)),
+                    (OPP_CX + side * (R + 20), hy + vy(76)), (OPP_CX + side * (R + 12), hy + vy(76)),
+                ]), av.hair))
         elif av.hair_style == "sideburns":
             # Hard against the edge of the head (hx 46..62 on a 60px half-width) so they read as
             # hair coming down from under the cap. At the fixed 40..52 they were authored at,
@@ -1603,6 +1638,13 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         # Eye socket shadow, so the eye sits IN the head rather than on it.
         d.rectangle((ex - av.eye_w - 4, eye_y + av.eye_dn, ex + av.eye_w + 4,
                      eye_y + av.eye_dn + 4), fill=skin_sh)
+        if "lashes" in av.extras and expression not in ("happy", "blink"):
+            # ROUND 2 MERGE, from Designer A. Four pixels of lash lifted at the outer corner —
+            # the one feature that carries glamour at this size without a single curve. Skipped
+            # on happy and blink, where the eye is already a closed bar and a lash on top of it
+            # just thickens the bar.
+            lx0, lx1 = sorted((ex + side * av.eye_w, ex + side * (av.eye_w + 8)))
+            d.rectangle((lx0, eye_y - av.eye_up - 4, lx1, eye_y - av.eye_up), fill=av.hair)
 
     # Brows follow the character: grey on the Old-Timer, otherwise their own hair colour,
     # so a young face doesn't get an old man's eyebrows.
@@ -1611,24 +1653,30 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     for side in (-1, 1):
         x_out, x_in = OPP_CX + side * (av.eye_dx + 20), OPP_CX + side * (av.eye_dx - 12)
         if expression == "rueful":
-            d.line((x_out, by - 8, x_in, by + 4), fill=brow, width=8)
+            d.line((x_out, by - 8, x_in, by + 4), fill=brow, width=av.brow_h)
         elif expression == "happy":
-            d.line((x_out, by + 4, x_in, by - 4), fill=brow, width=8)
+            d.line((x_out, by + 4, x_in, by - 4), fill=brow, width=av.brow_h)
         else:
-            d.line((x_out, by, x_in, by), fill=brow, width=8)
+            d.line((x_out, by, x_in, by), fill=brow, width=av.brow_h)
 
     my = hy + 40
     mw = av.mouth_w
+    # ROUND 2 MERGE, from Designer A: the mouth takes the character's accent colour where they
+    # have one. I argued in round 1 that lip colour was a cliche and left it off; the review
+    # agreed with A that without it the Card Sharp reads close to androgynous, and A's render
+    # proves four pixels of rose survives at 150x140. `lip` falls back to INK, so the
+    # Old-Timer's mouth (under his moustache) is unchanged.
+    lip = av.accent if "lips" in av.extras else INK
     if expression == "happy":
-        d.rectangle((OPP_CX - mw, my, OPP_CX + mw, my + 8), fill=INK)
+        d.rectangle((OPP_CX - mw, my, OPP_CX + mw, my + 8), fill=lip)
         for side in (-1, 1):
             mx0, mx1 = sorted((OPP_CX + side * mw, OPP_CX + side * (mw + 4)))
-            d.rectangle((mx0, my - 8, mx1, my), fill=INK)
+            d.rectangle((mx0, my - 8, mx1, my), fill=lip)
     elif expression == "rueful":
-        d.rectangle((OPP_CX - mw + 4, my + 8, OPP_CX + mw - 4, my + 12), fill=INK)
+        d.rectangle((OPP_CX - mw + 4, my + 8, OPP_CX + mw - 4, my + 12), fill=lip)
         for side in (-1, 1):
             mx0, mx1 = sorted((OPP_CX + side * (mw - 4), OPP_CX + side * mw))
-            d.rectangle((mx0, my, mx1, my + 8), fill=INK)
+            d.rectangle((mx0, my, mx1, my + 8), fill=lip)
     elif av.facial == "none":
         # A resting mouth. Before this, `idle` and `blink` drew NO MOUTH AT ALL — which nobody
         # noticed while the only avatar was an Old-Timer with a moustache parked over the spot.
@@ -1639,7 +1687,7 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         # Not INK. A full-strength black slot at rest reads as an open mouth, or as a slot; a
         # line mixed most of the way to the skin reads as lips closed.
         d.rectangle((OPP_CX - mw + 4, my, OPP_CX + mw - 4, my + 4),
-                    fill=_mix(av.skin, INK, 0.62))
+                    fill=lip if "lips" in av.extras else _mix(av.skin, INK, 0.62))
 
     # Reading glasses. A prior pass gave the frame margin past idle/rueful's own eye rectangle
     # (ex-8, eye_y-12, ex+8, eye_y+8) but kept the outline INK, same as the eye fill — on
@@ -1687,6 +1735,11 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     # drawn here rather than as `_avatar_parts` entries so they don't each pick up
     # `composite_sprite`'s automatic per-part shadow band, which is what pushed the pipe over
     # the colour budget when it was tried as a part (see its own note below).
+    if "beauty_mark" in av.extras:
+        # ROUND 2 MERGE, from Designer A. Four pixels high on the cheek, in the hair's own
+        # colour so it costs nothing. It is doing the job my earring was doing — breaking the
+        # mirror symmetry of the face — but it does it ON the face, where the eye already is.
+        d.rectangle((OPP_CX - hxx(30), hy + 12, OPP_CX - hxx(30) + 4, hy + 16), fill=av.hair)
     if "sheen" in av.extras:
         # A sheen across the crown. Black hair drawn flat is not hair at this size, it is a
         # HOLE — a shape with no interior information, which is exactly what her previous
@@ -1722,13 +1775,25 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         # The tie at the root of each bunch. Small, but it is the difference between "hair
         # sticking out" and "hair someone tied for her this morning", which is most of what
         # makes her read as a child rather than as a short adult.
+        R = av.head_rx
         for side in (-1, 1):
-            x0, x1 = sorted((OPP_CX + side * hxx(48), OPP_CX + side * hxx(60)))
-            d.rectangle((x0, hy - 40, x1, hy - 26), fill=ROSE_RED)
+            # One tie where each plait leaves the head, one where it ends. A's note holds: the
+            # ribbon has to be the accent and not the yoke cream, because a cream ribbon on
+            # blonde hair is the same value as the hair and simply vanishes.
+            # Lifted to hy-36..hy-20 from hy-18..hy-2. At the lower placement the two red
+            # blocks sat exactly at ear height and read as ear muffs — the same failure the
+            # bunches hit twice. A tie belongs where the plait leaves the SKULL, above the ear,
+            # not beside it.
+            d.polygon([(OPP_CX + side * (R + 2), hy - 36), (OPP_CX + side * (R + 22), hy - 40),
+                       (OPP_CX + side * (R + 26), hy - 24), (OPP_CX + side * (R + 6), hy - 20)],
+                      fill=av.accent)
+            d.polygon([(OPP_CX + side * (R + 10), hy + 60), (OPP_CX + side * (R + 26), hy + 58),
+                       (OPP_CX + side * (R + 24), hy + 72), (OPP_CX + side * (R + 12), hy + 72)],
+                      fill=av.accent)
     if "freckles" in av.extras:
         for fx, fy in ((-22, 6), (-12, 12), (14, 8), (24, 14), (-2, 16)):
             d.rectangle((OPP_CX + hxx(fx), hy + fy, OPP_CX + hxx(fx) + 4, hy + fy + 4),
-                        fill=_mix(av.skin, skin_deep, 0.7))
+                        fill=_mix(av.skin, skin_deep, 0.45))
     if "gap_tooth" in av.extras and expression == "happy":
         # A gap in the front teeth, visible only when she grins. The one detail in this cast
         # that exists in a single expression — a child missing a tooth is a fact about her, and
@@ -1814,6 +1879,12 @@ def make_avatar(av, expression: str) -> Image.Image:
     # the coat's own placket colour, already in this sprite's palette, so it adds no new base.
     if av.check:
         _buffalo_check(img, av.coat, av.placket, 16)
+    if "knit" in av.extras:
+        # ROUND 2 MERGE, from Designer A: the same recolour trick as the buffalo check, at half
+        # the block size and in the coat's OWN shadow tone rather than a second base colour, so
+        # a chunky hand-knit reads as texture instead of as a second garment. This is the fix
+        # for the flattest torso I shipped in round 1.
+        _buffalo_check(img, av.coat, ramp(av.coat)[2], 8)
     draw_avatar_face(img, expression, av)
     # Lit from the hearth like everything else in the room (see light_from's docstring).
     return light_from(img, strength=0.14)
