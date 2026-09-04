@@ -5,7 +5,7 @@
  *  that gap by asserting every key here has all four expression PNGs on disk, so adding a
  *  character on one side and forgetting the other fails a test rather than shipping a broken
  *  image URL. */
-export const AVATAR_KEYS = ['old_timer', 'card_sharp', 'homesteader', 'woodsman'] as const;
+export const AVATAR_KEYS = ['old_timer', 'card_sharp', 'kid', 'regular'] as const;
 
 export type AvatarKey = (typeof AVATAR_KEYS)[number];
 
@@ -19,8 +19,8 @@ export const DEFAULT_AVATAR: AvatarKey = 'old_timer';
 export const AVATAR_LABELS: Record<AvatarKey, string> = {
   old_timer: 'The Old-Timer',
   card_sharp: 'The Card Sharp',
-  homesteader: 'The Homesteader',
-  woodsman: 'The Woodsman',
+  kid: 'The Kid',
+  regular: 'The Regular',
 };
 
 export const AVATAR_EXPRESSIONS = ['idle', 'happy', 'rueful', 'blink'] as const;
