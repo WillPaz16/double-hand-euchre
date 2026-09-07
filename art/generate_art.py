@@ -1788,11 +1788,26 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         # A mouth with an UPPER and a LOWER lip, not a single 4px bar. The bar was legible as
         # "there is a mouth here" and nothing more; two rows plus a highlight is a shape, and a
         # shape is a thing the player can name.
-        base_lip = lip if "lips" in av.extras else _mix(av.skin, INK, 0.62)
-        d.rectangle((OPP_CX - mw + 4, my, OPP_CX + mw - 4, my + 4),
-                    fill=_mix(base_lip, INK, 0.4))
-        d.rectangle((OPP_CX - mw + 8, my + 4, OPP_CX + mw - 8, my + 8), fill=base_lip)
-        d.rectangle((OPP_CX - 8, my + 4, OPP_CX, my + 8), fill=_mix(base_lip, skin_hi, 0.45))
+        # Two constructions, because "a mouth at rest" is not one shape for every face.
+        #
+        # With lip colour (the Card Sharp), an upper and a lower row plus a highlight reads as
+        # LIPS — a shape you can name, which is the whole point of the feature pass.
+        #
+        # Without it (the Kid, the Regular) the identical construction reads as an open mouth.
+        # Round 3 shipped that and the review caught it at native scale: 8px of dark, stacked in
+        # two rows, is a hole rather than a closed line, and idle is the state these characters
+        # sit in for most of a game — so both of them looked permanently startled. A single 4px
+        # bar, mixed further back toward the skin, is what a closed mouth is at this size.
+        # Confirmed by the one face in either designer's round 3 that did NOT have the problem:
+        # a flat wide bar reading as a closed, serious line.
+        if "lips" in av.extras:
+            d.rectangle((OPP_CX - mw + 4, my, OPP_CX + mw - 4, my + 4),
+                        fill=_mix(lip, INK, 0.4))
+            d.rectangle((OPP_CX - mw + 8, my + 4, OPP_CX + mw - 8, my + 8), fill=lip)
+            d.rectangle((OPP_CX - 8, my + 4, OPP_CX, my + 8), fill=_mix(lip, skin_hi, 0.45))
+        else:
+            d.rectangle((OPP_CX - mw + 4, my + 2, OPP_CX + mw - 4, my + 6),
+                        fill=_mix(av.skin, INK, 0.55))
 
     # Reading glasses. A prior pass gave the frame margin past idle/rueful's own eye rectangle
     # (ex-8, eye_y-12, ex+8, eye_y+8) but kept the outline INK, same as the eye fill — on
@@ -1911,9 +1926,29 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
                        (OPP_CX + side * (R + 24), hy + 72), (OPP_CX + side * (R + 12), hy + 72)],
                       fill=av.accent)
     if "freckles" in av.extras:
-        for fx, fy in ((-22, 6), (-12, 12), (14, 8), (24, 14), (-2, 16)):
+        # ON the cheeks, never across the nose. The previous placement ran -22, -12, -2, 14, 24
+        # — three of those sit on or beside the nose bridge, so they joined the two blush
+        # patches into ONE continuous rose band from cheek to cheek. That is the same "smooth
+        # modelling" defect the client rejected, rebuilt out of freckles: the review confirmed
+        # it on a tight crop.
+        #
+        # Now every dot is outboard of the nose and drawn in the skin's full deep tone rather
+        # than mixed most of the way back to the base — a freckle has to be a step darker than
+        # the blush it sits on, or it dissolves into it. Asymmetric between sides on purpose:
+        # a mirrored scatter reads as a pattern, and freckles are not a pattern.
+        # Tone matters as much as placement. `skin_deep` on the fair complexion came out at
+        # (210,173,158) — about 30 units off her own base and LIGHTER than the blush underneath,
+        # so the dots read as pale dashes laid over the cheek instead of freckles in it. Sampled
+        # from the rendered PNG rather than reasoned about: the blush was (188,127,117) and the
+        # freckles were sitting on top of it in a weaker colour. A freckle is darker than
+        # everything around it or it is not a freckle. Darkened toward INK from the deep tone,
+        # which keeps the same hue family already in her palette.
+        #
+        # Four, not six: at 4px on a face this size six dots per cheek pair is measles.
+        freckle = _mix(skin_deep, INK, 0.34)
+        for fx, fy in ((-40, 10), (-30, 16), (34, 12), (42, 18)):
             d.rectangle((OPP_CX + hxx(fx), hy + fy, OPP_CX + hxx(fx) + 4, hy + fy + 4),
-                        fill=_mix(av.skin, skin_deep, 0.7))
+                        fill=freckle)
     if "gap_tooth" in av.extras and expression == "happy":
         # A gap in the front teeth, visible only when she grins. The one detail in this cast
         # that exists in a single expression — a child missing a tooth is a fact about her, and
