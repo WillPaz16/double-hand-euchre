@@ -1,8 +1,23 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
+import { configDefaults } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  test: {
+    // Agent worktrees live at `.claude/worktrees/<id>/` — INSIDE this repo, each one a full
+    // checkout carrying its own copy of `tests/`. Vitest's default globs walk straight into
+    // them, so a plain `vitest run` at the repo root was executing this suite once per
+    // worktree: 42 files and 432 tests where the project has 15 and 152.
+    //
+    // That is worse than a cosmetic miscount. It inflates every green run into a number nobody
+    // can sanity-check, and it makes this repo's suite fail for a stale or half-finished
+    // experiment sitting in someone else's worktree — a failure with no cause anywhere in the
+    // committed tree. Found by noticing the same commit reported 152 tests inside a worktree
+    // and 432 at the root.
+    exclude: [...configDefaults.exclude, '.claude/**'],
+  },
   server: {
     port: Number(process.env.PORT) || 5173,
   },
