@@ -1409,9 +1409,24 @@ def _avatar_parts(av):
                     (OPP_CX + side * (R - 6), hy - vy(14)), (OPP_CX + side * (R + 30), hy - vy(22)),
                     (OPP_CX + side * (R + 42), hy + vy(18)), (OPP_CX + side * (R + 4), hy + vy(22)),
                 ]), av.hair))
+                # Inner edge at R-10, not R+6, and running down to hy+62 rather than hy+52.
+                # The head is an ELLIPSE: by hy+30 it has narrowed to about |x|=49 on this
+                # skull, while the plait started at |x|=64 and the shoulder line does not begin
+                # until hy+42 — so a wedge between jaw, plait and shoulder belonged to nothing
+                # and came out as a hole punched clean through her, in all four expressions.
+                # It shipped: the room shows through her neck. Invisible in a colour render at
+                # any zoom, because transparent reads as background; `check_avatar_holes.py`
+                # exists so it cannot happen silently again.
+                #
+                # Closing it inboard rather than by widening the shoulder keeps the
+                # head-wider-than-shoulders ratio the review called the only true child cue,
+                # and hair falling onto the shoulder is what a plait does anyway. R-10 is 48
+                # against a jaw at ~49 there, so it meets the head edge without crossing the
+                # face — the "hair across the jaw reads as a beard" failure this file has hit
+                # twice already.
                 parts.append((_poly([
-                    (OPP_CX + side * (R + 6), hy + vy(16)), (OPP_CX + side * (R + 30), hy + vy(12)),
-                    (OPP_CX + side * (R + 28), hy + vy(50)), (OPP_CX + side * (R + 8), hy + vy(52)),
+                    (OPP_CX + side * (R - 10), hy + vy(16)), (OPP_CX + side * (R + 30), hy + vy(12)),
+                    (OPP_CX + side * (R + 28), hy + vy(50)), (OPP_CX + side * (R - 8), hy + vy(62)),
                 ]), av.hair))
                 parts.append((_poly([
                     (OPP_CX + side * (R + 10), hy + vy(46)), (OPP_CX + side * (R + 26), hy + vy(44)),

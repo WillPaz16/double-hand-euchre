@@ -12,7 +12,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "balance": "tsx scripts/balance.ts",
-    "audit": "tsx scripts/audit.ts"
+    "audit": "tsx scripts/audit.ts",
+    "art:check": "python3 art/check_determinism.py && python3 art/check_cards_frozen.py && python3 art/check_avatar_holes.py"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
