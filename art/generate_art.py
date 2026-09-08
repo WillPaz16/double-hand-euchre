@@ -34,6 +34,12 @@ SKIN_WARM = (216, 174, 142, 255)   # ruddier, weathered. Pulled back from (222,1
 SKIN_TAN = (198, 146, 104, 255)
 SKIN_DEEP = (156, 106, 74, 255)
 SKIN_FAIR = (234, 202, 180, 255)   # the child's — pale enough that blonde hair still reads
+# The card sharp's. She was SKIN_DEEP (156,106,74), a deep brown carried over from a much
+# earlier version of the character and never revisited — wrong for who she is. Warm light-medium
+# with an even golden ramp (R-G and G-B both 40), deliberately NOT pushed toward yellow: raising
+# green against blue is what produces the sallow caricature tint, and it is also simply not what
+# skin does. Distinct from SKIN_WARM, which is the Regular's and reads ruddier.
+SKIN_GOLDEN = (212, 172, 132, 255)
                                    # DARKER than the face it frames, which is what stops a
                                    # blonde head becoming one undifferentiated light mass.
                                    # Deliberately LESS saturated than SKIN: `ramp()` multiplies
@@ -946,7 +952,24 @@ HAT_FUR = (232, 216, 184, 255)    # warmer cream, homestead sheepskin rather tha
 # adding one, and costs nothing against `_assert_sprite_colours`. Picking the right colour and
 # picking a colour already elsewhere in the file are therefore the same price; these are chosen
 # for the character, not for the palette table.
-HAIR_BLACK = (36, 33, 40, 255)    # true black hair, biased cool so it never reads as the warm
+# Black hair, biased FAR cooler than it looks, because it is pre-compensated for the room's
+# light. `light_from` lifts the hearth-facing side with a strongly WARM, largely ADDITIVE ramp:
+# from the old (36,33,40) the lit half landed at (75,63,53), a solid brown block across half her
+# head, so the character described as black-haired read brown on the lit side and black on the
+# shaded one. Darkening the base does not help — measured, (16,15,22) still lit to (59,48,37) —
+# because the warmth is added, not scaled.
+#
+# The fix is to pre-compensate the base for that transform. But there is no base that makes BOTH
+# halves neutral — the lift is large, so any value cool enough to neutralise the lit side leaves
+# the shaded side navy, which is what a first attempt at (24,28,48) did: lit went neutral and
+# the shaded half turned blue. Swapping one two-tone problem for another.
+#
+# So it is a minimax, solved by sweeping the candidates and measuring both halves. (26,23,38)
+# gives +15 on the lit side and -14 on the shaded, worst swing 15, against 22 for the old
+# (36,33,40) and 26 for the over-corrected blue. Darker overall too, which helps it read black
+# at all. What is left is a warm highlight on dark hair, which is what firelight actually does.
+# She is the only user of this constant, so nobody else's sprite moves.
+HAIR_BLACK = (26, 23, 38, 255)
                                   # BOOT_DARK brown it replaced — and so a sheen mixed off it
                                   # lands on slate rather than mud.
 HAIR_BLOND = (228, 190, 112, 255)  # straw, not GOLD: GOLD is the tin star and the spectacles,
@@ -1049,6 +1072,7 @@ class Avatar:
                  # --- face proportion --------------------------------------------------------
                  eye_dx=24, eye_w=8, eye_up=12, eye_dn=8, brow_dy=0, nose_w=4, nose_dy=0,
                  mouth_w=20, brow_colour=None, brow_h=8, accent=None, shadow_desat=0.0,
+                 lid="creased",
                  smirk=False,
                  extras=()):
         self.key = key
@@ -1123,6 +1147,11 @@ class Avatar:
         self.nose_w = nose_w
         self.nose_dy = nose_dy
         self.mouth_w = mouth_w
+        # 'creased' carves a shadow pad above the eye; 'low' leaves the upper lid smooth and
+        # full. The accurate way to draw an eye with a low or absent upper-lid crease is to
+        # REMOVE that pad, not to add anything — and never by tilting the eye, which is the
+        # caricature and reads as one instantly at this size.
+        self.lid = lid
         # Brows default to the hair colour, which is right for everyone whose hair is darker
         # than their face. It is wrong for the blonde child: a straw brow on a fair forehead is
         # invisible at 8px, and the brow is where three of the four expressions actually happen,
@@ -1179,14 +1208,14 @@ AVATARS = {
     "card_sharp": Avatar(
         "card_sharp", STEEL, BOOT_DARK, "none", STEEL, STEEL,
         facial="none", hair=HAIR_BLACK, hair_style="long", chest="chain",
-        soft_features=True, skin=SKIN_DEEP,
+        soft_features=True, skin=SKIN_GOLDEN, lid="low",
         head_rx=56, head_ry=64, head_dy=-8, neck_w=20, shoulder_x=84, shoulder_in=54,
         hem_x=100, arm_x=106,
         eye_dx=26, eye_w=8, eye_up=10, eye_dn=6, brow_dy=-2, nose_w=3, nose_dy=-2, mouth_w=16,
         brow_h=4, accent=ROSE_RED, shadow_desat=0.30, smirk=True,
         lean=4, hand_x=48,
         extras=("cheekbone", "nostrils", "philtrum", "lashes", "lips", "beauty_mark",
-                "sheen", "earring", "garters", "brooch", "ring"),
+                "sheen", "earring", "garters", "brooch", "ring", "low_bridge", "fringe"),
     ),
     # --- The Kid -------------------------------------------------------------------------
     # A child is not a small adult, and the difference is entirely proportion, so this is the
@@ -1465,6 +1494,20 @@ def _avatar_parts(av):
                 (cx + hx(48), hy - vy(40)), (cx, hy - vy(58)),
                 (cx - hx(54), hy - vy(46)),
             ]), av.hair))
+            if "fringe" in av.extras:
+                # A blunt fringe, cut straight across just above the brows. Drawn after the
+                # sweep so it overlays it: the sweep implies a part, and a fringe is what
+                # replaces one. It is a haircut, not a signifier — heavy, straight and level is
+                # simply what thick black hair does when it is cut in a line, and at this size a
+                # hard horizontal edge is the only way to say "blunt cut" at all.
+                #
+                # Bottom at hy-vy(38): her brows sit at hy-34, so this stops 4px clear of them.
+                # Any lower and the fringe merges with the brow into one dark band and she
+                # loses her eyes, which is the whole face.
+                parts.append((_poly([
+                    (cx - hx(54), hy - vy(64)), (cx + hx(54), hy - vy(64)),
+                    (cx + hx(50), hy - vy(38)), (cx - hx(50), hy - vy(38)),
+                ]), av.hair))
             # The lengths, falling past the jaw onto the shoulders.
             #
             # ROUND 5. Two changes, both forced by her new posture, both caught on the
@@ -1792,7 +1835,8 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         for side in (-1, 1):
             bx0, bx1 = sorted((cx + side * (av.eye_dx - av.eye_w - 8),
                                cx + side * (av.eye_dx + av.eye_w + 8)))
-            d.rectangle((bx0, eye_y - 18, bx1, eye_y - 14), fill=skin_sh)
+            if av.lid == "creased":
+                d.rectangle((bx0, eye_y - 18, bx1, eye_y - 14), fill=skin_sh)
             if "brow_ridge" in av.extras:
                 d.rectangle((bx0, eye_y - 22, bx1, eye_y - 18), fill=skin_hi)
     else:
@@ -1821,8 +1865,12 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     # low-contrast, it was almost not drawn. At the Old-Timer's brow_dy=0, eye_y is hy-8 and
     # this expression is hy+4 exactly as before, so his sprite is untouched.
     nb = eye_y + 12 + av.nose_dy
-    d.rectangle((cx - av.nose_w, eye_y - 8, cx + av.nose_w, nb), fill=skin_hi)
-    d.rectangle((cx + av.nose_w, eye_y - 4, cx + av.nose_w + 8, nb), fill=skin_sh)
+    # Where the lit ridge STARTS is the bridge height. Running it from eye_y-8 carries it up
+    # between the brows, which is a high European bridge; starting it level with the eyes gives
+    # a lower one. Only the top moves — the tip, nostrils and shadow are unchanged.
+    nose_top = eye_y + 2 if "low_bridge" in av.extras else eye_y - 8
+    d.rectangle((cx - av.nose_w, nose_top, cx + av.nose_w, nb), fill=skin_hi)
+    d.rectangle((cx + av.nose_w, max(eye_y - 4, nose_top), cx + av.nose_w + 8, nb), fill=skin_sh)
     if "nostrils" in av.extras:
         # A nostril each side of the tip rather than one dark bar under it. The bar was the
         # whole nose at this size — the client's "the nose barely registers" — because a bar
