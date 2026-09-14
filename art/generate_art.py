@@ -1225,11 +1225,16 @@ AVATARS = {
         # (84 against the Kid's 74) keeps them apart regardless.
         head_rx=60, head_ry=58, head_dy=-8, neck_w=20, shoulder_x=84, shoulder_in=54,
         hem_x=100, arm_x=106,
-        eye_dx=26, eye_w=8, eye_up=10, eye_dn=6, brow_dy=-2, nose_w=4, nose_dy=0, mouth_w=16,
+        # nose_dy 16, not 0: the base was at hy+2 against a chin at hy+58, i.e. the nose sat in
+        # the upper third of the face. 16 puts the base at hy+18, roughly halfway from eyes to
+        # chin, which is where a nose goes. Back to nose_w 3 — at 4 the nostrils sit at +-12 and
+        # the tip shadow runs -8..+12, and the whole thing read wide and flat once it came down
+        # onto the fuller part of the face.
+        eye_dx=26, eye_w=8, eye_up=10, eye_dn=6, brow_dy=-2, nose_w=3, nose_dy=16, mouth_w=16,
         brow_h=6, brow_span=(12, -10), accent=ROSE_RED, shadow_desat=0.30, smirk=True,
         lean=4, hand_x=48,
-        extras=("cheekbone", "nostrils", "philtrum", "lashes", "lips", "beauty_mark",
-                "sheen", "earring", "ring", "low_bridge", "fringe", "knit", "nose_tip"),
+        extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips", "beauty_mark",
+                "sheen", "earring", "ring", "low_bridge", "fringe", "knit"),
     ),
     # --- The Kid -------------------------------------------------------------------------
     # A child is not a small adult, and the difference is entirely proportion, so this is the
@@ -1583,16 +1588,34 @@ def _avatar_parts(av):
                 (cx + hx(48), hy - vy(40)), (cx, hy - vy(58)),
                 (cx - hx(54), hy - vy(46)),
             ]), av.hair))
-            # The sides, falling to a level cut at the jaw. Blunt, not tapered: a hard
-            # horizontal is the only way to say "cut in a line" on a 4px grid, and it is what
-            # separates a bob from hair that merely stops.
+            # The lengths. Not a blunt bob — the blunt cut read as tidy rather than as anything
+            # you would call beautiful, which is a real distinction at this size: a hard
+            # horizontal says "cut in a line" and stops there.
+            #
+            # These fall past the jaw onto the shoulder and carry a flare: the outer edge
+            # widens to hx(86) at cheek height before drawing back in, and the bottom is a
+            # STEP rather than a level cut. Both exist to imply a curve on a grid that has no
+            # curves — the widest point sitting below the ear is what the eye reads as hair
+            # falling around something rather than hanging off it.
+            #
+            # The inner edge flares in hard below the jaw (hy+vy(56) onward). That is not
+            # styling: straight inner edges leave a wedge between hair, neck and shoulder that
+            # renders as a sealed hole, which this file has now shipped three times and caught
+            # here a fourth by running the check.
             for side in (-1, 1):
-                outer = cx + side * hx(72)
-                inner = cx + side * hx(46)
                 parts.append((_poly([
-                    (outer, hy - vy(42)), (inner, hy - vy(48)),
-                    (inner, hy + vy(26)), (cx + side * hx(52), hy + vy(44)),
-                    (outer, hy + vy(44)),
+                    (cx + side * hx(66), hy - vy(44)), (cx + side * hx(46), hy - vy(48)),
+                    (cx + side * hx(46), hy + vy(24)),
+                    (cx + side * hx(34), hy + vy(56)),
+                    # hx(24) at hy+66 is the point that actually meets the neck. Without it the
+                    # inner edge passed about 11px outboard of the neck for two rows just above
+                    # the shoulder line and left an 8px sealed hole — found by the check, not by
+                    # looking, for the fourth time on this cast.
+                    (cx + side * hx(24), hy + vy(66)),
+                    (cx + side * hx(42), hy + vy(88) + av.lean),
+                    (cx + side * hx(70), hy + vy(82) + av.lean),
+                    (cx + side * hx(86), hy + vy(34)),
+                    (cx + side * hx(80), hy - vy(6)),
                 ]), av.hair))
         elif av.hair_style == "plaits":
             # ROUND 2 MERGE, from Designer A, replacing my round bunches. A's plait is three
@@ -1936,7 +1959,11 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     # Where the lit ridge STARTS is the bridge height. Running it from eye_y-8 carries it up
     # between the brows, which is a high European bridge; starting it level with the eyes gives
     # a lower one. Only the top moves — the tip, nostrils and shadow are unchanged.
-    nose_top = eye_y + 2 if "low_bridge" in av.extras else eye_y - 8
+    # `nose_dy` moves the base. On a low bridge it has to move the TOP as well, or raising the
+    # base just stretches the nose downward from a fixed point near the eyes and it still reads
+    # as sitting high on the face. Her base was at hy+2 against a chin at hy+58 — the nose was
+    # in the upper third of the face, which is where a nose is not.
+    nose_top = (eye_y - 2 + av.nose_dy) if "low_bridge" in av.extras else eye_y - 8
     d.rectangle((cx - av.nose_w, nose_top, cx + av.nose_w, nb), fill=skin_hi)
     d.rectangle((cx + av.nose_w, max(eye_y - 4, nose_top), cx + av.nose_w + 8, nb), fill=skin_sh)
     if "nose_tip" in av.extras:
@@ -1945,7 +1972,26 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         # else — present, but not a shape, which is the "eh whatever" it was reported as. Four
         # pixels of highlight is what turns a mark into a tip.
         d.rectangle((cx - av.nose_w + 1, nb - 6, cx + av.nose_w - 1, nb - 2), fill=skin_hi)
-    if "nostrils" in av.extras:
+    if "soft_nose" in av.extras:
+        # A narrower nose than `nostrils` builds. That one draws a tip shadow from -(w+4) to
+        # +(w+8) — 18px of horizontal bar — plus two 4px nostril blocks inside it, and once her
+        # nose came down onto the fuller part of the face that bar was the whole feature: a
+        # smudge lying across the middle of her face rather than something with a front and
+        # sides. It is the right construction for the Regular's broad weathered nose and the
+        # wrong one for hers.
+        #
+        # Here the shadow is 12px, the nostrils are single 4px marks tucked at its ends, and the
+        # ridge above carries the read instead. Less nose, more nose.
+        # NO base bar at all — just two marks flanking the ridge. Two passes at narrowing the
+        # bar both still read as a horizontal smudge across the middle of her face, because a
+        # 4px-tall rectangle wider than it is tall IS a bar however narrow you make it. The main
+        # nose code already draws a vertical ridge highlight and a shadow down its shaded side;
+        # those two are the nose. All the base needs is where the nostrils are, and the ridge
+        # left standing between them is what makes it read as having a front.
+        for side in (-1, 1):
+            nx0, nx1 = sorted((cx + side * (av.nose_w + 1), cx + side * (av.nose_w + 5)))
+            d.rectangle((nx0, nb - 4, nx1, nb), fill=_mix(skin_sh, skin_deep, 0.55))
+    elif "nostrils" in av.extras:
         # A nostril each side of the tip rather than one dark bar under it. The bar was the
         # whole nose at this size — the client's "the nose barely registers" — because a bar
         # has no shape to read. Tip shadow first, then two 4px holes in it.
