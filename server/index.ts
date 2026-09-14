@@ -42,6 +42,29 @@ import {
 import { loadRooms, saveRooms } from './store.ts';
 
 const PORT = Number(process.env.PORT) || 8787;
+/** Hard ceiling on a single frame. Every message this protocol sends is a small JSON object;
+ *  the largest is a `sync` carrying one redacted view. Without a cap, one client can hand the
+ *  process an arbitrarily large buffer before a single line of our code runs. */
+const MAX_PAYLOAD_BYTES = 16 * 1024;
+/** A socket that stops answering pings is gone, whatever TCP still believes.
+ *
+ *  This is the gap that mattered most. `close` only fires on an orderly shutdown; a phone
+ *  going into a tunnel, a laptop lid closing, a NAT dropping the mapping — none of those send
+ *  a close frame. The seat stayed `connected: true` forever, so the opponent never saw
+ *  "waiting for them to come back", the room never went empty, and `EMPTY_ROOM_TTL_MS` never
+ *  started counting because `emptySince` is only set in the close handler. The room leaked and
+ *  the game looked live from the other side.
+ *
+ *  Overridable so it can actually be exercised: at 30s a test either waits half a minute or
+ *  asserts nothing, and "asserts nothing" is what a heartbeat bug looks like. */
+const HEARTBEAT_MS = Number(process.env.HEARTBEAT_MS) || 30_000;
+/** Rooms are tiny, but unbounded: any client can mint a new one by naming a code nobody is
+ *  using. This is what stops a stranger filling memory with empty rooms. */
+const MAX_ROOMS = 500;
+/** Messages per connection per window. A real game sends a handful per turn; this only ever
+ *  catches a loop or a flood. */
+const MAX_MESSAGES_PER_WINDOW = 120;
+const RATE_WINDOW_MS = 10_000;
 /** Matches the single-player pacing in useGame — long enough to read the hand that just ended. */
 const NEXT_DEAL_DELAY_MS = 2500;
 /** A room with nobody connected is swept after this long, so abandoned games don't leak. */
@@ -150,9 +173,32 @@ const httpServer = createServer((req, res) => {
   res.end();
 });
 
-const wss = new WebSocketServer({ server: httpServer });
+const wss = new WebSocketServer({ server: httpServer, maxPayload: MAX_PAYLOAD_BYTES });
+
+/** Liveness per socket, kept outside the socket object so `ws`'s own types stay untouched. */
+const alive = new WeakMap<WebSocket, boolean>();
+
+setInterval(() => {
+  for (const socket of wss.clients) {
+    if (alive.get(socket) === false) {
+      // Missed a full interval. `terminate` rather than `close`: the point of being here is
+      // that the peer is not answering, so waiting on a close handshake waits forever.
+      socket.terminate();
+      continue;
+    }
+    alive.set(socket, false);
+    socket.ping();
+  }
+}, HEARTBEAT_MS).unref();
 
 wss.on('connection', (socket) => {
+  alive.set(socket, true);
+  socket.on('pong', () => alive.set(socket, true));
+
+  // Per-connection message budget. Reset on a rolling window rather than tracked per second,
+  // which keeps it to two numbers and no timer per socket.
+  let windowStart = Date.now();
+  let messagesInWindow = 0;
   // Bound at `hello` and never re-read from message bodies afterwards — this pair IS the
   // client's identity for the life of the connection.
   let boundCode: RoomCode | null = null;
@@ -160,6 +206,17 @@ wss.on('connection', (socket) => {
   let boundSeat: Player | null = null;
 
   socket.on('message', (data) => {
+    const now = Date.now();
+    if (now - windowStart > RATE_WINDOW_MS) {
+      windowStart = now;
+      messagesInWindow = 0;
+    }
+    if (++messagesInWindow > MAX_MESSAGES_PER_WINDOW) {
+      send(socket, { t: 'rejected', reason: 'Too many messages.' });
+      socket.close();
+      return;
+    }
+
     const msg = parse(String(data));
     if (!msg) {
       send(socket, { t: 'rejected', reason: 'Unreadable message.' });
@@ -178,6 +235,12 @@ wss.on('connection', (socket) => {
       }
 
       let live = rooms.get(code);
+      if (!live && rooms.size >= MAX_ROOMS) {
+        // Refuse to MINT a new room, never to join an existing one: a full server must not
+        // lock out the games already running on it.
+        send(socket, { t: 'rejected', reason: 'The server is full right now. Try again soon.' });
+        return;
+      }
       if (!live) {
         live = { room: createRoom(code, freshSeed(), DEFAULT_CONFIG), sockets: {} };
         rooms.set(code, live);
