@@ -110,7 +110,18 @@ function ScoreCardImg({
  *  `player`'s own win (`view.winner === player`) gets a small gold glow on both cards — the
  *  actual "you won" text already lives in StatusBanner; this is just the scoreboard's own
  *  quiet acknowledgement, not a duplicate announcement. */
-function ScorePair({ player, score, won }: { player: Player; score: number; won: boolean }) {
+function ScorePair({ player, score: rawScore, won }: { player: Player; score: number; won: boolean }) {
+  // Clamped to the ten pips the two cards physically have.
+  //
+  // Nothing caps the SCORE at ten: points arrive in 1/2/4/6/8 lumps, so winning from 7 with a
+  // full-blind loner puts you on 15. This component indexes its keyframe table by `score - 6`,
+  // which past ten is undefined, and reading a transform off undefined threw — taking the whole
+  // screen down at the exact moment someone won the game. Reachable from any score of 7 or more
+  // with any loner, which is not an edge case, it is how a close game ends.
+  //
+  // Clamped HERE rather than in the engine on purpose: 15 is the true score and the engine
+  // should keep saying so. What is bounded is the board, which only has ten pips on it.
+  const score = Math.max(0, Math.min(rawScore, 10));
   const suit = SCORE_SUIT[player];
   const sixSrc = `/art/scoreboard/${suit}_6.png`;
   const fourSrc = `/art/scoreboard/${suit}_4.png`;
