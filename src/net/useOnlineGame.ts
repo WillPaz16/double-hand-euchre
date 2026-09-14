@@ -10,6 +10,21 @@ import { TRICK_HOLD_MS } from '../game/useGame.ts';
  *  `VITE_SERVER_URL` at build time to point a deployed client at a deployed server. */
 const SERVER_URL: string = import.meta.env.VITE_SERVER_URL ?? 'ws://localhost:8787';
 
+/** True when this build cannot possibly reach its server, which is worth saying out loud.
+ *
+ *  `VITE_SERVER_URL` is baked at BUILD time, so a deploy that forgets it ships a client
+ *  pointing at `ws://localhost:8787` — the player's own machine. Worse, a browser on an https
+ *  page refuses a plaintext `ws://` socket outright as mixed content, so the failure is not
+ *  even a timeout: the socket dies instantly and the reconnect loop retries forever behind
+ *  "Lost the connection", which blames the network for a build mistake.
+ *
+ *  Checked at module load rather than per connection: it is a property of the build and the
+ *  page, and it cannot change while the page is open. */
+const MISCONFIGURED =
+  typeof window !== 'undefined' &&
+  window.location.protocol === 'https:' &&
+  SERVER_URL.startsWith('ws://');
+
 /** Backoff between reconnect attempts. Capped so a server that is down does not become a tight
  *  retry loop, but the first retry is quick because the overwhelmingly common case is a brief
  *  network blip, not an outage. */
@@ -87,6 +102,18 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
     // in "Lost the connection" forever while a healthy socket #2 was already talking to the
     // server. A per-connection lifecycle needs per-connection state; a ref is shared across all
     // of them and is exactly the wrong tool.
+    if (MISCONFIGURED) {
+      // Terminal, and said plainly. Retrying cannot help: the browser will refuse every
+      // attempt for the same reason, and an endless "reconnecting" is a worse answer than the
+      // truth.
+      setStatus('refused');
+      setNotice(
+        'This build cannot reach its game server (it was built without VITE_SERVER_URL, ' +
+          'so it is pointing at ws://localhost). Single-player still works.',
+      );
+      return;
+    }
+
     let cancelled = false;
     let refused = false;
     let retry = RECONNECT_MIN_MS;
