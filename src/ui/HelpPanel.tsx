@@ -16,7 +16,7 @@ export function HelpPanel() {
       </section>
       <section className="help-section">
         <h3>Your hands</h3>
-        <p>Two packets of five, face down. Pick one. The other stays blind until later.</p>
+        <p>Two hands of five, face down. Pick one. The other stays blind until later.</p>
       </section>
       <section className="help-section">
         <h3>Going alone</h3>

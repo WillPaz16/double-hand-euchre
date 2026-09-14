@@ -858,7 +858,27 @@ body {
    bottom edge meets the rising felt) but 900 was set well above where that actually happens.
    840 sits just above the measured crossover, and `npm run audit` now checks a 1400x840
    viewport so the floor is verified rather than asserted. */
-@media (min-width: 1100px) and (min-height: 840px) {
+/* TWO ranges, because `--px` steps to 2 around 1010px and that step is a cliff for this
+   element. The chimney and window are both sized in au, so they double while the wall between
+   them does not — measured space against the art's natural 350au:
+   
+       960px  (px 1)  534 / 350  = 1.53   fine
+       1100px (px 2)  280 / 700  = 0.40   badly squeezed
+       1500px (px 2)  680 / 700  = 0.97   still squeezed
+       1600px (px 2)  780 / 700  = 1.11   fine
+   
+   The old 1100px gate sat INSIDE that squeeze zone, so between 1100 and ~1550 the painting was
+   shown as a squashed sliver rather than hidden — which is what "the painting just isn't there"
+   was really looking at from the other side. Lowering the gate made that worse, not better.
+   
+   So: shown where there is genuinely room for it, which is the px-1 band and then not again
+   until 1560. Hidden in between, deliberately, because a 0.4x squeeze is not a painting. */
+@media (min-width: 960px) and (max-width: 1009px) and (min-height: 800px) {
+  .scene-farm-painting {
+    display: block;
+  }
+}
+@media (min-width: 1560px) and (min-height: 800px) {
   .scene-farm-painting {
     display: block;
   }
@@ -1051,10 +1071,28 @@ body {
      like that; a picture has air around it. */
   left: calc(312px * var(--px));
   right: calc(114px * var(--px));
-  max-width: calc(600px * var(--px));
+  /* Capped tighter (460 from 600au) now that the gate reaches narrower windows. This element
+     is the one sanctioned exemption from the whole-number scale rule — it stretches fluidly —
+     and the gate at 1100px existed to stop that stretch becoming a smear. Capping the width
+     does the same job without hiding it: at the new floor the painting draws at 460au against
+     350au of natural art, about 1.3x, and simply sits centred with wall either side rather
+     than pulling to fill the gap. Hiding it was the blunter answer to the same problem. */
+  max-width: calc(240px * var(--px));
   margin-inline: auto;
+  /* Bottom raised to sit around the opponent's shoulder line rather than running down behind
+     her whole torso. Height 88au against 120, top unchanged, so the bottom edge comes up 32au.
+     
+     Smaller overall too — 240x72au against the 460x120 it was. At px 2 that is 480x144 on
+     screen where it had been 920x240, which is a picture on a wall rather than a mural. It
+     reads as an object in the room now instead of as the back wall of it.
+
+     Deliberately NOT anchored to the opponent: that element is positioned by the table grid,
+     which tracks the felt's dynamic centre and width, and tying a wall prop to it would couple
+     two layout systems that have nothing to do with each other — the exact class of bug this
+     file's own header comment is about. A picture hangs at a fixed height on a wall; it does
+     not follow whoever sits in front of it. */
   top: calc(54px * var(--px));
-  height: calc(120px * var(--px));
+  height: calc(72px * var(--px));
   background-image: url('/art/scene/farm_painting.png');
 }
 /* On the floor beside the hearth, where the fire's fuel comes from. */
@@ -2619,6 +2657,21 @@ body {
    closed it into a visible collision. Same fix, mirrored. */
 .seat-nw .seat-fan.is-packet-pick { margin-right: calc(16px * var(--px)); }
 .seat-ne .seat-fan.is-packet-pick { margin-left: calc(16px * var(--px)); }
+
+/* Nothing in the game surface is text to be selected, and letting the browser select it looks
+   like a bug: a click-drag across the felt paints the card images with the OS selection colour,
+   which lands as a blue tint on one fan and reads as "this packet is highlighted". Reported as
+   exactly that. The DOM is identical for all four fans — the highlight was never ours. */
+.table-area,
+.hand-tray,
+.seat,
+.seat-fan,
+.card-back,
+.card-img {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
 
 .seat {
   position: relative;

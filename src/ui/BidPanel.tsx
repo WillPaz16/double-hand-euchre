@@ -12,7 +12,10 @@ const SUIT_LABEL: Record<string, string> = {
 function label(a: Action): string {
   switch (a.type) {
     case 'SELECT_HAND':
-      return `Pick Packet ${a.packetIndex + 1}`;
+      // "Hand", not "Packet". The felt labels these two fans HAND 1 and HAND 2, and the
+      // button under them said "Pick Packet 1" — two names for the thing you are looking at,
+      // in the same glance. The table's word wins: it is the one written on the table.
+      return `Pick Hand ${a.packetIndex + 1}`;
     case 'DECLARE_FULL_BLIND_LONER':
       return 'Go Alone: Full Blind (8 pts)';
     case 'DECLARE_BLIND_HAND_LONER':
