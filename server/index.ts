@@ -173,7 +173,36 @@ const httpServer = createServer((req, res) => {
   res.end();
 });
 
-const wss = new WebSocketServer({ server: httpServer, maxPayload: MAX_PAYLOAD_BYTES });
+/** Origins allowed to open a socket, as a comma-separated env var. UNSET MEANS ALLOW ANY,
+ *  which is the right default for local development and for a server nobody has told where its
+ *  client lives.
+ *
+ *  What this does and does not buy is worth being honest about. There are no credentials here
+ *  and no cookies, so it is not CSRF protection — a seat is claimed by a clientId the caller
+ *  invents, and anyone who knows a four-letter room code can join from anywhere regardless.
+ *  What it does stop is an unrelated page quietly opening sockets against this server, which
+ *  is the difference between "a stranger who has a room code" and "any site a player visits".
+ *  Cheap, honest about its limits, and off unless configured. */
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+function originAllowed(origin: string | undefined): boolean {
+  if (ALLOWED_ORIGINS.length === 0) return true;
+  return !!origin && ALLOWED_ORIGINS.includes(origin);
+}
+
+const wss = new WebSocketServer({
+  server: httpServer,
+  maxPayload: MAX_PAYLOAD_BYTES,
+  verifyClient: ({ origin }, done) => {
+    if (originAllowed(origin)) return done(true);
+    // 403 rather than a silent drop, so a misconfigured ALLOWED_ORIGINS is diagnosable from
+    // the client side instead of looking like the server is down.
+    done(false, 403, 'Origin not allowed');
+  },
+});
 
 /** Liveness per socket, kept outside the socket object so `ws`'s own types stay untouched. */
 const alive = new WeakMap<WebSocket, boolean>();
