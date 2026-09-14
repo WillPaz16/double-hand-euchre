@@ -983,6 +983,13 @@ KNIT_FOREST = (68, 98, 60, 255)
 # because it is cloudy, and a saturated green here would just be a bead. Lighter than her
 # jumper by a clear step so the two greens do not merge into one when it sits against them.
 JADE = (126, 178, 140, 255)
+# Olive, from the reference: a khaki green with real yellow in it, not the deep blue-leaning
+# forest her jumper was. It has to sit apart from BOTH the Kid's KNIT_TEAL (H171, blue-green)
+# and the Old-Timer's hat; olive lands near H67, which is its own corner of the wheel.
+OLIVE = (104, 108, 68, 255)
+# The beading. A warm pale gold, one step off the cloth rather than a bright spark: sequins at
+# this size are catchlights on a surface, and full-brightness dots read as snow on the garment.
+BEAD = (206, 196, 150, 255)
                                   # BOOT_DARK brown it replaced — and so a sheen mixed off it
                                   # lands on slate rather than mud.
 HAIR_BLOND = (228, 190, 112, 255)  # straw, not GOLD: GOLD is the tin star and the spectacles,
@@ -1223,7 +1230,7 @@ AVATARS = {
     # side, a ring, and a sheen across the crown — glossy black hair is the whole point of her,
     # and flat black at this size is a hole in the sprite rather than hair.
     "card_sharp": Avatar(
-        "card_sharp", KNIT_FOREST, KNIT_FOREST, "none", KNIT_FOREST, KNIT_FOREST,
+        "card_sharp", OLIVE, OLIVE, "none", OLIVE, OLIVE,
         facial="none", hair=HAIR_BLACK, hair_style="bob", chest="none",
         soft_features=True, skin=SKIN_GOLDEN, lid="low",
         # 60x58, not 56x64. She was the only long oval in the cast and it read as exactly that
@@ -1231,8 +1238,11 @@ AVATARS = {
         # her features room they did not have at rx 56. Still taller than wide, so she does not
         # drift toward the Kid's head-wider-than-tall child proportion; the shoulder width
         # (84 against the Kid's 74) keeps them apart regardless.
-        head_rx=60, head_ry=58, head_dy=-8, neck_w=20, shoulder_x=84, shoulder_in=54,
-        hem_x=100, arm_x=106,
+        # Slimmer than she was: with bare arms the sides of the sprite ARE her, not cloth, so
+        # the widths that read as a coat read as build. Shoulders and hem come in, and the arm's
+        # outer edge with them.
+        head_rx=60, head_ry=58, head_dy=-8, neck_w=20, shoulder_x=78, shoulder_in=50,
+        hem_x=92, arm_x=96,
         # nose_dy 16, not 0: the base was at hy+2 against a chin at hy+58, i.e. the nose sat in
         # the upper third of the face. 16 puts the base at hy+18, roughly halfway from eyes to
         # chin, which is where a nose goes. Back to nose_w 3 — at 4 the nostrils sit at +-12 and
@@ -1242,7 +1252,7 @@ AVATARS = {
         brow_h=6, brow_span=(12, -10), accent=ROSE_RED, shadow_desat=0.30, smirk=True,
         lean=4, hand_x=48,
         extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips", "beauty_mark",
-                "sheen", "earring", "ring", "low_bridge", "fringe", "knit", "crew_neck", "jade_pendant",
+                "sheen", "earring", "ring", "low_bridge", "fringe", "tank", "beading", "jade_pendant",
                 "soft_lips"),
     ),
     # --- The Kid -------------------------------------------------------------------------
@@ -1308,7 +1318,13 @@ DEFAULT_AVATAR = "old_timer"
 
 
 def _sleeve_tone(av):
-    """The sleeve has to be a step darker than anything the torso puts behind it."""
+    """The sleeve has to be a step darker than anything the torso puts behind it.
+
+    Unless there is no sleeve. Bare arms take HALF a step down from her own skin: flat base
+    tone gives the arm no edge against the bare shoulder above it and the two merge, while the
+    full `ramp` shadow is dark enough on skin to read as a tan line rather than as form."""
+    if "tank" in av.extras:
+        return _mix(av.skin, ramp(av.skin)[2], 0.5)
     return ramp(av.coat)[3] if "knit" in av.extras else ramp(av.coat)[2]
 
 
@@ -1349,18 +1365,53 @@ def _avatar_parts(av):
         """Vertical distance scaled to this head's height."""
         return round(v * av.head_ry / 66)
 
-    parts = [
-        # Shoulders/chest, running off the bottom of the canvas — the felt crops it.
-        (_poly([
-            (OPP_CX - av.shoulder_x, sy + 74 + sdl), (OPP_CX - av.shoulder_in, sy + 52 + sdl // 2),
-            (OPP_CX + av.shoulder_in, sy + 52 + sdr // 2), (OPP_CX + av.shoulder_x, sy + 74 + sdr),
-            (OPP_CX + av.hem_x, OPP_H), (OPP_CX - av.hem_x, OPP_H),
-        ]), av.coat),
-        # A darker placket so the chest is not one flat red mass at this size.
-        (_poly([
-            (OPP_CX - 12, sy + 56), (OPP_CX + 12, sy + 56),
-            (OPP_CX + 16, OPP_H), (OPP_CX - 16, OPP_H),
-        ]), av.placket),
+    torso = _poly([
+        (OPP_CX - av.shoulder_x, sy + 74 + sdl), (OPP_CX - av.shoulder_in, sy + 52 + sdl // 2),
+        (OPP_CX + av.shoulder_in, sy + 52 + sdr // 2), (OPP_CX + av.shoulder_x, sy + 74 + sdr),
+        (OPP_CX + av.hem_x, OPP_H), (OPP_CX - av.hem_x, OPP_H),
+    ])
+    if "tank" in av.extras:
+        # Garment underneath, bare YOKE laid over it. The reverse — whole torso in skin, tank
+        # on top — leaves the sides bare to the hem, because a tank's arms are skin too, so
+        # torso and arms merge into one undifferentiated mass. Skin only where skin shows.
+        parts = [
+            (torso, av.coat),
+            (_poly([
+                (OPP_CX - av.shoulder_x, sy + 74 + sdl),
+                (OPP_CX - av.shoulder_in, sy + 52 + sdl // 2),
+                (OPP_CX + av.shoulder_in, sy + 52 + sdr // 2),
+                (OPP_CX + av.shoulder_x, sy + 74 + sdr),
+                # A V, not a scoop. The reference neckline comes to a point; a round scoop and
+                # a V read as different garments even at eight pixels, and the V is most of
+                # what makes this a camisole rather than a vest.
+                # The V comes to sy+86, not sy+100. At 100 it cut most of the way down the
+                # chest and the tank read as far more revealing than the reference, which has a
+                # neckline, not a plunge. The outer corners also come in to +-62 so the bodice
+                # carries more of the torso and the bare sides are arm rather than ribcage.
+                (OPP_CX + 62, sy + 84), (OPP_CX + 30, sy + 72), (OPP_CX, sy + 86),
+                (OPP_CX - 30, sy + 72), (OPP_CX - 62, sy + 84),
+            ]), av.skin),
+            # Straps: narrow, and set well in toward the neck like the reference's, not out on
+            # the shoulder point where a vest's would sit.
+            (_poly([
+                (OPP_CX - 44, sy + 52), (OPP_CX - 32, sy + 52),
+                (OPP_CX - 30, sy + 86), (OPP_CX - 42, sy + 86),
+            ]), av.coat),
+            (_poly([
+                (OPP_CX + 32, sy + 52), (OPP_CX + 44, sy + 52),
+                (OPP_CX + 42, sy + 86), (OPP_CX + 30, sy + 86),
+            ]), av.coat),
+        ]
+    else:
+        parts = [
+            (torso, av.coat),
+            # A darker placket so the chest is not one flat red mass at this size.
+            (_poly([
+                (OPP_CX - 12, sy + 56), (OPP_CX + 12, sy + 56),
+                (OPP_CX + 16, OPP_H), (OPP_CX - 16, OPP_H),
+            ]), av.placket),
+        ]
+    parts += [
         # A small tin star pinned to the chest (creative-direction pass). Sits left of the
         # placket (clear by 18+ file px / 9+ au) and well clear of both arm/hand shapes, which
         # start no closer than x=OPP_CX-44 at any y — this star's x=OPP_CX-34 never reaches
@@ -2261,6 +2312,15 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         d.polygon([(cx + hxx(14), hy - 70), (cx + hxx(38), hy - 60),
                    (cx + hxx(36), hy - 52), (cx + hxx(12), hy - 62)],
                   fill=_mix(av.hair, STEEL, 0.12))
+    if "beading" in av.extras:
+        # Scattered bead/sequin work over the bodice, as on the reference top. Deliberately
+        # IRREGULAR — a grid of dots reads as polka dots or as a texture pass, and beadwork is
+        # neither; it catches light in clusters. Placed only below the neckline and inboard of
+        # the arms so none of it strays onto skin.
+        for bx, by in ((-40, 96), (-28, 104), (-34, 118), (-18, 110), (-8, 124),
+                       (6, 100), (16, 118), (30, 98), (38, 114), (24, 130),
+                       (-46, 132), (44, 130), (0, 140), (-22, 142), (20, 146)):
+            d.rectangle((OPP_CX + bx, sy + by, OPP_CX + bx + 4, sy + by + 4), fill=BEAD)
     if "jade_pendant" in av.extras:
         # A fine chain with a jade drop at the throat. Two rows of chain in a gold mixed most of
         # the way back to skin — full GOLD at one pixel wide reads as a scratch, not a chain —
