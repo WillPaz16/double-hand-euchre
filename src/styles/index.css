@@ -851,7 +851,14 @@ body {
    long thin landscape, not a sliver), and not being shown so SHORT that its fixed bottom edge
    meets the rising felt (see this rule's own `top`/`height` comment for the ~852px crossover
    and why only short, never tall, viewports can reopen it). */
-@media (min-width: 1100px) and (min-height: 900px) {
+/* HEIGHT GATE LOWERED 900 -> 840. At 900 the painting vanished on extremely ordinary windows —
+   a 1512x982 laptop with browser chrome lands near 860 CSS px, and any browser zoom shrinks the
+   effective height further, which is exactly the "not showing at certain zooms" this was
+   reported as. The constraint it enforces is real (below the crossover the painting's fixed
+   bottom edge meets the rising felt) but 900 was set well above where that actually happens.
+   840 sits just above the measured crossover, and `npm run audit` now checks a 1400x840
+   viewport so the floor is verified rather than asserted. */
+@media (min-width: 1100px) and (min-height: 840px) {
   .scene-farm-painting {
     display: block;
   }
@@ -1037,8 +1044,13 @@ body {
    floor with real margin (24px, measured), replacing the `min-height: 1000px` the earlier
    `--frame-inset-y` version needed. */
 .scene-farm-painting {
-  left: calc(296px * var(--px));
-  right: calc(98px * var(--px));
+  /* 16au clear of BOTH neighbours, which it previously was not by a single pixel: the chimney
+     runs `left:-78 + width:374`, so its right edge lands at exactly 296, and the window's left
+     edge is exactly 98 from the right. The painting was pinned to 296/98 — flush against both,
+     touching the masonry on one side and the window frame on the other. Nothing on a wall hangs
+     like that; a picture has air around it. */
+  left: calc(312px * var(--px));
+  right: calc(114px * var(--px));
   max-width: calc(600px * var(--px));
   margin-inline: auto;
   top: calc(54px * var(--px));

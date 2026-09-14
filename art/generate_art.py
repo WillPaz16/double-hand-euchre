@@ -39,7 +39,13 @@ SKIN_FAIR = (234, 202, 180, 255)   # the child's — pale enough that blonde hai
 # with an even golden ramp (R-G and G-B both 40), deliberately NOT pushed toward yellow: raising
 # green against blue is what produces the sallow caricature tint, and it is also simply not what
 # skin does. Distinct from SKIN_WARM, which is the Regular's and reads ruddier.
-SKIN_GOLDEN = (212, 172, 132, 255)
+# Measured against the reference rather than picked: the old (212,172,132) had a green-to-blue
+# gap of 40, and that gap IS the orange. The reference sits nearer 28 and a good deal lighter
+# (L75 against L67). Raising blue and lifting the whole tone pulls it off "tan" and onto skin.
+#
+# Still clearly not the Regular's SKIN_WARM, which leans ruddy at R-G 42; hers is 36, so the two
+# read as different people rather than the same complexion twice.
+SKIN_GOLDEN = (220, 184, 156, 255)
                                    # DARKER than the face it frames, which is what stops a
                                    # blonde head becoming one undifferentiated light mass.
                                    # Deliberately LESS saturated than SKIN: `ramp()` multiplies
@@ -987,9 +993,14 @@ JADE = (126, 178, 140, 255)
 # forest her jumper was. It has to sit apart from BOTH the Kid's KNIT_TEAL (H171, blue-green)
 # and the Old-Timer's hat; olive lands near H67, which is its own corner of the wheel.
 OLIVE = (104, 108, 68, 255)
-# The beading. A warm pale gold, one step off the cloth rather than a bright spark: sequins at
-# this size are catchlights on a surface, and full-brightness dots read as snow on the garment.
-BEAD = (206, 196, 150, 255)
+# The beading. Cool and metallic, NOT a warm pale gold.
+#
+# It was (206,196,150), which is a warm cream — and her skin is (220,184,156). Those differ by
+# about 12 units of red and sit in the same hue family, so at 4px the beads read as bare skin
+# showing through the top rather than as beadwork on it. The fix is hue, not lightness: this
+# has R-G of 0 against skin's 36, so it separates by being metallic where she is warm, and it
+# stays clearly lighter than the olive it sits on.
+BEAD = (212, 212, 190, 255)
                                   # BOOT_DARK brown it replaced — and so a sheen mixed off it
                                   # lands on slate rather than mud.
 HAIR_BLOND = (228, 190, 112, 255)  # straw, not GOLD: GOLD is the tin star and the spectacles,
@@ -1092,7 +1103,7 @@ class Avatar:
                  # --- face proportion --------------------------------------------------------
                  eye_dx=24, eye_w=8, eye_up=12, eye_dn=8, brow_dy=0, nose_w=4, nose_dy=0,
                  mouth_w=20, brow_colour=None, brow_h=8, accent=None, shadow_desat=0.0,
-                 lid="creased", brow_span=(20, -12),
+                 lid="creased", brow_span=(20, -12), light=0.14,
                  smirk=False,
                  extras=()):
         self.key = key
@@ -1176,6 +1187,13 @@ class Avatar:
         # 32px bar, authored on the Old-Timer and fine under his spectacles. On a bare wider
         # face it is a long severe stroke that dominates everything else.
         self.brow_span = brow_span
+        # How hard `light_from` relights this sprite. It is a room-wide 0.14 for everyone in a
+        # coat, because on cloth a strong directional band is exactly right. On a figure whose
+        # largest visible material is BARE SKIN it is not: the transform desaturates as it
+        # darkens, so the shaded arm came out at R-B 39 against the lit arm's 68 — 29 units of
+        # warmth gone, grey-mauve beside warm skin, with the seam running through the shoulder.
+        # Skin shades by getting darker, not by getting grey.
+        self.light = light
         # Brows default to the hair colour, which is right for everyone whose hair is darker
         # than their face. It is wrong for the blonde child: a straw brow on a fair forehead is
         # invisible at 8px, and the brow is where three of the four expressions actually happen,
@@ -1250,6 +1268,7 @@ AVATARS = {
         # onto the fuller part of the face.
         eye_dx=26, eye_w=8, eye_up=10, eye_dn=6, brow_dy=-2, nose_w=3, nose_dy=16, mouth_w=16,
         brow_h=6, brow_span=(12, -10), accent=ROSE_RED, shadow_desat=0.30, smirk=True,
+        light=0.07,
         lean=4, hand_x=48,
         extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips", "beauty_mark",
                 "sheen", "earring", "ring", "low_bridge", "fringe", "tank", "beading", "jade_pendant",
@@ -1320,11 +1339,15 @@ DEFAULT_AVATAR = "old_timer"
 def _sleeve_tone(av):
     """The sleeve has to be a step darker than anything the torso puts behind it.
 
-    Unless there is no sleeve. Bare arms take HALF a step down from her own skin: flat base
-    tone gives the arm no edge against the bare shoulder above it and the two merge, while the
-    full `ramp` shadow is dark enough on skin to read as a tan line rather than as form."""
+    Unless there is no sleeve, in which case the arm is the SAME tone as the rest of her.
+
+    It was half a step darker, to give the arm an edge. That is how cloth works and not how a
+    body does: an arm is continuous with the shoulder above it, so a tone step down the join
+    reads as a tan line, which is exactly the complaint. The separation comes instead from the
+    garment beside it and from a narrow contact shadow along the inner edge (drawn with the
+    arms below) — which is what actually happens where an arm meets a torso."""
     if "tank" in av.extras:
-        return _mix(av.skin, ramp(av.skin)[2], 0.5)
+        return av.skin
     return ramp(av.coat)[3] if "knit" in av.extras else ramp(av.coat)[2]
 
 
@@ -1382,23 +1405,28 @@ def _avatar_parts(av):
         # Garment underneath, bare YOKE laid over it. The reverse — whole torso in skin, tank
         # on top — leaves the sides bare to the hem, because a tank's arms are skin too, so
         # torso and arms merge into one undifferentiated mass. Skin only where skin shows.
+        # SKIN first, garment over it — not the other way round.
+        #
+        # Drawing the bare yoke on top of the coat put the yoke's own automatic part-edge
+        # shadow (every part in this list gets one from `composite_sprite`) down onto the
+        # olive, which rendered as a dotted band of muddy mauve along the neckline and across
+        # both shoulders. It read as a pattern on the garment, which is exactly what it was
+        # mistaken for.
+        #
+        # Inverted, the edge that lands on top is the GARMENT's, which is both cleaner and
+        # correct: cloth casts a shadow onto skin, skin does not cast one onto cloth.
         parts = [
-            (torso, av.coat),
+            (torso, av.skin),
             (_poly([
-                (OPP_CX - av.shoulder_x, sy + 74 + sdl),
-                (OPP_CX - av.shoulder_in, sy + 52 + sdl // 2),
-                (OPP_CX + av.shoulder_in, sy + 52 + sdr // 2),
-                (OPP_CX + av.shoulder_x, sy + 74 + sdr),
-                # A V, not a scoop. The reference neckline comes to a point; a round scoop and
-                # a V read as different garments even at eight pixels, and the V is most of
-                # what makes this a camisole rather than a vest.
-                # The V comes to sy+86, not sy+100. At 100 it cut most of the way down the
-                # chest and the tank read as far more revealing than the reference, which has a
-                # neckline, not a plunge. The outer corners also come in to +-62 so the bodice
-                # carries more of the torso and the bare sides are arm rather than ribcage.
-                (OPP_CX + 62, sy + 84), (OPP_CX + 30, sy + 72), (OPP_CX, sy + 86),
-                (OPP_CX - 30, sy + 72), (OPP_CX - 62, sy + 84),
-            ]), av.skin),
+                (OPP_CX - av.shoulder_x + 6, sy + 84 + sdl),
+                # A V, not a scoop: the two read as different garments even at eight pixels,
+                # and the V is what makes this a camisole. It comes to sy+86 — an earlier
+                # sy+100 cut most of the way down the chest and read as a plunge rather than a
+                # neckline.
+                (OPP_CX - 30, sy + 72), (OPP_CX, sy + 86), (OPP_CX + 30, sy + 72),
+                (OPP_CX + av.shoulder_x - 6, sy + 84 + sdr),
+                (OPP_CX + av.hem_x, OPP_H), (OPP_CX - av.hem_x, OPP_H),
+            ]), av.coat),
             # Straps: narrow, and set well in toward the neck like the reference's, not out on
             # the shoulder point where a vest's would sit.
             (_poly([
@@ -1462,6 +1490,21 @@ def _avatar_parts(av):
             (OPP_CX + av.arm_x, OPP_H), (OPP_CX + (av.shoulder_x - 2), sy + 74 + sdr),
             (OPP_CX + arm_in, sy + 94 + hdr), (OPP_CX + arm_in + 4, OPP_H),
         ]), _sleeve_tone(av)),
+    ]
+    if "tank" in av.extras:
+        # A contact shadow down the INNER edge of each bare arm, 4px wide. With the arm now the
+        # same tone as the shoulder it grows from, this is the only thing separating them — and
+        # it is the correct thing: where an arm hangs beside a torso you get a shadow in the
+        # gap, not a change of skin colour. One grid unit, so it is a seam and not a stripe,
+        # and mixed back toward the base rather than the full `ramp` shadow — at full strength
+        # on this lighter skin it came out pink and read as piping down her sides.
+        for side, hd in ((-1, hdl), (1, hdr)):
+            x0, x1 = sorted((OPP_CX + side * arm_in, OPP_CX + side * (arm_in + 4)))
+            parts.append((_poly([
+                (x0, sy + 94 + hd), (x1, sy + 94 + hd),
+                (x1 + side * 4, OPP_H), (x0 + side * 4, OPP_H),
+            ]), _mix(av.skin, ramp(av.skin)[2], 0.55)))
+    parts += [
         # Mended patch on the right sleeve (wave-3 polish). Sits inside the right sleeve quad
         # above — verified against its actual edges at this y-range: the sleeve's inner edge
         # runs (OPP_CX+58, hy+94) to (OPP_CX+62, OPP_H) and its outer edge runs (OPP_CX+94,
@@ -2511,7 +2554,7 @@ def make_avatar(av, expression: str) -> Image.Image:
         _buffalo_check(img, av.coat, ramp(av.coat)[2], 8)
     draw_avatar_face(img, expression, av)
     # Lit from the hearth like everything else in the room (see light_from's docstring).
-    return light_from(img, strength=0.14)
+    return light_from(img, strength=av.light)
 
 
 # --- Scoreboard cards (Phase 2e.6, pip grid corrected in 2e.7) --------------------------- #

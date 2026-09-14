@@ -40,6 +40,9 @@ const VIEWPORTS = [
   { width: 812, height: 375, label: 'landscape phone' },
   { width: 1010, height: 900, label: 'px-breakpoint boundary' },
   { width: 1400, height: 900, label: 'desktop' },
+  // Exercises the farm painting's lowered height gate: it is shown here, so a collision with
+  // the rising felt at this height would fail rather than ship.
+  { width: 1400, height: 840, label: 'short desktop, painting gate floor' },
   // Past the 1440px cap on `.game-root`. Every viewport above stops at 1400, which is exactly
   // why the unbounded-stretch bug survived: the game had no max-width at all, and the pause
   // gear's percentage placement drifted further right the wider the window got, but nothing
