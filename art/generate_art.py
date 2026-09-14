@@ -1271,7 +1271,7 @@ AVATARS = {
         light=0.07,
         lean=4, hand_x=48,
         extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips", "beauty_mark",
-                "sheen", "earring", "ring", "low_bridge", "fringe", "tank", "beading", "jade_pendant",
+                "sheen", "earring", "ring", "low_bridge", "fringe", "tank", "jade_pendant",
                 "soft_lips"),
     ),
     # --- The Kid -------------------------------------------------------------------------
@@ -1416,26 +1416,50 @@ def _avatar_parts(av):
         # Inverted, the edge that lands on top is the GARMENT's, which is both cleaner and
         # correct: cloth casts a shadow onto skin, skin does not cast one onto cloth.
         parts = [
-            (torso, av.skin),
+            # A plain backing rectangle UNDER everything, from the shoulder line to the crop.
+            #
+            # Without it the sprite had a two-row transparent band straight across the chest at
+            # sy+72 — skin present above it and below it, nothing in it. That is a polygon-fill
+            # artefact: the garment's neckline vertices sit exactly ON that scanline, and a
+            # vertex landing on a scanline is the classic even-odd parity case. Chasing it by
+            # nudging vertices fixes one row and moves the problem.
+            #
+            # It was invisible as a hole because `composite_sprite` draws its outline on the
+            # UNION of all parts and the gap was narrower than the outline's own dilation, so
+            # the ring filled it solid INK — rendering as a black line across her shoulders,
+            # and leaving nothing transparent for `check_avatar_holes` to find. A gap that
+            # paints itself black is worse than one that stays open, because every check we
+            # have looks for open.
             (_poly([
-                (OPP_CX - av.shoulder_x + 6, sy + 84 + sdl),
-                # A V, not a scoop: the two read as different garments even at eight pixels,
-                # and the V is what makes this a camisole. It comes to sy+86 — an earlier
-                # sy+100 cut most of the way down the chest and read as a plunge rather than a
-                # neckline.
-                (OPP_CX - 30, sy + 72), (OPP_CX, sy + 86), (OPP_CX + 30, sy + 72),
-                (OPP_CX + av.shoulder_x - 6, sy + 84 + sdr),
+                (OPP_CX - av.shoulder_x, sy + 60), (OPP_CX + av.shoulder_x, sy + 60),
                 (OPP_CX + av.hem_x, OPP_H), (OPP_CX - av.hem_x, OPP_H),
-            ]), av.coat),
-            # Straps: narrow, and set well in toward the neck like the reference's, not out on
-            # the shoulder point where a vest's would sit.
+            ]), av.skin),
+            (torso, av.skin),
+            # ONE polygon for straps and bodice together, not three shapes.
+            #
+            # `composite_sprite` gives every part its own `_shadow_band`, so each separate
+            # piece lays a dark band along its own lower edge. With the straps ending at sy+86
+            # and the bodice starting at sy+84, those bands stacked into two dark horizontals
+            # straight across her chest and shoulders — read, correctly, as "a black line
+            # through the shoulders". It was never an outline; outlines only trace the union.
+            #
+            # A strap does not have a bottom edge anyway: it runs over the shoulder and BECOMES
+            # the front of the garment. Drawing it that way removes the internal boundary that
+            # was casting the band, rather than trying to hide it.
             (_poly([
-                (OPP_CX - 44, sy + 52), (OPP_CX - 32, sy + 52),
-                (OPP_CX - 30, sy + 86), (OPP_CX - 42, sy + 86),
-            ]), av.coat),
-            (_poly([
-                (OPP_CX + 32, sy + 52), (OPP_CX + 44, sy + 52),
-                (OPP_CX + 42, sy + 86), (OPP_CX + 30, sy + 86),
+                (OPP_CX - 46, sy + 52), (OPP_CX - 32, sy + 52),
+                (OPP_CX - 30, sy + 72), (OPP_CX, sy + 86), (OPP_CX + 30, sy + 72),
+                (OPP_CX + 32, sy + 52), (OPP_CX + 46, sy + 52),
+                # The outer edge SLOPES DOWN as it goes out — an armhole, not a flat hem across
+                # the shoulder. Run level at sy+84 it left a horizontal edge sitting in the
+                # open across the top of the shoulder, and that edge's own shadow band was the
+                # remaining "line". Angled, the band follows the armhole and tucks under the
+                # arm, which is both where a shadow belongs and where it stops being a line.
+                (OPP_CX + 50, sy + 90),
+                (OPP_CX + av.shoulder_x - 4, sy + 108 + sdr),
+                (OPP_CX + av.hem_x, OPP_H), (OPP_CX - av.hem_x, OPP_H),
+                (OPP_CX - av.shoulder_x + 4, sy + 108 + sdl),
+                (OPP_CX - 50, sy + 90),
             ]), av.coat),
         ]
     else:
@@ -2363,25 +2387,6 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         d.polygon([(cx + hxx(14), hy - 70), (cx + hxx(38), hy - 60),
                    (cx + hxx(36), hy - 52), (cx + hxx(12), hy - 62)],
                   fill=_mix(av.hair, STEEL, 0.12))
-    if "beading" in av.extras:
-        # Scattered bead/sequin work over the bodice, as on the reference top. Deliberately
-        # IRREGULAR — a grid of dots reads as polka dots or as a texture pass, and beadwork is
-        # neither; it catches light in clusters. Placed only below the neckline and inboard of
-        # the arms so none of it strays onto skin.
-        # LOW on the bodice only, and much closer to the cloth than to white.
-        #
-        # Six of these used to sit between sy+96 and sy+114 — within 10 to 28 pixels of a
-        # neckline at sy+84 — so they landed across the bust and at the strap junctions. At 4px
-        # and near-full contrast that is not beadwork, it is a scatter of pale blotches on skin
-        # and shoulder, which is how it was reported twice.
-        #
-        # Everything above sy+118 is gone, and what remains is mixed halfway to the olive: real
-        # beading is a shimmer IN a garment, and anything bright enough to read as a separate
-        # object at this size reads as a mark on it instead.
-        bead = _mix(BEAD, av.coat, 0.5)
-        for bx, by in ((-34, 120), (-18, 132), (-8, 146), (16, 124), (30, 138),
-                       (-40, 148), (38, 150), (2, 162), (-26, 166), (24, 172)):
-            d.rectangle((OPP_CX + bx, sy + by, OPP_CX + bx + 4, sy + by + 4), fill=bead)
     if "jade_pendant" in av.extras:
         # A fine chain with a jade drop at the throat. Two rows of chain in a gold mixed most of
         # the way back to skin — full GOLD at one pixel wide reads as a scratch, not a chain —
