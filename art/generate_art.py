@@ -2368,10 +2368,20 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         # IRREGULAR — a grid of dots reads as polka dots or as a texture pass, and beadwork is
         # neither; it catches light in clusters. Placed only below the neckline and inboard of
         # the arms so none of it strays onto skin.
-        for bx, by in ((-40, 96), (-28, 104), (-34, 118), (-18, 110), (-8, 124),
-                       (6, 100), (16, 118), (30, 98), (38, 114), (24, 130),
-                       (-46, 132), (44, 130), (0, 140), (-22, 142), (20, 146)):
-            d.rectangle((OPP_CX + bx, sy + by, OPP_CX + bx + 4, sy + by + 4), fill=BEAD)
+        # LOW on the bodice only, and much closer to the cloth than to white.
+        #
+        # Six of these used to sit between sy+96 and sy+114 — within 10 to 28 pixels of a
+        # neckline at sy+84 — so they landed across the bust and at the strap junctions. At 4px
+        # and near-full contrast that is not beadwork, it is a scatter of pale blotches on skin
+        # and shoulder, which is how it was reported twice.
+        #
+        # Everything above sy+118 is gone, and what remains is mixed halfway to the olive: real
+        # beading is a shimmer IN a garment, and anything bright enough to read as a separate
+        # object at this size reads as a mark on it instead.
+        bead = _mix(BEAD, av.coat, 0.5)
+        for bx, by in ((-34, 120), (-18, 132), (-8, 146), (16, 124), (30, 138),
+                       (-40, 148), (38, 150), (2, 162), (-26, 166), (24, 172)):
+            d.rectangle((OPP_CX + bx, sy + by, OPP_CX + bx + 4, sy + by + 4), fill=bead)
     if "jade_pendant" in av.extras:
         # A fine chain with a jade drop at the throat. Two rows of chain in a gold mixed most of
         # the way back to skin — full GOLD at one pixel wide reads as a scratch, not a chain —
@@ -2386,8 +2396,11 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         # otherwise perfectly mirrored face (without it she reads as a mannequin), and gold on
         # black hair is the highest-contrast pairing available in her palette, so a 4px detail
         # actually survives at 150x140.
-        d.rectangle((cx - hxx(58), hy + 2, cx - hxx(50), hy + 10), fill=GOLD)
-        d.rectangle((cx - hxx(56), hy + 12, cx - hxx(52), hy + 26), fill=GOLD)
+        # A small stud and a short drop — 12px overall, against the 24 it was. At full length
+        # it was the brightest, longest mark anywhere on the sprite and pulled the eye off her
+        # face every time. It only has to be legible, not loud: the asymmetry is the job.
+        d.rectangle((cx - hxx(56), hy + 4, cx - hxx(52), hy + 8), fill=GOLD)
+        d.rectangle((cx - hxx(55), hy + 8, cx - hxx(51), hy + 16), fill=_mix(GOLD, av.hair, 0.3))
     if "brooch" in av.extras:
         # At the throat, where a high collar closes. Body mark: it stays on the body's centre
         # line and rides `sy`, so a head carried off centre leaves it where the collar is.
