@@ -1,4 +1,5 @@
 import type { Card, Rank, Suit, TrickCard } from './types.ts';
+import { SUITS } from './deck.ts';
 
 const SAME_COLOR: Record<Suit, Suit> = {
   clubs: 'spades',
@@ -44,6 +45,27 @@ export function trumpRank(card: Card, trump: Suit): number {
 export function cardStrength(card: Card, trump: Suit): number {
   if (isTrump(card, trump)) return 100 + trumpRank(card, trump);
   return PLAIN_RANK_ORDER.indexOf(card.rank);
+}
+
+/** Orders a hand for DISPLAY: trump first, then the other suits, strongest card leftmost.
+ *
+ *  Uses `effectiveSuit`, which is the whole reason this belongs in the engine rather than in a
+ *  component. Under trump, the left bower is not a card of its printed suit — it IS trump, and
+ *  a naive `sort by card.suit` files the jack of diamonds under diamonds while it is being
+ *  played as a spade. That is precisely the card a player most needs to see in the right place.
+ *
+ *  Purely presentational: nothing here affects legality or scoring, and it never mutates the
+ *  hand it is given. Before trump is named there is no trump group, so it falls back to suit
+ *  then rank.
+ */
+export function sortHandForDisplay(hand: Card[], trump: Suit | null): Card[] {
+  const group = (card: Card): number =>
+    trump && isTrump(card, trump) ? -1 : SUITS.indexOf(card.suit);
+  const within = (a: Card, b: Card): number =>
+    trump && isTrump(a, trump)
+      ? cardStrength(b, trump) - cardStrength(a, trump)
+      : PLAIN_RANK_ORDER.indexOf(b.rank) - PLAIN_RANK_ORDER.indexOf(a.rank);
+  return [...hand].sort((a, b) => group(a) - group(b) || within(a, b));
 }
 
 /** Cards from `hand` that are legal to play given the trick's led effective suit. */

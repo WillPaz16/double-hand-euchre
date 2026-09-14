@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 import type { Action, Card as CardType, PlayerView } from '../../shared/engine/types.ts';
+import { sortHandForDisplay } from '../../shared/engine/index.ts';
 import { Card } from './Card.tsx';
 import { BIDDING_PHASES } from './Table.tsx';
 import { useOpponentName } from './opponentIdentity.tsx';
@@ -172,11 +173,16 @@ export function HandTray({
       <div className="hand-tray">
         <div className="hand-tray-label">{label}</div>
         <PickupTray trayKey={trayKey}>
-          {fullHand.map((card, i) => {
+          {/* Sorted for reading, not dealt order: trump leftmost, then by suit, strongest
+              first within each. Keyed by the card itself rather than by index so React keeps
+              each <Card> attached to its own card when the order changes — an index key here
+              would make every re-sort look like every card was replaced, which is exactly what
+              PickupTray's FLIP animation would then animate. */}
+          {sortHandForDisplay(fullHand, view.trump).map((card) => {
             const action = frozen ? undefined : cardActions.find((a) => cardsEqual(a.card, card));
             return (
               <Card
-                key={i}
+                key={`${card.suit}-${card.rank}`}
                 card={card}
                 onClick={action ? () => play(action) : undefined}
                 highlighted={!!action}
@@ -203,8 +209,8 @@ export function HandTray({
               of these cards are ever clickable; bidding actions live in BidPanel, not here.
               Dimming all five for a reason that doesn't apply just made your own hand harder
               to read at the exact moment you picked it up specifically to read it. */}
-          {view.ownSelectedHand.map((card, i) => (
-            <Card key={i} card={card} />
+          {sortHandForDisplay(view.ownSelectedHand, view.trump).map((card) => (
+            <Card key={`${card.suit}-${card.rank}`} card={card} />
           ))}
         </PickupTray>
       </div>

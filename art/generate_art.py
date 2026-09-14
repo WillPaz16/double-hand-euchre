@@ -1288,7 +1288,7 @@ AVATARS = {
         brow_h=6, brow_span=(12, -10), accent=ROSE_RED, shadow_desat=0.30, smirk=True,
         light=0.07, body_skin=SKIN_GOLDEN_BODY,
         lean=4, hand_x=48,
-        extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips", "beauty_mark",
+        extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips",
                 "sheen", "earring", "ring", "low_bridge", "fringe", "tank", "jade_pendant",
                 "beading", "no_eye_socket", "hair_strands",
                 "soft_lips"),
