@@ -1336,6 +1336,32 @@ body {
 .title-play-button:active {
   background: #4a3524;
 }
+/* The secondary/navigation button: Back, from Settings and from the lobby.
+ *
+ *  This class was referenced at both call sites and had NO RULE AT ALL, so both Back buttons
+ *  rendered as browser-default chrome — white box, system font — in the middle of a hand-drawn
+ *  cabin. A dead class name is invisible in review precisely because the markup looks right.
+ *
+ *  Deliberately quieter than `.title-play-button`: leaving a screen is navigation, and the
+ *  primary gold weight belongs to starting a game. Same footprint as the toggles it sits under
+ *  so the column reads as one family. */
+.title-settings-button {
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.5rem 1.6rem;
+  border-radius: 0;
+  border: 2px solid #8a6a3a;
+  background: #2a1d12;
+  color: #e8c877;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.title-settings-button:active {
+  background: #3a2a1a;
+  border-color: #ffd54a;
+  color: #ffd54a;
+}
+
 .title-mute-toggle {
   font-family: inherit;
   font-size: 0.75rem;

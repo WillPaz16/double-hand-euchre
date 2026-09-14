@@ -17,10 +17,11 @@ export function Game({ onQuit }: { onQuit: () => void }) {
   const { view, legal, play, completedTrick, frozen, restart, quit, lastBotAction } = useGame();
   useSfx(view);
   const [paused, setPaused] = useState(false);
-  // Read ONCE per mounted game, not per render. Changing your opponent in settings should take
-  // effect at the next game, the same way the rule toggles do — swapping the face of the person
-  // you are mid-hand against would be a stranger thing to do than making you finish the hand.
-  const [opponent] = useState(getSoloOpponent);
+  // Seeded from the stored choice, then LIVE: the pause menu can swap it mid-hand. Unlike the
+  // rule toggles, which a dealt game cannot honour without changing the rules underneath it,
+  // the opponent's face is pure presentation — nothing in the engine knows or cares who it is,
+  // so there is no reason to make someone finish a hand before they can change it.
+  const [opponent, setOpponent] = useState(getSoloOpponent);
 
   return (
     <OpponentIdentityProvider name={AVATAR_NAMES[opponent]} avatar={opponent}>
@@ -57,6 +58,7 @@ export function Game({ onQuit }: { onQuit: () => void }) {
             restart();
             setPaused(false);
           }}
+          onOpponentChange={setOpponent}
           onQuit={() => {
             quit();
             onQuit();

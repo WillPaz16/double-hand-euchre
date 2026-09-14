@@ -106,7 +106,12 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
           <HelpPanel />
         </section>
 
-        <button className="title-play-button" onClick={onBack}>
+        {/* The SUBDUED button, not `title-play-button`. Back was carrying the same gold-filled
+            primary weight as "New Game" on the title screen, so the loudest thing on a screen
+            full of settings was the way out of it. It is also the same action the lobby calls
+            Back, and that one already uses this style — two screens, one gesture, two weights.
+            Primary weight belongs to starting a game; leaving a screen is navigation. */}
+        <button className="title-settings-button" onClick={onBack}>
           Back
         </button>
       </div>

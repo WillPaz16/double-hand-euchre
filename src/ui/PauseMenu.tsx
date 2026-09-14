@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { HelpPanel } from './HelpPanel.tsx';
 import { isMuted, setMuted } from '../game/audioSettings.ts';
 import { getRuleSettings } from '../game/ruleSettings.ts';
+import { getSoloOpponent, setSoloOpponent } from '../game/opponentSettings.ts';
+import { AVATAR_KEYS, AVATAR_LABELS, avatarSrc, type AvatarKey } from '../../shared/net/avatars.ts';
 
 /** The in-game subset of Settings (direct user request: quit/save/restart reachable mid-game,
  *  not just from the title screen). Deliberately narrower than SettingsScreen — no rule
@@ -27,19 +29,48 @@ export function PauseMenu({
   onClose,
   onRestart,
   onQuit,
+  onOpponentChange,
 }: {
   onClose: () => void;
   onRestart: () => void;
   onQuit: () => void;
+  /** Applies immediately, mid-hand. Unlike the rule toggles, which cannot change under a game
+   *  already dealt, who is sitting across from you is pure presentation — no engine state
+   *  depends on it, so there is no reason to make someone finish a hand to swap a face. */
+  onOpponentChange?: (key: AvatarKey) => void;
 }) {
   const [muted, setMutedState] = useState(isMuted());
   const [confirmingRestart, setConfirmingRestart] = useState(false);
   const rules = getRuleSettings();
+  const [opponent, setOpponent] = useState<AvatarKey>(getSoloOpponent);
 
   return (
     <div className="pause-menu-backdrop" role="dialog" aria-modal="true" aria-label="Paused">
       <div className="pause-menu">
         <h2 className="settings-heading">Paused</h2>
+
+        <div className="avatar-row">
+          {AVATAR_KEYS.map((key) => (
+            <label
+              key={key}
+              className={`avatar-option${key === opponent ? ' is-chosen' : ''}`}
+              title={AVATAR_LABELS[key]}
+            >
+              <input
+                type="radio"
+                name="pause-opponent"
+                value={key}
+                checked={key === opponent}
+                onChange={() => {
+                  setOpponent(key);
+                  setSoloOpponent(key);
+                  onOpponentChange?.(key);
+                }}
+              />
+              <img src={avatarSrc(key, 'idle')} alt={AVATAR_LABELS[key]} />
+            </label>
+          ))}
+        </div>
 
         <button
           className="title-mute-toggle"
@@ -55,8 +86,7 @@ export function PauseMenu({
 
         <p className="settings-note">
           Blind Hand Loner: {rules.blind_hand ? 'on' : 'off'}, Full Blind Loner:{' '}
-          {rules.full_blind ? 'on' : 'off'}. Change these from Settings on the title screen,
-          takes effect next game.
+          {rules.full_blind ? 'on' : 'off'}. Change in Settings, next game.
         </p>
 
         {confirmingRestart ? (
