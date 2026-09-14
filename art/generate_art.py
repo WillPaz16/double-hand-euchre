@@ -1272,6 +1272,7 @@ AVATARS = {
         lean=4, hand_x=48,
         extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips", "beauty_mark",
                 "sheen", "earring", "ring", "low_bridge", "fringe", "tank", "jade_pendant",
+                "beading",
                 "soft_lips"),
     ),
     # --- The Kid -------------------------------------------------------------------------
@@ -1447,19 +1448,29 @@ def _avatar_parts(av):
             # the front of the garment. Drawing it that way removes the internal boundary that
             # was casting the band, rather than trying to hide it.
             (_poly([
-                (OPP_CX - 46, sy + 52), (OPP_CX - 32, sy + 52),
-                (OPP_CX - 30, sy + 72), (OPP_CX, sy + 86), (OPP_CX + 30, sy + 72),
-                (OPP_CX + 32, sy + 52), (OPP_CX + 46, sy + 52),
+                # Straps further OUT on the shoulder (inner 38 against 32, outer 58 against
+                # 46). Sat close to the neck they read as a halter or an apron bib — the
+                # garment appeared to hang from the throat rather than from the shoulders.
+                # Out here they read as cami straps, and the neckline between them widens with
+                # them, which is the other half of why the front looked narrow.
+                (OPP_CX - 58, sy + 52), (OPP_CX - 38, sy + 52),
+                (OPP_CX - 34, sy + 74), (OPP_CX, sy + 88), (OPP_CX + 34, sy + 74),
+                (OPP_CX + 38, sy + 52), (OPP_CX + 58, sy + 52),
                 # The outer edge SLOPES DOWN as it goes out — an armhole, not a flat hem across
                 # the shoulder. Run level at sy+84 it left a horizontal edge sitting in the
                 # open across the top of the shoulder, and that edge's own shadow band was the
                 # remaining "line". Angled, the band follows the armhole and tucks under the
                 # arm, which is both where a shadow belongs and where it stops being a line.
-                (OPP_CX + 50, sy + 90),
-                (OPP_CX + av.shoulder_x - 4, sy + 108 + sdr),
+                # A SHALLOW armhole. It ran from (+-50, sy+90) down to (+-shoulder_x-4,
+                # sy+108) — an 18px drop across 24px of width, which cut a hard diagonal into
+                # the bodice and left the garment visibly tapering to a narrow band at the top.
+                # Read as a taper rather than as a shape. Now it drops 8px instead of 18, so
+                # the bodice keeps the upper chest and the armhole is an edge, not a slope.
+                (OPP_CX + 56, sy + 88),
+                (OPP_CX + av.shoulder_x - 2, sy + 96 + sdr),
                 (OPP_CX + av.hem_x, OPP_H), (OPP_CX - av.hem_x, OPP_H),
-                (OPP_CX - av.shoulder_x + 4, sy + 108 + sdl),
-                (OPP_CX - 50, sy + 90),
+                (OPP_CX - av.shoulder_x + 2, sy + 96 + sdl),
+                (OPP_CX - 56, sy + 88),
             ]), av.coat),
         ]
     else:
@@ -2387,6 +2398,17 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         d.polygon([(cx + hxx(14), hy - 70), (cx + hxx(38), hy - 60),
                    (cx + hxx(36), hy - 52), (cx + hxx(12), hy - 62)],
                   fill=_mix(av.hair, STEEL, 0.12))
+    if "beading" in av.extras:
+        # Back on the garment, because the texture was the part that worked — what failed was
+        # putting it on the bust and shoulders, where 4px marks near bare skin read as blotches
+        # rather than as beadwork. Everything here sits well below the neckline and inboard of
+        # the armholes, and it is mixed halfway to the olive: beading is a shimmer IN cloth,
+        # and anything bright enough to read as a separate object reads as a mark on it.
+        bead = _mix(BEAD, av.coat, 0.5)
+        for bx, by in ((-30, 124), (-14, 136), (-38, 150), (-4, 152), (12, 128),
+                       (28, 142), (-22, 164), (6, 170), (34, 162), (-36, 178),
+                       (18, 184), (-8, 192), (30, 190), (-28, 200), (8, 206)):
+            d.rectangle((OPP_CX + bx, sy + by, OPP_CX + bx + 4, sy + by + 4), fill=bead)
     if "jade_pendant" in av.extras:
         # A fine chain with a jade drop at the throat. Two rows of chain in a gold mixed most of
         # the way back to skin — full GOLD at one pixel wide reads as a scratch, not a chain —
