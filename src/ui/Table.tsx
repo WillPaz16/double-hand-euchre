@@ -184,10 +184,13 @@ export function Table({
   view,
   completedTrick,
   lastBotAction,
+  botOpponent = true,
 }: {
   view: PlayerView;
   completedTrick: CompletedTrick | null;
   lastBotAction: Action | null;
+  /** False in an online game: see useOpponentSpeech. */
+  botOpponent?: boolean;
 }) {
   const opponentName = useOpponentName();
   const opponentAvatar = useOpponentAvatar();
@@ -206,7 +209,7 @@ export function Table({
     !sweeping && trick.length > 0 && view.trump ? trickWinnerIndex(trick, view.trump) : -1;
   const wheelSpinning = useUpcardReveal(view);
   const expression = useOpponentExpression(view);
-  const speech = useOpponentSpeech(view, lastBotAction);
+  const speech = useOpponentSpeech(view, lastBotAction, botOpponent);
 
   return (
     <div className="table-area">
@@ -326,6 +329,14 @@ export function Table({
                   choice as chance (Phase 2 design spec §8). */}
               {wheelSpinning ? (
                 <UpcardWheel suit={view.upcard.suit} durationMs={500} />
+              ) : view.phase === 'bidding_round2' ? (
+                /* TURNED DOWN. Once round one passes out, the dealer physically turns the
+                   upcard face down on the deck — that is what "turned down" MEANS, and it is
+                   the signal that its suit is now the one suit nobody may name. Leaving it
+                   face up here said the opposite of what the rules had just done. */
+                <div className="kitty-upcard kitty-upcard-down">
+                  <CardBack />
+                </div>
               ) : (
                 <Card card={view.upcard} className="kitty-upcard" />
               )}

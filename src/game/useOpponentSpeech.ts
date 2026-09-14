@@ -75,7 +75,23 @@ function pick(pool: string[], avoid: string | null): string {
  *  shows. `lastBotAction` comes from useGame.ts, since a PASS/ORDER_UP/NAME_TRUMP is otherwise
  *  invisible in the redacted `PlayerView` (a pass changes no visible field at all in some
  *  turns) — the action itself, not a state diff, is the only reliable signal. */
-export function useOpponentSpeech(view: PlayerView, lastBotAction: Action | null): string | null {
+export function useOpponentSpeech(
+  view: PlayerView,
+  lastBotAction: Action | null,
+  /** False when the opponent is another PERSON. Every line in this file is the Old-Timer's
+   *  voice, so putting them in a stranger's mouth is worse than saying nothing: online, "Mai"
+   *  was delivering "This chair's older than you."
+   *
+   *  Passing `lastBotAction: null` was not enough and that is the whole bug. It suppresses the
+   *  bid REACTIONS, which read it directly, but the phase-driven effect below never looked at
+   *  it — idle banter fires on `select` at 25%, hand reactions at 45%, and the game-over line
+   *  always. It survived this long because it is probabilistic: a short session usually shows
+   *  nothing at all.
+   *
+   *  Expressions are deliberately NOT gated on this. A face that looks pleased when they take
+   *  a trick reads as a person; canned dialogue reads as a bot. */
+  botOpponent: boolean = true,
+): string | null {
   const [line, setLine] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastLineRef = useRef<string | null>(null);
@@ -89,7 +105,7 @@ export function useOpponentSpeech(view: PlayerView, lastBotAction: Action | null
   };
 
   useEffect(() => {
-    if (!lastBotAction) return;
+    if (!botOpponent || !lastBotAction) return;
     if (lastBotAction.type === 'PASS') say(pick(PASS_LINES, lastLineRef.current));
     else if (lastBotAction.type === 'ORDER_UP') {
       say(pick(lastBotAction.loner ? ALONE_ORDER_UP_LINES : ORDER_UP_LINES, lastLineRef.current));
@@ -100,12 +116,13 @@ export function useOpponentSpeech(view: PlayerView, lastBotAction: Action | null
       say(pick(pool, lastLineRef.current));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lastBotAction]);
+  }, [lastBotAction, botOpponent]);
 
   useEffect(() => {
     const prevPhase = prevPhaseRef.current;
     prevPhaseRef.current = view.phase;
     if (prevPhase === view.phase) return;
+    if (!botOpponent) return;
 
     if (view.phase === 'hand_complete' || view.phase === 'game_over') {
       const botWon = view.winner ? view.winner === otherPlayer(view.you) : view.tricksWon[otherPlayer(view.you)] > view.tricksWon[view.you];
@@ -121,7 +138,7 @@ export function useOpponentSpeech(view: PlayerView, lastBotAction: Action | null
       say(pick(IDLE_BANTER_LINES, lastLineRef.current));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view.phase]);
+  }, [view.phase, botOpponent]);
 
   useEffect(
     () => () => {

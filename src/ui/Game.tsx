@@ -4,6 +4,9 @@ import { useSfx } from '../game/useSfx.ts';
 import { SceneLayer } from './SceneLayer.tsx';
 import { Scoreboard } from './Scoreboard.tsx';
 import { StatusBanner } from './StatusBanner.tsx';
+import { OpponentIdentityProvider } from './opponentIdentity.tsx';
+import { getSoloOpponent } from '../game/opponentSettings.ts';
+import { AVATAR_NAMES } from '../../shared/net/avatars.ts';
 import { Table } from './Table.tsx';
 import { BidPanel } from './BidPanel.tsx';
 import { HandTray } from './HandTray.tsx';
@@ -14,9 +17,13 @@ export function Game({ onQuit }: { onQuit: () => void }) {
   const { view, legal, play, completedTrick, frozen, restart, quit, lastBotAction } = useGame();
   useSfx(view);
   const [paused, setPaused] = useState(false);
+  // Read ONCE per mounted game, not per render. Changing your opponent in settings should take
+  // effect at the next game, the same way the rule toggles do — swapping the face of the person
+  // you are mid-hand against would be a stranger thing to do than making you finish the hand.
+  const [opponent] = useState(getSoloOpponent);
 
   return (
-    <>
+    <OpponentIdentityProvider name={AVATAR_NAMES[opponent]} avatar={opponent}>
       <SceneLayer />
       {/* Sits above the scene but below the game content (z-index between SceneLayer's -1
           and #root's 1) — it dims the room and the wall, never the table or the cards, which
@@ -56,6 +63,6 @@ export function Game({ onQuit }: { onQuit: () => void }) {
           }}
         />
       )}
-    </>
+    </OpponentIdentityProvider>
   );
 }

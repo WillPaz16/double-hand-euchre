@@ -3,6 +3,8 @@ import { SceneLayer } from './SceneLayer.tsx';
 import { HelpPanel } from './HelpPanel.tsx';
 import { isMuted, setMuted } from '../game/audioSettings.ts';
 import { getRuleSettings, setRuleSettings, type RuleSettings } from '../game/ruleSettings.ts';
+import { getSoloOpponent, setSoloOpponent } from '../game/opponentSettings.ts';
+import { AVATAR_KEYS, AVATAR_LABELS, avatarSrc, type AvatarKey } from '../../shared/net/avatars.ts';
 
 /** Reached from the title screen only (not mid-game — see PauseMenu for the in-game subset).
  *  Rule toggles here only ever write to localStorage; a game already in progress reads its
@@ -16,6 +18,7 @@ import { getRuleSettings, setRuleSettings, type RuleSettings } from '../game/rul
 export function SettingsScreen({ onBack }: { onBack: () => void }) {
   const [muted, setMutedState] = useState(isMuted());
   const [rules, setRules] = useState<RuleSettings>(getRuleSettings());
+  const [opponent, setOpponent] = useState<AvatarKey>(getSoloOpponent);
 
   function toggleRule(key: keyof RuleSettings) {
     const next = { ...rules, [key]: !rules[key] };
@@ -28,6 +31,35 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
       <SceneLayer />
       <div className="settings-screen">
         <h1 className="settings-heading">Settings</h1>
+
+        {/* Who you play against in single-player. Distinct from the character you SHOW an
+            online opponent, which is picked in the lobby — one is who sits across from you,
+            the other is who they see. Takes effect at the next game, like the rule toggles. */}
+        <section className="settings-section">
+          <h2>Your opponent</h2>
+          <div className="avatar-row">
+            {AVATAR_KEYS.map((key) => (
+              <label
+                key={key}
+                className={`avatar-option${key === opponent ? ' is-chosen' : ''}`}
+                title={AVATAR_LABELS[key]}
+              >
+                <input
+                  type="radio"
+                  name="solo-opponent"
+                  value={key}
+                  checked={key === opponent}
+                  onChange={() => {
+                    setOpponent(key);
+                    setSoloOpponent(key);
+                  }}
+                />
+                <img src={avatarSrc(key, 'idle')} alt={AVATAR_LABELS[key]} />
+              </label>
+            ))}
+          </div>
+          <p className="settings-note">{AVATAR_LABELS[opponent]} deals you in next game.</p>
+        </section>
 
         <section className="settings-section">
           <h2>Sound</h2>

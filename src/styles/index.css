@@ -2349,6 +2349,13 @@ body {
   filter: drop-shadow(0 calc(2px * var(--px)) 0 rgba(0, 0, 0, 0.5));
 }
 
+/* Turned down after round one passes out. Squared up against the deck rather than kept at the
+   upcard's jaunty 12deg: a card that has been deliberately turned over is placed, not tossed,
+   and losing the tilt is most of what makes the change read as an action someone took. */
+.kitty-upcard-down {
+  transform: rotate(3deg);
+}
+
 /* The dealer chip (2o.2) — a small wooden token marking whose deal it is, direct user
    feedback: "i think we need a dealer chip on the table." Positioned in PERCENT, like
    `.table-kitty` and every `.trick-card.at-*` compass slot, not as a px offset from the box
@@ -3341,4 +3348,12 @@ body {
 .avatar-option:has(input:focus-visible) {
   outline: 2px solid #ffd54a;
   outline-offset: 2px;
+}
+
+/* Settings note under the opponent picker. */
+.settings-note {
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  color: #c9b48a;
+  text-align: center;
 }

@@ -48,7 +48,12 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
         {game.view && <Scoreboard view={game.view} />}
         {game.view && <StatusBanner view={game.view} onRestart={() => undefined} />}
         {game.view && (
-          <Table view={game.view} completedTrick={game.completedTrick} lastBotAction={null} />
+          <Table
+            view={game.view}
+            completedTrick={game.completedTrick}
+            lastBotAction={null}
+            botOpponent={false}
+          />
         )}
         <div className="action-bar">
           {game.view && <BidPanel view={game.view} legal={game.legal} play={game.play} />}

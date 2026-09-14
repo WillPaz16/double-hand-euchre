@@ -23,6 +23,16 @@ export const AVATAR_LABELS: Record<AvatarKey, string> = {
   regular: 'The Regular',
 };
 
+/** What the game CALLS each character in banners and on the scoreboard, as distinct from the
+ *  picker label. The Old-Timer keeps the bare "Old-Timer" he has always had — every existing
+ *  string and test says that, and single-player is unchanged by default. */
+export const AVATAR_NAMES: Record<AvatarKey, string> = {
+  old_timer: 'Old-Timer',
+  card_sharp: 'The Card Sharp',
+  kid: 'The Kid',
+  regular: 'The Regular',
+};
+
 export const AVATAR_EXPRESSIONS = ['idle', 'happy', 'rueful', 'blink'] as const;
 
 export function isAvatarKey(value: unknown): value is AvatarKey {

@@ -139,3 +139,45 @@ describe('useOpponentSpeech', () => {
     expect(result.current).toBeNull();
   });
 });
+
+/** The lines in this file are the Old-Timer's voice. Online the opponent is a PERSON, and
+ *  putting his catchphrases in their mouth is worse than saying nothing — "Mai" was delivering
+ *  "This chair's older than you."
+ *
+ *  Passing `lastBotAction: null` was not enough, which is the bug these cover: that only
+ *  silences the bid reactions, which read it directly. The phase-driven effect never consulted
+ *  it, so idle banter still fired on `select` (25%), hand reactions at 45%, and the game-over
+ *  line every time. `Math.random` is stubbed to 0 here so the probabilistic paths fire
+ *  deterministically rather than passing by luck. */
+describe('a human opponent never speaks the bot\'s lines', () => {
+  beforeEach(() => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+  });
+
+  it('stays silent through the phase that carries idle banter', () => {
+    const { result, rerender } = renderHook(
+      ({ view }) => useOpponentSpeech(view, null, false),
+      { initialProps: { view: makeView({ phase: 'bidding_round1' }) } },
+    );
+    rerender({ view: makeView({ phase: 'select' }) });
+    expect(result.current).toBeNull();
+  });
+
+  it('stays silent at game over, which always speaks for a bot', () => {
+    const { result, rerender } = renderHook(
+      ({ view }) => useOpponentSpeech(view, null, false),
+      { initialProps: { view: makeView({ phase: 'play' }) } },
+    );
+    rerender({ view: makeView({ phase: 'game_over', winner: 'B' }) });
+    expect(result.current).toBeNull();
+  });
+
+  it('but a BOT opponent still does speak, so the gate is the flag and not a silenced hook', () => {
+    const { result, rerender } = renderHook(
+      ({ view }) => useOpponentSpeech(view, null, true),
+      { initialProps: { view: makeView({ phase: 'play' }) } },
+    );
+    rerender({ view: makeView({ phase: 'game_over', winner: 'B' }) });
+    expect(result.current).not.toBeNull();
+  });
+});
