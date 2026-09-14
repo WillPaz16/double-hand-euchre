@@ -979,6 +979,10 @@ HAIR_BLACK = (26, 23, 38, 255)
 # unmistakably blue-green, and this is H108. Sixty-odd degrees apart, at the same lightness, so
 # they separate at a glance without either having to be brighter than the room.
 KNIT_FOREST = (68, 98, 60, 255)
+# Jade, for her pendant. Milky and desaturated rather than a clean green — jade reads as stone
+# because it is cloudy, and a saturated green here would just be a bead. Lighter than her
+# jumper by a clear step so the two greens do not merge into one when it sits against them.
+JADE = (126, 178, 140, 255)
                                   # BOOT_DARK brown it replaced — and so a sheen mixed off it
                                   # lands on slate rather than mud.
 HAIR_BLOND = (228, 190, 112, 255)  # straw, not GOLD: GOLD is the tin star and the spectacles,
@@ -1238,7 +1242,7 @@ AVATARS = {
         brow_h=6, brow_span=(12, -10), accent=ROSE_RED, shadow_desat=0.30, smirk=True,
         lean=4, hand_x=48,
         extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips", "beauty_mark",
-                "sheen", "earring", "ring", "low_bridge", "fringe", "knit", "crew_neck",
+                "sheen", "earring", "ring", "low_bridge", "fringe", "knit", "crew_neck", "jade_pendant",
                 "soft_lips"),
     ),
     # --- The Kid -------------------------------------------------------------------------
@@ -1460,7 +1464,7 @@ def _avatar_parts(av):
     if av.hair is not None and av.hair_style in ("long", "plaits"):
         # A bob gets only a thin halo: the rim behind the skull is what gives LOOSE hair its
         # volume, and too much of it under a blunt cut just makes the cut look untidy.
-        halo = 14 if av.hair_style == "long" else (6 if av.hair_style == "bob" else 10)
+        halo = 14 if av.hair_style == "long" else (10 if av.hair_style == "bob" else 10)
         # The bottom of the halo runs to the SHOULDER (it carries `av.lean`), not to a fixed
         # offset under the jaw. Under the plaits it is the only thing spanning the gap between
         # the cheek and the first plait segment, and once the Kid's shoulders came up around a
@@ -1633,9 +1637,19 @@ def _avatar_parts(av):
                     # inner edge passed about 11px outboard of the neck for two rows just above
                     # the shoulder line and left an 8px sealed hole — found by the check, not by
                     # looking, for the fourth time on this cast.
-                    (cx + side * hx(24), hy + vy(66 if over else 58)),
-                    (cx + side * hx(42), hy + vy(88 if over else 60) + av.lean),
-                    (cx + side * hx(70), hy + vy(82 if over else 58) + av.lean),
+                    (cx + side * hx(24), hy + vy(66 if over else 62)),
+                    # Longer. The reference is hair well past the shoulder, and at a
+                    # head-and-shoulders crop "long" has to be spent on the few rows below the
+                    # shoulder line or it does not exist — above it, every length looks the
+                    # same. The over side now runs to hy+118, roughly the bottom of the frame,
+                    # so it reads as continuing past what we can see rather than stopping.
+                    # The lower inner edge sweeps OUT to hx(62), not down at hx(46). Hands are
+                    # drawn before hair, so a length that stays narrow all the way down lands
+                    # on top of them and buries the near hand under a dark curtain. Sweeping
+                    # outward puts the fall beside the arm, which is where hair that long
+                    # actually goes when someone's hands are forward on a table.
+                    (cx + side * hx(62 if over else 46), hy + vy(118 if over else 60) + av.lean),
+                    (cx + side * hx(84 if over else 78), hy + vy(104 if over else 58) + av.lean),
                     (cx + side * flare, hy + vy(34)),
                     (cx + side * hx(80), hy - vy(6)),
                 ])
@@ -2147,6 +2161,20 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
             d.rectangle((cx - mw + 6, my + 4, cx + mw - 6, my + 8),
                         fill=_mix(lip, skin_hi, 0.3))
             d.rectangle((cx - 6, my + 4, cx + 2, my + 8), fill=_mix(lip, skin_hi, 0.55))
+            # A lift at each corner, 4px, one row above the mouth line. At this size that is
+            # the entire difference between a resting face and a pleasant one, and it costs
+            # nothing: two pixels of a tone already in the sprite.
+            #
+            # Deliberately not a curve. A drawn smile needs three or four rows to arc and she
+            # only has two, so an attempted curve becomes a wedge. Corners that sit one step
+            # higher than the line between them is what the eye reads as a smile here.
+            for side in (-1, 1):
+                # OVERLAPPING the lip row, not perched above it. Sitting one row up and one
+                # step out, the corners touched the mouth only diagonally — which at pixel
+                # level is not touching at all — and read as two red dots floating beside her
+                # face. A corner has to share pixels with the line it lifts.
+                sx0, sx1 = sorted((cx + side * (mw - 10), cx + side * (mw - 4)))
+                d.rectangle((sx0, my - 4, sx1, my + 4), fill=_mix(lip, INK, 0.3))
         elif "lips" in av.extras:
             d.rectangle((cx - mw + 4, my, cx + mw - 4, my + 4),
                         fill=_mix(lip, INK, 0.4))
@@ -2233,6 +2261,15 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         d.polygon([(cx + hxx(14), hy - 70), (cx + hxx(38), hy - 60),
                    (cx + hxx(36), hy - 52), (cx + hxx(12), hy - 62)],
                   fill=_mix(av.hair, STEEL, 0.12))
+    if "jade_pendant" in av.extras:
+        # A fine chain with a jade drop at the throat. Two rows of chain in a gold mixed most of
+        # the way back to skin — full GOLD at one pixel wide reads as a scratch, not a chain —
+        # and the stone itself carries a single lighter pixel, which is the whole difference
+        # between a bead and something polished.
+        d.rectangle((OPP_CX - 14, sy + 58, OPP_CX + 14, sy + 60), fill=_mix(GOLD, av.skin, 0.45))
+        d.rectangle((OPP_CX - 4, sy + 60, OPP_CX + 4, sy + 64), fill=_mix(GOLD, av.skin, 0.3))
+        d.rectangle((OPP_CX - 6, sy + 64, OPP_CX + 6, sy + 74), fill=JADE)
+        d.rectangle((OPP_CX - 4, sy + 66, OPP_CX, sy + 70), fill=_mix(JADE, skin_hi, 0.5))
     if "earring" in av.extras:
         # A gold drop, on the lit side only. Two jobs: it is the one asymmetric mark on an
         # otherwise perfectly mirrored face (without it she reads as a mannequin), and gold on
