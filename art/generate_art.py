@@ -1354,7 +1354,15 @@ def _avatar_parts(av):
     sdl, sdr = av.shoulder_dy
     # The forearm's inner edge tracks the hand, so a hand brought in toward the centre arrives
     # attached to an arm instead of resting on the chest like a button.
-    arm_in = av.hand_x - 8
+    # A BARE arm is narrower than a coat sleeve, and has to be drawn that way. At the sleeved
+    # inner edge (`hand_x - 8` = 40 on her) the wedge runs 40..96 — a 56px band across a 92px
+    # half-torso, 60% of each side. In cloth that reads as a sleeve; in skin it is most of the
+    # sprite and the garment shrinks to a strip down the middle.
+    #
+    # Moving the inner edge out to `hand_x + 14` gives a 34px upper arm and hands the width
+    # back to the bodice. The hand still connects: it spans `hand_x +- 22`, so it overlaps the
+    # new edge by 8px and covers the join.
+    arm_in = (av.hand_x + 14) if "tank" in av.extras else (av.hand_x - 8)
     hdl, hdr = av.hand_dy
 
     def hx(v):
