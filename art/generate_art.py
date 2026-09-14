@@ -1212,7 +1212,7 @@ AVATARS = {
         head_rx=56, head_ry=64, head_dy=-8, neck_w=20, shoulder_x=84, shoulder_in=54,
         hem_x=100, arm_x=106,
         eye_dx=26, eye_w=8, eye_up=10, eye_dn=6, brow_dy=-2, nose_w=3, nose_dy=-2, mouth_w=16,
-        brow_h=4, accent=ROSE_RED, shadow_desat=0.30, smirk=True,
+        brow_h=6, accent=ROSE_RED, shadow_desat=0.30, smirk=True,
         lean=4, hand_x=48,
         extras=("cheekbone", "nostrils", "philtrum", "lashes", "lips", "beauty_mark",
                 "sheen", "earring", "garters", "brooch", "ring", "low_bridge", "fringe"),
@@ -1238,8 +1238,16 @@ AVATARS = {
         head_rx=58, head_ry=56, head_dy=10, neck_w=16, shoulder_x=74, shoulder_in=46,
         hem_x=90, arm_x=96,
         lean=-12, shoulder_dy=(-8, 8), head_dx=12, hand_x=40, hand_dy=(-12, -4),
-        eye_dx=22, eye_w=9, eye_up=12, eye_dn=8, brow_dy=8, nose_w=4, nose_dy=8, mouth_w=14,
-        brow_colour=_mix(HAIR_BLOND, HAIR_BROWN, 0.75), brow_h=4, accent=ROSE_RED,
+        # Eye 15px tall, not 20. Big eyes are the child cue and she should keep the biggest in
+        # the cast relative to her head — but 20px of solid INK on the SMALLEST head (head_ry
+        # 56, so 28 half-rows) put a third of her face inside two black slabs, and that is not a
+        # child, it is a doll. Measured off the sprite: ink from row 44 to row 53 unbroken.
+        # Reduced from the top mostly, so the lower lid keeps sitting where the cheek expects it.
+        #
+        # Brow 6px, not 4: at 4 it is one grid unit, and one unit of dark-blonde on pale skin
+        # directly beneath a blonde hairline does not separate from it.
+        eye_dx=22, eye_w=9, eye_up=9, eye_dn=6, brow_dy=8, nose_w=4, nose_dy=8, mouth_w=14,
+        brow_colour=_mix(HAIR_BLOND, HAIR_BROWN, 0.75), brow_h=6, accent=ROSE_RED,
         shadow_desat=0.40,
         extras=("nostrils", "blush", "freckles", "knit", "ribbons", "buttons", "gap_tooth"),
     ),
@@ -1501,12 +1509,20 @@ def _avatar_parts(av):
                 # simply what thick black hair does when it is cut in a line, and at this size a
                 # hard horizontal edge is the only way to say "blunt cut" at all.
                 #
-                # Bottom at hy-vy(38): her brows sit at hy-34, so this stops 4px clear of them.
-                # Any lower and the fringe merges with the brow into one dark band and she
-                # loses her eyes, which is the whole face.
+                # Bottom at hy-vy(50), NOT hy-vy(38). The first attempt stopped 4px above where
+                # I thought the brow was and the brow turned out to be drawn at hy-34 to hy-30,
+                # i.e. touching it — and in `av.hair`, the SAME colour as the fringe. Fused into
+                # one black mass, so the fringe's lower edge read as her hairline and she
+                # appeared to have no eyebrows at all. A face with eyes and no brows is the
+                # single most reliable way to make a character look uncanny, which is exactly
+                # how it was reported: "off-putting".
+                #
+                # Verified by dumping pixel rows rather than by eye: skin at rows 26-29, hair
+                # tone at 24-25 (the brow, invisible against the fringe above it), eye ink from
+                # 32. There was no forehead between fringe and brow at all.
                 parts.append((_poly([
-                    (cx - hx(54), hy - vy(64)), (cx + hx(54), hy - vy(64)),
-                    (cx + hx(50), hy - vy(38)), (cx - hx(50), hy - vy(38)),
+                    (cx - hx(54), hy - vy(66)), (cx + hx(54), hy - vy(66)),
+                    (cx + hx(50), hy - vy(50)), (cx - hx(50), hy - vy(50)),
                 ]), av.hair))
             # The lengths, falling past the jaw onto the shoulders.
             #
@@ -1836,7 +1852,13 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
             bx0, bx1 = sorted((cx + side * (av.eye_dx - av.eye_w - 8),
                                cx + side * (av.eye_dx + av.eye_w + 8)))
             if av.lid == "creased":
-                d.rectangle((bx0, eye_y - 18, bx1, eye_y - 14), fill=skin_sh)
+                # `soft_sh`, not `skin_sh` — the same softened tone this block already uses for
+                # the cheek. Using the full shadow here while the cheek beside it was softened
+                # was an inconsistency, and on the child's very pale skin it landed as a mauve
+                # band straight across both upper lids: at native scale that reads as bruising
+                # or as heavy eyeshadow on a ten-year-old, which is most of why her face was
+                # reported as off-putting. A crease is a crease, not a cosmetic.
+                d.rectangle((bx0, eye_y - 18, bx1, eye_y - 14), fill=soft_sh)
             if "brow_ridge" in av.extras:
                 d.rectangle((bx0, eye_y - 22, bx1, eye_y - 18), fill=skin_hi)
     else:
@@ -2144,7 +2166,12 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         # which keeps the same hue family already in her palette.
         #
         # Four, not six: at 4px on a face this size six dots per cheek pair is measles.
-        freckle = _mix(skin_deep, INK, 0.34)
+        # Warm brown, from the brow colour where the character has one. Mixing the deep skin
+        # tone toward INK gave (153,124,111) on the fair complexion — a MAUVE, and a row of
+        # mauve dots on pink cheeks reads as a rash rather than as freckles. Freckles and brows
+        # are the same pigment, so borrowing the brow tone is both more accurate and free: it is
+        # already in this sprite, in the bands the cheeks occupy.
+        freckle = av.brow_colour or _mix(skin_deep, INK, 0.34)
         for fx, fy in ((-40, 10), (-30, 16), (34, 12), (42, 18)):
             d.rectangle((cx + hxx(fx), hy + fy, cx + hxx(fx) + 4, hy + fy + 4),
                         fill=freckle)
