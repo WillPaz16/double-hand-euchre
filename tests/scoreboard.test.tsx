@@ -59,14 +59,19 @@ describe('ScorePair phase selection', () => {
     expect(cover.style.transform).toContain('translate(calc(0 * 30px * var(--px))');
   });
 
-  it('score 6: the transition point — 6 is the base with no cover, 4 is arriving as the cover', () => {
+  it('score 6: the 6 counts and the arriving 4 sits BEHIND it', () => {
+    // This test previously asserted the 4 was the `.score-card-cover`, with a comment saying
+    // it "must sit visually behind the fully-exposed 6". Both cannot be true: that class is
+    // z-index 2. The test encoded the intent while the class defeated it, so it passed for
+    // months while the board showed a four at a score of six.
     const pair = pairFor(6);
     expect(pair.querySelector('.score-card-base')?.getAttribute('src')).toBe(
       '/art/scoreboard/hearts_6.png',
     );
-    expect(pair.querySelector('.score-card-cover')?.getAttribute('src')).toBe(
+    expect(pair.querySelector('.score-card-behind')?.getAttribute('src')).toBe(
       '/art/scoreboard/hearts_4.png',
     );
+    expect(pair.querySelector('.score-card-cover')).toBeNull();
   });
 
   it('phase B (score > 6): the 4 is the base, the now-spent 6 is the cover', () => {
@@ -85,14 +90,15 @@ describe('ScorePair phase selection', () => {
   });
 
   it('every score from 0 to 10 renders exactly one base and one cover image', () => {
-    // Score 6 is the one case where the cover is drawn BEFORE the base in source order (the
-    // arriving 4 must sit visually behind the fully-exposed 6, per ScorePair's own branch) —
-    // so this only asserts presence/count, not DOM order.
+    // Two cards, always. Score 6 is the one value where the second one is `.score-card-behind`
+    // rather than `.score-card-cover`, because there the arriving card is genuinely behind the
+    // counting one — which is a z-index question, not a DOM-order one.
     for (let score = 0; score <= 10; score++) {
       const pair = pairFor(score);
       expect(pair.querySelectorAll('.score-card-img').length).toBe(2);
       expect(pair.querySelectorAll('.score-card-base').length).toBe(1);
-      expect(pair.querySelectorAll('.score-card-cover').length).toBe(1);
+      const second = score === 6 ? '.score-card-behind' : '.score-card-cover';
+      expect(pair.querySelectorAll(second).length, `score ${score}`).toBe(1);
     }
   });
 });
