@@ -31,3 +31,18 @@ describe('the scoreboard survives a score past ten', () => {
     expect(() => render(<Scoreboard view={viewAt(15, 3)} />)).not.toThrow();
   });
 });
+
+/** Score six is the one value where the two cards swap roles: the 6 stops being covered and
+ *  starts being the cover. The arriving 4 must sit BEHIND it — rendered on top it hid the 6
+ *  completely and the board showed four pips at a score of six. */
+describe('score six shows the six, not the four', () => {
+  it('puts the arriving four behind the counting six', () => {
+    const { container } = render(<Scoreboard view={viewAt(6, 0)} />);
+    const pair = container.querySelector('.score-pair')!;
+    const four = pair.querySelector('img[src*="_4.png"]')!;
+    const six = pair.querySelector('img[src*="_6.png"]')!;
+    expect(four.className).toContain('score-card-behind');
+    expect(four.className).not.toContain('score-card-cover');
+    expect(six.className).toContain('score-card-base');
+  });
+});

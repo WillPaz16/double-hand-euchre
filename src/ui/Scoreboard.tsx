@@ -149,7 +149,11 @@ function ScorePair({ player, score: rawScore, won }: { player: Player; score: nu
     const t = PHASE_B_TRANSFORM[0]!;
     layers = (
       <>
-        <ScoreCardImg src={fourSrc} className="score-card-cover" style={coverStyle(t)} />
+        {/* BEHIND, not covering. The 6 is fully exposed and counting all six of its pips; the
+            4 has only just arrived and shows none of its own yet. Given `.score-card-cover`
+            this sat at z-index 2, on top, and hid the 6 entirely — so the board read four at a
+            score of six, which is the one value where the two cards swap roles. */}
+        <ScoreCardImg src={fourSrc} className="score-card-behind" style={coverStyle(t)} />
         <ScoreCardImg src={sixSrc} className="score-card-base" />
       </>
     );

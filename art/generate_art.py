@@ -45,7 +45,11 @@ SKIN_FAIR = (234, 202, 180, 255)   # the child's — pale enough that blonde hai
 #
 # Still clearly not the Regular's SKIN_WARM, which leans ruddy at R-G 42; hers is 36, so the two
 # read as different people rather than the same complexion twice.
-SKIN_GOLDEN = (220, 184, 156, 255)
+SKIN_GOLDEN = (208, 168, 134, 255)
+# Both tones were lifted a step toward a real tan — "like she'd just spent the day at the
+# beach" — keeping the same face-to-body relationship, which is the part the reference
+# actually established.
+#
 # Her ARMS and shoulders, a step deeper than her face and deliberately still WARM.
 #
 # Measured off the reference: her lit cheek is ~(222,186,158) and her shoulder ~(210,172,140) —
@@ -56,7 +60,7 @@ SKIN_GOLDEN = (220, 184, 156, 255)
 # Hand-picked rather than taken from `ramp()`, which is the whole point: the ramp's shadow step
 # collapses green-to-blue from 28 down to 15 and the arm goes grey-pink. Hers holds at 32 — it
 # gets darker without getting cooler, which is what skin actually does.
-SKIN_GOLDEN_BODY = (206, 168, 136, 255)
+SKIN_GOLDEN_BODY = (192, 150, 114, 255)
                                    # DARKER than the face it frames, which is what stops a
                                    # blonde head becoming one undifferentiated light mass.
                                    # Deliberately LESS saturated than SKIN: `ramp()` multiplies
@@ -1286,7 +1290,7 @@ AVATARS = {
         lean=4, hand_x=48,
         extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips", "beauty_mark",
                 "sheen", "earring", "ring", "low_bridge", "fringe", "tank", "jade_pendant",
-                "beading", "warm_eyes",
+                "beading", "no_eye_socket", "hair_strands",
                 "soft_lips"),
     ),
     # --- The Kid -------------------------------------------------------------------------
@@ -2231,8 +2235,16 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
             d.rectangle((ex - av.eye_w, eye_y + av.eye_dn - 4, ex + av.eye_w, eye_y + av.eye_dn),
                         fill=skin_hi)
         # Eye socket shadow, so the eye sits IN the head rather than on it.
-        d.rectangle((ex - av.eye_w - 4, eye_y + av.eye_dn, ex + av.eye_w + 4,
-                     eye_y + av.eye_dn + 4), fill=skin_sh)
+        #
+        # Opt-OUT, not opt-in, so nobody else's sprite moves. On a young face with no crow's
+        # feet and nothing else under the eye, a shadow band sitting directly beneath the lash
+        # line is not a socket — it is an eye bag. Combined with the lifted lower lid that went
+        # in last pass, she had two stacked bands under each eye and looked tired rather than
+        # warm. Both are gone for her; the eye reads fine without either, because the brow and
+        # the lid line above already seat it in the head.
+        if "no_eye_socket" not in av.extras:
+            d.rectangle((ex - av.eye_w - 4, eye_y + av.eye_dn, ex + av.eye_w + 4,
+                         eye_y + av.eye_dn + 4), fill=skin_sh)
         if "lashes" in av.extras and eye_expr not in ("happy", "blink"):
             # ROUND 2 MERGE, from Designer A. Four pixels of lash lifted at the outer corner —
             # the one feature that carries glamour at this size without a single curve. Skipped
@@ -2327,13 +2339,17 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
             # Deliberately not a curve. A drawn smile needs three or four rows to arc and she
             # only has two, so an attempted curve becomes a wedge. Corners that sit one step
             # higher than the line between them is what the eye reads as a smile here.
-            for side in (-1, 1):
-                # OVERLAPPING the lip row, not perched above it. Sitting one row up and one
-                # step out, the corners touched the mouth only diagonally — which at pixel
-                # level is not touching at all — and read as two red dots floating beside her
-                # face. A corner has to share pixels with the line it lifts.
-                sx0, sx1 = sorted((cx + side * (mw - 10), cx + side * (mw - 4)))
-                d.rectangle((sx0, my - 4, sx1, my + 4), fill=_mix(lip, INK, 0.3))
+            # ONE corner, not two. Two lifted corners is a smile; one is a smirk, and a smirk
+            # is the expression this character was written around — she gives nothing away, and
+            # a symmetrical smile gives away that she is pleased. It is also the only
+            # asymmetry on a face that is otherwise perfectly mirrored, which is what stops it
+            # reading as a mannequin.
+            #
+            # Overlapping the lip row, not perched above it: set one row up and one step out,
+            # the corner touched the mouth only diagonally — not touching at all, at pixel
+            # level — and read as a red dot floating beside her face.
+            sx0, sx1 = sorted((cx - (mw - 10), cx - (mw - 4)))
+            d.rectangle((sx0, my - 4, sx1, my + 4), fill=_mix(lip, INK, 0.3))
         elif "lips" in av.extras:
             d.rectangle((cx - mw + 4, my, cx + mw - 4, my + 4),
                         fill=_mix(lip, INK, 0.4))
@@ -2434,6 +2450,33 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         for side in (-1, 1):
             x0, x1 = sorted((cx + side * 18, cx + side * 40))
             d.rectangle((x0, hy + 6, x1, hy + 12), fill=warm)
+    if "hair_strands" in av.extras:
+        # Interior shape for the lengths, not just the crown.
+        #
+        # `sheen` above gives the CROWN a highlight and stops the top of the head reading as a
+        # hole. Below the ear it was still a flat black mass with an outline — long hair with
+        # no information inside it, which is the one note left on this character.
+        #
+        # Strands, not a gradient: a few long tapering slivers following the fall, in the two
+        # tones the sheen already introduced, so they cost nothing new. They sit INSIDE the
+        # hair's own inner edge (hx 46..86 is the fall's span) so none of them crosses onto the
+        # face or the shoulder. Uneven lengths and spacing on purpose — evenly spaced strands
+        # read as corduroy.
+        lit = _mix(av.hair, STEEL, 0.20)
+        dim = _mix(av.hair, INK, 0.35)
+        for x0, y0, x1, y1, tone in (
+            (-72, -30, -64, 58, lit),
+            (-58, -6, -52, 74, dim),
+            (-80, 10, -74, 66, dim),
+            (-66, 30, -60, 90, lit),
+            (62, -24, 70, 34, lit),
+            (76, 2, 82, 40, dim),
+            (54, 16, 60, 44, dim),
+        ):
+            d.polygon([
+                (cx + hxx(x0), hy + y0), (cx + hxx(x0) + 4, hy + y0),
+                (cx + hxx(x1) + 4, hy + y1), (cx + hxx(x1), hy + y1),
+            ], fill=tone)
     if "beading" in av.extras:
         # Back on the garment, because the texture was the part that worked — what failed was
         # putting it on the bust and shoulders, where 4px marks near bare skin read as blotches

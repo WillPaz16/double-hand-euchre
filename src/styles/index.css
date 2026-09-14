@@ -1907,6 +1907,14 @@ body {
 .score-card-base {
   z-index: 1;
 }
+/* The card arriving BEHIND the one that is currently counting. Below `.score-card-base`, not
+   above it: at score 6 the 6 is fully exposed and counting, and the 4 is only just appearing
+   from behind it. Rendered as a `.score-card-cover` it sat on top at z-index 2 and hid the 6
+   completely — the board showed a 4 with four pips while the score was six. */
+.score-card-behind {
+  z-index: 0;
+  transition: transform 350ms ease-out;
+}
 .score-card-cover {
   z-index: 2;
   transition: transform 350ms ease-out;
