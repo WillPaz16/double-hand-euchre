@@ -46,6 +46,17 @@ SKIN_FAIR = (234, 202, 180, 255)   # the child's — pale enough that blonde hai
 # Still clearly not the Regular's SKIN_WARM, which leans ruddy at R-G 42; hers is 36, so the two
 # read as different people rather than the same complexion twice.
 SKIN_GOLDEN = (220, 184, 156, 255)
+# Her ARMS and shoulders, a step deeper than her face and deliberately still WARM.
+#
+# Measured off the reference: her lit cheek is ~(222,186,158) and her shoulder ~(210,172,140) —
+# so the face tone was already right and the BODY was the part that was wrong, carrying the
+# same value as the face and reading flat. Arms sit further from the key light than a face
+# turned toward it; that is form, not a tan line.
+#
+# Hand-picked rather than taken from `ramp()`, which is the whole point: the ramp's shadow step
+# collapses green-to-blue from 28 down to 15 and the arm goes grey-pink. Hers holds at 32 — it
+# gets darker without getting cooler, which is what skin actually does.
+SKIN_GOLDEN_BODY = (206, 168, 136, 255)
                                    # DARKER than the face it frames, which is what stops a
                                    # blonde head becoming one undifferentiated light mass.
                                    # Deliberately LESS saturated than SKIN: `ramp()` multiplies
@@ -1103,7 +1114,7 @@ class Avatar:
                  # --- face proportion --------------------------------------------------------
                  eye_dx=24, eye_w=8, eye_up=12, eye_dn=8, brow_dy=0, nose_w=4, nose_dy=0,
                  mouth_w=20, brow_colour=None, brow_h=8, accent=None, shadow_desat=0.0,
-                 lid="creased", brow_span=(20, -12), light=0.14,
+                 lid="creased", brow_span=(20, -12), light=0.14, body_skin=None,
                  smirk=False,
                  extras=()):
         self.key = key
@@ -1194,6 +1205,9 @@ class Avatar:
         # warmth gone, grey-mauve beside warm skin, with the seam running through the shoulder.
         # Skin shades by getting darker, not by getting grey.
         self.light = light
+        # Bare arms and shoulders, where they should not carry the face's own value. None means
+        # "same as the face", which is correct for anyone in sleeves.
+        self.body_skin = body_skin
         # Brows default to the hair colour, which is right for everyone whose hair is darker
         # than their face. It is wrong for the blonde child: a straw brow on a fair forehead is
         # invisible at 8px, and the brow is where three of the four expressions actually happen,
@@ -1268,11 +1282,11 @@ AVATARS = {
         # onto the fuller part of the face.
         eye_dx=26, eye_w=8, eye_up=10, eye_dn=6, brow_dy=-2, nose_w=3, nose_dy=16, mouth_w=16,
         brow_h=6, brow_span=(12, -10), accent=ROSE_RED, shadow_desat=0.30, smirk=True,
-        light=0.07,
+        light=0.07, body_skin=SKIN_GOLDEN_BODY,
         lean=4, hand_x=48,
         extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips", "beauty_mark",
                 "sheen", "earring", "ring", "low_bridge", "fringe", "tank", "jade_pendant",
-                "beading",
+                "beading", "warm_eyes",
                 "soft_lips"),
     ),
     # --- The Kid -------------------------------------------------------------------------
@@ -2208,6 +2222,14 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
                         fill=INK)
             d.rectangle((ex - av.eye_w, eye_y - av.eye_up, ex - av.eye_w + 4, eye_y - av.eye_up + 4),
                         fill=(255, 255, 255, 255))
+        if "warm_eyes" in av.extras and eye_expr not in ("happy", "blink"):
+            # A lifted lower lid. This is the single biggest warmth cue available on a face
+            # this size: a mouth that smiles while the eyes stay wide reads as polite at best
+            # and unsettling at worst, because a real smile moves the lower lid up. Four pixels
+            # of skin highlight sitting on the lid line does it — the eye gets shorter, which
+            # is what "the smile reached her eyes" looks like in pixels.
+            d.rectangle((ex - av.eye_w, eye_y + av.eye_dn - 4, ex + av.eye_w, eye_y + av.eye_dn),
+                        fill=skin_hi)
         # Eye socket shadow, so the eye sits IN the head rather than on it.
         d.rectangle((ex - av.eye_w - 4, eye_y + av.eye_dn, ex + av.eye_w + 4,
                      eye_y + av.eye_dn + 4), fill=skin_sh)
@@ -2398,6 +2420,20 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         d.polygon([(cx + hxx(14), hy - 70), (cx + hxx(38), hy - 60),
                    (cx + hxx(36), hy - 52), (cx + hxx(12), hy - 62)],
                   fill=_mix(av.hair, STEEL, 0.12))
+    if "cheek_warmth" in av.extras:
+        # Not a blush — a warmth, ONE step of it, high on the cheek where the light catches.
+        # Mixed from her own skin toward BLUSH at low strength so it reads as colour in the
+        # skin rather than as makeup on it.
+        #
+        # NOT currently used by anyone. It went in for the Card Sharp and came straight back
+        # out: with the deeper body tone also landing, the sprite hit 66 of 64. One of the two
+        # had to go, and the body tone is the one the reference actually demanded — her arms
+        # genuinely run deeper than her face, where the cheek warmth was a nicety. Kept here
+        # because the shape is right and the next character with budget should have it.
+        warm = _mix(av.skin, BLUSH, 0.2)
+        for side in (-1, 1):
+            x0, x1 = sorted((cx + side * 18, cx + side * 40))
+            d.rectangle((x0, hy + 6, x1, hy + 12), fill=warm)
     if "beading" in av.extras:
         # Back on the garment, because the texture was the part that worked — what failed was
         # putting it on the bust and shoulders, where 4px marks near bare skin read as blotches
