@@ -975,6 +975,9 @@ HAIR_BLACK = (26, 23, 38, 255)
 # pink is the one friendly note none of them occupy, and it reads casual where her old STEEL
 # wool coat read like formalwear.
 KNIT_ROSE = (198, 130, 126, 255)
+# Forest green, for her tank. Deliberately deeper and greener than the Kid's KNIT_TEAL, which
+# leans blue: side by side in the lineup two mid-greens would read as the same garment twice.
+FOREST = (54, 88, 62, 255)
                                   # BOOT_DARK brown it replaced — and so a sheen mixed off it
                                   # lands on slate rather than mud.
 HAIR_BLOND = (228, 190, 112, 255)  # straw, not GOLD: GOLD is the tin star and the spectacles,
@@ -1215,7 +1218,7 @@ AVATARS = {
     # side, a ring, and a sheen across the crown — glossy black hair is the whole point of her,
     # and flat black at this size is a hole in the sprite rather than hair.
     "card_sharp": Avatar(
-        "card_sharp", KNIT_ROSE, PARCHMENT, "none", KNIT_ROSE, KNIT_ROSE,
+        "card_sharp", FOREST, FOREST, "none", FOREST, FOREST,
         facial="none", hair=HAIR_BLACK, hair_style="bob", chest="none",
         soft_features=True, skin=SKIN_GOLDEN, lid="low",
         # 60x58, not 56x64. She was the only long oval in the cast and it read as exactly that
@@ -1234,7 +1237,7 @@ AVATARS = {
         brow_h=6, brow_span=(12, -10), accent=ROSE_RED, shadow_desat=0.30, smirk=True,
         lean=4, hand_x=48,
         extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips", "beauty_mark",
-                "sheen", "earring", "ring", "low_bridge", "fringe", "knit"),
+                "sheen", "earring", "ring", "low_bridge", "fringe", "tank", "necklace"),
     ),
     # --- The Kid -------------------------------------------------------------------------
     # A child is not a small adult, and the difference is entirely proportion, so this is the
@@ -1299,7 +1302,20 @@ DEFAULT_AVATAR = "old_timer"
 
 
 def _sleeve_tone(av):
-    """The sleeve has to be a step darker than anything the torso puts behind it."""
+    """The sleeve has to be a step darker than anything the torso puts behind it.
+
+    Unless there is no sleeve: bare arms are the whole point of a tank, and they take the
+    character's own skin. The edge that keeps the arm readable then comes from the garment
+    beside it rather than from a tone step, which is why the tank body runs out to +-74 — wide
+    enough that the arm always has cloth to sit against."""
+    if "tank" in av.extras:
+        # The SHADOW step of her skin, not the base. A bare arm drawn in the same flat tone as
+        # the bare shoulder above it has no edge at all, so shoulder, yoke and arm merged into
+        # one undifferentiated skin mass covering half the sprite. An arm sits slightly behind
+        # and beside the torso, so a step down is both the separation and the correct value —
+        # but only HALF a step. The full `ramp` shadow is (184,133,94) against a (212,172,132)
+        # face, and that much jump on bare skin reads as a tan line rather than as form.
+        return _mix(av.skin, ramp(av.skin)[2], 0.5)
     return ramp(av.coat)[3] if "knit" in av.extras else ramp(av.coat)[2]
 
 
@@ -1340,18 +1356,51 @@ def _avatar_parts(av):
         """Vertical distance scaled to this head's height."""
         return round(v * av.head_ry / 66)
 
-    parts = [
-        # Shoulders/chest, running off the bottom of the canvas — the felt crops it.
-        (_poly([
-            (OPP_CX - av.shoulder_x, sy + 74 + sdl), (OPP_CX - av.shoulder_in, sy + 52 + sdl // 2),
-            (OPP_CX + av.shoulder_in, sy + 52 + sdr // 2), (OPP_CX + av.shoulder_x, sy + 74 + sdr),
-            (OPP_CX + av.hem_x, OPP_H), (OPP_CX - av.hem_x, OPP_H),
-        ]), av.coat),
-        # A darker placket so the chest is not one flat red mass at this size.
-        (_poly([
-            (OPP_CX - 12, sy + 56), (OPP_CX + 12, sy + 56),
-            (OPP_CX + 16, OPP_H), (OPP_CX - 16, OPP_H),
-        ]), av.placket),
+    # The torso silhouette is the same shape whatever is worn on it; what changes is how much
+    # of it is GARMENT and how much is the person. A sleeved coat is the whole polygon in cloth
+    # with a placket down it; a tank is the same polygon in SKIN, with the garment laid on top.
+    torso = _poly([
+        (OPP_CX - av.shoulder_x, sy + 74 + sdl), (OPP_CX - av.shoulder_in, sy + 52 + sdl // 2),
+        (OPP_CX + av.shoulder_in, sy + 52 + sdr // 2), (OPP_CX + av.shoulder_x, sy + 74 + sdr),
+        (OPP_CX + av.hem_x, OPP_H), (OPP_CX - av.hem_x, OPP_H),
+    ])
+    if "tank" in av.extras:
+        # The torso stays GARMENT and a bare YOKE is laid over the top of it — not the other
+        # way round. Drawing the whole torso in skin and setting the tank on top left the
+        # sides bare all the way down, because the arms are skin too on a tank, so torso and
+        # arms merged into one undifferentiated skin mass from shoulder to hem: it read as a
+        # woman wearing almost nothing rather than as a woman in a vest. Garment underneath,
+        # skin only where skin actually shows.
+        parts = [
+            (torso, av.coat),
+            (_poly([
+                (OPP_CX - av.shoulder_x, sy + 74 + sdl),
+                (OPP_CX - av.shoulder_in, sy + 52 + sdl // 2),
+                (OPP_CX + av.shoulder_in, sy + 52 + sdr // 2),
+                (OPP_CX + av.shoulder_x, sy + 74 + sdr),
+                (OPP_CX + 70, sy + 92), (OPP_CX + 40, sy + 74), (OPP_CX + 14, sy + 88),
+                (OPP_CX - 14, sy + 88), (OPP_CX - 40, sy + 74), (OPP_CX - 70, sy + 92),
+            ]), av.skin),
+            # Straps over each shoulder. Narrow — 12px — because a wide strap is a t-shirt.
+            (_poly([
+                (OPP_CX - 52, sy + 52), (OPP_CX - 32, sy + 52),
+                (OPP_CX - 28, sy + 90), (OPP_CX - 48, sy + 90),
+            ]), av.coat),
+            (_poly([
+                (OPP_CX + 32, sy + 52), (OPP_CX + 52, sy + 52),
+                (OPP_CX + 48, sy + 90), (OPP_CX + 28, sy + 90),
+            ]), av.coat),
+        ]
+    else:
+        parts = [
+            (torso, av.coat),
+            # A darker placket so the chest is not one flat red mass at this size.
+            (_poly([
+                (OPP_CX - 12, sy + 56), (OPP_CX + 12, sy + 56),
+                (OPP_CX + 16, OPP_H), (OPP_CX - 16, OPP_H),
+            ]), av.placket),
+        ]
+    parts += [
         # A small tin star pinned to the chest (creative-direction pass). Sits left of the
         # placket (clear by 18+ file px / 9+ au) and well clear of both arm/hand shapes, which
         # start no closer than x=OPP_CX-44 at any y — this star's x=OPP_CX-34 never reaches
@@ -2195,6 +2244,12 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         d.polygon([(cx + hxx(14), hy - 70), (cx + hxx(38), hy - 60),
                    (cx + hxx(36), hy - 52), (cx + hxx(12), hy - 62)],
                   fill=_mix(av.hair, STEEL, 0.12))
+    if "necklace" in av.extras:
+        # A thin chain with a single bead, sitting in the hollow of the throat above the
+        # neckline. Four pixels of gold: the brooch and watch chain she used to wear were
+        # formal, and a bare neck over a tank looked unfinished without something on it.
+        d.rectangle((OPP_CX - 12, sy + 62, OPP_CX + 12, sy + 64), fill=_mix(GOLD, av.skin, 0.4))
+        d.rectangle((OPP_CX - 4, sy + 64, OPP_CX + 4, sy + 70), fill=GOLD)
     if "earring" in av.extras:
         # A gold drop, on the lit side only. Two jobs: it is the one asymmetric mark on an
         # otherwise perfectly mirrored face (without it she reads as a mannequin), and gold on
