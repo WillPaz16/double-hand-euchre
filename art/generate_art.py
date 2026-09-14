@@ -1238,7 +1238,8 @@ AVATARS = {
         brow_h=6, brow_span=(12, -10), accent=ROSE_RED, shadow_desat=0.30, smirk=True,
         lean=4, hand_x=48,
         extras=("cheekbone", "soft_nose", "philtrum", "lashes", "lips", "beauty_mark",
-                "sheen", "earring", "ring", "low_bridge", "fringe", "knit", "crew_neck"),
+                "sheen", "earring", "ring", "low_bridge", "fringe", "knit", "crew_neck",
+                "soft_lips"),
     ),
     # --- The Kid -------------------------------------------------------------------------
     # A child is not a small adult, and the difference is entirely proportion, so this is the
@@ -1606,8 +1607,25 @@ def _avatar_parts(av):
             # styling: straight inner edges leave a wedge between hair, neck and shoulder that
             # renders as a sealed hole, which this file has now shipped three times and caught
             # here a fourth by running the check.
+            # One length falls OVER the shoulder and the other goes BEHIND it.
+            #
+            # The behind side is done by ENDING the shape at the shoulder line, not by pushing
+            # it earlier in the draw order. Inserting it before the torso does make the shoulder
+            # occlude it — but `parts` is one list and the HEAD is drawn late, so it went behind
+            # the head as well and took the hair away from the side of her face, leaving a bare
+            # band of cheek out to where the hair restarted. Hair that stops where the shoulder
+            # begins reads as falling behind it and still frames the face.
+            #
+            # Why bother: two lengths laid symmetrically over the front of both shoulders is
+            # the most static way hair can sit. Real hair picks a side. It also gives her the
+            # only asymmetry she has, on a character whose posture is deliberately symmetrical
+            # — a small one, in the hair alone, reads as life rather than as a lean.
             for side in (-1, 1):
-                parts.append((_poly([
+                over = side == -1
+                # The behind side sweeps WIDER before it disappears: it has only the few rows
+                # above the shoulder line to say anything, so the flare has to happen there.
+                flare = hx(86) if over else hx(96)
+                length = _poly([
                     (cx + side * hx(66), hy - vy(44)), (cx + side * hx(46), hy - vy(48)),
                     (cx + side * hx(46), hy + vy(24)),
                     (cx + side * hx(34), hy + vy(56)),
@@ -1615,12 +1633,13 @@ def _avatar_parts(av):
                     # inner edge passed about 11px outboard of the neck for two rows just above
                     # the shoulder line and left an 8px sealed hole — found by the check, not by
                     # looking, for the fourth time on this cast.
-                    (cx + side * hx(24), hy + vy(66)),
-                    (cx + side * hx(42), hy + vy(88) + av.lean),
-                    (cx + side * hx(70), hy + vy(82) + av.lean),
-                    (cx + side * hx(86), hy + vy(34)),
+                    (cx + side * hx(24), hy + vy(66 if over else 58)),
+                    (cx + side * hx(42), hy + vy(88 if over else 60) + av.lean),
+                    (cx + side * hx(70), hy + vy(82 if over else 58) + av.lean),
+                    (cx + side * flare, hy + vy(34)),
                     (cx + side * hx(80), hy - vy(6)),
-                ]), av.hair))
+                ])
+                parts.append((length, av.hair))
         elif av.hair_style == "plaits":
             # ROUND 2 MERGE, from Designer A, replacing my round bunches. A's plait is three
             # segments per side, each shorter and narrower than the last, stepping down and
@@ -2113,7 +2132,22 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
         # bar, mixed further back toward the skin, is what a closed mouth is at this size.
         # Confirmed by the one face in either designer's round 3 that did NOT have the problem:
         # a flat wide bar reading as a closed, serious line.
-        if "lips" in av.extras:
+        if "soft_lips" in av.extras:
+            # Two rows of EQUAL width, upper darker and lower lighter, rather than a wide dark
+            # bar with a narrower bright one tucked under it. The old build was a wedge: the
+            # darkened top row ran to +-12 and the lip-coloured row only to +-8, so what read
+            # first was a heavy horizontal line with a red smudge below it, not a mouth.
+            #
+            # Equal widths let the two rows read as upper and lower lip, and the value step
+            # between them does the work the width step was doing badly. Softer at both ends
+            # too: 0.3 toward INK rather than 0.4, and the lower lip lifted toward the skin
+            # highlight instead of sitting at full accent, because full-strength lip colour on
+            # a face this size is the loudest thing on it.
+            d.rectangle((cx - mw + 6, my, cx + mw - 6, my + 4), fill=_mix(lip, INK, 0.3))
+            d.rectangle((cx - mw + 6, my + 4, cx + mw - 6, my + 8),
+                        fill=_mix(lip, skin_hi, 0.3))
+            d.rectangle((cx - 6, my + 4, cx + 2, my + 8), fill=_mix(lip, skin_hi, 0.55))
+        elif "lips" in av.extras:
             d.rectangle((cx - mw + 4, my, cx + mw - 4, my + 4),
                         fill=_mix(lip, INK, 0.4))
             d.rectangle((cx - mw + 8, my + 4, cx + mw - 8, my + 8), fill=lip)
