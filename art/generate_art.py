@@ -970,6 +970,11 @@ HAT_FUR = (232, 216, 184, 255)    # warmer cream, homestead sheepskin rather tha
 # at all. What is left is a warm highlight on dark hair, which is what firelight actually does.
 # She is the only user of this constant, so nobody else's sprite moves.
 HAIR_BLACK = (26, 23, 38, 255)
+# Her jumper. Warm dusty rose, chosen against the cast rather than in isolation: the Old-Timer
+# is barn red, the Kid teal, the Regular denim blue, and the room is warm browns. A soft warm
+# pink is the one friendly note none of them occupy, and it reads casual where her old STEEL
+# wool coat read like formalwear.
+KNIT_ROSE = (198, 130, 126, 255)
                                   # BOOT_DARK brown it replaced — and so a sheen mixed off it
                                   # lands on slate rather than mud.
 HAIR_BLOND = (228, 190, 112, 255)  # straw, not GOLD: GOLD is the tin star and the spectacles,
@@ -1072,7 +1077,7 @@ class Avatar:
                  # --- face proportion --------------------------------------------------------
                  eye_dx=24, eye_w=8, eye_up=12, eye_dn=8, brow_dy=0, nose_w=4, nose_dy=0,
                  mouth_w=20, brow_colour=None, brow_h=8, accent=None, shadow_desat=0.0,
-                 lid="creased",
+                 lid="creased", brow_span=(20, -12),
                  smirk=False,
                  extras=()):
         self.key = key
@@ -1152,6 +1157,10 @@ class Avatar:
         # REMOVE that pad, not to add anything — and never by tilting the eye, which is the
         # caricature and reads as one instantly at this size.
         self.lid = lid
+        # Outer and inner reach of the brow, measured from `eye_dx`. The default (20,-12) is a
+        # 32px bar, authored on the Old-Timer and fine under his spectacles. On a bare wider
+        # face it is a long severe stroke that dominates everything else.
+        self.brow_span = brow_span
         # Brows default to the hair colour, which is right for everyone whose hair is darker
         # than their face. It is wrong for the blonde child: a straw brow on a fair forehead is
         # invisible at 8px, and the brow is where three of the four expressions actually happen,
@@ -1206,16 +1215,21 @@ AVATARS = {
     # side, a ring, and a sheen across the crown — glossy black hair is the whole point of her,
     # and flat black at this size is a hole in the sprite rather than hair.
     "card_sharp": Avatar(
-        "card_sharp", STEEL, BOOT_DARK, "none", STEEL, STEEL,
-        facial="none", hair=HAIR_BLACK, hair_style="long", chest="chain",
+        "card_sharp", KNIT_ROSE, PARCHMENT, "none", KNIT_ROSE, KNIT_ROSE,
+        facial="none", hair=HAIR_BLACK, hair_style="bob", chest="none",
         soft_features=True, skin=SKIN_GOLDEN, lid="low",
-        head_rx=56, head_ry=64, head_dy=-8, neck_w=20, shoulder_x=84, shoulder_in=54,
+        # 60x58, not 56x64. She was the only long oval in the cast and it read as exactly that
+        # — a long face. Rounder, and slightly wider than the head she had, which also gives
+        # her features room they did not have at rx 56. Still taller than wide, so she does not
+        # drift toward the Kid's head-wider-than-tall child proportion; the shoulder width
+        # (84 against the Kid's 74) keeps them apart regardless.
+        head_rx=60, head_ry=58, head_dy=-8, neck_w=20, shoulder_x=84, shoulder_in=54,
         hem_x=100, arm_x=106,
-        eye_dx=26, eye_w=8, eye_up=10, eye_dn=6, brow_dy=-2, nose_w=3, nose_dy=-2, mouth_w=16,
-        brow_h=6, accent=ROSE_RED, shadow_desat=0.30, smirk=True,
+        eye_dx=26, eye_w=8, eye_up=10, eye_dn=6, brow_dy=-2, nose_w=4, nose_dy=0, mouth_w=16,
+        brow_h=6, brow_span=(12, -10), accent=ROSE_RED, shadow_desat=0.30, smirk=True,
         lean=4, hand_x=48,
         extras=("cheekbone", "nostrils", "philtrum", "lashes", "lips", "beauty_mark",
-                "sheen", "earring", "garters", "brooch", "ring", "low_bridge", "fringe"),
+                "sheen", "earring", "ring", "low_bridge", "fringe", "knit", "nose_tip"),
     ),
     # --- The Kid -------------------------------------------------------------------------
     # A child is not a small adult, and the difference is entirely proportion, so this is the
@@ -1434,7 +1448,9 @@ def _avatar_parts(av):
     # Old-Timer has neither hair nor ears here, so this block emits nothing for him and his
     # part order is exactly what it was.)
     if av.hair is not None and av.hair_style in ("long", "plaits"):
-        halo = 14 if av.hair_style == "long" else 10
+        # A bob gets only a thin halo: the rim behind the skull is what gives LOOSE hair its
+        # volume, and too much of it under a blunt cut just makes the cut look untidy.
+        halo = 14 if av.hair_style == "long" else (6 if av.hair_style == "bob" else 10)
         # The bottom of the halo runs to the SHOULDER (it carries `av.lean`), not to a fixed
         # offset under the jaw. Under the plaits it is the only thing spanning the gap between
         # the cheek and the first plait segment, and once the Kid's shoulders came up around a
@@ -1547,6 +1563,36 @@ def _avatar_parts(av):
                 parts.append((_poly([
                     (outer, hy - vy(40)), (inner, hy - vy(46)), (inner, hy + vy(50)),
                     (inner_low, hy + vy(84) + av.lean), (outer, hy + vy(66) + av.lean),
+                ]), av.hair))
+        elif av.hair_style == "bob":
+            # A blunt bob to the jaw. This started as a ponytail and the ponytail did not work,
+            # for a reason worth writing down rather than re-attempting: the tail of a ponytail
+            # goes BEHIND the head, and this is a head-and-shoulders crop with no behind. What
+            # rendered was a dark mass down one side, which reads as loose hair — the exact
+            # thing the gather was supposed to replace — plus an asymmetry that looked like an
+            # accident rather than a style.
+            #
+            # A bob has its whole shape in the front plane, so it survives the crop. It is also
+            # symmetric, which is its own argument here: she is the one character in the cast
+            # whose posture is deliberately symmetrical (stillness is her poise), and a
+            # lopsided haircut was quietly fighting that.
+            parts.append((_poly([
+                (cx - hx(64), hy - vy(22)), (cx - hx(62), hy - vy(62)),
+                (cx - hx(8), hy - vy(78)), (cx + hx(58), hy - vy(64)),
+                (cx + hx(64), hy - vy(18)),
+                (cx + hx(48), hy - vy(40)), (cx, hy - vy(58)),
+                (cx - hx(54), hy - vy(46)),
+            ]), av.hair))
+            # The sides, falling to a level cut at the jaw. Blunt, not tapered: a hard
+            # horizontal is the only way to say "cut in a line" on a 4px grid, and it is what
+            # separates a bob from hair that merely stops.
+            for side in (-1, 1):
+                outer = cx + side * hx(72)
+                inner = cx + side * hx(46)
+                parts.append((_poly([
+                    (outer, hy - vy(42)), (inner, hy - vy(48)),
+                    (inner, hy + vy(26)), (cx + side * hx(52), hy + vy(44)),
+                    (outer, hy + vy(44)),
                 ]), av.hair))
         elif av.hair_style == "plaits":
             # ROUND 2 MERGE, from Designer A, replacing my round bunches. A's plait is three
@@ -1893,6 +1939,12 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     nose_top = eye_y + 2 if "low_bridge" in av.extras else eye_y - 8
     d.rectangle((cx - av.nose_w, nose_top, cx + av.nose_w, nb), fill=skin_hi)
     d.rectangle((cx + av.nose_w, max(eye_y - 4, nose_top), cx + av.nose_w + 8, nb), fill=skin_sh)
+    if "nose_tip" in av.extras:
+        # A lit bead on the tip, under the ridge and above the nostrils. With a low bridge the
+        # ridge is short by design, so without this the nose is two nostril dots and nothing
+        # else — present, but not a shape, which is the "eh whatever" it was reported as. Four
+        # pixels of highlight is what turns a mark into a tip.
+        d.rectangle((cx - av.nose_w + 1, nb - 6, cx + av.nose_w - 1, nb - 2), fill=skin_hi)
     if "nostrils" in av.extras:
         # A nostril each side of the tip rather than one dark bar under it. The bar was the
         # whole nose at this size — the client's "the nose barely registers" — because a bar
@@ -1952,7 +2004,8 @@ def draw_avatar_face(img: Image.Image, expression: str, av) -> None:
     brow = BEARD_GRAY if av.age_lines else (av.brow_colour or av.hair or av.facial_colour)
     by = eye_y - 24
     for side in (-1, 1):
-        x_out, x_in = cx + side * (av.eye_dx + 20), cx + side * (av.eye_dx - 12)
+        x_out = cx + side * (av.eye_dx + av.brow_span[0])
+        x_in = cx + side * (av.eye_dx + av.brow_span[1])
         if expression == "rueful":
             d.line((x_out, by - 8, x_in, by + 4), fill=brow, width=av.brow_h)
         elif expression == "happy":
