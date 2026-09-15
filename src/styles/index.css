@@ -1264,15 +1264,251 @@ body {
     display: block;
   }
 }
-/* Safe zone for the text/button column: rather than chase the fireplace and window's own
-   corner placement across every breakpoint, give the column a backdrop so whatever scene
-   geometry lands behind it never has to be collision-checked against it. */
-.title-scene .title-screen {
-  max-width: 26rem;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-  background: rgba(20, 14, 9, 0.55);
-  box-shadow: 0 0 40px 40px rgba(20, 14, 9, 0.55);
+/* The sign hangs on the painting's nail: at every width where the farm painting shows, it sits
+   exactly where the sign does and was left half-covered. It stays in the in-game room. */
+.title-scene-landing .scene-farm-painting {
+  display: none;
+}
+
+/* --- Title screen: the sign and the plates ----------------------------------------------
+   The title and menu are OBJECTS in the room, not text over a darkened smudge. The old safe
+   zone (a translucent box with a 40px blurred shadow) kept scenery from fighting the text but
+   read as a dirty lens over the art. A solid, outlined object is legible over anything behind
+   it at every viewport, and looks like it belongs to the cabin while doing it.
+
+   `--u` is one UI pixel: 2px at --px 1, 4px at --px 2 — the same step the scene art is drawn
+   in, so the sign's notched corners and bevels line up with the bricks and boards behind it.
+   Notched corners are four hard box-shadows (one per edge) with the corner pixel left out. */
+.title-scene .title-landing {
+  --u: calc(2px * var(--px));
+  --ink: #1c120b;
+  gap: calc(var(--u) * 10);
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+}
+
+.title-sign {
+  position: relative;
+  max-width: 100%;
+  padding: calc(var(--u) * 9) calc(var(--u) * 10) calc(var(--u) * 10);
+  /* Planks: 11 UI px of board, 1 of seam. Hard stops only — no gradient ramp in pixel art. */
+  background: repeating-linear-gradient(
+    to bottom,
+    #634326 0 calc(var(--u) * 11),
+    #3e2916 calc(var(--u) * 11) calc(var(--u) * 12)
+  );
+  box-shadow:
+    inset 0 var(--u) 0 #84603a,
+    var(--u) 0 0 var(--ink),
+    calc(var(--u) * -1) 0 0 var(--ink),
+    0 var(--u) 0 var(--ink),
+    0 calc(var(--u) * -1) 0 var(--ink),
+    0 calc(var(--u) * 4) 0 rgba(20, 12, 6, 0.45);
+}
+/* Two brass nails holding the sign up. */
+.title-sign::before,
+.title-sign::after {
+  content: '';
+  position: absolute;
+  top: calc(var(--u) * 3);
+  width: calc(var(--u) * 2);
+  height: calc(var(--u) * 2);
+  background: #e2bf62;
+  box-shadow: 0 var(--u) 0 #3a2415;
+}
+.title-sign::before { left: calc(var(--u) * 3); }
+.title-sign::after { right: calc(var(--u) * 3); }
+
+.title-sign-heading {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--u) * 3);
+  font-weight: 700;
+  line-height: 1;
+}
+.title-sign-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 3);
+  font-size: calc(16px * var(--px));
+  letter-spacing: 0.08em;
+  color: #f0e6d6;
+  text-shadow: 0 var(--u) 0 var(--ink);
+}
+/* Silkscreen is drawn on an 8px grid; multiples of 8 keep its strokes whole. */
+.title-sign-word {
+  font-size: calc(40px * var(--px));
+  color: #ffd54a;
+  /* Gilt letters: a one-pixel darker gold step, then the ink shadow — an extrusion, not a blur.
+     The soft glow on top is the fire catching them; it flickers on the fire's own stepped beat. */
+  text-shadow:
+    0 var(--u) 0 #c7901f,
+    0 calc(var(--u) * 2) 0 var(--ink),
+    0 0 calc(var(--u) * 10) rgba(255, 170, 60, 0.35);
+  animation: title-firelight 2.4s steps(1, end) infinite;
+}
+@keyframes title-firelight {
+  0%, 100% {
+    text-shadow:
+      0 var(--u) 0 #c7901f,
+      0 calc(var(--u) * 2) 0 var(--ink),
+      0 0 calc(var(--u) * 10) rgba(255, 170, 60, 0.35);
+  }
+  35% {
+    text-shadow:
+      0 var(--u) 0 #c7901f,
+      0 calc(var(--u) * 2) 0 var(--ink),
+      0 0 calc(var(--u) * 12) rgba(255, 170, 60, 0.5);
+  }
+  60% {
+    text-shadow:
+      0 var(--u) 0 #c7901f,
+      0 calc(var(--u) * 2) 0 var(--ink),
+      0 0 calc(var(--u) * 9) rgba(255, 170, 60, 0.26);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-sign-word { animation: none; }
+}
+.title-pip {
+  flex: none;
+  width: calc(24px * var(--px));
+  height: calc(24px * var(--px));
+  background: url('/art/suits/hearts.png') 0 0 / calc(24px * var(--px)) no-repeat;
+  image-rendering: pixelated;
+  /* A one-UI-pixel cream rim, like a pip cut from a card — the black spade vanished into the
+     dark planks without it. Zero-blur drop-shadows stay hard-edged. */
+  filter: drop-shadow(var(--u) 0 0 #f0e6d6) drop-shadow(calc(var(--u) * -1) 0 0 #f0e6d6)
+    drop-shadow(0 var(--u) 0 #f0e6d6) drop-shadow(0 calc(var(--u) * -1) 0 #f0e6d6);
+}
+.title-pip-spades { background-image: url('/art/suits/spades.png'); }
+
+.title-sign-tagline {
+  margin: calc(var(--u) * 5) auto 0;
+  max-width: 30ch;
+  font-size: calc(6px * var(--px) + 6px);
+  line-height: 1.6;
+  color: #ead9b4;
+  text-shadow: 0 var(--u) 0 var(--ink);
+}
+
+.title-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: calc(var(--u) * 5);
+  width: min(100%, 15em);
+  font-size: calc(8px * var(--px) + 8px);
+}
+.title-plate {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: max(48px, 3em);
+  padding: 0 1em;
+  font: inherit;
+  letter-spacing: 0.06em;
+  color: #ffd54a;
+  background: #3a2a1a;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  --lip: rgba(20, 12, 6, 0.5);
+  --bevel-hi: #5c432b;
+  --bevel-lo: #24180e;
+  box-shadow:
+    inset 0 var(--u) 0 var(--bevel-hi),
+    inset 0 calc(var(--u) * -2) 0 var(--bevel-lo),
+    var(--u) 0 0 var(--ink),
+    calc(var(--u) * -1) 0 0 var(--ink),
+    0 var(--u) 0 var(--ink),
+    0 calc(var(--u) * -1) 0 var(--ink),
+    0 calc(var(--u) * 3) 0 var(--lip);
+}
+@media (hover: hover) {
+  .title-plate:hover { background: #4a3524; }
+  .title-plate-gold:hover { background: #ffe27a; }
+  .title-plate-ember:hover { background: #d65f34; }
+}
+/* Pressed: the plate drops onto its own shadow. */
+.title-plate:active {
+  transform: translateY(calc(var(--u) * 2));
+  --lip: transparent;
+}
+.title-plate:focus-visible {
+  outline: var(--u) solid #fff3c4;
+  outline-offset: calc(var(--u) * 3);
+}
+.title-plate-gold {
+  color: #3a2415;
+  background: #ffd54a;
+  --bevel-hi: #fff0a8;
+  --bevel-lo: #c7901f;
+}
+.title-plate-ember {
+  color: #fff0d8;
+  background: #c4502a;
+  --bevel-hi: #e8804c;
+  --bevel-lo: #7e2e16;
+}
+.title-plate-quiet {
+  align-self: center;
+  min-height: 44px;
+  margin-top: calc(var(--u) * 2);
+  font-size: 0.7em;
+  color: #e8c877;
+  background: rgba(28, 18, 11, 0.8);
+  --bevel-hi: transparent;
+  --bevel-lo: transparent;
+}
+.title-gear {
+  flex: none;
+  width: calc(16px * var(--px));
+  height: calc(16px * var(--px));
+  background: url('/art/gear.png') 0 0 / calc(16px * var(--px)) no-repeat;
+  image-rendering: pixelated;
+}
+.title-confirm-note {
+  margin: 0 0 calc(var(--u) * 2);
+  padding: 0.8em 1em;
+  font-size: 0.7em;
+  line-height: 1.6;
+  color: #ffe6c8;
+  background: #2a1a10;
+  box-shadow:
+    var(--u) 0 0 #c4502a,
+    calc(var(--u) * -1) 0 0 #c4502a,
+    0 var(--u) 0 #c4502a,
+    0 calc(var(--u) * -1) 0 #c4502a;
+}
+
+/* Narrow desktops at --px 2: the wall props are drawn at full size but the wall between them is
+   short, so the sign would hang over the clock and picture. The word steps down one Silkscreen
+   grid size first; below that there is no room left, so the prop the sign would cover goes. */
+@media (min-width: 900px) and (min-height: 700px) and (max-width: 1299px) {
+  .title-sign-word { font-size: 64px; }
+  .title-sign-kicker { font-size: 24px; }
+}
+@media (min-width: 900px) and (min-height: 700px) and (max-width: 1269px) {
+  .title-scene-landing .scene-clock { display: none; }
+}
+@media (min-width: 900px) and (min-height: 700px) and (max-width: 1019px) {
+  .title-scene-landing .scene-picture { display: none; }
+}
+
+/* Landscape phone: the scene is already gone (lean mode) and height is the scarce axis, so the
+   sign and the menu sit side by side instead of stacked. */
+@media (max-height: 480px) and (min-width: 560px) {
+  .title-scene .title-landing {
+    flex-direction: row;
+    gap: 2rem;
+  }
+  .title-sign-word { font-size: 40px; }
+  .title-menu { width: min(45%, 15em); }
 }
 
 /* --- Title screen (Phase 2e.9) ---------------------------------------------------------- */
