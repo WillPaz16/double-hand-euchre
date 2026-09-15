@@ -74,10 +74,10 @@ export function TitleScreen({
         {confirmingNewGame ? (
           <div className="title-menu title-menu-confirm" role="group" aria-labelledby="title-confirm-note">
             <p id="title-confirm-note" className="title-confirm-note">
-              Starting a new game gives up the one in progress.
+              Give up the game in progress?
             </p>
             <button className="title-plate title-plate-ember" onClick={onPlay}>
-              Yes, start over
+              Start over
             </button>
             <button ref={backRef} className="title-plate" onClick={() => swap(false)}>
               Back

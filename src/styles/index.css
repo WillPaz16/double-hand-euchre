@@ -1334,6 +1334,9 @@ body {
 .title-sign-word {
   display: inline-flex;
   align-items: center;
+  /* Never break "DOUBLE-HAND" at its hyphen: a squeezed column wrapped it to "DOUBLE- / HAND".
+     Sizes below are chosen so the sign fits instead. */
+  white-space: nowrap;
   gap: calc(var(--u) * 3);
   font-size: 32px;
   color: #ffd54a;
@@ -1507,15 +1510,42 @@ body {
     padding-right: calc(98px * var(--px));
   }
 }
+/* On desktop the column's right boundary is the DRESSER, not the window. The dresser's left edge
+   (`right:-8 + width:144` = 136au from the right) sticks out 38au further than the window's, and
+   it stands at exactly the height where the plates and the sign's lower corner sit. Centred on
+   the window edge, the plates overlapped it by 10px at 1280x800 and 14px at 1272x888, and the
+   sign clipped its top corner by 45-50px. Phone-scale widths (740-899px) keep the window edge:
+   nothing collides there, and the narrower wall would no longer fit the sign. */
+@media (min-width: 1272px) and (min-height: 481px) {
+  .title-scene .title-landing {
+    padding-right: calc(136px * var(--px));
+  }
+}
+/* 900-1023px centres the column on the viewport, and the full 360px menu reached the dresser's
+   edge by 2px at 900x720. One step narrower clears it. */
+@media (min-width: 900px) and (max-width: 1023px) and (min-height: 700px) {
+  .title-menu { width: 336px; }
+}
 /* Where that wall is only just wider than the sign (px 2, under 1440px) the type steps down one
    Silkscreen grid size, keeping the same ratio. Still multiples of 8. */
-@media (min-width: 900px) and (min-height: 700px) and (max-width: 1439px) {
+@media (min-width: 900px) and (min-height: 700px) and (max-width: 1545px) {
   .title-sign-word { font-size: 40px; }
 }
-/* Large (px 2, 1440px+): two 56px lines take exactly the height the old 32 + 80 pair did, so the
-   painting clearance below is unchanged. */
-@media (min-width: 1440px) and (min-height: 700px) {
+/* Large (px 2, 1546px+): two 56px lines take exactly the height the old 32 + 80 pair did, so the
+   painting clearance below is unchanged. Starts at 1546, not 1440: the 56px sign is 589px wide,
+   and the wall between chimney (296au) and dresser (136au) only clears that with an 8px margin
+   from 1546px — below it the sign clipped the dresser's corner (45px at 1440x900). */
+@media (min-width: 1546px) and (min-height: 700px) {
   .title-sign-word { font-size: 56px; }
+}
+/* 32px where even the 40px sign (439px wide) collides:
+   - 900-1023px, centred on the viewport: its right edge (W/2 + 219) passed the dresser's left edge
+     (W - 272), covering the dresser's top at 900x720.
+   - 1272-1394px, centred on the chimney-to-dresser wall: that wall is only 408-530px wide, so the
+     sign wrapped "DOUBLE-HAND" or clipped the dresser. The 364px sign fits with room either side. */
+@media (min-width: 900px) and (max-width: 1023px) and (min-height: 700px),
+  (min-width: 1272px) and (max-width: 1394px) and (min-height: 700px) {
+  .title-sign-word { font-size: 32px; }
 }
 /* Very narrow phones: 32px "DOUBLE-HAND" (300px) plus the sign's padding overflows under 360px. */
 @media (max-width: 359px) {
