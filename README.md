@@ -2,50 +2,161 @@
 
 *The euchre you know and love, but you only have one friend.*
 
-Not to be confused with "two-handed euchre", which is the established name for a different
-game: two players, one hand each ([Euchre variants](https://en.wikipedia.org/wiki/Euchre_variants)).
-Here each player plays **both** hands of a partnership.
+[![CI](https://github.com/WillPaz16/two-handed-euchre/actions/workflows/ci.yml/badge.svg)](https://github.com/WillPaz16/two-handed-euchre/actions/workflows/ci.yml)
 
-A two-player variant of euchre that we invented, built as a web app so we can play it
-together — with a future single-player mode against a bot trained via self-play.
+**▶ Play it: [doublehand.willpaz16.workers.dev](https://doublehand.willpaz16.workers.dev)**, solo against a bot or online with a friend.
 
-Each player controls two hands (dealt blind, selected before either is seen), which
-structurally makes this 4-handed euchre where one player plays both seats of each
-"partnership." Full mechanics, including the escalating loner ladder, are in
-[RULES.md](RULES.md).
+A pixel-art cabin, a crackling fire, and a variant of euchre we invented so two people can play
+the four-handed game. Each of you plays **both** hands of a partnership: one you picked without
+looking, and one you only see when it's that hand's turn.
 
-## Status
+![Bidding against the Old-Timer](docs/screenshots/bidding.png)
 
-- **Phase 0 — Rules spec:** done. See [RULES.md](RULES.md).
-- **Phase 1 — Headless rules engine:** done. Pure TypeScript engine in `shared/engine/`,
-  covered by a Vitest suite and a 10,000-deal fuzz test.
-- **Phase 2 — Single-player UI, deployed:** not started.
+## How it plays
 
-The full architecture and phase roadmap live in the project's Claude plan file (not
-tracked in this repo). Deploy and local-development instructions are in [DEPLOY.md](DEPLOY.md).
+Standard 24-card euchre, first to 10, with two twists that change everything:
 
-## Repo layout
+- **You play both seats of your partnership.** Four hands are dealt, two each. Every trick has
+  four cards, and two of them are yours.
+- **You pick your hand blind.** Before anyone looks, you choose which of your two hands to pick
+  up. You see the other one only on its own turn, never both at once, so you're juggling two
+  hands from memory.
+- **A loner ladder that rewards nerve.** Go alone the normal way for 4 points, or, as optional
+  house rules, commit *before* looking at your hand (6) or before even seeing trump (8).
 
+The [established two-handed variants](https://en.wikipedia.org/wiki/Euchre_variants) deal one
+playable hand per player, so this isn't one of them. The full spec is in [RULES.md](RULES.md).
+
+## Features
+
+- **Solo play** against a heuristic bot with a face: expressions and speech bubbles that react to
+  how the hand is going, and four characters to choose from.
+- **Online multiplayer** by four-letter room code, with reconnect-to-your-seat, typed chat that
+  pops up in your opponent's speech bubble, and a turn indicator while you wait.
+- **Rules you agree on.** If your settings differ, both players choose before the first deal.
+  A mid-game rule change is a proposal the other player accepts, and it starts next hand.
+- **Installable and offline.** It's a PWA: add it to a home screen, and solo play works with no
+  network.
+- **Every screen size**, from a 300px phone to an ultrawide monitor, with whole-pixel art scaling.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/play.png" alt="A trick in play"></td>
+    <td width="50%"><img src="docs/screenshots/multiplayer.png" alt="Online multiplayer with chat"></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/title.png" alt="Title screen"></td>
+    <td width="50%" align="center"><img src="docs/screenshots/mobile.png" alt="Phone layout" height="400"></td>
+  </tr>
+</table>
+
+## How it's built
+
+```mermaid
+flowchart LR
+    subgraph Browser
+        UI["React UI<br/>(src/)"]
+        Engine1["Rules engine<br/>(shared/engine)"]
+        UI -- solo --> Engine1
+    end
+    subgraph Cloudflare["Cloudflare edge"]
+        Worker["Worker<br/>assets + routing"]
+        DO["Durable Object<br/>one per room code"]
+        Engine2["Rules engine<br/>(shared/engine)"]
+        Worker -- "/ws?code=XXXX" --> DO
+        DO --> Engine2
+    end
+    UI -- "WebSocket (online)" --> Worker
 ```
-RULES.md            canonical rules spec
-shared/engine/       pure TS rules engine (types, deck, rules, reducer, legal, view)
-tests/                Vitest suite
-scripts/fuzz.ts       10k-random-deal robustness check
-graphify-out/         generated knowledge graph of this codebase (see below)
-```
 
-## Running the engine
+**One rules engine, two homes.** `shared/engine` is a pure TypeScript reducer with no DOM and no
+network, seeded so every deal is reproducible. Solo play runs it in the browser; online play runs
+the *same code* on the server, so the two modes can't disagree about the rules.
+
+**The server is authoritative.** Clients send intentions. The room checks each one against the
+engine's legal moves for *that connection's* seat, and sends every player a view redacted for
+their eyes only. A modified client can't see hidden cards or play out of turn, because the move
+simply isn't in its legal list.
+
+**One Durable Object per room.** The room code *is* the object's identity, so Cloudflare
+guarantees exactly one instance of each game worldwide: no single server to outgrow and no
+split-brain. Sockets use the Hibernation API, so an idle game costs nothing, and the whole thing
+runs on Cloudflare's free tier.
+
+**Art and audio are generated by code.** Every card, character, and piece of the cabin is drawn
+by a deterministic Python generator ([`art/generate_art.py`](art/generate_art.py)), and every
+sound is synthesized from waveform math ([`art/generate_audio.py`](art/generate_audio.py)). There
+are no hand-painted or model-generated asset files, and regenerating is pixel-identical.
+
+## Quality gates
+
+Every pull request and every push to `dev` or `main` runs these in CI. Nothing deploys unless all
+of them pass.
+
+| Check | What it guards |
+|---|---|
+| 189 unit & component tests (Vitest) | rules, scoring, room logic, multiplayer protocol, UI behavior |
+| 10,000-deal fuzz | random legal play under random rule settings never reaches an illegal state |
+| Layout audit (Playwright) | 11 screen sizes: whole-pixel art scaling, UI/scenery collisions, edge anchoring, hand-fan spacing |
+| Art checks | two generator runs are pixel-identical, card art is unchanged, sprites have no holes |
+| Production build | the app and the Worker both type-check and build |
+
+## Tech stack
+
+| | |
+|---|---|
+| Client | React 19, TypeScript, Vite, vite-plugin-pwa |
+| Server | Cloudflare Workers, Durable Objects (SQLite storage), Hibernatable WebSockets |
+| Testing | Vitest, Testing Library, Playwright |
+| Assets | Python + Pillow (sprites), stdlib `wave` (audio) |
+| CI/CD | GitHub Actions → Wrangler; `dev` and `main` deploy to separate staging and production Workers |
+
+## Running it locally
+
+Requires Node 22+.
 
 ```bash
 npm install
-npm test           # Vitest suite
-npm run fuzz        # 10,000 random-legal-action deals, checks for crashes
+npm run dev        # the game with hot reload, http://localhost:5173
+npm run worker     # multiplayer server on :8787 (run `npm run build` once first)
 ```
 
-## Knowledge graph
+Solo play needs only `npm run dev`. Other useful scripts:
 
-This repo is indexed with [graphify](https://github.com/safishamsi/graphify) into
-`graphify-out/` — an interactive graph of every module, function, and rule cross-reference,
-including links from the code back to the specific `RULES.md` section it implements. Open
-`graphify-out/graph.html` in a browser to explore it. It rebuilds automatically after every
-commit via a git hook.
+```bash
+npm test           # unit and component tests
+npm run fuzz       # 10,000 random deals
+npm run audit      # layout audit across 11 screen sizes
+npm run typecheck && npm run typecheck:worker
+```
+
+To regenerate art or audio (Python 3.11+):
+
+```bash
+pip install -r art/requirements.txt
+python3 art/generate_art.py && npm run art:check
+python3 art/generate_audio.py
+```
+
+When editing the characters, `python3 art/check_avatar_posture.py` compares the sprites against
+the last commit.
+
+## Project layout
+
+```
+src/            React app: screens, table, hooks, styles
+shared/engine/  pure rules engine (deal, bidding, loners, tricks, scoring, redaction)
+shared/net/     room logic and wire protocol, shared by client and server
+shared/bot/     the solo opponent
+worker/         Cloudflare Worker and the per-room Durable Object
+tests/          Vitest suite
+scripts/        fuzz, layout audit, multiplayer smoke test, bot balance
+art/            asset generators, checks, and the art spec (ASSETS.md)
+public/         generated sprites and audio
+docs/           README screenshots
+```
+
+## Deploying
+
+Pushing to `dev` deploys the staging site, and merging to `main` deploys production, both only
+after every check passes. Environments, setup, and manual deploys are in [DEPLOY.md](DEPLOY.md).

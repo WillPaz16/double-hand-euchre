@@ -218,7 +218,6 @@ async function playAFullTrick(): Promise<void> {
   await p2.next('seated');
   await sleep(250);
 
-  let sawTrick: (typeof p1 extends never ? never : ReturnType<typeof Object>) | null = null;
   let completed = null as null | { winner: string; cards: unknown[] };
   let reachedPlay = false;
 

@@ -1,7 +1,17 @@
 {
-  "name": "euchre",
+  "name": "double-hand-euchre",
+  "version": "1.0.0",
+  "description": "Four-hand euchre for two players — each of you plays both hands of a partnership. React + TypeScript, multiplayer on Cloudflare Durable Objects.",
   "private": true,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WillPaz16/two-handed-euchre.git"
+  },
+  "homepage": "https://doublehand.willpaz16.workers.dev",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
@@ -27,7 +37,6 @@
     "@types/react-dom": "^19.2.4",
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^4.7.0",
-    "esbuild": "^0.28.2",
     "jsdom": "^30.0.1",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0",
@@ -41,8 +50,5 @@
     "@fontsource/silkscreen": "^5.3.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
-  },
-  "engines": {
-    "node": ">=22"
   }
 }

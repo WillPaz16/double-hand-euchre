@@ -56,7 +56,7 @@ jobs:
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
 
-      - name: Scale + collision audit (all four target viewports)
+      - name: Layout audit (11 screen sizes — scale, collisions, edge anchoring, fan spacing)
         run: npm run audit
 
       - name: Production build

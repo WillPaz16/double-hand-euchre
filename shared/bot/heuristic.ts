@@ -24,8 +24,6 @@
 import type { Action, Card, PlayerView, Suit } from '../engine/types.ts';
 import { cardStrength, isTrump, trickWinnerIndex, trumpRank } from '../engine/rules.ts';
 
-const SUITS: Suit[] = ['clubs', 'diamonds', 'hearts', 'spades'];
-
 function countTrump(hand: Card[], suit: Suit): number {
   return hand.filter((c) => isTrump(c, suit)).length;
 }
