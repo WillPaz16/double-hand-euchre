@@ -56,13 +56,16 @@ export function TitleScreen({
               players, ONE hand each (see Wikipedia's "Euchre variants"). Here each player plays
               both hands of a partnership, so "double-hand". The two pips flanking it are that
               idea drawn: a red hand and a black hand. The tagline is the user's own line. */}
+          {/* Both words at ONE size (direct owner feedback: "the font and scale of the word
+              euchre is far larger" — "Double-Hand" was a small kicker and barely read). The
+              pips moved to flank EUCHRE: it is the shorter line, so they balance the two widths. */}
           <h1 className="title-sign-heading">
-            <span className="title-sign-kicker">
+            <span className="title-sign-word">Double-Hand</span>{' '}
+            <span className="title-sign-word">
               <span className="title-pip title-pip-hearts" aria-hidden="true" />
-              Double-Hand
+              Euchre
               <span className="title-pip title-pip-spades" aria-hidden="true" />
-            </span>{' '}
-            <span className="title-sign-word">Euchre</span>
+            </span>
           </h1>
           <p className="title-sign-tagline">
             The euchre you know and love, but you only have one friend.

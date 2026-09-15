@@ -1323,19 +1323,19 @@ body {
   font-weight: 700;
   line-height: 1;
 }
-.title-sign-kicker {
+/* Silkscreen is drawn on an 8px em: every text size on this screen is a multiple of 8 (and every
+   line-height and letter-spacing a whole pixel), or its strokes land between pixels and blur.
+
+   Both title lines share this one style at one size (direct owner feedback: "Double-Hand" was a
+   16/32px cream kicker under a 40/80px gold EUCHRE, and read as barely there). Sizes are set by
+   the WIDER line: Silkscreen bold advances 0.9375em per glyph, so "DOUBLE-HAND" is 9.375em —
+   300px at 32px, 375px at 40px, 525px at 56px (measured in the browser). Each step is the largest
+   multiple of 8 whose sign still fits its space; see the media queries below. */
+.title-sign-word {
   display: inline-flex;
   align-items: center;
   gap: calc(var(--u) * 3);
-  font-size: calc(16px * var(--px));
-  letter-spacing: calc(1px * var(--px));
-  color: #f0e6d6;
-  text-shadow: 0 var(--u) 0 var(--ink);
-}
-/* Silkscreen is drawn on an 8px em: every text size on this screen is a multiple of 8 (and every
-   line-height and letter-spacing a whole pixel), or its strokes land between pixels and blur. */
-.title-sign-word {
-  font-size: calc(40px * var(--px));
+  font-size: 32px;
   color: #ffd54a;
   /* Gilt letters: a one-pixel darker gold step, then the ink shadow — an extrusion, not a blur.
      The soft glow on top is the fire catching them; it flickers on the fire's own stepped beat. */
@@ -1507,8 +1507,16 @@ body {
 /* Where that wall is only just wider than the sign (px 2, under 1440px) the type steps down one
    Silkscreen grid size, keeping the same ratio. Still multiples of 8. */
 @media (min-width: 900px) and (min-height: 700px) and (max-width: 1439px) {
-  .title-sign-word { font-size: 64px; }
-  .title-sign-kicker { font-size: 24px; }
+  .title-sign-word { font-size: 40px; }
+}
+/* Large (px 2, 1440px+): two 56px lines take exactly the height the old 32 + 80 pair did, so the
+   painting clearance below is unchanged. */
+@media (min-width: 1440px) and (min-height: 700px) {
+  .title-sign-word { font-size: 56px; }
+}
+/* Very narrow phones: 32px "DOUBLE-HAND" (300px) plus the sign's padding overflows under 360px. */
+@media (max-width: 359px) {
+  .title-sign-word { font-size: 24px; }
 }
 /* The farm painting hangs on that same wall, above the sign. Kept wherever both fit: the column
    drops below the painting's bottom edge (54 + 72 = 126au) and centres in the wall left beneath
