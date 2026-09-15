@@ -1382,6 +1382,9 @@ body {
 .title-pip-spades { background-image: url('/art/suits/spades.png'); }
 
 .title-sign-tagline {
+  /* Balanced lines: the tagline wraps to three on most sizes, and greedy wrapping left
+     "OTHER FRIEND." stranded alone on the last one. Browsers without support just wrap normally. */
+  text-wrap: balance;
   margin: calc(var(--u) * 5) auto 0;
   /* Three lines at --px 1 (a 280px sign), two at --px 2. */
   max-width: calc(96px * var(--px) + 144px);

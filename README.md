@@ -1,6 +1,6 @@
 # Double-Hand Euchre
 
-*The euchre you know and love, but you only have one friend.*
+*The euchre you know and love, for when you only have one other friend.*
 
 [![CI](https://github.com/WillPaz16/double-hand-euchre/actions/workflows/ci.yml/badge.svg)](https://github.com/WillPaz16/double-hand-euchre/actions/workflows/ci.yml)
 

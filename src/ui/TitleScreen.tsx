@@ -68,7 +68,7 @@ export function TitleScreen({
             </span>
           </h1>
           <p className="title-sign-tagline">
-            The euchre you know and love, but you only have one friend.
+            The euchre you know and love, for when you only have one other friend.
           </p>
         </header>
         {confirmingNewGame ? (
