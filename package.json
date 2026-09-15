@@ -1,12 +1,13 @@
 {
   "name": "double-hand-euchre",
   "version": "1.0.0",
-  "description": "Four-hand euchre for two players — each of you plays both hands of a partnership. React + TypeScript, multiplayer on Cloudflare Durable Objects.",
+  "description": "Four-hand euchre for two players \u2014 each of you plays both hands of a partnership. React + TypeScript, multiplayer on Cloudflare Durable Objects.",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/WillPaz16/two-handed-euchre.git"
+    "url": "https://github.com/WillPaz16/double-hand-euchre.git"
   },
   "homepage": "https://doublehand.willpaz16.workers.dev",
   "engines": {

@@ -2,7 +2,7 @@
 
 *The euchre you know and love, but you only have one friend.*
 
-[![CI](https://github.com/WillPaz16/two-handed-euchre/actions/workflows/ci.yml/badge.svg)](https://github.com/WillPaz16/two-handed-euchre/actions/workflows/ci.yml)
+[![CI](https://github.com/WillPaz16/double-hand-euchre/actions/workflows/ci.yml/badge.svg)](https://github.com/WillPaz16/double-hand-euchre/actions/workflows/ci.yml)
 
 **▶ Play it: [doublehand.willpaz16.workers.dev](https://doublehand.willpaz16.workers.dev)**, solo against a bot or online with a friend.
 
@@ -160,3 +160,7 @@ docs/           README screenshots
 
 Pushing to `dev` deploys the staging site, and merging to `main` deploys production, both only
 after every check passes. Environments, setup, and manual deploys are in [DEPLOY.md](DEPLOY.md).
+
+## License
+
+[MIT](LICENSE) © 2026 Will Paz
