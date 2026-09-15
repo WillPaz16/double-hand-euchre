@@ -251,7 +251,7 @@ async function main(): Promise<void> {
               const out: Record<string, number> = {};
               for (const sel of [
                 '.scene-fireplace', '.scene-window', '.scene-picture', '.scene-clock',
-                '.scene-shelf', '.scene-coat-hooks', '.scene-dresser', '.scene-woodpile',
+                '.scene-shelf', '.scene-dresser', '.scene-woodpile',
                 '.scene-hearth-mat',
               ]) {
                 for (const el of document.querySelectorAll(sel)) {

@@ -88,8 +88,9 @@ export function SceneLayer() {
           2f.2 established when it removed the last `min-width` gate: anything positioned
           relative to another element's size goes stale the moment that element changes, and
           this file has already shipped that bug three times. The clock and picture hang left
-          of centre, the antlers and coat right, so the opponent's head sits in a deliberate
-          gap rather than competing with anything. */}
+          of centre, so the opponent's head sits in a deliberate gap rather than competing with
+          anything. (The coat hooks that used to hang right of them are gone — see
+          `.scene-coat-hooks`'s removal note in index.css.) */}
       <div className="scene-picture" />
       <div className="scene-clock" />
       {/* The antlers and a second small picture frame used to stack here, sharing a 1560px gate
@@ -107,7 +108,6 @@ export function SceneLayer() {
           replaced — removed along with its own art asset, since the fluid box now covers the
           width range it existed for). */}
       <div className="scene-farm-painting" />
-      <div className="scene-coat-hooks" />
       <div className="scene-woodpile" />
       {/* A small hearth mat (wave-2) on the floor in front of the firebox opening — a separate
           placed element, not baked into fireplace.png, same reasoning as the woodpile/dresser

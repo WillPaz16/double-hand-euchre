@@ -832,7 +832,6 @@ body {
    information the player needs to read. Below 900px, less room; less decor. */
 .scene-picture,
 .scene-clock,
-.scene-coat-hooks,
 .scene-farm-painting {
   display: none;
 }
@@ -842,15 +841,18 @@ body {
     display: block;
   }
 }
-/* `.scene-farm-painting` no longer shares a gate with `.scene-coat-hooks` — the fluid-stretch
-   rewrite (see that rule's own comment) retired the FIXED-width opponent-clearance math this
-   gate used to enforce for the painting; `.scene-coat-hooks` still needs its own, unrelated
-   1560px opponent-clearance gate (its own comment above still applies unchanged). The
-   painting's two remaining constraints are its own, both measured: not being shown so narrow it
-   stretches into a smear (checked live at 1100px width, gap ~240px/120au — already reads as a
-   long thin landscape, not a sliver), and not being shown so SHORT that its fixed bottom edge
-   meets the rising felt (see this rule's own `top`/`height` comment for the ~852px crossover
-   and why only short, never tall, viewports can reopen it). */
+/* ONE width gate, no dead band (direct user feedback, two screenshots at two browser zooms:
+   "and no painting?"). There used to be two disjoint windows — 960-1009px and 1560px+ — with
+   the entire 1010-1559px band hidden, which is exactly where an ordinary laptop at any browser
+   zoom lands. That band existed because the box stretched WIDTH-ONLY to fill the fireplace-
+   window gap while its height stayed pinned in art units, so a narrow gap squashed the barn
+   and tree flat and hiding it was the lesser evil. `aspect-ratio` (see the rule's own comment
+   below) removes the squash mechanism outright: the box now shrinks on BOTH axes together, so
+   there is no width at which it can distort and therefore no width band to hide it in.
+   1100px is a legibility floor, not a distortion one — below it the gap is under 175px and the
+   painting is drawn smaller than the clock beside it. The `min-height` gate is a separate,
+   still-real constraint: see this rule's own `top`/`aspect-ratio` comment for the felt
+   crossover, which only SHORT viewports can reach. */
 /* HEIGHT GATE LOWERED 900 -> 840. At 900 the painting vanished on extremely ordinary windows —
    a 1512x982 laptop with browser chrome lands near 860 CSS px, and any browser zoom shrinks the
    effective height further, which is exactly the "not showing at certain zooms" this was
@@ -873,24 +875,13 @@ body {
    
    So: shown where there is genuinely room for it, which is the px-1 band and then not again
    until 1560. Hidden in between, deliberately, because a 0.4x squeeze is not a painting. */
-@media (min-width: 960px) and (max-width: 1009px) and (min-height: 800px) {
+@media (min-width: 1100px) and (min-height: 800px) {
   .scene-farm-painting {
-    display: block;
-  }
-}
-@media (min-width: 1560px) and (min-height: 800px) {
-  .scene-farm-painting {
-    display: block;
-  }
-}
-@media (min-width: 1560px) {
-  .scene-coat-hooks {
     display: block;
   }
 }
 .scene-picture,
 .scene-clock,
-.scene-coat-hooks,
 .scene-woodpile,
 .scene-farm-painting {
   position: absolute;
@@ -917,11 +908,13 @@ body {
    of him, so the room still reads as furnished on both sides once antlers join in above
    1150px.
 
-   `.scene-coat-hooks` is the one exception to "not measured up from the floor" above (see its
-   own rule, below): it needs to track the fireplace's own mantel specifically, and the mantel
-   IS floor-relative (`.scene-fireplace` is `bottom`-anchored), so for that one prop measuring
-   from the floor is the thing with a relationship to its neighbour, not the thing without one.
-   Picture and clock have no such neighbour to track, so they stay top-anchored. */
+   Picture and clock are top-anchored because neither has a neighbour worth tracking. A third
+   prop used to sit in this row — coat hooks, mantel-height, and the one exception to the
+   top-anchoring above because it tracked the fireplace's own (floor-relative) mantel. Removed
+   on direct user feedback ("why is the hanger and coats and such?"): at mantel height it read
+   as laundry pinned to the chimney breast, crowded against the shelf's right edge. Its art
+   (`make_coat_hooks`, `coat_hooks.png`) is still generated, so restoring it is one element in
+   `SceneLayer` plus this rule — but re-place it somewhere it isn't competing with the shelf. */
 /* Resized 2.5x in 2j.3 (48x36 -> 120x90 au); the clock alongside it moved right to clear it. */
 .scene-picture {  left: calc(8px * var(--px));
   top: calc(46px * var(--px));
@@ -945,70 +938,6 @@ body {
   width: calc(60px * var(--px));
   height: calc(60px * var(--px));
   background-image: url('/art/scene/clock.png');
-}
-/* Third in the row, and TALLER than the 50au gap between the score-slot and the fireplace
-   top — it overlaps the fireplace's own bounding box by design, not by mistake. The
-   fireplace is not a chrome selector (a decorative prop losing to another decorative prop
-   is not the bug this phase fixes), and mounting coat hooks directly above a hearth's
-   mantel is the single most plausible placement in the whole room for them. */
-/* Resized ~2.48x in 2j.3 (42x54 -> 104x134 au). Moved from beside picture/clock to BELOW them —
-   pushing it further right at the bigger size ran into the opponent (audit-caught: 59-75%
-   hidden by `.table-opponent` at 1010/1400px, since the opponent is centred and its left edge
-   scales with viewport width/2, not with this row's own au offsets). Stacking vertically keeps
-   the whole picture/clock/coat-hooks group anchored to the same free left-edge column that was
-   already verified clear of the fireplace and scoreboard.
-
-   Directly below the picture (top:146) landed squarely on top of the shelf (top:208, DOM order
-   after coat-hooks so it paints over it) — invisible in the live game though the audit never
-   catches same-scene overlaps, only chrome collisions. Dropped below the shelf instead; the
-   remaining band there is a few px shorter than the coat-hooks' own height, so it settles a
-   little into the floor plane, same as the woodpile and rug already do by design.
-
-   Re-anchored from `top` to `bottom` (direct user feedback: "the fireplace mantle doesnt
-   strecth the whole length of where the fire is"). `top:184au` was measured against ONE
-   viewport height and had no relationship to the fireplace at any other — `.scene-fireplace`
-   is itself `bottom`-anchored (floor-relative), so its mantel's distance from the viewport TOP
-   changes with viewport height while this box's `top` offset didn't, and at 1440x900 that put
-   the hook rail ~230px below the mantel: two boards at two unrelated heights, which is what
-   actually read as "doesn't stretch the whole length" rather than one shelf with a gap in it.
-   Bottom-anchoring puts both on the SAME floor-relative axis, so they hold together at every
-   viewport height instead of only the one this was last measured at. `bottom: 280au` is derived,
-   not eyeballed: the mantel's own slab spans image-local y 2.5-37.5au (see make_fireplace's
-   `body_top`/`mantel`/`m_lip`), and `.scene-fireplace`'s `bottom:147au`+`height:270au` puts its
-   box-top at 417au-from-floor, so the mantel's own top edge sits at 417-2.5=414.5au-from-floor.
-   `make_coat_hooks`'s rail was widened to the SAME 35au thickness as the mantel slab (see that
-   function's own comment) and sits at the very top of its box, so `bottom = 414.5 - 134
-   (box height) ≈ 280au` puts the two rails flush, reading as one continuous board. Verified with
-   `getBoundingClientRect()` at 1440x900 and 768x1024, not just by this arithmetic — see the
-   commit notes for the measured gap.
-
-   **Re-derived (fireplace/mantel proportion fix — direct user feedback: "mantle is still not
-   covering fireplace"):** `make_fireplace`'s mantel moved off `body_top` (which sat only 5
-   canvas-px below the image's own top edge, leaving 208 canvas-px/38% of h of plain brick
-   between the mantel's underside and the firebox opening) onto `soot_top` — the firebox's own
-   soot band, already anchored to `oy0` — instead. The mantel's slab now spans image-local y
-   77-112au (was 2.5-37.5au); same 35au thickness, just relocated. Re-run the same arithmetic
-   with the new top edge: `.scene-fireplace`'s box-top is still 417au-from-floor (its own CSS
-   box is unchanged), so the mantel's top edge now sits at 417-77=340au-from-floor, and
-   `bottom = 340 - 134 (box height) = 206au`. Re-verified with `getBoundingClientRect()` at
-   1440x900 and 1560px+, not just by this arithmetic.
-
-   `left` moved from 8au to 194au for the same reason: at mantel height this box is now in the
-   SAME vertical band as `.scene-picture` (top:92-272px) and `.scene-clock` (top:122-242px) —
-   the old `top:184au` position was specifically chosen to sit BELOW both of them, and simply
-   changing the anchor axis without also moving sideways put the (now taller) coat-hooks box
-   67% on top of the picture. `.scene-clock`'s own right edge is at `132+60=192au`; 194au clears
-   it with a 2au gap and leaves the box's own right edge (194+104=298au) almost exactly at
-   `.scene-fireplace`'s own right edge (296au, `left:-78au`+`width:374au`) — coat hooks mounted
-   in the free strip of mantel to the right of the picture/clock column, still flush against the
-   mantel's own top edge. Confirmed clear of `.table-opponent` (which is what capped the OLD
-   beside-picture placement, per the note above) with `getBoundingClientRect()` at both 1010px
-   and 1440px — the opponent's own left edge sits well right of 298au at both widths. */
-.scene-coat-hooks {  left: calc(194px * var(--px));
-  bottom: calc(206px * var(--px));
-  width: calc(104px * var(--px));
-  height: calc(134px * var(--px));
-  background-image: url('/art/scene/coat_hooks.png');
 }
 /* TRUE FLUID STRETCH (direct user feedback: "the art should also stretch with the screen" —
    confirmed explicitly against the alternative of just adding another fixed-size tier: the
@@ -1092,7 +1021,23 @@ body {
      file's own header comment is about. A picture hangs at a fixed height on a wall; it does
      not follow whoever sits in front of it. */
   top: calc(54px * var(--px));
-  height: calc(72px * var(--px));
+  /* `aspect-ratio`, NOT a fixed `height` (direct user feedback: "and no painting?"). The box's
+     width is fluid — `left`/`right` fill the fireplace-window gap, `max-width` clamps it at
+     240au — so a height fixed in art units meant the only thing that changed as the window
+     narrowed was the horizontal scale. At the clamp that is 240x72au, the intended shape; at a
+     1100px viewport the gap is only ~124au, so the same 72au-tall art was drawn at roughly half
+     its intended width — a squashed barn, which is why the old gate hid a 550px-wide band of
+     viewport widths rather than fix it.
+     240/72 IS that intended shape, so stating it as the ratio keeps the clamped case pixel-for-
+     pixel identical to before and makes every narrower case a proportional shrink instead of a
+     squash. The exemption in `scripts/scale-audit.js` already covers this element (it is the one
+     sanctioned fluid-stretch prop); the ratio makes that exemption weaker, not wider — the box
+     no longer distorts, it only leaves the whole-number `--px` grid.
+     Felt clearance is now strictly better as the viewport narrows, since a narrower box is also
+     a SHORTER one: the bottom edge only ever rises toward `top`. The `min-height: 800px` gate
+     still guards the other axis, where a short viewport lifts the felt toward a bottom edge that
+     is not moving. */
+  aspect-ratio: 240 / 72;
   background-image: url('/art/scene/farm_painting.png');
 }
 /* On the floor beside the hearth, where the fire's fuel comes from. */
@@ -1303,22 +1248,20 @@ body {
 .title-scene .scene-floor-card {
   display: none;
 }
-/* The wall-prop width gates (900px, 1560px) exist to avoid the in-game scoreboard/opponent —
+/* The wall-prop width gates (900px, 1100px) exist to avoid the in-game scoreboard/opponent —
    chrome the title screen doesn't have, so its own gate can open earlier: 700px fills the
    bare-log gap between the fireplace and window on a tablet-sized screen (the empty-center
-   complaint at 768px) without also cramming picture/clock/coat-hooks onto a 390px phone,
+   complaint at 768px) without also cramming picture and clock onto a 390px phone,
    where they have no free wall and would collide with each other and the window instead.
    Antlers keeps its own original 1560px gate untouched — narrower than that it sits inside
    the window's own box on this layout, gate or no gate, so opening it earlier buys nothing. */
 .title-scene .scene-picture,
-.title-scene .scene-clock,
-.title-scene .scene-coat-hooks {
+.title-scene .scene-clock {
   display: none;
 }
 @media (min-width: 700px) {
   .title-scene .scene-picture,
-  .title-scene .scene-clock,
-  .title-scene .scene-coat-hooks {
+  .title-scene .scene-clock {
     display: block;
   }
 }
@@ -1707,8 +1650,9 @@ body {
 
 .game-root {
   /* NO vertical cap here. There used to be one (`max-height: 1000px; margin-block: auto`), and
-     it was the right diagnosis applied to the wrong element — see `.table-area`'s own
-     `max-height`, which is where that cap lives now and what it was always actually about.
+     it was the right diagnosis applied to the wrong element — the height that needed bounding
+     was `.table-area`'s, and that box is now content-sized outright (see its own `flex` rule),
+     so no cap is needed on either element.
      Capping the whole SHELL letterboxed the status banner and the action bar along with the
      table, pulling both away from the screen edges they are supposed to be pinned to: measured
      at 1800x1300, the banner descended 150px into `.scene-clock` (55% hidden) and the action
@@ -2130,28 +2074,24 @@ body {
      phone left the whole composition jammed against the ceiling with a third of the screen as
      bare floor underneath. Centring the tracks puts the table in the middle of the space it is
      given, at whatever size that space happens to be. */
-  flex: 1;
-  align-content: center;
+  /* CONTENT-SIZED, not flex-filled (was `flex: 1` plus a 910px vertical cap). `flex: 1` made
+     this box absorb every spare pixel of the column, and `align-content: center` then split
+     that slack above and below the three grid rows — but `.table-opponent` is `top: 0` of THIS
+     box's padding edge, OUTSIDE the grid, so half the slack landed between his chest and the
+     felt. Measured at the very viewport the cap was tuned against (1800x1000): sprite bottom
+     362, felt top 422 — 60px of bare wall, the "alarming gap" this was reported as. The cap
+     only bounded that gap, it never closed it, because the gap exists at ANY height where the
+     column has spare room at all.
+     Content-sized, there is no slack to distribute: the rows always start at the padding edge,
+     so the felt's top edge sits a CONSTANT distance INSIDE the sprite at every viewport instead
+     of drifting with height. Verified live at 1800x1000, 1400x900, 1200x1400 and 390x844 —
+     78px of overlap at --px 2, 11px at --px 1, never negative.
+     `margin-block: auto` (below, unchanged) is what still centres the box in the column's
+     leftover height, so the "jammed against the ceiling on a tall phone" case `align-content:
+     center` used to guard is handled by the margins instead — confirmed at 390x844 and
+     1200x1400. `align-content` is gone along with the slack it existed to distribute. */
+  flex: 0 1 auto;
   min-height: 0;
-  /* THE vertical cap — direct user feedback: "when we zoom out... the old man isn't really at
-     the table anymore." Root cause, confirmed live: `.table-opponent` is `position: absolute;
-     top: 0` inside THIS box (Table.tsx), pinned to its own top edge — but the actual game
-     content (his card fans, the felt, yours) is the CSS grid below using `align-content:
-     center`, which drifts further DOWN from that fixed top-0 point as this box gets taller,
-     because centring a fixed-height block inside a growing box grows the space above it.
-     Measured: at 900-1000px viewport height the fans still overlap his chest by design (see
-     Table.tsx's own comment on why that overlap is deliberate); by 1100px they've separated by
-     20px, and by 1400px the gap is 170px — he visibly floats above an empty table.
-     910px is this box's own measured height at the 1000px viewport the whole layout was tuned
-     against (909px live, rounded), so at or below that range this is a strict no-op — it only
-     stops the growth that pulls him off the table.
-     It lives HERE, not on `.game-root`, because this box is the only thing the bug was ever
-     about. Capping the shell instead dragged the status banner and the action bar off the
-     screen edges with it (see `.game-root`'s own comment for the measured collisions that
-     caused). `margin-block: auto` centres the capped box in whatever leftover height the
-     column has, so the extra room past the cap becomes visible floor above and below the
-     table rather than a jammed-to-the-top composition. */
-  max-height: 910px;
   margin-block: auto;
   position: relative;
   /* Reserves the band his head occupies ABOVE the fans, and is tuned so the felt's top edge
