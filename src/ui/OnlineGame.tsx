@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useOnlineGame } from '../net/useOnlineGame.ts';
 import { useSfx } from '../game/useSfx.ts';
 import { SceneLayer } from './SceneLayer.tsx';
@@ -11,6 +11,17 @@ import { LonerDim, LonerStamp } from './LonerFx.tsx';
 import { PauseMenu } from './PauseMenu.tsx';
 import type { RoomCode } from '../../shared/net/protocol.ts';
 import { OpponentIdentityProvider } from './opponentIdentity.tsx';
+import { ChatPanel } from './ChatPanel.tsx';
+import { RulesAgreement, RulesProposal } from './RulesPrompts.tsx';
+import type { ChatMessage } from '../../shared/net/protocol.ts';
+
+/** How long a chat line stays in the speech bubble: long enough to read what was said. */
+function bubbleMs(text: string): number {
+  return Math.min(8000, 2500 + text.length * 60);
+}
+
+/** Phases where nobody is expected to act — the table is between moves on its own. */
+const SETTLING = new Set(['hand_complete', 'misdeal', 'game_over']);
 
 /** The same board as single-player, driven by the server instead of a local reducer.
  *
@@ -29,6 +40,27 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
 
   const waiting =
     !game.view || game.status !== 'connected' || !game.opponentPresent;
+
+  // The other player's newest LIVE line, held in their speech bubble for a reading beat.
+  const [bubble, setBubble] = useState<ChatMessage | null>(null);
+  useEffect(() => {
+    const line = game.liveChat;
+    if (!line || line.from === game.seat) return;
+    setBubble(line);
+    const t = setTimeout(() => setBubble(null), bubbleMs(line.text));
+    return () => clearTimeout(t);
+  }, [game.liveChat, game.seat]);
+
+  // Direct user feedback: multiplayer needs "a waiting for player... when you are waiting".
+  // Solo never needed one — the bot answers in under a second — but a person can take a while,
+  // and an action bar that simply goes empty reads as the game having stalled.
+  const theirMove =
+    !!game.view &&
+    !waiting &&
+    !!game.rules?.locked &&
+    !game.frozen &&
+    game.legal.length === 0 &&
+    !SETTLING.has(game.view.phase);
 
   // Falls back to a neutral word rather than to the Old-Timer: the player across the table is
   // a person, and if they gave no name "Opponent" is honest where a character's name is not.
@@ -53,9 +85,19 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
             completedTrick={game.completedTrick}
             lastBotAction={null}
             botOpponent={false}
+            chatBubble={bubble}
           />
         )}
+        {game.rules && !waiting && (
+          <RulesProposal view={game.rules} opponentName={opponentLabel} onVote={game.voteRules} />
+        )}
         <div className="action-bar">
+          {theirMove && (
+            <div className="waiting-on" role="status" aria-live="polite">
+              Waiting for {opponentLabel}
+              <span className="waiting-dots" aria-hidden="true" />
+            </div>
+          )}
           {game.view && <BidPanel view={game.view} legal={game.legal} play={game.play} />}
           {game.view && (
             <HandTray
@@ -67,6 +109,19 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
           )}
         </div>
       </div>
+
+      {!waiting && game.rules && !game.rules.locked && (
+        <RulesAgreement view={game.rules} opponentName={opponentLabel} onVote={game.voteRules} />
+      )}
+
+      {game.seat && (
+        <ChatPanel
+          chat={game.chat}
+          you={game.seat}
+          opponentName={opponentLabel}
+          onSend={game.sendChat}
+        />
+      )}
 
       {waiting && (
         <div className="net-overlay" role="status" aria-live="polite">
@@ -86,6 +141,11 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
           onClose={() => setPaused(false)}
           // No unilateral restart online — see this component's own docstring.
           onRestart={() => setPaused(false)}
+          onlineRules={
+            game.rules
+              ? { view: game.rules, opponentName: opponentLabel, onVote: game.voteRules }
+              : undefined
+          }
           onQuit={() => {
             game.leave();
             onLeave();

@@ -1,4 +1,4 @@
-import type { Action, CompletedTrick, Player, PlayerView } from '../engine/types.ts';
+import type { Action, CompletedTrick, Config, Player, PlayerView } from '../engine/types.ts';
 import type { AvatarKey } from './avatars.ts';
 
 /** A short human-shareable room code ("say it down the phone" length, not a UUID). */
@@ -16,8 +16,22 @@ export type ClientMessage =
    *  same `clientId` after a dropped connection reclaims the same seat and resyncs — that is
    *  the whole reconnect story, and why the seat is keyed on `clientId` rather than on the
    *  socket. */
-  | { t: 'hello'; code: RoomCode; clientId: ClientId; name?: string; avatar?: string }
-  | { t: 'action'; action: Action };
+  | {
+      t: 'hello';
+      code: RoomCode;
+      clientId: ClientId;
+      name?: string;
+      avatar?: string;
+      /** This player's own blind-loner settings. Compared against the other player's when the
+       *  second one sits down — see `RulesView`. Optional so an older client still joins. */
+      rules?: LonerRules;
+    }
+  | { t: 'action'; action: Action }
+  /** A line of chat. Cleaned and bounded server-side (`cleanChat`); never trusted as sent. */
+  | { t: 'chat'; text: string }
+  /** This player's pick while the two players' rule settings disagree. The table deals once
+   *  both players' picks match. Ignored once rules are locked. */
+  | { t: 'rules_vote'; rules: LonerRules };
 
 export type ServerMessage =
   /** Which seat you got. Sent once per successful `hello`, including on reconnect. */
@@ -44,10 +58,75 @@ export type ServerMessage =
        *  anything it doesn't recognise, so a client can never make the other player's board
        *  point at an image that doesn't exist. */
       opponentAvatar: AvatarKey;
+      /** Which rules this table plays by, and — until they are settled — what each player
+       *  wants. Sent on every sync because it is part of the table, like the score. */
+      rules: RulesView;
     }
+  /** One new chat line, sent to both seats as it happens. */
+  | { t: 'chat'; message: ChatMessage }
+  /** The room's saved chat, sent once to a socket as it is seated — so a reconnect, a reload,
+   *  or the other tab you just closed does not wipe the conversation. */
+  | { t: 'chat_history'; messages: ChatMessage[] }
   /** A refused `hello` or `action`, with a reason fit to show a player. The client stays
    *  connected; a rejected action simply did not happen. */
   | { t: 'rejected'; reason: string };
+
+/** The two configurable blind-loner tiers. The same shape as `Config['lonerTiersEnabled']`
+ *  and as the Settings screen's saved toggles, because it IS that field. */
+export type LonerRules = Config['lonerTiersEnabled'];
+export const LONER_RULE_KEYS = ['blind_hand', 'full_blind'] as const;
+
+/** Coerces untrusted input to rules, or null. Every key must be a real boolean: a client that
+ *  sends `{ full_blind: "yes" }` is not expressing a preference this server can act on. */
+export function toLonerRules(raw: unknown): LonerRules | null {
+  if (typeof raw !== 'object' || raw === null) return null;
+  const r = raw as Record<string, unknown>;
+  if (!LONER_RULE_KEYS.every((k) => typeof r[k] === 'boolean')) return null;
+  return { blind_hand: r.blind_hand as boolean, full_blind: r.full_blind as boolean };
+}
+
+export function sameRules(a: LonerRules, b: LonerRules): boolean {
+  return LONER_RULE_KEYS.every((k) => a[k] === b[k]);
+}
+
+/** What one seat sees about the table's rules.
+ *
+ *  `locked` is the only thing that gates play. Until it is true nobody has a legal move, and
+ *  the client shows the agreement prompt using the rest: `mine`/`theirs` are each player's own
+ *  settings as they sat down, and `myVote`/`theirVote` are their picks since (null = not picked
+ *  yet). Once locked, `inEffect` is the table's rules for the rest of the game. */
+export interface RulesView {
+  locked: boolean;
+  inEffect: LonerRules;
+  mine: LonerRules | null;
+  theirs: LonerRules | null;
+  myVote: LonerRules | null;
+  theirVote: LonerRules | null;
+  /** A change both players agreed to mid-game, applied when the next hand is dealt. */
+  next: LonerRules | null;
+}
+
+export interface ChatMessage {
+  /** Increasing per room. React keys and "which bubble is new" both use it. */
+  id: number;
+  from: Player;
+  text: string;
+}
+
+export const MAX_CHAT_LENGTH = 200;
+/** How much conversation a room keeps. Enough to scroll back through a game; small enough that
+ *  the room's stored state stays tiny. */
+export const MAX_CHAT_HISTORY = 50;
+
+/** Chat is shown on someone ELSE's screen, so it is bounded and trimmed once, here, where both
+ *  client and server call the same function. React escapes text, so the risk is a wall of text
+ *  breaking the layout rather than injection. Line breaks collapse to spaces: a speech bubble
+ *  has no room for a paragraph. */
+export function cleanChat(raw: unknown): string | null {
+  if (typeof raw !== 'string') return null;
+  const trimmed = raw.replace(/\s+/g, ' ').trim().slice(0, MAX_CHAT_LENGTH);
+  return trimmed.length > 0 ? trimmed : null;
+}
 
 /** Rooms are addressed by a code a person can read aloud. Ambiguous glyphs (0/O, 1/I) are
  *  excluded so "was that a zero or an oh" never costs someone a game. */

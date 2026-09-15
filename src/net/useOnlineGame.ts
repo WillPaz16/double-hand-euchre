@@ -1,6 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Action, CompletedTrick, Player, PlayerView } from '../../shared/engine/types.ts';
-import { CLOSE_REPLACED, type ClientMessage, type RoomCode, type ServerMessage } from '../../shared/net/protocol.ts';
+import {
+  CLOSE_REPLACED,
+  type ChatMessage,
+  type ClientMessage,
+  type LonerRules,
+  type RoomCode,
+  type RulesView,
+  type ServerMessage,
+} from '../../shared/net/protocol.ts';
+import { getRuleSettings } from '../game/ruleSettings.ts';
 import { DEFAULT_AVATAR, type AvatarKey } from '../../shared/net/avatars.ts';
 import { getClientId } from './clientId.ts';
 import { getPlayerAvatar, getPlayerName } from './playerName.ts';
@@ -69,6 +78,16 @@ export interface OnlineGame {
   /** Set when the server refused something worth showing the player. */
   notice: string | null;
   leave: () => void;
+  /** The table's rules, and any agreement in progress. Null until the first sync. */
+  rules: RulesView | null;
+  voteRules: (rules: LonerRules) => void;
+  /** The room's conversation, oldest first, as the server stored it. */
+  chat: ChatMessage[];
+  /** The newest line that arrived LIVE — never one replayed from history on connect. It drives
+   *  the speech bubble, which should mark someone speaking now, not re-announce old messages
+   *  every time the page reconnects. */
+  liveChat: ChatMessage | null;
+  sendChat: (text: string) => void;
 }
 
 /** Connects to a room and mirrors the server's authoritative state.
@@ -89,6 +108,9 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
   const [status, setStatus] = useState<ConnectionStatus>('connecting');
   const [notice, setNotice] = useState<string | null>(null);
   const [completedTrick, setCompletedTrick] = useState<CompletedTrick | null>(null);
+  const [rules, setRules] = useState<RulesView | null>(null);
+  const [chat, setChat] = useState<ChatMessage[]>([]);
+  const [liveChat, setLiveChat] = useState<ChatMessage | null>(null);
 
   const socketRef = useRef<WebSocket | null>(null);
   /** Set only by `leave()`. Distinct from the per-connection `cancelled` flag below: this one
@@ -160,6 +182,9 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
           clientId: getClientId(),
           ...(getPlayerName() ? { name: getPlayerName()! } : {}),
           avatar: getPlayerAvatar(),
+          // The player's own Settings, so the server can see whether both players want the
+          // same table before the first deal.
+          rules: getRuleSettings(),
         };
         self.send(JSON.stringify(hello));
       };
@@ -184,7 +209,20 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
           setOpponentPresent(msg.opponentPresent);
           setOpponentName(msg.opponentName);
           setOpponentAvatar(msg.opponentAvatar);
+          setRules(msg.rules);
           if (msg.completedTrick) setCompletedTrick(msg.completedTrick);
+          return;
+        }
+        if (msg.t === 'chat_history') {
+          // Replaces rather than appends: this is the server's whole record, sent on every
+          // seating, so appending would duplicate the log on each reconnect.
+          setChat(msg.messages);
+          return;
+        }
+        if (msg.t === 'chat') {
+          const incoming = msg.message;
+          setChat((log) => (log.some((m) => m.id === incoming.id) ? log : [...log, incoming]));
+          setLiveChat(incoming);
           return;
         }
         // msg.t === 'rejected'
@@ -227,15 +265,19 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
     };
   }, [code]);
 
-  const play = useCallback((action: Action) => {
+  /** Every outgoing message goes through here, so "not connected" is handled once. */
+  const send = useCallback((msg: ClientMessage) => {
     const socket = socketRef.current;
     if (!socket || socket.readyState !== WebSocket.OPEN) {
       setNotice('Not connected.');
       return;
     }
-    const msg: ClientMessage = { t: 'action', action };
     socket.send(JSON.stringify(msg));
   }, []);
+
+  const play = useCallback((action: Action) => send({ t: 'action', action }), [send]);
+  const voteRules = useCallback((next: LonerRules) => send({ t: 'rules_vote', rules: next }), [send]);
+  const sendChat = useCallback((text: string) => send({ t: 'chat', text }), [send]);
 
   const leave = useCallback(() => {
     leftRef.current = true;
@@ -259,5 +301,10 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
     status,
     notice,
     leave,
+    rules,
+    voteRules,
+    chat,
+    liveChat,
+    sendChat,
   };
 }

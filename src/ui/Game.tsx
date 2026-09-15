@@ -14,7 +14,7 @@ import { LonerDim, LonerStamp } from './LonerFx.tsx';
 import { PauseMenu } from './PauseMenu.tsx';
 
 export function Game({ onQuit }: { onQuit: () => void }) {
-  const { view, legal, play, completedTrick, frozen, restart, quit, lastBotAction } = useGame();
+  const { view, legal, play, completedTrick, frozen, restart, lastBotAction } = useGame();
   useSfx(view);
   const [paused, setPaused] = useState(false);
   // Seeded from the stored choice, then LIVE: the pause menu can swap it mid-hand. Unlike the
@@ -59,10 +59,12 @@ export function Game({ onQuit }: { onQuit: () => void }) {
             setPaused(false);
           }}
           onOpponentChange={setOpponent}
-          onQuit={() => {
-            quit();
-            onQuit();
-          }}
+          // Leaves the save in place (direct user feedback: "when you quit to title, it doesnt
+          // save the game you are playing"). Quit used to call a `quit()` that deleted the
+          // autosave, contradicting PauseMenu's own contract that Quit means "stop showing me
+          // this game", not "discard progress" — so Continue vanished from the title screen.
+          // Starting fresh is still one click away: Title's New Game confirms and clears it.
+          onQuit={onQuit}
         />
       )}
     </OpponentIdentityProvider>

@@ -7,9 +7,9 @@ import { getSoloOpponent, setSoloOpponent } from '../game/opponentSettings.ts';
 import { AVATAR_KEYS, AVATAR_LABELS, avatarSrc, type AvatarKey } from '../../shared/net/avatars.ts';
 
 /** Reached from the title screen only (not mid-game — see PauseMenu for the in-game subset).
- *  Rule toggles here only ever write to localStorage; a game already in progress reads its
- *  config once at deal-start (`useGame`'s `buildConfig()`) and isn't affected until the next
- *  one, so there's no mid-hand "the rules just changed under me" case to handle.
+ *  Rule toggles here only ever write to localStorage; a game already in progress re-reads them
+ *  between hands (`useGame`'s `buildConfig()`, called at each new deal), so a change starts with
+ *  the next hand and there's still no mid-hand "the rules just changed under me" case.
  *
  *  The "framework to add more settings later" ask isn't a registry/plugin abstraction — it's
  *  this: one localStorage-backed module per concern (audioSettings.ts, ruleSettings.ts) and
@@ -80,8 +80,8 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
           <h2>Loner rules</h2>
           <p className="settings-note">
             Regular going-alone during bidding always stays on, that's just euchre. These two
-            are our own add-on, so turn either off if you'd rather keep it standard. Won't
-            touch the game you're in, only the next one you start.
+            are our own add-on, off unless you turn them on. A change starts with the next
+            hand.
           </p>
           <div className="settings-toggle-row">
             <button

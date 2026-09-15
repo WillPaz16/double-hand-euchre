@@ -2,7 +2,7 @@ import { DurableObject } from 'cloudflare:workers';
 import { DEFAULT_CONFIG } from '../shared/engine/index.ts';
 import type { CompletedTrick, Player } from '../shared/engine/types.ts';
 import type { ClientId, ClientMessage, RoomCode, ServerMessage } from '../shared/net/protocol.ts';
-import { CLOSE_REPLACED, cleanName, normaliseRoomCode } from '../shared/net/protocol.ts';
+import { CLOSE_REPLACED, cleanName, normaliseRoomCode, toLonerRules } from '../shared/net/protocol.ts';
 import { toAvatarKey } from '../shared/net/avatars.ts';
 import {
   advanceDeal,
@@ -12,12 +12,16 @@ import {
   join,
   legalFor,
   needsDealAdvance,
+  normaliseRoom,
   opponentAvatar,
   opponentName,
   opponentPresent,
+  postChat,
+  rulesViewFor,
   seatOf,
   submit,
   viewFor,
+  voteRules,
   type Room,
 } from '../shared/net/room.ts';
 
@@ -84,7 +88,18 @@ export class RoomObject extends DurableObject<Env> {
   private async load(code: RoomCode): Promise<Room> {
     if (this.room) return this.room;
     const stored = await this.ctx.storage.get<Room>('room');
-    this.room = stored ?? createRoom(code, freshSeed(), DEFAULT_CONFIG);
+    // `normaliseRoom` because a room stored by an earlier deploy can predate fields added since
+    // (rule agreement, chat) — and a room outlives a deploy by design.
+    this.room = stored ? normaliseRoom(stored) : createRoom(code, freshSeed(), DEFAULT_CONFIG);
+    return this.room;
+  }
+
+  /** The room if it exists, without creating one — for handlers that must not conjure a room
+   *  into existence (an action or a close arriving for a code nobody has opened). */
+  private async current(): Promise<Room | null> {
+    if (this.room) return this.room;
+    const stored = await this.ctx.storage.get<Room>('room');
+    this.room = stored ? normaliseRoom(stored) : null;
     return this.room;
   }
 
@@ -179,6 +194,8 @@ export class RoomObject extends DurableObject<Env> {
     }
 
     if (msg.t === 'hello') return this.hello(ws, msg);
+    if (msg.t === 'chat') return this.chat(ws, msg);
+    if (msg.t === 'rules_vote') return this.rulesVote(ws, msg);
     return this.action(ws, msg);
   }
 
@@ -204,7 +221,13 @@ export class RoomObject extends DurableObject<Env> {
 
     // Names are cleaned server-side too: a client is free to send anything, and this is text
     // that will be rendered on someone ELSE's screen.
-    const joined = join(room, msg.clientId, cleanName(msg.name), toAvatarKey(msg.avatar));
+    const joined = join(
+      room,
+      msg.clientId,
+      cleanName(msg.name),
+      toAvatarKey(msg.avatar),
+      toLonerRules(msg.rules),
+    );
     if (!joined.ok) {
       send(ws, { t: 'rejected', reason: joined.error });
       return;
@@ -228,7 +251,48 @@ export class RoomObject extends DurableObject<Env> {
 
     ws.serializeAttachment({ clientId: msg.clientId, seat } satisfies Attachment);
     send(ws, { t: 'seated', seat, code });
+    // History to THIS socket only: the other seat already has it. Sent on every seating, so a
+    // reconnect or a reload comes back to the conversation rather than a blank log.
+    send(ws, { t: 'chat_history', messages: joined.value.room.chat });
     await this.settle(joined.value.room);
+  }
+
+  private async chat(ws: WebSocket, msg: ClientMessage & { t: 'chat' }): Promise<void> {
+    const bound = attachmentOf(ws);
+    const room = await this.current();
+    if (!bound || !room) {
+      send(ws, { t: 'rejected', reason: 'Say hello before chatting.' });
+      return;
+    }
+    const posted = postChat(room, bound.clientId, msg.text);
+    if (!posted.ok) {
+      send(ws, { t: 'rejected', reason: posted.error });
+      return;
+    }
+    await this.persist(posted.value.room);
+    // Both seats, the sender included: the sender's own log is built from what the server
+    // accepted (cleaned, numbered), not from what they typed.
+    for (const socket of this.ctx.getWebSockets()) {
+      if (attachmentOf(socket)) send(socket, { t: 'chat', message: posted.value.message });
+    }
+  }
+
+  private async rulesVote(ws: WebSocket, msg: ClientMessage & { t: 'rules_vote' }): Promise<void> {
+    const bound = attachmentOf(ws);
+    const room = await this.current();
+    const rules = toLonerRules(msg.rules);
+    if (!bound || !room || !rules) {
+      send(ws, { t: 'rejected', reason: 'That rules choice could not be read.' });
+      return;
+    }
+    const voted = voteRules(room, bound.clientId, rules);
+    if (!voted.ok) {
+      send(ws, { t: 'rejected', reason: voted.error });
+      return;
+    }
+    // Settle rather than just persist: locking the rules is what makes the first moves legal,
+    // so both seats need a fresh sync carrying their new legal actions.
+    await this.settle(voted.value);
   }
 
   private async action(ws: WebSocket, msg: ClientMessage & { t: 'action' }): Promise<void> {
@@ -237,7 +301,7 @@ export class RoomObject extends DurableObject<Env> {
       send(ws, { t: 'rejected', reason: 'Say hello before playing.' });
       return;
     }
-    const room = this.room ?? (await this.ctx.storage.get<Room>('room')) ?? null;
+    const room = await this.current();
     if (!room) {
       send(ws, { t: 'rejected', reason: 'That room is gone.' });
       return;
@@ -265,7 +329,7 @@ export class RoomObject extends DurableObject<Env> {
   private async dropped(ws: WebSocket): Promise<void> {
     const bound = attachmentOf(ws);
     if (!bound) return;
-    const room = this.room ?? (await this.ctx.storage.get<Room>('room')) ?? null;
+    const room = await this.current();
     if (!room) return;
 
     // A socket that was already REPLACED must not unseat the connection that replaced it. On
@@ -300,7 +364,7 @@ export class RoomObject extends DurableObject<Env> {
       return;
     }
 
-    let room = this.room ?? (await this.ctx.storage.get<Room>('room')) ?? null;
+    let room = await this.current();
     if (!room) return;
     if (dealAt !== null && now >= dealAt && needsDealAdvance(room) && bothSeated(room)) {
       room = advanceDeal(room, freshSeed());
@@ -326,6 +390,7 @@ function syncFor(room: Room, seat: Player, completedTrick: CompletedTrick | null
     completedTrick,
     opponentName: opponentName(room, seat),
     opponentAvatar: opponentAvatar(room, seat),
+    rules: rulesViewFor(room, seat),
   };
 }
 
@@ -343,7 +408,9 @@ function parse(raw: string): ClientMessage | null {
     const msg = JSON.parse(raw) as unknown;
     if (typeof msg !== 'object' || msg === null || !('t' in msg)) return null;
     const t = (msg as { t: unknown }).t;
-    if (t === 'hello' || t === 'action') return msg as ClientMessage;
+    if (t === 'hello' || t === 'action' || t === 'chat' || t === 'rules_vote') {
+      return msg as ClientMessage;
+    }
     return null;
   } catch {
     return null;

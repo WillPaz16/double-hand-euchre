@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { HelpPanel } from './HelpPanel.tsx';
 import { isMuted, setMuted } from '../game/audioSettings.ts';
-import { getRuleSettings } from '../game/ruleSettings.ts';
+import { LonerRuleToggles, type OnlineRulesControl } from './LonerRuleToggles.tsx';
 import { getSoloOpponent, setSoloOpponent } from '../game/opponentSettings.ts';
 import { AVATAR_KEYS, AVATAR_LABELS, avatarSrc, type AvatarKey } from '../../shared/net/avatars.ts';
 
@@ -30,6 +30,7 @@ export function PauseMenu({
   onRestart,
   onQuit,
   onOpponentChange,
+  onlineRules,
 }: {
   onClose: () => void;
   onRestart: () => void;
@@ -38,10 +39,11 @@ export function PauseMenu({
    *  already dealt, who is sitting across from you is pure presentation — no engine state
    *  depends on it, so there is no reason to make someone finish a hand to swap a face. */
   onOpponentChange?: (key: AvatarKey) => void;
+  /** Present in an online game, where changing a rule needs the other player to agree. */
+  onlineRules?: OnlineRulesControl;
 }) {
   const [muted, setMutedState] = useState(isMuted());
   const [confirmingRestart, setConfirmingRestart] = useState(false);
-  const rules = getRuleSettings();
   const [opponent, setOpponent] = useState<AvatarKey>(getSoloOpponent);
 
   return (
@@ -84,10 +86,7 @@ export function PauseMenu({
           {muted ? 'Sound: Off' : 'Sound: On'}
         </button>
 
-        <p className="settings-note">
-          Blind Hand Loner: {rules.blind_hand ? 'on' : 'off'}, Full Blind Loner:{' '}
-          {rules.full_blind ? 'on' : 'off'}. Change in Settings, next game.
-        </p>
+        <LonerRuleToggles online={onlineRules} />
 
         {confirmingRestart ? (
           <div className="pause-menu-actions">
@@ -113,7 +112,9 @@ export function PauseMenu({
             <button className="bid-button" onClick={() => setConfirmingRestart(true)}>
               Restart Game
             </button>
-            <button className="bid-button bid-button-danger" onClick={onQuit}>
+            {/* Not styled as danger: quitting keeps the game saved, so red would warn about a
+                loss that does not happen. */}
+            <button className="bid-button" onClick={onQuit}>
               Quit to Title
             </button>
           </div>

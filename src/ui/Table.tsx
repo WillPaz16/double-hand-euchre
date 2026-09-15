@@ -185,12 +185,15 @@ export function Table({
   completedTrick,
   lastBotAction,
   botOpponent = true,
+  chatBubble = null,
 }: {
   view: PlayerView;
   completedTrick: CompletedTrick | null;
   lastBotAction: Action | null;
   /** False in an online game: see useOpponentSpeech. */
   botOpponent?: boolean;
+  /** Online: what the other player just said in chat, shown in their speech bubble. */
+  chatBubble?: { id: number; text: string } | null;
 }) {
   const opponentName = useOpponentName();
   const opponentAvatar = useOpponentAvatar();
@@ -210,6 +213,13 @@ export function Table({
   const wheelSpinning = useUpcardReveal(view);
   const expression = useOpponentExpression(view);
   const speech = useOpponentSpeech(view, lastBotAction, botOpponent);
+  // Chat takes the bubble when there is one. Keyed by message id rather than text, so the same
+  // words sent twice still pop in twice.
+  const bubble = chatBubble
+    ? { key: `chat-${chatBubble.id}`, text: chatBubble.text }
+    : speech
+      ? { key: speech, text: speech }
+      : null;
 
   return (
     <div className="table-area">
@@ -232,9 +242,9 @@ export function Table({
           not just see it appear silently. Keyed on the text itself so React replays the CSS
           pop-in animation for every new line, including a same-pool repeat after the no-repeat
           window (`pick()` only avoids the IMMEDIATELY previous line, not all history). */}
-      {speech && (
-        <div className="table-opponent-speech" role="status" aria-live="polite" key={speech}>
-          {speech}
+      {bubble && (
+        <div className="table-opponent-speech" role="status" aria-live="polite" key={bubble.key}>
+          {bubble.text}
         </div>
       )}
       {seatsFor(view.you).map(({ hand, at }) => {

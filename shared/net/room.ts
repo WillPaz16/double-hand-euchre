@@ -1,4 +1,5 @@
 import {
+  DEFAULT_CONFIG,
   actingHand,
   legalActions,
   newGame,
@@ -17,7 +18,16 @@ import type {
   PlayerView,
   TrickCard,
 } from '../engine/types.ts';
-import type { ClientId, RoomCode } from './protocol.ts';
+import {
+  MAX_CHAT_HISTORY,
+  cleanChat,
+  sameRules,
+  type ChatMessage,
+  type ClientId,
+  type LonerRules,
+  type RoomCode,
+  type RulesView,
+} from './protocol.ts';
 import { DEFAULT_AVATAR, type AvatarKey } from './avatars.ts';
 
 export const SEATS: Player[] = ['A', 'B'];
@@ -37,6 +47,23 @@ export interface Room {
   names: Record<Player, string | null>;
   /** Chosen character per seat. */
   avatars: Record<Player, AvatarKey>;
+  /** Each player's own blind-loner settings, as they sat down. */
+  proposed: Record<Player, LonerRules | null>;
+  /** Each player's current pick. Before the rules lock, this is how the two settle a clash;
+   *  after, it is how either proposes a change for the next hand. Cleared whenever they agree. */
+  votes: Record<Player, LonerRules | null>;
+  /** Rules both players agreed to mid-game, waiting for the next deal. Direct user feedback:
+   *  blind loners "can be switched on at any time during a game for the next round (so after a
+   *  scoring event)" — never mid-hand, where changing which loner tiers exist would change the
+   *  meaning of a bid already made. */
+  pendingRules: LonerRules | null;
+  /** False until both players are seated and agree on rules. NOTHING is playable until then —
+   *  see `legalFor` — which is what makes it safe to change the game's config at the moment of
+   *  locking: no card has been touched. */
+  rulesLocked: boolean;
+  /** The room's conversation, newest last, capped at MAX_CHAT_HISTORY. Stored with the room so
+   *  it survives reconnects and restarts along with the game it belongs to. */
+  chat: ChatMessage[];
 }
 
 export type RoomResult<T> = { ok: true; value: T } | { ok: false; error: string };
@@ -61,6 +88,25 @@ export function createRoom(
     connected: { A: false, B: false },
     names: { A: null, B: null },
     avatars: { A: DEFAULT_AVATAR, B: DEFAULT_AVATAR },
+    proposed: { A: null, B: null },
+    votes: { A: null, B: null },
+    pendingRules: null,
+    rulesLocked: false,
+    chat: [],
+  };
+}
+
+/** Fills in fields added after a room may already have been stored. A stored room predating
+ *  rule agreement could be mid-hand, so it counts as already agreed on the rules it was dealt
+ *  with — reopening that question in the middle of a game would freeze it. */
+export function normaliseRoom(room: Room): Room {
+  return {
+    ...room,
+    proposed: room.proposed ?? { A: null, B: null },
+    votes: room.votes ?? { A: null, B: null },
+    pendingRules: room.pendingRules ?? null,
+    rulesLocked: room.rulesLocked ?? true,
+    chat: room.chat ?? [],
   };
 }
 
@@ -82,32 +128,149 @@ export function join(
   clientId: ClientId,
   name: string | null = null,
   avatar: AvatarKey = DEFAULT_AVATAR,
+  rules: LonerRules | null = null,
 ): RoomResult<{ room: Room; seat: Player }> {
   const existing = seatOf(room, clientId);
   if (existing) {
     return ok({
-      room: {
+      room: settleRules({
         ...room,
         connected: { ...room.connected, [existing]: true },
         // A returning player may have changed their name; keep the old one if they sent none.
         names: { ...room.names, [existing]: name ?? room.names[existing] },
         avatars: { ...room.avatars, [existing]: avatar },
-      },
+        // Settings can still change before the rules lock (a player who flips a toggle and
+        // rejoins); after that the table's rules are fixed for the whole game.
+        proposed:
+          rules && !room.rulesLocked ? { ...room.proposed, [existing]: rules } : room.proposed,
+      }),
       seat: existing,
     });
   }
   const free = SEATS.find((s) => room.seats[s] === null);
   if (!free) return err('That room already has two players.');
   return ok({
-    room: {
+    room: settleRules({
       ...room,
       seats: { ...room.seats, [free]: clientId },
       connected: { ...room.connected, [free]: true },
       names: { ...room.names, [free]: name },
       avatars: { ...room.avatars, [free]: avatar },
-    },
+      proposed: { ...room.proposed, [free]: rules },
+    }),
     seat: free,
   });
+}
+
+/** Locks the table's rules if the players agree — by their settings, or by their votes.
+ *
+ *  Direct user decision: when the two players' settings DIFFER, both are asked to agree rather
+ *  than one side's settings silently winning. When they already match, nothing is asked and
+ *  nothing changes — the table simply plays by the rules both chose. A player with no stated
+ *  settings (an older client) counts as the defaults. */
+function settleRules(room: Room): Room {
+  if (!bothSeated(room)) return room;
+  const { A, B } = room.votes;
+  const agreed = A && B && sameRules(A, B) ? A : null;
+
+  if (!room.rulesLocked) {
+    // Until a player picks, their own settings ARE their pick. So agreeing takes one click:
+    // switch to what the other player already has, and the table deals — nobody has to
+    // re-press a choice that was already showing as theirs.
+    const a = room.votes.A ?? room.proposed.A ?? DEFAULT_CONFIG.lonerTiersEnabled;
+    const b = room.votes.B ?? room.proposed.B ?? DEFAULT_CONFIG.lonerTiersEnabled;
+    return sameRules(a, b) ? lockRules(room, a) : room;
+  }
+
+  // Mid-game: an agreement becomes the rules for the next deal. Agreeing on what is ALREADY in
+  // effect is how a pending change gets cancelled, so it clears `pendingRules` rather than
+  // queueing a no-op.
+  if (!agreed) return room;
+  const current = room.state.config.lonerTiersEnabled;
+  return {
+    ...room,
+    votes: { A: null, B: null },
+    pendingRules: sameRules(agreed, current) ? null : agreed,
+  };
+}
+
+/** The rules the NEXT deal will use if nothing else changes — what a mid-game proposal is a
+ *  proposal to change, and what "keep the current rules" means. */
+export function nextRules(room: Room): LonerRules {
+  return room.pendingRules ?? room.state.config.lonerTiersEnabled;
+}
+
+/** Fixes the rules and writes them into the game's config. Safe precisely because nothing has
+ *  been played: `legalFor` offers no moves until this has run, and the deal itself depends only
+ *  on the seed — so this is the same game `newGame` would have dealt with these rules. The
+ *  config then carries forward to every later deal through `nextDeal`. */
+function lockRules(room: Room, rules: LonerRules): Room {
+  return {
+    ...room,
+    rulesLocked: true,
+    votes: { A: null, B: null },
+    state: { ...room.state, config: { ...room.state.config, lonerTiersEnabled: rules } },
+  };
+}
+
+/** Records a player's pick.
+ *
+ *  Before the rules lock, both players pick until their picks match.
+ *
+ *  After, a pick that differs from `nextRules` is a PROPOSAL, and a pick equal to it is an
+ *  ANSWER of "keep things as they are". Two consequences keep this from getting stuck:
+ *    - a new proposal clears the other player's old pick, so an earlier "keep" can never
+ *      silently count as a refusal of something they have not seen yet;
+ *    - a "keep" while the other player is proposing something drops the proposal outright,
+ *      rather than leaving two different picks sitting there waiting forever. */
+export function voteRules(room: Room, clientId: ClientId, rules: LonerRules): RoomResult<Room> {
+  const seat = seatOf(room, clientId);
+  if (!seat) return err('You are not seated in this room.');
+  if (!bothSeated(room)) return err('Waiting for another player.');
+  const other: Player = seat === 'A' ? 'B' : 'A';
+
+  if (!room.rulesLocked) {
+    return ok(settleRules({ ...room, votes: { ...room.votes, [seat]: rules } }));
+  }
+
+  const keep = sameRules(rules, nextRules(room));
+  const theirs = room.votes[other];
+  if (keep && theirs && !sameRules(theirs, nextRules(room))) {
+    return ok({ ...room, votes: { A: null, B: null } });
+  }
+  if (keep) return ok({ ...room, votes: { ...room.votes, [seat]: null } });
+
+  const votes = { ...room.votes, [seat]: rules } as Record<Player, LonerRules | null>;
+  if (theirs && !sameRules(theirs, rules)) votes[other] = null;
+  return ok(settleRules({ ...room, votes }));
+}
+
+export function rulesViewFor(room: Room, seat: Player): RulesView {
+  const other: Player = seat === 'A' ? 'B' : 'A';
+  return {
+    locked: room.rulesLocked,
+    inEffect: room.state.config.lonerTiersEnabled,
+    mine: room.proposed[seat],
+    theirs: room.proposed[other],
+    myVote: room.votes[seat],
+    theirVote: room.votes[other],
+    next: room.pendingRules,
+  };
+}
+
+/** Adds a chat line from a seated player. The text is cleaned here rather than trusted: it is
+ *  shown on the other player's screen. */
+export function postChat(
+  room: Room,
+  clientId: ClientId,
+  raw: unknown,
+): RoomResult<{ room: Room; message: ChatMessage }> {
+  const seat = seatOf(room, clientId);
+  if (!seat) return err('You are not seated in this room.');
+  const text = cleanChat(raw);
+  if (!text) return err('That message is empty.');
+  const message: ChatMessage = { id: (room.chat.at(-1)?.id ?? 0) + 1, from: seat, text };
+  return ok({ room: { ...room, chat: [...room.chat, message].slice(-MAX_CHAT_HISTORY) }, message });
 }
 
 /** Marks a seat as off the wire. Deliberately does NOT free the seat — see `connected`. */
@@ -135,6 +298,7 @@ export function submit(
   const seat = seatOf(room, clientId);
   if (!seat) return err('You are not seated in this room.');
   if (!bothSeated(room)) return err('Waiting for another player.');
+  if (!room.rulesLocked) return err('Agree on the rules first.');
 
   const legal = legalActions(room.state, seat);
   if (!legal.some((a) => sameAction(a, action))) {
@@ -183,7 +347,11 @@ export function needsDealAdvance(room: Room): boolean {
 
 export function advanceDeal(room: Room, seed: string): Room {
   if (!needsDealAdvance(room)) return room;
-  return { ...room, state: nextDeal(room.state, seed) };
+  // A rules change agreed mid-game lands HERE, between hands, and nowhere else.
+  const state = room.pendingRules
+    ? { ...room.state, config: { ...room.state.config, lonerTiersEnabled: room.pendingRules } }
+    : room.state;
+  return { ...room, state: nextDeal(state, seed), pendingRules: null };
 }
 
 export function viewFor(room: Room, seat: Player): PlayerView {
@@ -191,8 +359,9 @@ export function viewFor(room: Room, seat: Player): PlayerView {
 }
 
 export function legalFor(room: Room, seat: Player): Action[] {
-  // Nobody may start playing into a room that has no opponent in it yet.
-  if (!bothSeated(room)) return [];
+  // Nobody may start playing into a room that has no opponent in it yet, or before the two
+  // players have agreed which rules the table plays by.
+  if (!bothSeated(room) || !room.rulesLocked) return [];
   return legalActions(room.state, seat);
 }
 

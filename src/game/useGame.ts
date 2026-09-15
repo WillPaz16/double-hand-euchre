@@ -19,7 +19,7 @@ import type {
 } from '../../shared/engine/types.ts';
 import { chooseMove } from '../../shared/bot/index.ts';
 import { getRuleSettings } from './ruleSettings.ts';
-import { loadSavedGame, saveGame, clearSavedGame } from './savedGame.ts';
+import { loadSavedGame, saveGame } from './savedGame.ts';
 
 export const HUMAN: Player = 'A';
 export const BOT: Player = 'B';
@@ -155,7 +155,13 @@ export function useGame(initialSeed?: string) {
 
     if (state.phase === 'hand_complete' || state.phase === 'misdeal') {
       timerRef.current = setTimeout(() => {
-        setState((s) => nextDeal(s, freshSeed()));
+        // Rules are re-read between hands (direct user feedback: blind loners "can be switched
+        // on at any time during a game for the next round"). Between hands is the only safe
+        // moment: mid-hand, changing which loner tiers exist would change what a bid already
+        // made could mean. Seeded (test) games keep their fixed config, same as `restart`.
+        setState((s) =>
+          nextDeal(initialSeed === undefined ? { ...s, config: buildConfig() } : s, freshSeed()),
+        );
       }, NEXT_DEAL_DELAY_MS);
       return;
     }
@@ -220,16 +226,8 @@ export function useGame(initialSeed?: string) {
     setState(newGame(freshSeed(), HUMAN, config));
   }, [initialSeed]);
 
-  /** Ends the current game without starting a new one, for a "Quit to title" action. The
-   *  caller is responsible for actually leaving this screen (useGame has no navigation of its
-   *  own) — this only clears the autosaved state so Title screen stops offering "Continue". */
-  const quit = useCallback(() => {
-    clearSavedGame();
-  }, []);
-
   return {
     restart,
-    quit,
     view: redact(state, HUMAN),
     legal: legalActions(state, HUMAN),
     play,

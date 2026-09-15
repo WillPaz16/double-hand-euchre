@@ -12,9 +12,17 @@ import {
   playOutHand,
 } from './helpers.ts';
 
+/** These tests exercise the whole loner ladder, blind tiers included. The shipped default has
+ *  both blind tiers OFF (a house rule players opt into), so the tiers are switched on here
+ *  explicitly rather than assumed from DEFAULT_CONFIG. */
+const LADDER_CONFIG = {
+  ...DEFAULT_CONFIG,
+  lonerTiersEnabled: { blind_hand: true, full_blind: true },
+};
+
 describe('select phase', () => {
   it('non-dealer selects before dealer, then both packets are cleared', () => {
-    const s0 = newGame('seed-1', 'B', DEFAULT_CONFIG);
+    const s0 = newGame('seed-1', 'B', LADDER_CONFIG);
     expect(legalActions(s0, 'B')).toEqual([]); // dealer can't act yet
     expect(legalActions(s0, 'A').map((a) => a.type)).toEqual(['SELECT_HAND', 'SELECT_HAND']);
 
@@ -28,7 +36,7 @@ describe('select phase', () => {
 
 describe('loner declaration windows', () => {
   it('full-blind loner skips straight to dealer_exchange with a 3-hand ring', () => {
-    const s0 = selectHands(newGame('seed-2', 'B', DEFAULT_CONFIG));
+    const s0 = selectHands(newGame('seed-2', 'B', LADDER_CONFIG));
     const s1 = reduce(s0, { type: 'DECLARE_FULL_BLIND_LONER', player: 'A' });
     expect(s1.phase).toBe('dealer_exchange');
     expect(s1.maker).toBe('A');
@@ -44,7 +52,7 @@ describe('loner declaration windows', () => {
   });
 
   it('blind-hand loner trump is the upcard, and hands stay hidden until it resolves', () => {
-    let s = selectHands(newGame('seed-3', 'B', DEFAULT_CONFIG));
+    let s = selectHands(newGame('seed-3', 'B', LADDER_CONFIG));
     s = reduce(s, { type: 'PASS', player: 'A' });
     s = reduce(s, { type: 'PASS', player: 'B' }); // decline full-blind window
     expect(s.phase).toBe('loner_blind_hand');
@@ -65,7 +73,7 @@ describe('loner declaration windows', () => {
   });
 
   it('standard loner is called during normal bidding from the selected hand only', () => {
-    let s = orderUpRound1(newGame('seed-4', 'B', DEFAULT_CONFIG), 'A', true);
+    let s = orderUpRound1(newGame('seed-4', 'B', LADDER_CONFIG), 'A', true);
     expect(s.lonerTier).toBe('standard');
     expect(s.maker).toBe('A');
     s = dealerDiscardFirstLegal(s);
@@ -73,7 +81,7 @@ describe('loner declaration windows', () => {
   });
 
   it('declining both windows reveals the upcard and reaches round 1 bidding', () => {
-    const s = passLonerWindows(selectHands(newGame('seed-5', 'B', DEFAULT_CONFIG)));
+    const s = passLonerWindows(selectHands(newGame('seed-5', 'B', LADDER_CONFIG)));
     expect(s.phase).toBe('bidding_round1');
     expect(s.upcardRevealed).toBe(true);
   });
@@ -82,8 +90,8 @@ describe('loner declaration windows', () => {
 describe('loner tier config toggles', () => {
   it('disabling full-blind skips its window entirely, landing straight in blind-hand', () => {
     const config = {
-      ...DEFAULT_CONFIG,
-      lonerTiersEnabled: { ...DEFAULT_CONFIG.lonerTiersEnabled, full_blind: false },
+      ...LADDER_CONFIG,
+      lonerTiersEnabled: { ...LADDER_CONFIG.lonerTiersEnabled, full_blind: false },
     };
     const s = selectHands(newGame('seed-toggle-1', 'B', config));
     expect(s.phase).toBe('loner_blind_hand');
@@ -95,8 +103,8 @@ describe('loner tier config toggles', () => {
 
   it('disabling blind-hand skips from full-blind straight to bidding_round1 on decline', () => {
     const config = {
-      ...DEFAULT_CONFIG,
-      lonerTiersEnabled: { ...DEFAULT_CONFIG.lonerTiersEnabled, blind_hand: false },
+      ...LADDER_CONFIG,
+      lonerTiersEnabled: { ...LADDER_CONFIG.lonerTiersEnabled, blind_hand: false },
     };
     let s = selectHands(newGame('seed-toggle-2', 'B', config));
     expect(s.phase).toBe('loner_full_blind');
@@ -109,7 +117,7 @@ describe('loner tier config toggles', () => {
 
   it('disabling both tiers skips straight to bidding_round1 after hand selection', () => {
     const config = {
-      ...DEFAULT_CONFIG,
+      ...LADDER_CONFIG,
       lonerTiersEnabled: { blind_hand: false, full_blind: false },
     };
     const s = selectHands(newGame('seed-toggle-3', 'B', config));
@@ -125,8 +133,8 @@ describe('loner tier config toggles', () => {
 
   it('passLonerWindows still reaches bidding_round1 with a disabled tier (helper stays correct)', () => {
     const config = {
-      ...DEFAULT_CONFIG,
-      lonerTiersEnabled: { ...DEFAULT_CONFIG.lonerTiersEnabled, full_blind: false },
+      ...LADDER_CONFIG,
+      lonerTiersEnabled: { ...LADDER_CONFIG.lonerTiersEnabled, full_blind: false },
     };
     const s = passLonerWindows(selectHands(newGame('seed-toggle-4', 'B', config)));
     expect(s.phase).toBe('bidding_round1');
@@ -135,7 +143,7 @@ describe('loner tier config toggles', () => {
 
 describe('bidding rounds', () => {
   it('round 1 order-up gives the dealer the upcard into their selected hand', () => {
-    const s0 = passLonerWindows(selectHands(newGame('seed-6', 'B', DEFAULT_CONFIG)));
+    const s0 = passLonerWindows(selectHands(newGame('seed-6', 'B', LADDER_CONFIG)));
     const upcard = s0.kitty[0]!;
     const s1 = reduce(s0, { type: 'ORDER_UP', player: 'A', loner: false });
     expect(s1.phase).toBe('dealer_exchange');
@@ -144,7 +152,7 @@ describe('bidding rounds', () => {
   });
 
   it('round 2 naming trump has no card exchange and goes straight to play', () => {
-    let s = passLonerWindows(selectHands(newGame('seed-7', 'B', DEFAULT_CONFIG)));
+    let s = passLonerWindows(selectHands(newGame('seed-7', 'B', LADDER_CONFIG)));
     const turnedDown = s.kitty[0]!.suit;
     s = reduce(s, { type: 'PASS', player: 'A' });
     s = reduce(s, { type: 'PASS', player: 'B' });
@@ -158,7 +166,7 @@ describe('bidding rounds', () => {
   });
 
   it('cannot name the turned-down suit in round 2', () => {
-    let s = passLonerWindows(selectHands(newGame('seed-8', 'B', DEFAULT_CONFIG)));
+    let s = passLonerWindows(selectHands(newGame('seed-8', 'B', LADDER_CONFIG)));
     const turnedDown = s.kitty[0]!.suit;
     s = reduce(s, { type: 'PASS', player: 'A' });
     s = reduce(s, { type: 'PASS', player: 'B' });
@@ -168,7 +176,7 @@ describe('bidding rounds', () => {
   });
 
   it('stick the dealer: dealer cannot pass round 2 once non-dealer has passed', () => {
-    let s = passLonerWindows(selectHands(newGame('seed-9', 'B', DEFAULT_CONFIG)));
+    let s = passLonerWindows(selectHands(newGame('seed-9', 'B', LADDER_CONFIG)));
     s = reduce(s, { type: 'PASS', player: 'A' });
     s = reduce(s, { type: 'PASS', player: 'B' });
     s = reduce(s, { type: 'PASS', player: 'A' }); // non-dealer passes round 2
@@ -178,7 +186,7 @@ describe('bidding rounds', () => {
   });
 
   it('stick-the-dealer off: both passing round 2 throws the deal in for redeal', () => {
-    const config = { ...DEFAULT_CONFIG, stickTheDealer: false };
+    const config = { ...LADDER_CONFIG, stickTheDealer: false };
     let s = passLonerWindows(selectHands(newGame('seed-10', 'B', config)));
     s = reduce(s, { type: 'PASS', player: 'A' });
     s = reduce(s, { type: 'PASS', player: 'B' });
@@ -308,7 +316,7 @@ describe('trick play and scoring (crafted hands for determinism)', () => {
 
 describe('visibility (redact)', () => {
   it('nobody sees their own selected hand during the full-blind loner window', () => {
-    const s = selectHands(newGame('seed-11', 'B', DEFAULT_CONFIG));
+    const s = selectHands(newGame('seed-11', 'B', LADDER_CONFIG));
     const viewA = redact(s, 'A');
     expect(viewA.ownSelectedHand).toBeNull();
     expect(viewA.ownBlindHand).toBeNull();
@@ -321,7 +329,7 @@ describe('visibility (redact)', () => {
   // reducer's phase/flag checks above — a swap that silently inverted AGAIN would still pass
   // those.
   it('the full-blind window shows neither the upcard nor your own hand', () => {
-    const s = selectHands(newGame('seed-12a', 'B', DEFAULT_CONFIG));
+    const s = selectHands(newGame('seed-12a', 'B', LADDER_CONFIG));
     expect(s.phase).toBe('loner_full_blind');
     const viewA = redact(s, 'A');
     expect(viewA.upcard).toBeNull();
@@ -329,7 +337,7 @@ describe('visibility (redact)', () => {
   });
 
   it('the blind-hand window shows the upcard but still not your own hand', () => {
-    let s = selectHands(newGame('seed-12b', 'B', DEFAULT_CONFIG));
+    let s = selectHands(newGame('seed-12b', 'B', LADDER_CONFIG));
     s = reduce(s, { type: 'PASS', player: 'A' });
     s = reduce(s, { type: 'PASS', player: 'B' }); // decline full-blind
     expect(s.phase).toBe('loner_blind_hand');
@@ -339,7 +347,7 @@ describe('visibility (redact)', () => {
   });
 
   it('selected hand becomes visible only after both decline the blind-hand window too', () => {
-    let s = selectHands(newGame('seed-12', 'B', DEFAULT_CONFIG));
+    let s = selectHands(newGame('seed-12', 'B', LADDER_CONFIG));
     s = reduce(s, { type: 'PASS', player: 'A' });
     s = reduce(s, { type: 'PASS', player: 'B' }); // decline full-blind
     s = reduce(s, { type: 'PASS', player: 'A' });
@@ -351,7 +359,7 @@ describe('visibility (redact)', () => {
   });
 
   it('opponent hand contents are never visible mid-hand, only counts', () => {
-    let s = passLonerWindows(selectHands(newGame('seed-13', 'B', DEFAULT_CONFIG)));
+    let s = passLonerWindows(selectHands(newGame('seed-13', 'B', LADDER_CONFIG)));
     s = reduce(s, { type: 'ORDER_UP', player: 'A', loner: false });
     const viewA = redact(s, 'A');
     expect(viewA.opponentSelectedHand).toBeNull();
@@ -404,7 +412,7 @@ describe('visibility (redact)', () => {
 describe('determinism', () => {
   it('replaying the same seed and action history reproduces an identical end state', () => {
     const run = () => {
-      let s = orderUpRound1(newGame('seed-determinism', 'B', DEFAULT_CONFIG), 'A', false);
+      let s = orderUpRound1(newGame('seed-determinism', 'B', LADDER_CONFIG), 'A', false);
       s = dealerDiscardFirstLegal(s);
       return playOutHand(s);
     };
@@ -459,7 +467,7 @@ describe('game-to-target and dealer alternation', () => {
   });
 
   it('reaching gameTarget ends the game with a winner', () => {
-    const config = { ...DEFAULT_CONFIG, gameTarget: 2 };
+    const config = { ...LADDER_CONFIG, gameTarget: 2 };
     const s0 = makePlayState({
       dealer: 'B',
       trump: 'hearts',
