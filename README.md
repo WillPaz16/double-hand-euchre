@@ -16,7 +16,7 @@ structurally makes this 4-handed euchre where one player plays both seats of eac
 - **Phase 2 — Single-player UI, deployed:** not started.
 
 The full architecture and phase roadmap live in the project's Claude plan file (not
-tracked in this repo).
+tracked in this repo). Deploy and local-development instructions are in [DEPLOY.md](DEPLOY.md).
 
 ## Repo layout
 

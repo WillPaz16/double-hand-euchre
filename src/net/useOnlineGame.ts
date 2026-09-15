@@ -6,17 +6,35 @@ import { getClientId } from './clientId.ts';
 import { getPlayerAvatar, getPlayerName } from './playerName.ts';
 import { TRICK_HOLD_MS } from '../game/useGame.ts';
 
-/** Where the authoritative server lives. Defaults to the local dev server; set
- *  `VITE_SERVER_URL` at build time to point a deployed client at a deployed server. */
-const SERVER_URL: string = import.meta.env.VITE_SERVER_URL ?? 'ws://localhost:8787';
+/** Where the authoritative server lives. SAME ORIGIN by default.
+ *
+ *  In production one Fly machine serves both this bundle and the WebSocket, so the correct
+ *  URL is always this page's own host with the matching scheme. Deriving it rather than baking
+ *  it means a production build has nothing to configure and therefore nothing to get wrong:
+ *  the scheme follows the page's own (`wss:` on https), so the mixed-content failure the guard
+ *  below exists for cannot be reached by forgetting a build variable — which is exactly how it
+ *  used to be reached.
+ *
+ *  `VITE_SERVER_URL` still overrides, and `.env.development` sets it to `ws://localhost:8787`:
+ *  in dev the client is on Vite's :5173 and the server on :8787, which are NOT the same origin.
+ *  The `localhost:8787` fallback below is only for a non-browser context (tests, SSR) where
+ *  there is no page origin to derive from. */
+function sameOriginUrl(): string {
+  if (typeof window === 'undefined') return 'ws://localhost:8787';
+  const scheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  return `${scheme}//${window.location.host}`;
+}
+
+const SERVER_URL: string = import.meta.env.VITE_SERVER_URL ?? sameOriginUrl();
 
 /** True when this build cannot possibly reach its server, which is worth saying out loud.
  *
- *  `VITE_SERVER_URL` is baked at BUILD time, so a deploy that forgets it ships a client
- *  pointing at `ws://localhost:8787` — the player's own machine. Worse, a browser on an https
- *  page refuses a plaintext `ws://` socket outright as mixed content, so the failure is not
- *  even a timeout: the socket dies instantly and the reconnect loop retries forever behind
- *  "Lost the connection", which blames the network for a build mistake.
+ *  This can no longer happen by OMITTING `VITE_SERVER_URL` — the default is same-origin and
+ *  therefore always scheme-correct. It can still happen by SETTING it wrong: a build that
+ *  hard-codes a `ws://` URL and is then served over https. A browser refuses a plaintext
+ *  `ws://` socket from an https page outright as mixed content, so the failure is not even a
+ *  timeout — the socket dies instantly and the reconnect loop retries forever behind "Lost the
+ *  connection", which blames the network for a build mistake.
  *
  *  Checked at module load rather than per connection: it is a property of the build and the
  *  page, and it cannot change while the page is open. */
@@ -108,8 +126,9 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
       // truth.
       setStatus('refused');
       setNotice(
-        'This build cannot reach its game server (it was built without VITE_SERVER_URL, ' +
-          'so it is pointing at ws://localhost). Single-player still works.',
+        `This build cannot reach its game server: it was built with VITE_SERVER_URL set to ` +
+          `an insecure ws:// address (${SERVER_URL}), which a browser refuses from an https ` +
+          `page. Single-player still works.`,
       );
       return;
     }

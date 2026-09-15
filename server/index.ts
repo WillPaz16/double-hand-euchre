@@ -15,6 +15,16 @@
  * State is in memory and rooms die with the process. That is a deliberate first cut, not an
  * oversight: a restart during a game loses that game. Persisting rooms is the obvious next step
  * if these games are meant to outlive a deploy.
+ *
+ * In production this process ALSO serves the built client (see `serveStatic`), so the game and
+ * its server share one origin. That is what lets the client derive its own WebSocket URL
+ * instead of having one baked in at build time, and it is why `ALLOWED_ORIGINS` can stay unset
+ * in a normal deploy: there is only one origin to allow.
+ *
+ * It must run as EXACTLY ONE instance. Rooms live in this process's memory, so two instances
+ * are two disjoint sets of room codes: two players entering the same code would land on
+ * different machines and never see each other, with nothing in the protocol able to report it.
+ * `fly.toml` pins the count; see its own comment.
  */
 import { createServer } from 'node:http';
 import { WebSocketServer, type WebSocket } from 'ws';
@@ -39,6 +49,7 @@ import {
   viewFor,
   type Room,
 } from '../shared/net/room.ts';
+import { clientServer } from './static.ts';
 import { loadRooms, saveRooms } from './store.ts';
 
 const PORT = Number(process.env.PORT) || 8787;
@@ -161,6 +172,11 @@ function parse(raw: string): ClientMessage | null {
   }
 }
 
+/** The built client, served by this same process in production so the game and its socket
+ *  share one origin. Absent in development: `npm run dev` serves the client from Vite instead,
+ *  and this server then answers only `/health` and the WebSocket upgrade. */
+const serveClient = clientServer(process.env.CLIENT_DIR ?? 'dist');
+
 const httpServer = createServer((req, res) => {
   // A trivial health endpoint, so a platform health check has something to hit that is not a
   // WebSocket upgrade.
@@ -169,8 +185,7 @@ const httpServer = createServer((req, res) => {
     res.end(JSON.stringify({ ok: true, rooms: rooms.size }));
     return;
   }
-  res.writeHead(404);
-  res.end();
+  serveClient(req, res);
 });
 
 /** Origins allowed to open a socket, as a comma-separated env var. UNSET MEANS ALLOW ANY,

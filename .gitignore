@@ -2,6 +2,7 @@ node_modules/
 dist/
 dist-server/
 .env
+# NOT .env.development — it is dev-only config with no secrets, and the dev server needs it.
 .env.local
 .DS_Store
 
