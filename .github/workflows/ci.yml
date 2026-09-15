@@ -18,7 +18,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # 22, not 20: `npm run build` runs `wrangler types` (the Worker's type check), and
+          # wrangler 4 requires Node >= 22. On 20 the build step fails outright.
+          node-version: 22
           cache: npm
 
       - run: npm ci
