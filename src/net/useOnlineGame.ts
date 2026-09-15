@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Action, CompletedTrick, Player, PlayerView } from '../../shared/engine/types.ts';
-import type { ClientMessage, RoomCode, ServerMessage } from '../../shared/net/protocol.ts';
+import { CLOSE_REPLACED, type ClientMessage, type RoomCode, type ServerMessage } from '../../shared/net/protocol.ts';
 import { DEFAULT_AVATAR, type AvatarKey } from '../../shared/net/avatars.ts';
 import { getClientId } from './clientId.ts';
 import { getPlayerAvatar, getPlayerName } from './playerName.ts';
@@ -49,7 +49,7 @@ const MISCONFIGURED =
 const RECONNECT_MIN_MS = 500;
 const RECONNECT_MAX_MS = 8000;
 
-export type ConnectionStatus = 'connecting' | 'connected' | 'reconnecting' | 'refused';
+export type ConnectionStatus = 'connecting' | 'connected' | 'reconnecting' | 'refused' | 'replaced';
 
 export interface OnlineGame {
   /** Null until the first sync arrives — the caller must not render a table without it. */
@@ -198,8 +198,16 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
         }
       };
 
-      self.onclose = () => {
+      self.onclose = (event) => {
         if (cancelled || refused || leftRef.current) return;
+        if (event.code === CLOSE_REPLACED) {
+          // Terminal: this same player opened the game somewhere newer. Reconnecting here would
+          // take the seat back from that connection, which would then take it back from this
+          // one — the endless eviction loop CLOSE_REPLACED exists to stop.
+          refused = true;
+          setStatus('replaced');
+          return;
+        }
         setStatus('reconnecting');
         timer = setTimeout(connect, retry);
         retry = Math.min(retry * 2, RECONNECT_MAX_MS);

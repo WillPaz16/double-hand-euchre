@@ -95,6 +95,25 @@ function cardsEqual(a: CardType, b: CardType): boolean {
  *       euchre, you look at your cards before bidding on them rather than reading them off
  *       the table from across it. Read-only: there is no PLAY_CARD/DEALER_DISCARD action to
  *       attach here, bidding actions live in BidPanel. */
+/** The order the acting hand is laid out in.
+ *
+ *  Normally trump-first (`sortHandForDisplay`). The exception is the dealer's discard, on direct
+ *  user feedback: "when you pick it up it sorts then, it should sort after you discard." Trump
+ *  becomes known the moment the upcard is ordered up, so sorting by it here reshuffled the
+ *  dealer's hand at exactly the moment they needed to find a card to throw away. Instead the
+ *  hand keeps the by-suit order it was shown in during bidding, with the picked-up card on the
+ *  end where it can be spotted, and the trump sort lands once the discard is made.
+ *
+ *  Matched by value against `view.upcard` rather than assumed to be the last card, so this does
+ *  not depend on the engine's own append order. */
+function handOrder(hand: CardType[], view: PlayerView): CardType[] {
+  const upcard = view.upcard;
+  if (view.phase !== 'dealer_exchange' || !upcard) return sortHandForDisplay(hand, view.trump);
+  const rest = hand.filter((c) => !cardsEqual(c, upcard));
+  const pickedUp = hand.filter((c) => cardsEqual(c, upcard));
+  return [...sortHandForDisplay(rest, null), ...pickedUp];
+}
+
 export function HandTray({
   view,
   legal,
@@ -178,7 +197,7 @@ export function HandTray({
               each <Card> attached to its own card when the order changes — an index key here
               would make every re-sort look like every card was replaced, which is exactly what
               PickupTray's FLIP animation would then animate. */}
-          {sortHandForDisplay(fullHand, view.trump).map((card) => {
+          {handOrder(fullHand, view).map((card) => {
             const action = frozen ? undefined : cardActions.find((a) => cardsEqual(a.card, card));
             return (
               <Card

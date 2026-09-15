@@ -71,6 +71,18 @@ export function normaliseRoomCode(input: string): RoomCode | null {
   return trimmed;
 }
 
+/** WebSocket close code for "this seat was taken over by another connection from the SAME
+ *  player" — a second tab, or the same game reopened on another device.
+ *
+ *  It needs its own code because the replaced client must NOT reconnect. A plain close looks
+ *  like a dropped network, and the client's correct response to a drop is to reconnect and
+ *  reclaim its seat — which replaces the OTHER connection, which reconnects and replaces this
+ *  one. Reproduced on the live deploy with two tabs of one browser: both seated as A and evicted
+ *  each other every ~0.7s indefinitely, each showing "Lost the connection" while waiting for an
+ *  opponent who was really themselves. The newest connection wins; the older one stops.
+ *  4000-4999 is the range the WebSocket spec reserves for applications. */
+export const CLOSE_REPLACED = 4001;
+
 /** Display names are shown to the other player, so they are bounded and trimmed here — once,
  *  where both the client and the server can call the same function, rather than trusted from
  *  whatever a client happens to send. React escapes text nodes, so the risk is nuisance

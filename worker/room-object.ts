@@ -2,7 +2,7 @@ import { DurableObject } from 'cloudflare:workers';
 import { DEFAULT_CONFIG } from '../shared/engine/index.ts';
 import type { CompletedTrick, Player } from '../shared/engine/types.ts';
 import type { ClientId, ClientMessage, RoomCode, ServerMessage } from '../shared/net/protocol.ts';
-import { cleanName, normaliseRoomCode } from '../shared/net/protocol.ts';
+import { CLOSE_REPLACED, cleanName, normaliseRoomCode } from '../shared/net/protocol.ts';
 import { toAvatarKey } from '../shared/net/avatars.ts';
 import {
   advanceDeal,
@@ -213,9 +213,17 @@ export class RoomObject extends DurableObject<Env> {
 
     // A second connection for the same seat replaces the first (a reopened tab, or a reconnect
     // where the old socket has not dropped yet). Closing the stale one keeps exactly one socket
-    // per seat, so `broadcast` can never write to a zombie.
+    // per seat, so `broadcast` can never write to a zombie. `CLOSE_REPLACED`, not a plain 1000:
+    // a replaced client that reads this as an ordinary drop reconnects and evicts THIS socket in
+    // turn, forever — see the constant's own note. A socket that is already dead ignores it.
     for (const other of this.ctx.getWebSockets()) {
-      if (other !== ws && attachmentOf(other)?.seat === seat) other.close(1000, 'replaced');
+      if (other !== ws && attachmentOf(other)?.seat === seat) {
+        try {
+          other.close(CLOSE_REPLACED, 'replaced');
+        } catch {
+          // Already closing. Nothing to replace.
+        }
+      }
     }
 
     ws.serializeAttachment({ clientId: msg.clientId, seat } satisfies Attachment);

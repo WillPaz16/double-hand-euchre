@@ -98,6 +98,7 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
 
 function describe(status: string, opponentPresent: boolean): string {
   if (status === 'refused') return 'That table is already full.';
+  if (status === 'replaced') return 'This game is open in another tab or on another device.';
   if (status === 'reconnecting') return 'Lost the connection. Trying to get back...';
   if (status === 'connecting') return 'Connecting...';
   if (!opponentPresent) return 'Waiting for the other player. Read them this code.';
