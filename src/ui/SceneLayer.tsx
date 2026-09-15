@@ -89,8 +89,7 @@ export function SceneLayer() {
           relative to another element's size goes stale the moment that element changes, and
           this file has already shipped that bug three times. The clock and picture hang left
           of centre, so the opponent's head sits in a deliberate gap rather than competing with
-          anything. (The coat hooks that used to hang right of them are gone — see
-          `.scene-coat-hooks`'s removal note in index.css.) */}
+          anything. */}
       <div className="scene-picture" />
       <div className="scene-clock" />
       {/* The antlers and a second small picture frame used to stack here, sharing a 1560px gate

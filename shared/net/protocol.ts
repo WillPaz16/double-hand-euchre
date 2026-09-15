@@ -67,6 +67,8 @@ export type ServerMessage =
   /** The room's saved chat, sent once to a socket as it is seated — so a reconnect, a reload,
    *  or the other tab you just closed does not wipe the conversation. */
   | { t: 'chat_history'; messages: ChatMessage[] }
+  /** Sent to a player whose mid-game rule proposal the other player turned down. */
+  | { t: 'rules_declined' }
   /** A refused `hello` or `action`, with a reason fit to show a player. The client stays
    *  connected; a rejected action simply did not happen. */
   | { t: 'rejected'; reason: string };

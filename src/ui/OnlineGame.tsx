@@ -51,6 +51,16 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
     return () => clearTimeout(t);
   }, [game.liveChat, game.seat]);
 
+  // Direct user feedback: tell the proposer when their rule change was turned down, rather than
+  // letting their toggles quietly snap back.
+  const [declinedNotice, setDeclinedNotice] = useState(false);
+  useEffect(() => {
+    if (game.rulesDeclined === 0) return;
+    setDeclinedNotice(true);
+    const t = setTimeout(() => setDeclinedNotice(false), 4000);
+    return () => clearTimeout(t);
+  }, [game.rulesDeclined]);
+
   // Direct user feedback: multiplayer needs "a waiting for player... when you are waiting".
   // Solo never needed one — the bot answers in under a second — but a person can take a while,
   // and an action bar that simply goes empty reads as the game having stalled.
@@ -91,10 +101,16 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
         {game.rules && !waiting && (
           <RulesProposal view={game.rules} opponentName={opponentLabel} onVote={game.voteRules} />
         )}
+        {declinedNotice && !waiting && (
+          <div className="rules-proposal rules-toast" role="status" aria-live="polite">
+            {opponentLabel} kept the current rules.
+          </div>
+        )}
         <div className="action-bar">
           {theirMove && (
             <div className="waiting-on" role="status" aria-live="polite">
-              Waiting for {opponentLabel}
+              {/* Exact wording on direct user request ("lets do Waiting for Opponent..."). */}
+              Waiting for Opponent
               <span className="waiting-dots" aria-hidden="true" />
             </div>
           )}

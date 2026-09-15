@@ -912,9 +912,8 @@ body {
    prop used to sit in this row — coat hooks, mantel-height, and the one exception to the
    top-anchoring above because it tracked the fireplace's own (floor-relative) mantel. Removed
    on direct user feedback ("why is the hanger and coats and such?"): at mantel height it read
-   as laundry pinned to the chimney breast, crowded against the shelf's right edge. Its art
-   (`make_coat_hooks`, `coat_hooks.png`) is still generated, so restoring it is one element in
-   `SceneLayer` plus this rule — but re-place it somewhere it isn't competing with the shelf. */
+   as laundry pinned to the chimney breast, crowded against the shelf's right edge. Its art was
+   deleted along with it rather than kept around unused. */
 /* Resized 2.5x in 2j.3 (48x36 -> 120x90 au); the clock alongside it moved right to clear it. */
 .scene-picture {  left: calc(8px * var(--px));
   top: calc(46px * var(--px));
@@ -1740,8 +1739,14 @@ body {
    hard to hit. Stacking them as normal-flow children of one positioned wrapper fixes that
    without giving up the "table never resizes when the action bar's contents change" property:
    the wrapper is always the same out-of-flow element: only what's inside it varies. */
+/* `fixed`, not `absolute` (direct user feedback: "the bar at the bottom should span the screen
+   width no matter what the zoom"). As an `absolute` child of `.game-root` it was bounded by that
+   box's `--frame-cap` width, so zooming out past 1440 CSS px left the bar floating with room
+   showing on both sides. Same escape the scoreboard already makes, for the same reason: this is
+   chrome pinned to a screen edge, and screen edges belong to the viewport. Its CONTENTS stay
+   centred (bid row, hand tray), so only the dark ground widens; nothing moves under a thumb. */
 .action-bar {
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
@@ -3614,4 +3619,32 @@ body {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+}
+
+.rules-toast {
+  border-color: #7a5a3a;
+}
+
+/* Below 900px the hand tray spans the full width, so the bottom-right corner is covered by your
+   own cards (see `.game-pause-button`'s own max-width:899px rule, which lifts the gear clear of
+   the tray). Two placements were tried here and measured live at 390x844 before this one:
+     - beside the gear: overlapped the south-east hand fan and the felt — the gear only fits its
+       corner because it is 34px wide;
+     - bottom-left at the gear's height: clear while waiting, but on YOUR turn the bid row rises
+       into that band, and the toggle sat 10px over "Order It Up" — with a padded tap area that
+       reached further, so a tap meant for the bid could open chat instead.
+   So it sits above the bid row: the gear's tray-derived lift plus one bid-button row (2.75rem
+   button + gaps). Left corner, clear of the hand fans (the first card starts at x=84). A real
+   44px box rather than a small box with an invisible tap extender, because the extender is
+   exactly what reached into the bid button. */
+@media (max-width: 899px) {
+  .chat-toggle {
+    right: auto;
+    left: max(0.5rem, env(safe-area-inset-left));
+    bottom: calc(96px * var(--px) + max(0.5rem, env(safe-area-inset-bottom)) + 4rem);
+    min-height: 2.75rem;
+  }
+  .chat-panel {
+    bottom: calc(96px * var(--px) + max(0.5rem, env(safe-area-inset-bottom)) + 7.25rem);
+  }
 }

@@ -4335,90 +4335,6 @@ def make_farm_painting(w=700, h=352):
     return img
 
 
-def make_coat_hooks(w=208, h=268):
-    """A hook rail with a coat hung on it. The one object here that implies a PERSON — someone
-    came in out of the snow and hung their coat up — which is a different kind of warmth from
-    the fire, and cheap to state.
-
-    2j.3: resized ~2.48x (84x108 -> 208x268). Every offset below is the original times ~2.48."""
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    r_hi, rail, r_sh, r_deep = ramp(TABLE_WOOD)
-    c_hi, coat, c_sh, c_deep = ramp(COAT_GREEN)
-
-    # Rail thickness matches `make_fireplace`'s own mantel slab exactly (70 canvas-px = 35au,
-    # the same board thickness in the same au units) and mirrors its base/highlight/shadow-line
-    # structure, so `.scene-coat-hooks` positioned flush against the mantel (see that CSS rule's
-    # own comment) reads as the SAME shelf continuing rightward rather than a second, thinner,
-    # differently-lit rail floating at an unrelated height — the "mantel doesn't stretch the
-    # whole length" complaint was two boards at two different heights, not one broken board.
-    rail_h = 70
-    d.rectangle((0, 0, w - 1, rail_h), fill=rail)
-    d.rectangle((0, 0, w - 1, 24), fill=r_hi)
-    d.line((0, 46, w - 1, 46), fill=r_sh)
-    d.line((0, rail_h, w - 1, rail_h), fill=r_deep)
-    for hx in (35, w // 2, w - 37):
-        d.rectangle((hx - 5, rail_h, hx + 5, rail_h + 18), fill=r_sh)
-        d.rectangle((hx - 10, rail_h + 13, hx + 10, rail_h + 20), fill=r_deep)
-    peg_y = rail_h + 18  # dowel bottom -- shared anchor for everything hanging off any hook
-
-    # The coat, hanging from the middle hook: shoulders, body, two sleeves. Was a single sharp
-    # diagonal from collar straight out to the cuff (cx-15,top)->(cx-64,top+50) with no vertex
-    # between them, which is a dart/arrow, not a shoulder -- a hung coat's shoulder seam is a
-    # short, near-horizontal cap, and the sleeve hangs down roughly plumb below it rather than
-    # continuing to flare outward. Now built as two segments per side: a short cap out to the
-    # shoulder point, then the sleeve outer edge falling close to vertical, then the cuff tucking
-    # back in toward the body -- the silhouette a coat on a hook actually has.
-    cx, top = w // 2, peg_y - 3
-    d.polygon([(cx - 15, top), (cx + 15, top), (cx + 40, top + 16), (cx + 44, top + 55),
-               (cx + 30, top + 70), (cx + 37, h - 15), (cx - 37, h - 15), (cx - 30, top + 70),
-               (cx - 44, top + 55), (cx - 40, top + 16)], fill=coat)
-    d.polygon([(cx - 15, top), (cx + 2, top), (cx + 2, h - 15), (cx - 12, h - 15)], fill=c_sh)
-    d.line((cx - 40, top + 16, cx - 15, top), fill=c_hi, width=4)
-    d.line((cx + 15, top, cx + 40, top + 16), fill=c_deep, width=4)
-    for by in (top + 40, top + 80, top + 120):
-        d.rectangle((cx - 7, by, cx - 2, by + 5), fill=GOLD)
-
-    # Left hook: a striped scarf draped over the peg, so it isn't left bare. Chosen over a
-    # knit hat — stripes stay legible at this sprite's small size, where a rounded hat
-    # silhouette tends to blob into the peg beneath it.
-    sx = 35
-    d.rectangle((sx - 14, peg_y - 2, sx + 14, peg_y + 8), fill=RUG_RED)  # doubled over the peg
-    stripe = (RUG_RED, CLOTH_BLUE)
-    tail_h = 12
-    for i in range(7):
-        tone = stripe[i % 2]
-        y0 = peg_y + 8 + i * tail_h
-        d.rectangle((sx - 13, y0, sx - 3, y0 + tail_h - 2), fill=tone)      # longer tail
-        if i < 5:
-            d.rectangle((sx + 3, y0, sx + 13, y0 + tail_h - 2), fill=tone)  # shorter tail
-
-    # Right hook (wave-3): a mitten pair on their own connecting cord, the way a child's
-    # mittens are kept from getting lost. Redesigned (creative-direction pass): the old pair
-    # was two bare rectangles joined by a straight rigid bar flush with their own top edge --
-    # at this size that read as headphone ear-cups (or a bird), and the thumb notches were tiny
-    # nubs right at the top, easy to miss as anything in particular. Now each mitten is a
-    # tapered body (wide cuff, rounded fingertip) with the cord SAGGING between the two cuffs
-    # like a real string threaded through them, and a thumb big enough to read: a full
-    # triangular wedge a third of the way down the palm, not a corner nick.
-    mx = w - 37
-    m_hi, mitt, m_sh, _ = ramp(CLOTH_BLUE)
-    cuff_top, cuff_bot, body_bot = peg_y + 6, peg_y + 13, peg_y + 33
-    d.line((mx - 11, cuff_top - 3, mx, cuff_top + 3), fill=m_sh, width=2)  # sagging cord, left half
-    d.line((mx, cuff_top + 3, mx + 11, cuff_top - 3), fill=m_sh, width=2)  # sagging cord, right half
-    for side in (-1, 1):
-        c = mx + side * 11
-        d.polygon([(c - 7, cuff_top), (c + 7, cuff_top), (c + 6, body_bot - 4),
-                   (c, body_bot), (c - 6, body_bot - 4)], fill=mitt)          # tapered palm
-        d.rectangle((c - 7, cuff_top, c + 7, cuff_bot), fill=m_sh)           # ribbed cuff (top)
-        d.rectangle((c - 7, cuff_top, c + 7, cuff_top + 2), fill=m_hi)       # lit cuff edge
-        tx = c + side * 7
-        d.polygon([(tx, cuff_bot + 3), (tx + side * 9, cuff_bot + 7),
-                   (tx + side * 9, cuff_bot + 13), (tx, cuff_bot + 11)], fill=mitt)  # thumb
-        d.line((tx, cuff_bot + 3, tx + side * 9, cuff_bot + 7), fill=m_hi, width=1)
-    return img
-
-
 def make_woodpile(w=260, h=160):
     """Split logs stacked beside the hearth — where the fire's fuel visibly comes from.
 
@@ -4524,7 +4440,7 @@ def make_hearth_mat(w=180, h=48):
 # A low dresser under the window (2l.1 — direct user feedback: the window sat too close to the
 # floor with nothing under it, and separately, the floor near it read as bare). Raising the
 # window freed a band of wall/floor between its new sill and the floor line; this fills it.
-# Flat-shaded like woodpile/coat_hooks above, not outlined like the cat/opponent — it is
+# Flat-shaded like the woodpile above, not outlined like the cat/opponent — it is
 # furniture, not a character, and every other piece of furniture in this room reads the same
 # way.
 def make_dresser(w=192, h=128):
@@ -5009,7 +4925,6 @@ def main() -> None:
         # covers the width range two used to.
         ("farm_painting", make_farm_painting(700, 240)),
         ("clock", make_wall_clock()),
-        ("coat_hooks", make_coat_hooks()),
         ("woodpile", make_woodpile()),
         ("hearth_mat", make_hearth_mat()),
         # 96x64 -> 144x96au (1.5x, same ratio) — direct user feedback: "the dresser under the

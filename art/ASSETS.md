@@ -436,9 +436,10 @@ this sub-phase.
 ### Wall and floor furniture (Phase 2g.4)
 
 `picture.png` (48×36 au), `farm_painting.png` (190×96), `clock.png` (40×40),
-`coat_hooks.png` (42×54), `woodpile.png` (52×32). Placed one-offs, so **exempt from the tile
+`woodpile.png` (52×32). Placed one-offs, so **exempt from the tile
 rules below** — "no point features" exists to stop a repeating tile betraying its grid, and
-none of these repeat. (`antlers.png` and `picture_2.png` used to live here too; both were
+none of these repeat. (`coat_hooks.png` was removed on user feedback — it read as laundry pinned
+to the chimney. `antlers.png` and `picture_2.png` used to live here too; both were
 removed — direct user feedback that growing `farm_painting.png` into their column made all
 three overlap, "looks dumb as hell" — in favour of the one larger painting.)
 
@@ -502,7 +503,7 @@ public/art/scene/floor.png                        chunk=2
 public/art/scene/rug.png                          chunk=2
 public/art/scene/cat_sheet.png             2 frames         chunk=2
 public/art/scene/shelf.png                        chunk=2
-public/art/scene/{picture,antlers,clock,coat_hooks,woodpile}.png × 5   chunk=2
+public/art/scene/{picture,antlers,clock,woodpile}.png × 4   chunk=2
 ```
 
 ## Audio (Phase 2c)

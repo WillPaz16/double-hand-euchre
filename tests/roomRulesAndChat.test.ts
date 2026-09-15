@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   advanceDeal,
   createRoom,
+  isDecline,
   join,
   legalFor,
   normaliseRoom,
@@ -185,5 +186,24 @@ describe('chat', () => {
     expect(room.chat).toHaveLength(MAX_CHAT_HISTORY);
     expect(room.chat.at(-1)!.id).toBe(MAX_CHAT_HISTORY + 5);
     expect(room.chat[0]!.text).toBe('m5');
+  });
+});
+
+describe('telling a proposer their change was turned down', () => {
+  it('flags a "keep current" answer to a standing proposal as a decline', () => {
+    const proposed = must(voteRules(table(OFF, OFF), 'client-a', ON));
+    expect(isDecline(proposed, 'client-b', OFF)).toBe(true);
+  });
+
+  it('does not flag agreeing, withdrawing your own proposal, or keeping with nothing proposed', () => {
+    const proposed = must(voteRules(table(OFF, OFF), 'client-a', ON));
+    expect(isDecline(proposed, 'client-b', ON)).toBe(false);
+    expect(isDecline(proposed, 'client-a', OFF)).toBe(false);
+    expect(isDecline(table(OFF, OFF), 'client-b', OFF)).toBe(false);
+  });
+
+  it('never applies before the rules first lock', () => {
+    const unlocked = must(voteRules(table(ON, OFF), 'client-a', ONLY_HAND));
+    expect(isDecline(unlocked, 'client-b', OFF)).toBe(false);
   });
 });

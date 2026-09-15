@@ -245,6 +245,17 @@ export function voteRules(room: Room, clientId: ClientId, rules: LonerRules): Ro
   return ok(settleRules({ ...room, votes }));
 }
 
+/** True when this vote turns DOWN the other player's standing proposal — as opposed to
+ *  withdrawing your own, or agreeing. The server uses it to tell the proposer, because from
+ *  their side all three look the same: their proposal simply disappears. */
+export function isDecline(room: Room, clientId: ClientId, rules: LonerRules): boolean {
+  const seat = seatOf(room, clientId);
+  if (!seat || !room.rulesLocked) return false;
+  const theirs = room.votes[seat === 'A' ? 'B' : 'A'];
+  const next = nextRules(room);
+  return !!theirs && !sameRules(theirs, next) && sameRules(rules, next);
+}
+
 export function rulesViewFor(room: Room, seat: Player): RulesView {
   const other: Player = seat === 'A' ? 'B' : 'A';
   return {

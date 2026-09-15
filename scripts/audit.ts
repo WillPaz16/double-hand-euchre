@@ -253,6 +253,11 @@ async function main(): Promise<void> {
                 '.scene-fireplace', '.scene-window', '.scene-picture', '.scene-clock',
                 '.scene-shelf', '.scene-dresser', '.scene-woodpile',
                 '.scene-hearth-mat',
+                // Chrome, not room — but pinned to the screen edges all the same (direct user
+                // feedback: the bottom bar "should span the screen width no matter what the
+                // zoom"). As an absolute child of the capped game box it drifted in from both
+                // edges past 1440px; listing it here is what makes that a failure.
+                '.action-bar',
               ]) {
                 for (const el of document.querySelectorAll(sel)) {
                   if (getComputedStyle(el).display === 'none') continue;

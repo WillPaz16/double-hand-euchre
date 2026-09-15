@@ -12,6 +12,7 @@ import {
   join,
   legalFor,
   needsDealAdvance,
+  isDecline,
   normaliseRoom,
   opponentAvatar,
   opponentName,
@@ -285,10 +286,17 @@ export class RoomObject extends DurableObject<Env> {
       send(ws, { t: 'rejected', reason: 'That rules choice could not be read.' });
       return;
     }
+    const declined = isDecline(room, bound.clientId, rules);
     const voted = voteRules(room, bound.clientId, rules);
     if (!voted.ok) {
       send(ws, { t: 'rejected', reason: voted.error });
       return;
+    }
+    if (declined) {
+      for (const socket of this.ctx.getWebSockets()) {
+        const seat = attachmentOf(socket)?.seat;
+        if (seat && seat !== bound.seat) send(socket, { t: 'rules_declined' });
+      }
     }
     // Settle rather than just persist: locking the rules is what makes the first moves legal,
     // so both seats need a fresh sync carrying their new legal actions.

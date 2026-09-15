@@ -87,6 +87,9 @@ export interface OnlineGame {
    *  the speech bubble, which should mark someone speaking now, not re-announce old messages
    *  every time the page reconnects. */
   liveChat: ChatMessage | null;
+  /** Bumped each time the other player turns down this player's rule proposal. A counter rather
+   *  than a flag so two declines in a row still each register as new. */
+  rulesDeclined: number;
   sendChat: (text: string) => void;
 }
 
@@ -111,6 +114,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
   const [rules, setRules] = useState<RulesView | null>(null);
   const [chat, setChat] = useState<ChatMessage[]>([]);
   const [liveChat, setLiveChat] = useState<ChatMessage | null>(null);
+  const [rulesDeclined, setRulesDeclined] = useState(0);
 
   const socketRef = useRef<WebSocket | null>(null);
   /** Set only by `leave()`. Distinct from the per-connection `cancelled` flag below: this one
@@ -213,6 +217,10 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
           if (msg.completedTrick) setCompletedTrick(msg.completedTrick);
           return;
         }
+        if (msg.t === 'rules_declined') {
+          setRulesDeclined((n) => n + 1);
+          return;
+        }
         if (msg.t === 'chat_history') {
           // Replaces rather than appends: this is the server's whole record, sent on every
           // seating, so appending would duplicate the log on each reconnect.
@@ -305,6 +313,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
     voteRules,
     chat,
     liveChat,
+    rulesDeclined,
     sendChat,
   };
 }
