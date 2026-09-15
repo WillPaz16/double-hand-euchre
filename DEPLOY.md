@@ -92,7 +92,7 @@ npx wrangler tail          # live logs
 Then open the app, "Play a Friend" → "Start a Table", and join that code from a second browser.
 Both seats filling exercises the assets, the upgrade routing, and the Durable Object together.
 
-The scripted equivalent runs every multiplayer check against any server:
+CI already runs this automatically: against `wrangler dev` on every push, and against the live URL right after each deploy, so a deploy that breaks multiplayer fails the pipeline. To run it yourself against any server:
 
 ```bash
 SERVER_URL=wss://doublehand.willpaz16.workers.dev npx tsx scripts/smoke-multiplayer.ts

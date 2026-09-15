@@ -62,6 +62,25 @@ jobs:
       - name: Production build
         run: npm run build
 
+      # The room RULES are unit-tested (tests/room*.test.ts), but the Worker and the Durable Object
+      # around them were only ever exercised by running this script by hand. It drives two real
+      # WebSocket clients through a real `wrangler dev` (workerd, local Durable Object storage):
+      # seating, redacted views, off-turn moves refused, reconnect, a third client refused, and a
+      # full hand to a completed trick. Runs after the build because the Worker serves dist/.
+      - name: Multiplayer smoke test (Worker + Durable Objects under wrangler dev)
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+        run: |
+          npx wrangler dev --local --port 8787 > wrangler-dev.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8787/health > /dev/null; then break; fi
+            sleep 2
+          done
+          if ! curl -sf http://localhost:8787/health > /dev/null; then
+            echo "::error::wrangler dev did not start"; cat wrangler-dev.log; exit 1
+          fi
+          npx tsx scripts/smoke-multiplayer.ts || { cat wrangler-dev.log; exit 1; }
+
   # Deploys only after EVERY check above has passed, and only for a push — a pull request runs
   # the checks and stops, so nothing reaches Cloudflare until it is merged.
   #   main -> production Worker  `doublehand`      https://doublehand.willpaz16.workers.dev
@@ -109,3 +128,23 @@ jobs:
           else
             npx wrangler deploy --env=dev
           fi
+
+      # A green deploy step only means Wrangler uploaded something. This proves the LIVE site plays:
+      # the same multiplayer smoke test, pointed at the URL that was just deployed. Retries cover the
+      # short window after a deploy while it reaches every edge location. Hostnames mirror the
+      # Worker names in wrangler.jsonc (`doublehand`, `doublehand-dev`) on the account's workers.dev
+      # subdomain — update both together if either is renamed.
+      - name: Smoke test the deployed site
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            host=doublehand.willpaz16.workers.dev
+          else
+            host=doublehand-dev.willpaz16.workers.dev
+          fi
+          for attempt in 1 2 3 4 5 6; do
+            if SERVER_URL="wss://$host" npx tsx scripts/smoke-multiplayer.ts; then exit 0; fi
+            echo "Attempt $attempt against $host failed; retrying in 15s."
+            sleep 15
+          done
+          echo "::error::https://$host failed the multiplayer smoke test after deploying"
+          exit 1

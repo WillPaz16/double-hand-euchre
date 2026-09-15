@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="vite-plugin-pwa/react" />
 
 /** Declares the env vars this app reads, so `import.meta.env` is typed rather than `any`.
  *  `VITE_SERVER_URL` points the client at a deployed multiplayer server; unset, the client

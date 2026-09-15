@@ -3951,3 +3951,91 @@ body {
     bottom: calc(96px * var(--px) + max(0.5rem, env(safe-area-inset-bottom)) + 7.25rem);
   }
 }
+
+/* --- Crash screen (ErrorBoundary) ----------------------------------------------------------
+   Plain markup only: this renders when some other component has thrown, so it must not depend on
+   any of them. Same palette and font as the rest of the game so a crash still looks like the game. */
+.crash-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+  background: #211710;
+  color: #f0e6d6;
+}
+.crash-title {
+  margin: 0;
+  font-size: 32px;
+  color: #ffd54a;
+}
+.crash-text {
+  margin: 0;
+  max-width: 32ch;
+  font-size: 16px;
+  line-height: 24px;
+}
+.crash-button {
+  font-family: inherit;
+  font-size: 16px;
+  min-height: 48px;
+  padding: 0 32px;
+  border-radius: 0;
+  border: 2px solid #ffd54a;
+  background: #ffd54a;
+  color: #241a12;
+  cursor: pointer;
+}
+.crash-button:focus-visible {
+  outline: 4px solid #fff3c4;
+  outline-offset: 2px;
+}
+
+/* --- Update bar (UpdatePrompt) -------------------------------------------------------------
+   Above everything, including the pause menu (20) and connection overlays (8): a reload offer is
+   only useful if it can be seen. Top-centre, clear of the bottom action bar where play happens. */
+.update-bar {
+  position: fixed;
+  top: max(8px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100vw - 16px);
+  padding: 8px 8px 8px 16px;
+  font-size: 16px;
+  color: #f0e6d6;
+  background: #241a12;
+  border: 2px solid #ffd54a;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+}
+.update-bar-button,
+.update-bar-later {
+  font-family: inherit;
+  font-size: 16px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 0;
+  cursor: pointer;
+}
+.update-bar-button {
+  border: 2px solid #ffd54a;
+  background: #ffd54a;
+  color: #241a12;
+}
+.update-bar-later {
+  border: 2px solid #7a5a3a;
+  background: transparent;
+  color: #f0e6d6;
+}
+.update-bar-button:focus-visible,
+.update-bar-later:focus-visible {
+  outline: 4px solid #fff3c4;
+  outline-offset: 2px;
+}

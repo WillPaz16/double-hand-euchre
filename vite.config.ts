@@ -24,7 +24,11 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt', not 'autoUpdate': a deploy used to reach players only after they closed the game
+      // or reloaded twice. The new version now installs in the background and UpdatePrompt offers
+      // a reload. With the virtual:pwa-register import in UpdatePrompt, the plugin no longer
+      // injects its own registerSW.js.
+      registerType: 'prompt',
       // Single-player is the whole game engine running client-side already (§2 of the
       // architecture doc) — precaching every asset the generator produces is what makes
       // "installed to your phone's home screen, plays a full game with the network

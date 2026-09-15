@@ -12,16 +12,20 @@ const DEFAULT_RULE_SETTINGS: RuleSettings = DEFAULT_CONFIG.lonerTiersEnabled;
  *  a component. Same on-disk shape as `Config['lonerTiersEnabled']` on purpose — this IS that
  *  field, persisted; `useGame` merges it into `DEFAULT_CONFIG` to build each new game's config. */
 export function getRuleSettings(): RuleSettings {
-  const raw = localStorage.getItem(KEY);
-  if (!raw) return DEFAULT_RULE_SETTINGS;
+  // Guarded end to end: `getItem` throws where site data is blocked, and this is read when every
+  // game starts and every online table is joined.
   try {
-    const parsed = JSON.parse(raw);
-    return { ...DEFAULT_RULE_SETTINGS, ...parsed };
+    const raw = localStorage.getItem(KEY);
+    return raw ? { ...DEFAULT_RULE_SETTINGS, ...JSON.parse(raw) } : DEFAULT_RULE_SETTINGS;
   } catch {
     return DEFAULT_RULE_SETTINGS;
   }
 }
 
 export function setRuleSettings(next: RuleSettings): void {
-  localStorage.setItem(KEY, JSON.stringify(next));
+  try {
+    localStorage.setItem(KEY, JSON.stringify(next));
+  } catch {
+    // Unwritable storage: the change can't persist past this page.
+  }
 }

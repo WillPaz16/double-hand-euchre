@@ -233,7 +233,12 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
           setLiveChat(incoming);
           return;
         }
-        // msg.t === 'rejected'
+        // Explicit, not a fall-through. This used to be the "everything else" branch, so ANY
+        // message type this build doesn't know read as a rejection — and arriving before
+        // `seated`, that marked the client refused and closed the socket. The service worker
+        // keeps old builds running after a deploy, so an older client meeting a newer server's
+        // new message type is a normal event, not an edge case. Unknown types are ignored.
+        if ((msg as { t: string }).t !== 'rejected') return;
         setNotice(msg.reason);
         // Being refused a SEAT is terminal; being refused a MOVE is not. Only the former can
         // arrive before we have been seated, which is what distinguishes them here.

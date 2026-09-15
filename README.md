@@ -95,11 +95,13 @@ of them pass.
 
 | Check | What it guards |
 |---|---|
-| 189 unit & component tests (Vitest) | rules, scoring, room logic, multiplayer protocol, UI behavior |
+| 196 unit & component tests (Vitest) | rules, scoring, room logic, multiplayer protocol, UI behavior, crash and storage fallbacks |
 | 10,000-deal fuzz | random legal play under random rule settings never reaches an illegal state |
 | Layout audit (Playwright) | 11 screen sizes: whole-pixel art scaling, UI/scenery collisions, edge anchoring, hand-fan spacing |
 | Art checks | two generator runs are pixel-identical, card art is unchanged, sprites have no holes |
 | Production build | the app and the Worker both type-check and build |
+| Multiplayer smoke test | two real WebSocket clients against the Worker under `wrangler dev`: seating, hidden cards, turn enforcement, reconnect, a full hand |
+| Post-deploy smoke test | the same test against the live URL right after each deploy |
 
 ## Tech stack
 

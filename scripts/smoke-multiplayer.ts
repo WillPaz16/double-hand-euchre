@@ -6,16 +6,22 @@
  * server attributes each move to the connection it arrived on, and that a dropped client gets
  * its own seat and its own cards back. Those failures only exist once there is a wire.
  *
- * Run: `npm run server` in one shell, `npx tsx scripts/smoke-multiplayer.ts` in another.
+ * Run: `npm run worker` in one shell, `npx tsx scripts/smoke-multiplayer.ts` in another. Against a
+ * deployed site: `SERVER_URL=wss://doublehand.willpaz16.workers.dev npx tsx scripts/...`. CI runs
+ * both — against `wrangler dev` on every push, and against the live URL right after each deploy.
  */
 import { WebSocket } from 'ws';
-import type { ClientMessage, ServerMessage } from '../shared/net/protocol.ts';
+import { makeRoomCode, type ClientMessage, type ServerMessage } from '../shared/net/protocol.ts';
 import type { Action, Player } from '../shared/engine/types.ts';
 
 const URL = process.env.SERVER_URL ?? 'ws://localhost:8787';
-// Not "SMOK": `O` is excluded from the code alphabet as an ambiguous glyph, so that spelling is
-// rejected before it reaches a room. Caught by this very script on its first run.
-const CODE = process.env.ROOM_CODE ?? 'SMKE';
+// Fresh codes every run, drawn from the real code alphabet. Fixed codes ("SMKE", "TR2K") broke two
+// ways: a hand-picked spelling can use an excluded glyph (the first attempt was "SMOK", and `O`
+// isn't allowed), and against a DEPLOYED server a room persists between runs — the next run would
+// rejoin a half-played or finished game and fail for reasons that have nothing to do with the code.
+const CODE = process.env.ROOM_CODE ?? makeRoomCode();
+let fullHandCode = makeRoomCode();
+while (fullHandCode === CODE) fullHandCode = makeRoomCode();
 
 let failures = 0;
 function check(label: string, cond: boolean, detail = ''): void {
@@ -208,7 +214,7 @@ async function main(): Promise<void> {
  *  Nothing short of playing a real hand exercises that. */
 async function playAFullTrick(): Promise<void> {
   console.log('\n  -- driving a full hand --');
-  const code = 'TR2K';
+  const code = fullHandCode;
   const p1 = new Client('full-a', code);
   const p2 = new Client('full-b', code);
   await Promise.all([p1.open(), p2.open()]);
