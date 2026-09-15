@@ -32,6 +32,42 @@ messages and runs clocks. The two clocks that were `setTimeout`s on Node (the pa
 next deal, and sweeping an abandoned room after 10 minutes) are a single Durable Object alarm,
 because a timer cannot survive the object being evicted and an alarm can.
 
+## Environments
+
+| Branch | Worker | URL | Deploys |
+|---|---|---|---|
+| `main` | `euchre` | https://euchre.willpaz16.workers.dev | on every push/merge to `main` |
+| `dev` | `euchre-dev` | https://euchre-dev.willpaz16.workers.dev | on every push to `dev` |
+
+The two Workers have **separate Durable Object namespaces**, so a room on dev and a room on prod
+with the same code are different rooms. Testing on dev can never touch a live game.
+
+Workflow: work on a branch → merge into `dev` → check it on the dev URL → merge `dev` into `main`.
+Pull requests run every check but deploy nothing; only a push to `main` or `dev` deploys.
+
+## Automatic deploys
+
+`.github/workflows/ci.yml` has a `deploy` job that runs **only after every check passes**
+(typecheck, tests, fuzz, art checks, layout audit, build) and only on a push to `main` or `dev`.
+A failing check means nothing ships.
+
+It needs one secret, a Cloudflare API token, set once:
+
+1. Cloudflare dashboard → **My Profile → API Tokens → Create Token** → use the
+   **"Edit Cloudflare Workers"** template → create it and copy the token.
+2. Save it to GitHub (this prompts for the value, so the token never goes on the command line):
+
+   ```bash
+   gh secret set CLOUDFLARE_API_TOKEN
+   ```
+
+If the secret is missing, the deploy job stops with an error naming it rather than failing
+somewhere inside wrangler. The account ID is pinned in `wrangler.jsonc`; it is an identifier,
+not a credential.
+
+Manual deploys still work and bypass CI: `npm run deploy` (prod) and `npm run deploy:dev`
+(dev). Prefer merging, which guarantees the checks ran against exactly what ships.
+
 ## First deploy
 
 ```bash

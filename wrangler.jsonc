@@ -2,6 +2,9 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "euchre",
+  // Pinned so a CI deploy with an API token never has to guess which account it means. An
+  // identifier, not a credential: the token is what grants access, and it lives in GitHub secrets.
+  "account_id": "429366780e573713be56dcd29b89138e",
   "main": "worker/index.ts",
   "compatibility_date": "2026-09-01",
 
@@ -29,5 +32,22 @@
   // client runs under Vite's HMR on :5173.
   "dev": { "port": 8787 },
 
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+
+  // DEV: pushes to the `dev` branch deploy here (see .github/workflows/ci.yml), production is
+  // `main`. `wrangler deploy --env dev` names the Worker `euchre-dev`, so it gets its own URL
+  // (euchre-dev.<subdomain>.workers.dev) and its OWN Durable Object namespace — a dev room code
+  // and a prod room code never meet, so testing can't disturb a real game.
+  //
+  // `durable_objects` and `vars` are repeated because wrangler does NOT inherit them into named
+  // environments (its schema says so for both); leave either out and the dev Worker deploys
+  // without a ROOM binding and every socket fails. `assets` and `migrations` DO inherit.
+  "env": {
+    "dev": {
+      "durable_objects": {
+        "bindings": [{ "name": "ROOM", "class_name": "RoomObject" }]
+      },
+      "vars": { "ALLOWED_ORIGINS": "" }
+    }
+  }
 }

@@ -15,7 +15,8 @@
     "art:check": "python3 art/check_determinism.py && python3 art/check_cards_frozen.py && python3 art/check_avatar_holes.py",
     "worker": "wrangler dev",
     "deploy": "npm run build && wrangler deploy",
-    "typecheck:worker": "wrangler types >/dev/null && tsc --noEmit -p worker/tsconfig.json"
+    "typecheck:worker": "wrangler types >/dev/null && tsc --noEmit -p worker/tsconfig.json",
+    "deploy:dev": "npm run build && wrangler deploy --env=dev"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
