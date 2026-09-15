@@ -36,8 +36,11 @@ export function TitleScreen({
     <div className="title-scene">
       <SceneLayer />
       <div className="title-screen">
-        <h1 className="title-heading">Two-Handed Euchre</h1>
-        <p className="title-tagline">A cabin, a fire, and a hand you can only half-remember.</p>
+        {/* Not "Two-Handed Euchre": that is the established name of a different game — two
+            players, ONE hand each (see Wikipedia's "Euchre variants"). Here each player plays
+            both hands of a partnership, so "double-hand". The tagline is the user's own line. */}
+        <h1 className="title-heading">Double-Hand Euchre</h1>
+        <p className="title-tagline">The euchre you know and love, but you only have one friend.</p>
         {confirmingNewGame ? (
           <>
             <p className="settings-note">Starting a new game gives up the one in progress.</p>

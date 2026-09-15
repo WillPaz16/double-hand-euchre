@@ -1,4 +1,10 @@
-# Two-Handed Euchre
+# Double-Hand Euchre
+
+*The euchre you know and love, but you only have one friend.*
+
+Not to be confused with "two-handed euchre", which is the established name for a different
+game: two players, one hand each ([Euchre variants](https://en.wikipedia.org/wiki/Euchre_variants)).
+Here each player plays **both** hands of a partnership.
 
 A two-player variant of euchre that we invented, built as a web app so we can play it
 together — with a future single-player mode against a bot trained via self-play.

@@ -1,4 +1,4 @@
-# Two-Handed Euchre — Rules Spec
+# Double-Hand Euchre — Rules Spec
 
 Canonical source of truth for the game engine. Every engine test in Phase 1 traces back to
 a line in this document. Only the last section (§8 deferred items) remains open, and it's

@@ -33,7 +33,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,png,wav,woff,woff2}'],
       },
       manifest: {
-        name: 'Two-Handed Euchre',
+        name: 'Double-Hand Euchre',
         short_name: 'Euchre',
         description:
           'A two-player euchre variant where each player controls two hands, playing them alternately from memory.',
