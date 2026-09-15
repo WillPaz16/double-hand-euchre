@@ -1,113 +1,87 @@
 # Deploying
 
-One Fly.io app serves both halves: the built client (`dist/`) and the WebSocket server, from a
-single Node process on a single machine.
+One Cloudflare Worker serves both halves: the built client (`dist/`, via the static-assets
+binding) and the multiplayer rooms (one Durable Object per room code). Runs on the **Workers
+Free plan — $0**.
 
-## Why one machine, and why that is not a shortcut
+## How it fits together
 
-Rooms live in the server process's memory. Two instances are two disjoint sets of room codes —
-two players entering the same code land on different machines and never see each other, and
-nothing in the protocol can detect or report it. So the app runs at a count of exactly **one**,
-and `fly.toml` is written around that constraint (`auto_stop_machines = 'off'`,
-`min_machines_running = 1`).
+```
+browser ──► Worker (worker/index.ts)
+              ├─ /health         → {"ok":true}
+              ├─ /ws?code=TRUK   → Durable Object "TRUK" (worker/room-object.ts)
+              └─ everything else → dist/ (SPA fallback to index.html)
+```
 
-If this ever needs to outgrow one box, the right shape is Cloudflare Durable Objects — a room
-is exactly a durable object — and that is a rewrite of `server/index.ts`, not a config change.
-For two people playing euchre, one machine is correct and will stay correct for a long time.
+**A room is a Durable Object.** `idFromName(code)` means Cloudflare runs exactly one instance of
+a given room, globally. The Node server had to be pinned to a single machine to get that
+guarantee; here the platform's addressing provides it.
 
-## Why the client ships with the server
+**The room code is in the socket URL** because the Worker has to pick the right object before
+the socket exists — it cannot read `hello` first. `hello` still carries the code, and the
+object refuses a mismatch.
 
-Same origin means the client derives its own WebSocket URL from `location` instead of having
-one baked in at build time. That removes both of the deploy mistakes this codebase previously
-needed guard code for: a build that forgets `VITE_SERVER_URL` (it has no such requirement now)
-and an `ALLOWED_ORIGINS` that does not match the client's real origin (there is only one
-origin, so it can stay unset).
+**Why it is free.** Sockets are accepted with the Hibernation API, so an idle connection (two
+people thinking about a card) accrues no billable duration. Free-plan limits are 100k
+requests/day, 13k GB-s/day and 5GB of SQLite storage; two people playing euchre will not come
+near any of them. Only SQLite-backed Durable Objects are allowed on Free, which is what
+`new_sqlite_classes` in `wrangler.jsonc` declares.
 
-The trade is honest: the game page is down while the server redeploys. A redeploy takes a few
-seconds and drops in-progress games anyway, so it costs nothing that was not already lost.
+**Game rules are not here.** `shared/net/room.ts` is pure and unchanged; the Worker only moves
+messages and runs clocks. The two clocks that were `setTimeout`s on Node (the pause before the
+next deal, and sweeping an abandoned room after 10 minutes) are a single Durable Object alarm,
+because a timer cannot survive the object being evicted and an alarm can.
 
 ## First deploy
 
-`flyctl` builds remotely, so no local Docker is needed.
-
 ```bash
-brew install flyctl
-fly auth login
+npx wrangler login
+npm run deploy
 ```
 
-**Pick a unique app name.** Fly app names are global, and `euchre` is almost certainly taken.
-Choose one, then set it in `fly.toml`'s `app = '...'` line — it becomes your URL,
-`https://<name>.fly.dev`.
+`npm run deploy` builds the client (type-checking both the app and the Worker first) and runs
+`wrangler deploy`. Wrangler prints the URL — `https://euchre.<your-subdomain>.workers.dev`.
+To change the name, edit `"name"` in `wrangler.jsonc`.
 
-```bash
-fly apps create your-euchre-name
-```
-
-Create the volume before the first deploy, in the same region as `primary_region` in
-`fly.toml`. It holds `rooms.json`, so in-progress games survive a restart:
-
-```bash
-fly volumes create euchre_data --region ord --size 1 --app your-euchre-name
-```
-
-Deploy. **`--ha=false` matters** — without it Fly provisions a second standby machine, which is
-the split-brain failure described above:
-
-```bash
-fly deploy --ha=false
-fly scale count 1      # confirm; should report 1 machine
-fly open
-```
-
-## Subsequent deploys
-
-```bash
-fly deploy
-```
-
-`fly scale count 1` is worth re-checking after any change to `fly.toml`.
+That is the whole setup: no volume to create, no machine count to pin, no build variables. The
+client derives its WebSocket URL from its own origin.
 
 ## Verifying a deploy
 
 ```bash
-curl https://your-euchre-name.fly.dev/health     # {"ok":true,"rooms":N}
-fly logs
+curl https://euchre.<your-subdomain>.workers.dev/health
+npx wrangler tail          # live logs
 ```
 
-Then open the app, start a game from "Play a Friend", and open the same room code in a second
-browser. Both seats filling is the end-to-end check — it exercises the HTTP serving, the
-WebSocket upgrade, and the room store in one go.
+Then open the app, "Play a Friend" → "Start a Table", and join that code from a second browser.
+Both seats filling exercises the assets, the upgrade routing, and the Durable Object together.
+
+The scripted equivalent runs every multiplayer check against any server:
+
+```bash
+SERVER_URL=wss://euchre.<your-subdomain>.workers.dev npx tsx scripts/smoke-multiplayer.ts
+```
 
 ## Local development
 
-Two processes, because in dev the client is served by Vite on `:5173` and the server runs
-separately on `:8787` — two different origins, which is why `.env.development` overrides the
-same-origin default with `VITE_SERVER_URL=ws://localhost:8787`.
-
 ```bash
-npm run dev        # client, :5173
-npm run server     # game server, :8787   (only needed for "Play a Friend")
+npm run dev        # client with HMR, :5173
+npm run worker     # Worker + Durable Objects under workerd, :8787 (needs a `npm run build` once)
 ```
 
-Solo play needs no server at all.
+Two processes because Vite's HMR and the Worker are different origins; `.env.development`
+points the dev client at `:8787`. Solo play needs neither the Worker nor a network.
 
-## Testing the production path locally
-
-This runs exactly what Fly runs — the bundled server serving the real built client:
-
-```bash
-npm run build:all
-npm start          # :8787, serving dist/ and the WebSocket on one origin
-```
+To run exactly what production runs, skip Vite and open `http://localhost:8787` after
+`npm run build && npm run worker`. Local room state persists in `.wrangler/` across restarts,
+the same way it does in Durable Object storage.
 
 ## Configuration
 
-Every one of these has a working default. `fly.toml` sets the first two.
-
-| Variable | Default | Notes |
+| Setting | Where | Notes |
 |---|---|---|
-| `PORT` | `8787` | Must match `internal_port` in `fly.toml`. |
-| `ROOMS_FILE` | `.rooms.json` | Set to `/data/rooms.json` in `fly.toml` so it lands on the volume. `saveRooms` writes `<file>.tmp` and renames, so this must be a path whose directory is writable. |
-| `CLIENT_DIR` | `dist` | Where the built client is. If it is missing, the server serves only `/health` and the WebSocket — which is what happens in development. |
-| `HEARTBEAT_MS` | `30000` | Ping interval; a socket that misses one is terminated. |
-| `ALLOWED_ORIGINS` | unset (allow any) | Comma-separated. Unnecessary in the single-app deploy above, since client and server share an origin. Set it if you ever serve the client from somewhere else. |
+| `name` | `wrangler.jsonc` | Becomes the `workers.dev` subdomain. |
+| `ALLOWED_ORIGINS` | `wrangler.jsonc` `vars` | Comma-separated. Empty means allow any, which is correct: the Worker serves its own client, so there is one origin. Set it only if the client is ever hosted elsewhere. |
+
+Limits that used to be env vars are constants at the top of `worker/room-object.ts`
+(next-deal delay, empty-room TTL, payload cap, rate limit).

@@ -8,15 +8,14 @@
     "typecheck": "tsc --noEmit",
     "fuzz": "tsx scripts/fuzz.ts",
     "dev": "vite",
-    "server": "tsx server/index.ts",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && npm run typecheck:worker && vite build",
     "preview": "vite preview",
     "balance": "tsx scripts/balance.ts",
     "audit": "tsx scripts/audit.ts",
     "art:check": "python3 art/check_determinism.py && python3 art/check_cards_frozen.py && python3 art/check_avatar_holes.py",
-    "build:server": "esbuild server/index.ts --bundle --platform=node --format=esm --packages=external --outfile=dist-server/index.js",
-    "build:all": "npm run build && npm run build:server",
-    "start": "node dist-server/index.js"
+    "worker": "wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
+    "typecheck:worker": "wrangler types >/dev/null && tsc --noEmit -p worker/tsconfig.json"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
@@ -33,13 +32,14 @@
     "typescript": "^5.6.0",
     "vite": "^5.4.21",
     "vite-plugin-pwa": "^1.3.0",
-    "vitest": "^2.1.0"
+    "vitest": "^2.1.0",
+    "wrangler": "^4.131.2",
+    "ws": "^8.21.3"
   },
   "dependencies": {
     "@fontsource/silkscreen": "^5.3.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "ws": "^8.21.3"
+    "react-dom": "^19.2.8"
   },
   "engines": {
     "node": ">=20"

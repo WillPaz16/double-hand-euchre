@@ -8,7 +8,7 @@ import { TRICK_HOLD_MS } from '../game/useGame.ts';
 
 /** Where the authoritative server lives. SAME ORIGIN by default.
  *
- *  In production one Fly machine serves both this bundle and the WebSocket, so the correct
+ *  In production one Cloudflare Worker serves both this bundle and the WebSocket, so the correct
  *  URL is always this page's own host with the matching scheme. Deriving it rather than baking
  *  it means a production build has nothing to configure and therefore nothing to get wrong:
  *  the scheme follows the page's own (`wss:` on https), so the mixed-content failure the guard
@@ -144,7 +144,9 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
 
     const connect = () => {
       if (cancelled || refused || leftRef.current) return;
-      const self = new WebSocket(SERVER_URL);
+      // `/ws?code=` because the Worker must route the upgrade to the room's Durable Object
+      // BEFORE any message exists to read the code from. `hello` still carries it as well.
+      const self = new WebSocket(`${SERVER_URL}/ws?code=${encodeURIComponent(code)}`);
       socket = self;
       socketRef.current = self;
 

@@ -33,8 +33,10 @@ class Client {
   private queue: ServerMessage[] = [];
   seat: Player | null = null;
 
-  constructor(readonly clientId: string) {
-    this.socket = new WebSocket(URL);
+  // The room code is part of the URL because the Worker routes each socket to its room's
+  // Durable Object before any message has been sent.
+  constructor(readonly clientId: string, code: string = CODE) {
+    this.socket = new WebSocket(`${URL}/ws?code=${code}`);
     this.socket.on('message', (raw) => {
       const msg = JSON.parse(String(raw)) as ServerMessage;
       if (msg.t === 'seated') this.seat = msg.seat;
@@ -207,8 +209,8 @@ async function main(): Promise<void> {
 async function playAFullTrick(): Promise<void> {
   console.log('\n  -- driving a full hand --');
   const code = 'TR2K';
-  const p1 = new Client('full-a');
-  const p2 = new Client('full-b');
+  const p1 = new Client('full-a', code);
+  const p2 = new Client('full-b', code);
   await Promise.all([p1.open(), p2.open()]);
   p1.send({ t: 'hello', code, clientId: p1.clientId });
   await p1.next('seated');

@@ -1,0 +1,33 @@
+// One Worker serving the built client AND the multiplayer rooms, on one origin.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "euchre",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-01",
+
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    // Without this, SPA fallback answers `/ws` with index.html before the Worker ever runs, and
+    // every socket upgrade quietly becomes a 200 of HTML.
+    "run_worker_first": ["/ws", "/health"]
+  },
+
+  "durable_objects": {
+    "bindings": [{ "name": "ROOM", "class_name": "RoomObject" }]
+  },
+
+  // `new_sqlite_classes`, not `new_classes`: only SQLite-backed Durable Objects are available on
+  // the Workers Free plan. The key-value storage API used in room-object.ts works on both.
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RoomObject"] }],
+
+  // Unset (empty) means allow any origin — correct here, since this Worker serves its own client.
+  "vars": { "ALLOWED_ORIGINS": "" },
+
+  // 8787 so `.env.development`'s VITE_SERVER_URL keeps pointing at the right place when the
+  // client runs under Vite's HMR on :5173.
+  "dev": { "port": 8787 },
+
+  "observability": { "enabled": true }
+}

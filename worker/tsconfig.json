@@ -1,0 +1,18 @@
+{
+  // Separate from the root config on purpose: the Worker runtime is not a browser, and the
+  // root's DOM lib declares a `WebSocket`/`Response` that disagree with workerd's. Mixing them
+  // type-checks code against APIs the runtime does not have.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "lib": ["ES2022"],
+    "types": []
+  },
+  "include": ["./**/*.ts", "../worker-configuration.d.ts"]
+}
