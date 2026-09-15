@@ -1264,11 +1264,6 @@ body {
     display: block;
   }
 }
-/* The sign hangs on the painting's nail: at every width where the farm painting shows, it sits
-   exactly where the sign does and was left half-covered. It stays in the in-game room. */
-.title-scene-landing .scene-farm-painting {
-  display: none;
-}
 
 /* --- Title screen: the sign and the plates ----------------------------------------------
    The title and menu are OBJECTS in the room, not text over a darkened smudge. The old safe
@@ -1282,7 +1277,7 @@ body {
 .title-scene .title-landing {
   --u: calc(2px * var(--px));
   --ink: #1c120b;
-  gap: calc(var(--u) * 10);
+  gap: calc(var(--u) * 8);
   padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
     max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
 }
@@ -1290,7 +1285,7 @@ body {
 .title-sign {
   position: relative;
   max-width: 100%;
-  padding: calc(var(--u) * 9) calc(var(--u) * 10) calc(var(--u) * 10);
+  padding: calc(var(--u) * 8) calc(var(--u) * 8) calc(var(--u) * 9);
   /* Planks: 11 UI px of board, 1 of seam. Hard stops only — no gradient ramp in pixel art. */
   background: repeating-linear-gradient(
     to bottom,
@@ -1333,11 +1328,12 @@ body {
   align-items: center;
   gap: calc(var(--u) * 3);
   font-size: calc(16px * var(--px));
-  letter-spacing: 0.08em;
+  letter-spacing: calc(1px * var(--px));
   color: #f0e6d6;
   text-shadow: 0 var(--u) 0 var(--ink);
 }
-/* Silkscreen is drawn on an 8px grid; multiples of 8 keep its strokes whole. */
+/* Silkscreen is drawn on an 8px em: every text size on this screen is a multiple of 8 (and every
+   line-height and letter-spacing a whole pixel), or its strokes land between pixels and blur. */
 .title-sign-word {
   font-size: calc(40px * var(--px));
   color: #ffd54a;
@@ -1387,9 +1383,10 @@ body {
 
 .title-sign-tagline {
   margin: calc(var(--u) * 5) auto 0;
-  max-width: 30ch;
-  font-size: calc(6px * var(--px) + 6px);
-  line-height: 1.6;
+  /* Three lines at --px 1 (a 280px sign), two at --px 2. */
+  max-width: calc(96px * var(--px) + 144px);
+  font-size: 16px;
+  line-height: 24px;
   color: #ead9b4;
   text-shadow: 0 var(--u) 0 var(--ink);
 }
@@ -1399,18 +1396,23 @@ body {
   flex-direction: column;
   align-items: stretch;
   gap: calc(var(--u) * 5);
-  width: min(100%, 15em);
+  width: min(100%, calc(80px * var(--px) + 200px));
   font-size: calc(8px * var(--px) + 8px);
+  /* Reserves the TALLEST state's height (Continue + New Game + Play a Friend + Settings), so
+     the column is one height whichever menu is showing and the sign never moves when New Game
+     swaps in its confirmation. 3 plates + Settings + its margin + 3 gaps, in the same units. */
+  min-height: calc(62px * var(--px) + 160px);
+  justify-content: flex-start;
 }
 .title-plate {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.6em;
-  min-height: max(48px, 3em);
+  min-height: calc(8px * var(--px) + 40px);
   padding: 0 1em;
   font: inherit;
-  letter-spacing: 0.06em;
+  letter-spacing: calc(1px * var(--px));
   color: #ffd54a;
   background: #3a2a1a;
   border: 0;
@@ -1457,9 +1459,9 @@ body {
 }
 .title-plate-quiet {
   align-self: center;
-  min-height: 44px;
+  min-height: calc(4px * var(--px) + 40px);
   margin-top: calc(var(--u) * 2);
-  font-size: 0.7em;
+  font-size: 16px;
   color: #e8c877;
   background: rgba(28, 18, 11, 0.8);
   --bevel-hi: transparent;
@@ -1474,9 +1476,9 @@ body {
 }
 .title-confirm-note {
   margin: 0 0 calc(var(--u) * 2);
-  padding: 0.8em 1em;
-  font-size: 0.7em;
-  line-height: 1.6;
+  padding: 12px 16px;
+  font-size: 16px;
+  line-height: 24px;
   color: #ffe6c8;
   background: #2a1a10;
   box-shadow:
@@ -1486,12 +1488,40 @@ body {
     0 calc(var(--u) * -1) 0 #c4502a;
 }
 
-/* Narrow desktops at --px 2: the wall props are drawn at full size but the wall between them is
-   short, so the sign would hang over the clock and picture. The word steps down one Silkscreen
-   grid size first; below that there is no room left, so the prop the sign would cover goes. */
-@media (min-width: 900px) and (min-height: 700px) and (max-width: 1299px) {
+/* ONE SURFACE. The sign hangs on the plank wall between the chimney breast and the window, not
+   centred on the viewport where it straddled the brick edge and crossed the mantel. The wall's
+   edges are the scene's own au anchors — chimney right edge 296au (`left:-78 + width:374`),
+   window left edge 98au from the right (`right:-72 + width:170`) — so padding the column by
+   exactly those centres it on that wall at every width, the same way `.scene-farm-painting`
+   finds its own gap. Gated to widths where the wall is wider than the sign (measured: 280px sign
+   at --px 1, 431px at --px 2 with the stepped-down type below); narrower than that, no single
+   surface fits and it stays centred. Not in lean mode (<=480px tall): no scene to hang on. */
+@media (min-height: 481px) and (min-width: 740px) and (max-width: 899px),
+  (min-height: 481px) and (max-height: 699px) and (min-width: 740px),
+  (min-width: 1272px) and (min-height: 481px) {
+  .title-scene .title-landing {
+    padding-left: calc(296px * var(--px));
+    padding-right: calc(98px * var(--px));
+  }
+}
+/* Where that wall is only just wider than the sign (px 2, under 1440px) the type steps down one
+   Silkscreen grid size, keeping the same ratio. Still multiples of 8. */
+@media (min-width: 900px) and (min-height: 700px) and (max-width: 1439px) {
   .title-sign-word { font-size: 64px; }
   .title-sign-kicker { font-size: 24px; }
+}
+/* The farm painting hangs on that same wall, above the sign. Kept wherever both fit: the column
+   drops below the painting's bottom edge (54 + 72 = 126au) and centres in the wall left beneath
+   it. Measured: the column is 592px tall at --px 2 and starts 28px under the painting, so
+   280 + 592 + 16px bottom padding needs 888px of height. Everywhere
+   the painting would otherwise show but the two collide (short or narrow px-2 windows, where
+   the sign can't sit under it) the painting is hidden on this screen only. */
+.title-scene-landing .scene-farm-painting {
+  display: none;
+}
+@media (min-width: 1272px) and (min-height: 888px) {
+  .title-scene-landing .scene-farm-painting { display: block; }
+  .title-scene .title-landing { padding-top: calc(140px * var(--px)); }
 }
 @media (min-width: 900px) and (min-height: 700px) and (max-width: 1269px) {
   .title-scene-landing .scene-clock { display: none; }
@@ -1507,8 +1537,7 @@ body {
     flex-direction: row;
     gap: 2rem;
   }
-  .title-sign-word { font-size: 40px; }
-  .title-menu { width: min(45%, 15em); }
+  .title-menu { width: min(45%, 280px); }
 }
 
 /* --- Title screen (Phase 2e.9) ---------------------------------------------------------- */
