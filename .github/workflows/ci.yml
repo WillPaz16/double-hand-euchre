@@ -64,8 +64,8 @@ jobs:
 
   # Deploys only after EVERY check above has passed, and only for a push — a pull request runs
   # the checks and stops, so nothing reaches Cloudflare until it is merged.
-  #   main -> production Worker  `euchre`      https://euchre.willpaz16.workers.dev
-  #   dev  -> staging Worker     `euchre-dev`  https://euchre-dev.willpaz16.workers.dev
+  #   main -> production Worker  `doublehand`      https://doublehand.willpaz16.workers.dev
+  #   dev  -> staging Worker     `doublehand-dev`  https://doublehand-dev.willpaz16.workers.dev
   # The two have separate Durable Object namespaces, so dev rooms can never touch a live game.
   deploy:
     needs: checks

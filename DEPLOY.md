@@ -36,8 +36,8 @@ because a timer cannot survive the object being evicted and an alarm can.
 
 | Branch | Worker | URL | Deploys |
 |---|---|---|---|
-| `main` | `euchre` | https://euchre.willpaz16.workers.dev | on every push/merge to `main` |
-| `dev` | `euchre-dev` | https://euchre-dev.willpaz16.workers.dev | on every push to `dev` |
+| `main` | `doublehand` | https://doublehand.willpaz16.workers.dev | on every push/merge to `main` |
+| `dev` | `doublehand-dev` | https://doublehand-dev.willpaz16.workers.dev | on every push to `dev` |
 
 The two Workers have **separate Durable Object namespaces**, so a room on dev and a room on prod
 with the same code are different rooms. Testing on dev can never touch a live game.
@@ -76,7 +76,7 @@ npm run deploy
 ```
 
 `npm run deploy` builds the client (type-checking both the app and the Worker first) and runs
-`wrangler deploy`. Wrangler prints the URL — `https://euchre.<your-subdomain>.workers.dev`.
+`wrangler deploy`. Wrangler prints the URL — `https://doublehand.willpaz16.workers.dev`.
 To change the name, edit `"name"` in `wrangler.jsonc`.
 
 That is the whole setup: no volume to create, no machine count to pin, no build variables. The
@@ -85,7 +85,7 @@ client derives its WebSocket URL from its own origin.
 ## Verifying a deploy
 
 ```bash
-curl https://euchre.<your-subdomain>.workers.dev/health
+curl https://doublehand.willpaz16.workers.dev/health
 npx wrangler tail          # live logs
 ```
 
@@ -95,7 +95,7 @@ Both seats filling exercises the assets, the upgrade routing, and the Durable Ob
 The scripted equivalent runs every multiplayer check against any server:
 
 ```bash
-SERVER_URL=wss://euchre.<your-subdomain>.workers.dev npx tsx scripts/smoke-multiplayer.ts
+SERVER_URL=wss://doublehand.willpaz16.workers.dev npx tsx scripts/smoke-multiplayer.ts
 ```
 
 ## Local development
