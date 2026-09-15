@@ -2585,26 +2585,23 @@ body {
 .seat-sw { grid-area: sw; justify-self: end; }
 .seat-se { grid-area: se; justify-self: start; }
 
-/* `select` (the packet-pick screen, before either hand is looked at) is the one phase where
-   BOTH your fans sit at full 5-card width at once with nothing picked up yet — every later
-   phase moves your selected hand into the tray (`is-empty`), which clears this pair down to
-   one fan. At that width the two rotated fans measured a 42px CARD overlap at 1280x900 (the
-   `.seat-fan` BOXES had a ~20px gap even then — `justify-content: center` plus each fan's own
-   `min-width`; it's the rotated cards spilling past their own box at the outer angles, same
-   overhang `.seat-fan`'s own comment already describes, that closed it into a collision).
-   Scoped to `.is-packet-pick` (Table.tsx sets it only during `select`) rather than a blanket
-   `.table-area` gap increase, so the nw/ne opponent row and the trick row — on the same grid,
-   same gap — don't shift. */
-.seat-sw .seat-fan.is-packet-pick { margin-right: calc(16px * var(--px)); }
-.seat-se .seat-fan.is-packet-pick { margin-left: calc(16px * var(--px)); }
-/* The Old-Timer's own two packets (nw/ne) get the identical treatment for the identical
-   reason -- confirmed live (not assumed): `.is-packet-pick` was already being applied here too
-   (the class is set from `view.phase === 'select'`, which is the same for every seat), but
-   nothing consumed it for nw/ne, so his pair kept the ~20px BOX gap the sw/se comment above
-   already found insufficient -- the rotated cards' own overhang past their box edges still
-   closed it into a visible collision. Same fix, mirrored. */
-.seat-nw .seat-fan.is-packet-pick { margin-right: calc(16px * var(--px)); }
-.seat-ne .seat-fan.is-packet-pick { margin-left: calc(16px * var(--px)); }
+/* Breathing room between each pair of hands, on the INNER side only (direct user feedback: the
+   two fans "need to have space between them... for both user and opponent in all game modes").
+   A fan's cards are rotated about a pivot well below them, so the outer cards spill past the
+   fan's own layout box — about 18au at 16deg for a 25x35au back. The seat boxes themselves
+   only have the grid gap and seat padding between them, which the spill closes into a
+   collision.
+
+   This used to apply ONLY during `select` (an `.is-packet-pick` class), on the theory that it
+   was the one phase with two full fans side by side. It is not: the opponent's pair stays at
+   five cards each through every bidding round, and your remaining fan still spills toward your
+   picked-up hand's dashed outline. Measured at 1280x860 right after picking a hand: the
+   opponent's fans overlapped by 42px and yours ran 11px into the outline, while `select` itself
+   measured a clean 22px. Applying the same margin in every phase gives that 22px everywhere. */
+.seat-sw .seat-fan,
+.seat-nw .seat-fan { margin-right: calc(16px * var(--px)); }
+.seat-se .seat-fan,
+.seat-ne .seat-fan { margin-left: calc(16px * var(--px)); }
 
 /* Nothing in the game surface is text to be selected, and letting the browser select it looks
    like a bug: a click-drag across the felt paints the card images with the OS selection colour,

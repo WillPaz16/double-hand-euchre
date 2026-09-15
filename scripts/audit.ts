@@ -318,14 +318,55 @@ async function main(): Promise<void> {
           });
         }
 
+        // Each pair of hands (yours south, theirs north) must keep visible space between its two
+        // fans. Direct user feedback: they "need to have space between them... in all game
+        // modes". Measured from the cards' own rendered boxes, which include their rotation —
+        // the rotated outer cards are exactly what spills past each fan's layout box, so the
+        // boxes themselves were never the thing that collided. Sampled in THIS state on
+        // purpose: mid-bidding is where the opponent's pair overlapped by 42px while the
+        // hand-pick screen, the only phase the old margin covered, measured clean.
+        const FAN_GAP_MIN = 8;
+        // Plain loops, no inner helper functions: tsx names nested arrow functions with an
+        // injected `__name` helper that does not exist inside the page, and the evaluate throws.
+        const fanGaps = await page.evaluate(() => {
+          const out: Record<string, number | null> = {};
+          for (const [name, left, right] of [
+            ['south', '.seat-sw', '.seat-se'],
+            ['north', '.seat-nw', '.seat-ne'],
+          ] as const) {
+            let innerRight = -Infinity;
+            let innerLeft = Infinity;
+            // Zero-size boxes are cards not on screen at all — lean mode (short landscape
+            // phones) hides the fans and shows a count instead, and a hidden card measures as a
+            // 0x0 box at the origin, which would read as two fans touching.
+            for (const c of document.querySelectorAll(`${left} .seat-fan > *`)) {
+              const r = c.getBoundingClientRect();
+              if (r.width > 0) innerRight = Math.max(innerRight, r.right);
+            }
+            for (const c of document.querySelectorAll(`${right} .seat-fan > *`)) {
+              const r = c.getBoundingClientRect();
+              if (r.width > 0) innerLeft = Math.min(innerLeft, r.left);
+            }
+            out[name] =
+              innerRight === -Infinity || innerLeft === Infinity
+                ? null
+                : Math.round(innerLeft - innerRight);
+          }
+          return out;
+        });
+        const fansOk = Object.values(fanGaps).every((g) => g === null || g >= FAN_GAP_MIN);
+
         const wheelOk = wheelResult === undefined || (wheelResult as { ok: boolean }).ok;
-        const ok = (result as { ok: boolean }).ok && noScroll && wheelOk;
+        const ok = (result as { ok: boolean }).ok && noScroll && wheelOk && fansOk;
         const label = `${vp.width}x${vp.height} (${vp.label})`;
         if (ok) {
           console.log(`  OK    ${label}`);
         } else {
           failed = true;
           console.error(`  FAIL  ${label}`);
+          if (!fansOk) {
+            console.error(`  hand fans closer than ${FAN_GAP_MIN}px: ${JSON.stringify(fanGaps)}`);
+          }
           if (!wheelOk) {
             console.error('  (during upcard wheel reveal)');
             console.error(JSON.stringify(wheelResult, null, 2));

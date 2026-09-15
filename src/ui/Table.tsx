@@ -277,9 +277,7 @@ export function Table({
                 tray is where you have picked it up — and only you have a tray, so the
                 Old-Timer's hands never empty (see `isHeld`). */}
             <div
-              className={`seat-fan${held ? ' is-empty' : ''}${
-                view.phase === 'select' ? ' is-packet-pick' : ''
-              }`}
+              className={`seat-fan${held ? ' is-empty' : ''}`}
               data-count={count}
             >
               {held
