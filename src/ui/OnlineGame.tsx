@@ -13,6 +13,7 @@ import type { RoomCode } from '../../shared/net/protocol.ts';
 import { OpponentIdentityProvider } from './opponentIdentity.tsx';
 import { ChatPanel } from './ChatPanel.tsx';
 import { RulesAgreement, RulesProposal } from './RulesPrompts.tsx';
+import { CopyLinkButton } from './CopyLinkButton.tsx';
 import type { ChatMessage } from '../../shared/net/protocol.ts';
 
 /** How long a chat line stays in the speech bubble: long enough to read what was said. */
@@ -145,6 +146,9 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
             <p className="net-overlay-code">{code}</p>
             <p className="net-overlay-text">{describe(game.status, game.opponentPresent)}</p>
             {game.notice && <p className="net-overlay-notice">{game.notice}</p>}
+            {/* Only while waiting for someone to arrive — once both seats are filled there is
+                nobody left to invite. */}
+            {!game.opponentPresent && <CopyLinkButton code={code} />}
             <button className="bid-button" onClick={() => { game.leave(); onLeave(); }}>
               Leave
             </button>

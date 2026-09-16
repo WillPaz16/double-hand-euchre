@@ -4039,3 +4039,10 @@ body {
   outline: 4px solid #fff3c4;
   outline-offset: 2px;
 }
+
+/* The join link shown when the clipboard refuses. Long, and not a room code, so it wraps on any
+   character rather than pushing the overlay wider than the screen. */
+.copy-link-text {
+  overflow-wrap: anywhere;
+  color: #ffd54a;
+}
