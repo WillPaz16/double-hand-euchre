@@ -2943,6 +2943,14 @@ body {
   border-radius: 0;
   border: 1px dashed rgba(255, 213, 74, 0.35);
 }
+/* `visibility`, not `display: none` — the cards stay in the layout (the dashed outline's
+   footprint above is exactly this box) and, more importantly, they stay in the DOM as the SAME
+   elements across a pick-up. That is what lets the fan close a gap when a card is played
+   instead of being rebuilt from scratch and re-dealing itself; see the note in Table.tsx. */
+.seat-fan.is-empty .card-back,
+.seat-fan.is-empty .card-face {
+  visibility: hidden;
+}
 /* His labels sit BELOW his cards, yours above yours — both read as captions on the near side
    of the hand they name. Above, they printed straight across his chin and moustache once he
    was actually sitting there.
@@ -3054,9 +3062,24 @@ body {
   width: calc(50px * var(--px));
   height: calc(70px * var(--px));
 }
+/* The arc's angle is a variable, not a `transform`, so one transform declaration can carry
+   both it and the FLIP offset `useFlip` writes (`--flip-x`/`--flip-y`). Setting `transform`
+   directly in the per-count rules below — which is what these used to do — meant whichever of
+   the two was written last simply erased the other.
+
+   That split is also what makes the re-splay animate. A fan's angles come from
+   `[data-count='N'] :nth-child(i)`, so playing one card rewrites every remaining card's
+   rotation in a single frame; with the angle in a transition-able transform, the arc now opens
+   and closes instead of jumping between two shapes. The horizontal re-centring that happens at
+   the same moment is layout, not transform, and is `useFlip`'s half of the job. */
 .seat-fan .card-back,
 .seat-fan .card-face {
+  --rot: 0deg;
+  --flip-x: 0px;
+  --flip-y: 0px;
   transform-origin: 50% 190%;
+  transform: translate(var(--flip-x), var(--flip-y)) rotate(var(--rot));
+  transition: transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .seat-fan .card-back { margin-left: calc(-15px * var(--px)); }
 .seat-fan .card-face { margin-left: calc(-30px * var(--px)); }
@@ -3067,33 +3090,33 @@ body {
 /* Five is the maximum and the common case; the shorter fans are narrower arcs of the same
    curve so the hand never appears to change shape as it is played out. */
 .seat-fan[data-count='5'] .card-back:nth-child(1),
-.seat-fan[data-count='5'] .card-face:nth-child(1) { transform: rotate(-16deg); }
+.seat-fan[data-count='5'] .card-face:nth-child(1) { --rot: -16deg; }
 .seat-fan[data-count='5'] .card-back:nth-child(2),
-.seat-fan[data-count='5'] .card-face:nth-child(2) { transform: rotate(-8deg); }
+.seat-fan[data-count='5'] .card-face:nth-child(2) { --rot: -8deg; }
 .seat-fan[data-count='5'] .card-back:nth-child(3),
-.seat-fan[data-count='5'] .card-face:nth-child(3) { transform: rotate(0deg); }
+.seat-fan[data-count='5'] .card-face:nth-child(3) { --rot: 0deg; }
 .seat-fan[data-count='5'] .card-back:nth-child(4),
-.seat-fan[data-count='5'] .card-face:nth-child(4) { transform: rotate(8deg); }
+.seat-fan[data-count='5'] .card-face:nth-child(4) { --rot: 8deg; }
 .seat-fan[data-count='5'] .card-back:nth-child(5),
-.seat-fan[data-count='5'] .card-face:nth-child(5) { transform: rotate(16deg); }
+.seat-fan[data-count='5'] .card-face:nth-child(5) { --rot: 16deg; }
 .seat-fan[data-count='4'] .card-back:nth-child(1),
-.seat-fan[data-count='4'] .card-face:nth-child(1) { transform: rotate(-13deg); }
+.seat-fan[data-count='4'] .card-face:nth-child(1) { --rot: -13deg; }
 .seat-fan[data-count='4'] .card-back:nth-child(2),
-.seat-fan[data-count='4'] .card-face:nth-child(2) { transform: rotate(-4deg); }
+.seat-fan[data-count='4'] .card-face:nth-child(2) { --rot: -4deg; }
 .seat-fan[data-count='4'] .card-back:nth-child(3),
-.seat-fan[data-count='4'] .card-face:nth-child(3) { transform: rotate(4deg); }
+.seat-fan[data-count='4'] .card-face:nth-child(3) { --rot: 4deg; }
 .seat-fan[data-count='4'] .card-back:nth-child(4),
-.seat-fan[data-count='4'] .card-face:nth-child(4) { transform: rotate(13deg); }
+.seat-fan[data-count='4'] .card-face:nth-child(4) { --rot: 13deg; }
 .seat-fan[data-count='3'] .card-back:nth-child(1),
-.seat-fan[data-count='3'] .card-face:nth-child(1) { transform: rotate(-10deg); }
+.seat-fan[data-count='3'] .card-face:nth-child(1) { --rot: -10deg; }
 .seat-fan[data-count='3'] .card-back:nth-child(2),
-.seat-fan[data-count='3'] .card-face:nth-child(2) { transform: rotate(0deg); }
+.seat-fan[data-count='3'] .card-face:nth-child(2) { --rot: 0deg; }
 .seat-fan[data-count='3'] .card-back:nth-child(3),
-.seat-fan[data-count='3'] .card-face:nth-child(3) { transform: rotate(10deg); }
+.seat-fan[data-count='3'] .card-face:nth-child(3) { --rot: 10deg; }
 .seat-fan[data-count='2'] .card-back:nth-child(1),
-.seat-fan[data-count='2'] .card-face:nth-child(1) { transform: rotate(-6deg); }
+.seat-fan[data-count='2'] .card-face:nth-child(1) { --rot: -6deg; }
 .seat-fan[data-count='2'] .card-back:nth-child(2),
-.seat-fan[data-count='2'] .card-face:nth-child(2) { transform: rotate(6deg); }
+.seat-fan[data-count='2'] .card-face:nth-child(2) { --rot: 6deg; }
 
 /* Unlike the round-table version, all four seats are structurally the same now — two
    left/right pairs, north and south — so there is no rotated "faces the table sideways"
@@ -3118,12 +3141,31 @@ body {
    carried over from the old row layout. The seat OFFSET is no longer part of the transform at
    all: it lives in `left`/`top` as a percentage of the felt, so it survives every animation
    for free rather than having to be threaded through each keyframe. */
+/* A card is thrown from the hand that played it, so it enters from ITS OWN side of the felt:
+   the two southern seats from below, the two northern ones from above. This was a fixed
+   `+27px` for all four, meaning the Old-Timer's cards flew UP from the player's own edge of
+   the table, across the felt, to land at his seat — the exact opposite of the direction they
+   came from. The sweep already worked this way (it travels toward whoever won); the entrance
+   simply never got the same treatment.
+
+   The easing decelerates into the table and stops. The previous curve ended at 1.1 — an
+   overshoot, so every card bounced fractionally past its resting place and settled back. That
+   reads as rubber, not as a stiff card meeting a hard surface, and at four cards a trick it
+   was the single most repeated motion in the game. */
 .trick-card {
-  animation: card-play-in 260ms cubic-bezier(0.22, 0.9, 0.3, 1.1) both;
+  animation: card-play-in 260ms cubic-bezier(0.17, 0.84, 0.44, 1) both;
+}
+.trick-card.at-nw,
+.trick-card.at-ne {
+  --play-from-y: calc(-27px * var(--px));
+}
+.trick-card.at-sw,
+.trick-card.at-se {
+  --play-from-y: calc(27px * var(--px));
 }
 @keyframes card-play-in {
   from {
-    transform: translate(-50%, -50%) translateY(calc(27px * var(--px)))
+    transform: translate(-50%, -50%) translateY(var(--play-from-y, calc(27px * var(--px))))
       rotate(var(--rot)) scale(0.86);
     opacity: 0;
   }
@@ -3182,13 +3224,29 @@ body {
   to   { transform: translate(-50%, -50%) translateY(calc(-75px * var(--px))) rotate(var(--rot)) scale(0.7); opacity: 0; }
 }
 
-/* The deal: the fan builds up card by card rather than appearing all at once. Each card
-   animates to its OWN resting rotation, so the deal ends in the arc rather than snapping into
-   it — hence the per-count keyframes being avoided in favour of animating only opacity and a
-   translation, composed on top of the rotation the element already carries. */
+/* The deal: the fan builds up card by card rather than appearing all at once, each one sliding
+   in from the middle of the table — where the deck is — and opening into its own resting angle
+   as it arrives, so the arc forms rather than appears. `--deal-y` is which way "from the deck"
+   points for this seat: the two southern seats are dealt toward the player, the two northern
+   ones away.
+
+   `backwards`, not `both`. Fill-mode `both` also holds the END frame forever, which pinned
+   `transform` at the animation's final value and silently killed every transition on these
+   cards — the re-splay above and `useFlip`'s re-centring included. `backwards` keeps the only
+   part that was actually wanted (the card stays invisible through its stagger delay instead of
+   flashing at full opacity first) and hands the transform back to the stylesheet on the last
+   frame, which is the same value the keyframe ends on, so nothing jumps. */
+.seat-sw,
+.seat-se {
+  --deal-y: calc(-14px * var(--px));
+}
+.seat-nw,
+.seat-ne {
+  --deal-y: calc(14px * var(--px));
+}
 .seat-fan .card-back,
 .seat-fan .card-face {
-  animation: deal-in 300ms ease-out both;
+  animation: deal-in 300ms ease-out backwards;
 }
 .seat-fan .card-back:nth-child(1),
 .seat-fan .card-face:nth-child(1) { animation-delay: 0ms; }
@@ -3198,11 +3256,23 @@ body {
 .seat-fan .card-face:nth-child(3) { animation-delay: 110ms; }
 .seat-fan .card-back:nth-child(4),
 .seat-fan .card-face:nth-child(4) { animation-delay: 165ms; }
-.seat-fan .card-back:nth-child(5),
-.seat-fan .card-face:nth-child(5) { animation-delay: 220ms; }
+/* A seat never holds more than five (`remainingInHand` in Table.tsx caps it there), but an
+   unmatched card would fall through to `0ms` and deal FIRST rather than last — a silent
+   reordering rather than a visible bug. Anything past the fifth joins the end of the stagger. */
+.seat-fan .card-back:nth-child(n + 5),
+.seat-fan .card-face:nth-child(n + 5) { animation-delay: 220ms; }
 @keyframes deal-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+    /* Restates the full transform, including `--flip-x/y`: a keyframe that set a bare
+       `translateY` would drop the arc angle for the duration and the card would deal in flat. */
+    transform: translate(var(--flip-x), calc(var(--flip-y) + var(--deal-y, 0px)))
+      rotate(calc(var(--rot) * 0.4));
+  }
+  to {
+    opacity: 1;
+    transform: translate(var(--flip-x), var(--flip-y)) rotate(var(--rot));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -3215,6 +3285,11 @@ body {
   .trick-card.is-sweeping.is-winner.sweep-up,
   .seat-fan .card-back,
   .seat-fan .card-face { animation: none; }
+  /* `useFlip` already declines to play back a position change under this setting, but the arc
+     re-splay and the tray's hover lift are plain CSS transitions it never touches. */
+  .seat-fan .card-back,
+  .seat-fan .card-face,
+  .hand-tray-cards .card-face { transition: none; }
 }
 
 .bid-panel {
@@ -3370,19 +3445,42 @@ body {
      below for the cards that are actually clickable. */
   pointer-events: none;
 }
+/* Same variable split as the seat fans above, for the same reason: the arc angle, the FLIP
+   offset, and the hover lift are three separate things that all want the one `transform`
+   property, so each gets its own custom property and the transform composes them. Previously
+   the hover rule's `transform` simply replaced the rotation rule's, which is why hovering
+   flattened the card — that turned out to be the intended look, so `--rot: 0deg` keeps it
+   deliberately rather than by collision.
+
+   The transition now also carries re-ordering, not just the hover: play a card and the rest of
+   the hand slides over to close the gap, and the trump sort after the dealer's discard moves
+   cards past each other instead of teleporting. `useFlip` supplies the offsets. */
 .hand-tray-cards .card-face {
+  --rot: 0deg;
+  --flip-x: 0px;
+  --flip-y: 0px;
+  --lift: 0px;
   transform-origin: 50% 260%;
-  transition: transform 120ms ease-out;
+  transform: translate(var(--flip-x), calc(var(--flip-y) + var(--lift))) rotate(var(--rot));
+  transition: transform 180ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.hand-tray-cards .card-face:nth-child(1) { transform: rotate(-6deg); }
-.hand-tray-cards .card-face:nth-child(2) { transform: rotate(-3deg); }
-.hand-tray-cards .card-face:nth-child(3) { transform: rotate(0deg); }
-.hand-tray-cards .card-face:nth-child(4) { transform: rotate(3deg); }
-.hand-tray-cards .card-face:nth-child(5) { transform: rotate(6deg); }
+.hand-tray-cards .card-face:nth-child(1) { --rot: -6deg; }
+.hand-tray-cards .card-face:nth-child(2) { --rot: -3deg; }
+.hand-tray-cards .card-face:nth-child(3) { --rot: 0deg; }
+.hand-tray-cards .card-face:nth-child(4) { --rot: 3deg; }
+.hand-tray-cards .card-face:nth-child(5) { --rot: 6deg; }
+/* Six, not five. The dealer holds six for the length of `dealer_exchange` — five plus the
+   card just picked up off the kitty — and with the list stopping at five, that sixth card sat
+   bolt upright in the middle of a fanned hand for the whole of the discard. The `n + 7` guard
+   below is belt and braces: no hand is ever bigger than six, but an unmatched card would read
+   as flat rather than as anything obviously wrong. */
+.hand-tray-cards .card-face:nth-child(6) { --rot: 9deg; }
+.hand-tray-cards .card-face:nth-child(n + 7) { --rot: 9deg; }
 /* Lifting the card you are about to play out of the arc is the affordance that says "this
    one is playable as directly as the glow does. */
 .hand-tray-cards .card-face.highlighted:hover {
-  transform: translateY(-10px) rotate(0deg);
+  --lift: -10px;
+  --rot: 0deg;
 }
 /* Generated pixel-art cards — native 100x140, displayed 1:1 so pixels stay crisp (the
    "hybrid fixed-grid approach from the Phase 2 design spec). Every other size below is a

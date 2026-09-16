@@ -187,12 +187,25 @@ describe('HandTray label never prompts an action it is refusing (2i.1)', () => {
     expect(container.querySelector('.hand-tray-cards')).not.toBeNull();
   });
 
-  it('falls back to nothing when genuinely not frozen and not the human\'s turn', () => {
-    // Ordinary mid-trick "waiting on the bot" gap, not the hold — this one was never the bug
-    // and should stay exactly as it was: no reserved footprint, same as before this fix.
+  it('still reserves the bar on the ordinary mid-trick wait, not just during the hold', () => {
+    // This assertion used to be the exact opposite, on the reasoning that the ordinary
+    // "waiting on the bot" gap "was never the bug and should stay exactly as it was". That was
+    // wrong, and the reversal is deliberate rather than a test bent to fit the code — direct
+    // user feedback: "its choppy when you place a card and then the action bar, the
+    // disappearing and reappearing of the bar is hard on the eye, feels like too much is
+    // happening."
+    //
+    // The human acts on two of the four turns in the ring, so this state is reached twice per
+    // trick, every trick — far more often than either of the two cases that WERE patched. With
+    // BidPanel also empty during play, the whole fixed action bar collapsed and sprang back:
+    // measured in the browser at 182px -> 0 -> 182px for a single card played.
     const view = makeView({ phase: 'play', actingHand: { player: 'B', role: 'selected' } });
     const { container } = render(<HandTray view={view} legal={[]} play={vi.fn()} />);
-    expect(container.querySelector('.hand-tray')).toBeNull();
+    expect(container.querySelector('.hand-tray')).not.toBeNull();
+    expect(container.querySelector('.hand-tray-cards')).not.toBeNull();
+    // Says what is actually happening, rather than prompting an action it would refuse — the
+    // same rule the rest of this describe block is about.
+    expect(container.querySelector('.hand-tray-label')?.textContent).toMatch(/is playing/i);
   });
 
   // Direct user feedback: "the table glitch happens when old timer pulls cards." Same failure

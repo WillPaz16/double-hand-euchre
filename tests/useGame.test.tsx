@@ -2,7 +2,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import type { Action } from '../shared/engine/types.ts';
-import { useGame, TRICK_HOLD_MS } from '../src/game/useGame.ts';
+import { useGame, TRICK_HOLD_MS, BOT_DELAY_MAX_MS } from '../src/game/useGame.ts';
 
 /** Tests for the React timing layer — effect lifetimes, the bot's turn timer, and the
  *  freeze that holds a finished trick on the table.
@@ -45,9 +45,12 @@ const SEED = 's3';
  *  exist today, which is exactly why it cannot be tested today — worth knowing rather than
  *  assuming the suite covers both. */
 
-// Comfortably past the bot's turn delay without reaching TRICK_HOLD_MS (1300ms), so bot
-// turns can be advanced without accidentally releasing a trick hold.
-const BOT_STEP_MS = 700;
+// Comfortably past the bot's turn delay without reaching TRICK_HOLD_MS, so bot turns can be
+// advanced without accidentally releasing a trick hold. Derived from the delay's own upper
+// bound rather than hardcoded: the delay is a RANGE (it varies per move so the Old-Timer
+// doesn't move like a metronome), and a literal here would be a second, silent copy of its
+// maximum that a retune of the range would quietly invalidate.
+const BOT_STEP_MS = BOT_DELAY_MAX_MS + 50;
 
 function advance(ms: number) {
   act(() => {
