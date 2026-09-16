@@ -81,6 +81,10 @@ export class RoomObject extends DurableObject<Env> {
    *  guard rather than a bug — the platform's own limits are what actually bound abuse here. */
   private budgets = new WeakMap<WebSocket, { start: number; count: number }>();
 
+  /** The alarm time already booked, so an unchanged schedule costs no storage operation.
+   *  `undefined` means "not read yet" — this object may have been evicted since it was set. */
+  private alarmAt: number | null | undefined;
+
   /** Loads the room, creating it on first contact.
    *
    *  `code` is passed in from the Worker's URL rather than recovered from the object id, because
@@ -125,30 +129,33 @@ export class RoomObject extends DurableObject<Env> {
    *  one. `setAlarm` is the durable equivalent: it fires even if the object was evicted in the
    *  meantime, waking it and running `alarm()` below. */
   private async settle(room: Room, completedTrick: CompletedTrick | null = null): Promise<void> {
-    await this.persist(room);
-    this.broadcast(room, completedTrick);
-    await this.rearm(room);
-  }
-
-  /** Works out when this object next needs to wake, and books exactly one alarm for it.
-   *
-   *  A Durable Object gets ONE alarm slot, but there are two clocks: the pause between hands,
-   *  and the sweep of an abandoned room. So both deadlines live in storage and this picks the
-   *  earlier — the standard way to multiplex a single alarm, and the reason `alarm()` below
-   *  re-runs this after every firing rather than assuming it handled everything. */
-  private async rearm(room: Room): Promise<void> {
     const now = Date.now();
     const seated = this.ctx.getWebSockets().some((ws) => attachmentOf(ws) !== null);
-
-    const dealAt =
-      needsDealAdvance(room) && bothSeated(room) ? now + NEXT_DEAL_DELAY_MS : null;
+    const dealAt = needsDealAdvance(room) && bothSeated(room) ? now + NEXT_DEAL_DELAY_MS : null;
     const emptyAt = seated ? null : now + EMPTY_ROOM_TTL_MS;
 
-    await this.ctx.storage.put({ dealAt, emptyAt });
+    // ONE write for all three keys, not a room write followed by a timers write. Both used to
+    // happen on every move; batching them halves the storage operations a hand costs.
+    this.room = room;
+    await this.ctx.storage.put({ room, dealAt, emptyAt });
+    this.broadcast(room, completedTrick);
+    await this.rearm(dealAt, emptyAt);
+  }
 
-    const next = [dealAt, emptyAt].filter((t): t is number => t !== null).sort((a, b) => a - b)[0];
-    if (next === undefined) await this.ctx.storage.deleteAlarm();
+  /** Books the single alarm this object gets, for whichever clock comes first.
+   *
+   *  There are two: the pause between hands, and the sweep of an abandoned room. Both deadlines
+   *  are in storage and this takes the earlier — the standard way to multiplex one alarm, and why
+   *  `alarm()` re-runs the same logic after every firing rather than assuming it handled
+   *  everything. Skipped entirely when the deadline is the one already booked: during ordinary
+   *  play both clocks are null move after move, so this costs nothing per card played. */
+  private async rearm(dealAt: number | null, emptyAt: number | null): Promise<void> {
+    const next = [dealAt, emptyAt].filter((t): t is number => t !== null).sort((a, b) => a - b)[0] ?? null;
+    if (this.alarmAt === undefined) this.alarmAt = (await this.ctx.storage.getAlarm()) ?? null;
+    if (next === this.alarmAt) return;
+    if (next === null) await this.ctx.storage.deleteAlarm();
     else await this.ctx.storage.setAlarm(next);
+    this.alarmAt = next;
   }
 
   async fetch(request: Request): Promise<Response> {
@@ -359,6 +366,8 @@ export class RoomObject extends DurableObject<Env> {
    *  rather than assuming one firing settled everything, because the two deadlines are
    *  independent and only the earlier one was booked. */
   async alarm(): Promise<void> {
+    // The runtime clears the alarm before running this, so whatever was booked is gone.
+    this.alarmAt = null;
     const now = Date.now();
     const { dealAt, emptyAt } = await this.ctx.storage.get<number | null>(['dealAt', 'emptyAt'])
       .then((m) => ({ dealAt: m.get('dealAt') ?? null, emptyAt: m.get('emptyAt') ?? null }));

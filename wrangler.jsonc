@@ -18,7 +18,7 @@
     "not_found_handling": "single-page-application",
     // Without this, SPA fallback answers `/ws` with index.html before the Worker ever runs, and
     // every socket upgrade quietly becomes a 200 of HTML.
-    "run_worker_first": ["/ws", "/health"]
+    "run_worker_first": ["/ws", "/health", "/report"]
   },
 
   "durable_objects": {
@@ -31,6 +31,18 @@
 
   // Unset (empty) means allow any origin — correct here, since this Worker serves its own client.
   "vars": { "ALLOWED_ORIGINS": "" },
+
+  // Abuse guards. Anyone can open sockets at guessed room codes, and each one wakes a Durable
+  // Object and writes storage — enough of that burns the free plan's daily budget and takes the
+  // game down until it resets. Counted per Cloudflare location and eventually consistent, which is
+  // the right shape here: a blunt ceiling on floods, not an accounting system. Periods may only be
+  // 10 or 60 seconds. The socket limit is far above real play (a game opens one socket, plus a few
+  // on reconnects); the report limit is deliberately tight, since a page in a crash loop would
+  // otherwise report forever.
+  "ratelimits": [
+    { "name": "WS_LIMIT", "namespace_id": "1001", "simple": { "limit": 30, "period": 60 } },
+    { "name": "REPORT_LIMIT", "namespace_id": "1002", "simple": { "limit": 5, "period": 60 } }
+  ],
 
   // 8787 so `.env.development`'s VITE_SERVER_URL keeps pointing at the right place when the
   // client runs under Vite's HMR on :5173.

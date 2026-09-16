@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { reportError } from '../net/reportError.ts';
 
 /** The last line of defence for a render crash.
  *
@@ -17,8 +18,9 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { failed: 
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
-    // Kept in the console so a bug report can include it; there is no error service to send to.
     console.error('Double-Hand Euchre crashed while rendering:', error, info.componentStack);
+    // Also sent to the Worker's logs, so a crash nobody mentions is still visible.
+    reportError(error, 'render');
   }
 
   render(): ReactNode {
