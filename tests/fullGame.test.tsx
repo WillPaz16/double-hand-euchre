@@ -2,7 +2,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import type { Action } from '../shared/engine/types.ts';
-import { useGame, TRICK_HOLD_MS, HUMAN, BOT } from '../src/game/useGame.ts';
+import { useGame, TRICK_HOLD_MS, HUMAN, BOT, BOT_DELAY_MAX_MS } from '../src/game/useGame.ts';
 
 /** End-to-end gameplay soak for the REACT layer.
  *
@@ -17,7 +17,9 @@ import { useGame, TRICK_HOLD_MS, HUMAN, BOT } from '../src/game/useGame.ts';
  *  finish, no state may ever be un-advanceable, and the freeze must always release. */
 
 const MAX_STEPS = 6000;
-const STEP_MS = 700; // clears the bot's turn delay without reaching TRICK_HOLD_MS
+// Clears the bot's turn delay without reaching TRICK_HOLD_MS. Derived rather than hardcoded —
+// the delay is a range, not a constant, so a literal here would be a stale copy of its ceiling.
+const STEP_MS = BOT_DELAY_MAX_MS + 50;
 
 function advance(ms: number) {
   act(() => {

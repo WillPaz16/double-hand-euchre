@@ -24,15 +24,49 @@ import { loadSavedGame, saveGame } from './savedGame.ts';
 export const HUMAN: Player = 'A';
 export const BOT: Player = 'B';
 
-const BOT_DELAY_MS = 600;
-const NEXT_DEAL_DELAY_MS = 1500;
-/** How long the completed trick stays on the table before the UI drops it. Long enough to
- *  read four cards and see which won; short enough not to stall a five-trick hand.
+/** How long the Old-Timer appears to think before moving.
  *
- *  COUPLED TO `TRICK_HOLD_BEFORE_SWEEP_MS` in Table.tsx (620ms hold + 620ms sweep = 1240ms),
- *  which is why this is 1300 and not a round number. See that constant for the failure modes
- *  if the two drift apart. */
-export const TRICK_HOLD_MS = 1300;
+ *  A single fixed number was the tell that he isn't one: every card, every bid, at exactly the
+ *  same beat, is a metronome rather than a person. So the delay is drawn from a range, and
+ *  leans longer when he actually has something to weigh — a forced play (one legal card) comes
+ *  back quickly, a real choice takes a moment.
+ *
+ *  `BOT_DELAY_MAX_MS` is exported because the timing tests have to advance fake timers far
+ *  enough to guarantee he has moved. They used to hardcode 700ms against a 600ms constant —
+ *  i.e. they silently kept a copy of this delay's upper bound. */
+const BOT_DELAY_MIN_MS = 450;
+const BOT_DELAY_JITTER_MS = 250;
+/** Added when the choice is a real one rather than a forced move. */
+const BOT_DELAY_PONDER_MS = 200;
+export const BOT_DELAY_MAX_MS = BOT_DELAY_MIN_MS + BOT_DELAY_JITTER_MS + BOT_DELAY_PONDER_MS;
+
+function botDelay(legalCount: number): number {
+  const ponder = legalCount > 1 ? BOT_DELAY_PONDER_MS : 0;
+  return BOT_DELAY_MIN_MS + Math.random() * BOT_DELAY_JITTER_MS + ponder;
+}
+
+const NEXT_DEAL_DELAY_MS = 1500;
+
+/** The beats of a completed trick, in order. One source for all three, because this hook
+ *  decides how long the trick stays on screen and Table.tsx animates against the same numbers —
+ *  two halves of one piece of choreography that used to be hardcoded in both files and kept in
+ *  step by a comment in each:
+ *
+ *      pop     0 .. 500ms      the winning card swells and settles
+ *      sweep 620 .. 1240ms     every card slides off toward the winner's side
+ *      state clears at 1320ms  (TRICK_HOLD_MS)
+ *
+ *  If the hold ends before the sweep finishes, cards pop out mid-flight; if it ends much later
+ *  they sit invisible at the swept-away end state (the sweep ends at opacity 0 with fill-mode
+ *  `both`) while play stays frozen. Both were observed while tuning this, which is why the
+ *  total is derived rather than typed in. */
+export const TRICK_POP_MS = 500;
+export const TRICK_HOLD_BEFORE_SWEEP_MS = 620;
+export const TRICK_SWEEP_MS = 620;
+/** A breath of slack after the sweep lands, so the next card never starts while the last one is
+ *  still visibly leaving. */
+const TRICK_SETTLE_MS = 80;
+export const TRICK_HOLD_MS = TRICK_HOLD_BEFORE_SWEEP_MS + TRICK_SWEEP_MS + TRICK_SETTLE_MS;
 
 /** Re-exported, not redeclared: this moved to shared types once the SERVER had to produce it
  *  too (a networked client cannot rebuild a completed trick from the state it receives — see
@@ -179,7 +213,7 @@ export function useGame(initialSeed?: string) {
           if (action.type !== 'PLAY_CARD') setLastBotAction(action);
           return applyAction(s, action);
         });
-      }, BOT_DELAY_MS);
+      }, botDelay(botLegal.length));
     }
 
     return () => {

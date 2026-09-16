@@ -4,6 +4,7 @@ import { sortHandForDisplay } from '../../shared/engine/index.ts';
 import { Card } from './Card.tsx';
 import { BIDDING_PHASES } from './Table.tsx';
 import { useOpponentName } from './opponentIdentity.tsx';
+import { useFlip } from './useFlip.ts';
 
 /** The pickup motion (2e.5): a hand travels from ITS SEAT into the tray, rather than the
  *  tray just appearing — "like I'm physically picking them up." Replaces the earlier
@@ -32,6 +33,14 @@ function PickupTray({ trayKey, children }: { trayKey: string; children: React.Re
   const ref = useRef<HTMLDivElement>(null);
   const animatedFor = useRef<string | null>(null);
 
+  // Two different motions on the same element, doing two different jobs. The effect below
+  // animates the TRAY as one object, from the seat it was picked up off. This animates the
+  // cards INSIDE it relative to each other, so playing one closes the gap and the post-discard
+  // trump sort slides cards past each other instead of teleporting. They compose rather than
+  // conflict: the effect below writes `transform` on the container, `useFlip` writes
+  // `--flip-x`/`--flip-y` on the children.
+  useFlip(ref);
+
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -51,8 +60,12 @@ function PickupTray({ trayKey, children }: { trayKey: string; children: React.Re
       if (from) {
         const dx = from.left + from.width / 2 - (to.left + to.width / 2);
         const dy = from.top + from.height / 2 - (to.top + to.height / 2);
-        el.style.transform = `translate(${dx}px, ${dy}px) scale(0.4)`;
-        el.style.opacity = '0.3';
+        // Scale 0.78, not 0.4. This animation is not a one-off flourish — the acting hand
+        // alternates every turn, so it replays twice a trick, and shrinking the whole tray to
+        // 40% made each of those read as a launch rather than as picking cards up. Same
+        // distance travelled, same idea, a good deal less happening.
+        el.style.transform = `translate(${dx}px, ${dy}px) scale(0.78)`;
+        el.style.opacity = '0.5';
       } else {
         // Shouldn't happen — the acting hand's seat is always rendered — but falls back to
         // a plain fade rather than throwing if a future refactor ever breaks that invariant.
@@ -65,7 +78,11 @@ function PickupTray({ trayKey, children }: { trayKey: string; children: React.Re
       // no motion, only a jump straight to the end.
       void el.offsetHeight;
 
-      el.style.transition = 'transform 220ms cubic-bezier(0.22, 0.9, 0.3, 1.1), opacity 180ms ease-out';
+      // Decelerate and settle, with no overshoot — matching the card landing on the felt. The
+      // previous curve ended at 1.1, so the tray sprang fractionally past its resting height
+      // and came back, which is the bounce that made this read as busy.
+      el.style.transition =
+        'transform 240ms cubic-bezier(0.17, 0.84, 0.44, 1), opacity 200ms ease-out';
       el.style.transform = 'translate(0, 0) scale(1)';
       el.style.opacity = '1';
     });
@@ -152,14 +169,37 @@ export function HandTray({
   // `legalActions(state, HUMAN)` returns nothing for the whole time the bot is picking up the
   // kitty and exchanging a card — the tray vanished for that window too, same felt-expands
   // glitch, just never patched for this phase.
-  if (
-    !(cardActions.length > 0 && view.actingHand) &&
-    (frozen || view.phase === 'dealer_exchange')
-  ) {
+  // Third trigger of the same failure, and the one that fires most often — direct user
+  // feedback: "its choppy when you place a card and then the action bar, the disappearing and
+  // reappearing of the bar is hard on the eye." The two cases above were each patched as they
+  // were spotted; the ORDINARY one was never covered. During `play` the human acts on only two
+  // of the four turns in the ring (RULES.md §6), so on the Old-Timer's two turns `legal` is
+  // empty, neither guard above matches, and this falls through to `return null` at the bottom.
+  // BidPanel is also null outside the bidding phases, so the entire fixed action bar collapses
+  // — measured live at 182px -> 0 -> 182px for a single card played — and then springs back
+  // with the pickup animation replaying on top of it. Twice per trick.
+  //
+  // So the condition is now "is this a phase where a hand belongs on screen", rather than a
+  // list of the particular ways the player can end up with nothing to do. The bar is a fixture
+  // of the play screen; it should never be the thing that moves.
+  // Deliberately NOT `hand_complete`. Reserving the bar there was tried and measured: because
+  // `.action-bar` is `position: fixed`, its height costs the table no layout at all — it simply
+  // overlays the bottom of the screen, covering the south seats from y=586 down while those
+  // fans reach y=732. During play that occludes nothing, since a south seat holds 25x35 backs.
+  // At the end-of-deal reveal it would cover a 50x70 FACE card almost entirely — and after a
+  // loner, the hand that sat out still holds all five, so that reveal is the one moment the
+  // south seats have something worth reading. One collapse per hand, at a natural pause where
+  // the score and the hands are changing anyway, is the better trade than hiding it.
+  const handPhase = frozen || view.phase === 'dealer_exchange' || view.phase === 'play';
+  if (!(cardActions.length > 0 && view.actingHand) && handPhase) {
     return (
       <div className="hand-tray">
         <div className="hand-tray-label">
-          {frozen ? 'Trick complete…' : `${opponentName} is exchanging…`}
+          {frozen
+            ? 'Trick complete…'
+            : view.phase === 'dealer_exchange'
+              ? `${opponentName} is exchanging…`
+              : `${opponentName} is playing…`}
         </div>
         <div className="hand-tray-cards hand-tray-cards-placeholder" aria-hidden="true" />
       </div>

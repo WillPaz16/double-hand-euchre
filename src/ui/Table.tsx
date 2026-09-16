@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import type {
   Action,
   Card as CardType,
@@ -9,24 +10,14 @@ import { otherPlayer } from '../../shared/engine/legal.ts';
 import { useOpponentAvatar, useOpponentName } from './opponentIdentity.tsx';
 import { avatarSrc } from '../../shared/net/avatars.ts';
 import type { CompletedTrick } from '../game/useGame.ts';
+import { TRICK_HOLD_BEFORE_SWEEP_MS, TRICK_POP_MS, TRICK_SWEEP_MS } from '../game/useGame.ts';
 import { Card, CardBack } from './Card.tsx';
 import { UpcardWheel } from './UpcardWheel.tsx';
 import { useUpcardReveal } from '../game/useUpcardReveal.ts';
 import { useOpponentExpression } from '../game/useOpponentExpression.ts';
 import { useOpponentSpeech } from '../game/useOpponentSpeech.ts';
 import { trickWinnerIndex } from '../../shared/engine/rules.ts';
-
-/** The winning card is highlighted for this long before everything sweeps away.
- *
- *  COUPLED TO `TRICK_HOLD_MS` in useGame.ts — change one and you must change the other:
- *      hold/pop   0 .. 620ms      (this constant)
- *      sweep    620 .. 1240ms     (620ms CSS animation, started by this delay)
- *      state clears at 1300ms     (TRICK_HOLD_MS)
- *  If TRICK_HOLD_MS lands before the sweep finishes, cards pop out mid-flight; if it lands
- *  much later, they sit invisible at the swept-away end state (the sweep ends at opacity 0
- *  with fill-mode both) while play stays frozen. Both failure modes were observed while
- *  tuning this. */
-const TRICK_HOLD_BEFORE_SWEEP_MS = 620;
+import { useFlip } from './useFlip.ts';
 
 type Seat = 'sw' | 'se' | 'nw' | 'ne';
 
@@ -180,6 +171,33 @@ const KITTY_PHASES = new Set([
   'dealer_exchange',
 ]);
 
+/** One seat's arc of cards.
+ *
+ *  Its own component purely so it can hold a ref: `useFlip` needs one per fan, and the seats
+ *  are built in a `.map()` where a hook cannot be called. The FLIP matters here more than
+ *  anywhere else on the table, because a fan's rotations come from
+ *  `[data-count='N'] :nth-child(i)` rules in the stylesheet — so playing one card rewrites
+ *  every remaining card's rotation AND re-centres the whole flex row in the same frame. The
+ *  rotation half of that is a plain transition on `--rot`; the re-centring half has no
+ *  animatable property at all and is what `useFlip` exists to cover. */
+function SeatFan({
+  held,
+  count,
+  children,
+}: {
+  held: boolean;
+  count: number;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  useFlip(ref);
+  return (
+    <div ref={ref} className={`seat-fan${held ? ' is-empty' : ''}`} data-count={count}>
+      {children}
+    </div>
+  );
+}
+
 export function Table({
   view,
   completedTrick,
@@ -269,33 +287,40 @@ export function Table({
           >
             <div className="seat-label">{seatLabel(hand)}</div>
             <div className="seat-label-short">{shortSeatLabel(hand)}</div>
-            {/* A hand YOU have picked up has its faces in the tray below, so its seat is
+            {/* A hand YOU have picked up has its faces in the tray below, so its seat reads as
                 empty. Showing backs at the seat while the same cards sit face-up in the tray
                 drew the hand twice and let the two disagree: the seat kept five backs while
                 the tray showed four faces, because one counts what is left after this trick's
                 card and the other counts what is left now. The seat is where a hand rests; the
                 tray is where you have picked it up — and only you have a tray, so the
-                Old-Timer's hands never empty (see `isHeld`). */}
-            <div
-              className={`seat-fan${held ? ' is-empty' : ''}`}
-              data-count={count}
-            >
-              {held
-                ? null
-                : (() => {
-                    // Once a hand's contents are visible, show it face-up ON THE TABLE —
-                    // "I want the hands to be on the table" — rather than an anonymous fan of
-                    // backs. Only ever the exact cards remaining, so a hand shrinks correctly
-                    // as it's played down; visibleCards() is null for anything not currently
-                    // allowed to be seen, which keeps every information-hiding rule in
-                    // RULES.md exactly as strict as it already was.
-                    const cards = visibleCards(view, hand);
-                    if (cards) {
-                      return cards.map((card, i) => <Card key={i} card={card} />);
-                    }
-                    return Array.from({ length: count }).map((_, i) => <CardBack key={i} seat />);
-                  })()}
-            </div>
+                Old-Timer's hands never empty (see `isHeld`).
+
+                The cards are still RENDERED while held, and hidden in CSS (`.is-empty`), rather
+                than not rendered at all. Unmounting them meant your own two fans were destroyed
+                and rebuilt every single time you picked a hand up and put it down — so they
+                could never reflow, only re-enter: every card you played made the whole fan
+                replay its deal animation instead of simply closing the gap, and `useFlip` had
+                no previous position to animate from because every card was a brand new element.
+                The Old-Timer's fans, which are never held and so never remount, were the only
+                ones getting the smooth version. Hidden is visually identical to absent (nothing
+                is drawn, and `visibility` still reserves the box, which is what the dashed
+                outline's footprint already depended on), so this costs nothing and makes the
+                two sides of the table behave the same way. */}
+            <SeatFan held={held} count={count}>
+              {(() => {
+                // Once a hand's contents are visible, show it face-up ON THE TABLE —
+                // "I want the hands to be on the table" — rather than an anonymous fan of
+                // backs. Only ever the exact cards remaining, so a hand shrinks correctly
+                // as it's played down; visibleCards() is null for anything not currently
+                // allowed to be seen, which keeps every information-hiding rule in
+                // RULES.md exactly as strict as it already was.
+                const cards = visibleCards(view, hand);
+                if (cards) {
+                  return cards.map((card, i) => <Card key={i} card={card} />);
+                }
+                return Array.from({ length: count }).map((_, i) => <CardBack key={i} seat />);
+              })()}
+            </SeatFan>
             {/* The same information as the fan, as a numeral. Hidden everywhere except lean
                 mode, where four fans plus the felt plus the tray genuinely do not fit in
                 375px of height. How many cards a hand has left is real strategic
@@ -360,23 +385,46 @@ export function Table({
             {/* A played card sits on ITS OWN SEAT'S side of the centre, so the table shows who
                 played what by position. The old layout put all four in a left-to-right row
                 with a text label under each, which is strictly more to read and less to see. */}
-            {trick.map((played, i) => (
-              <div
-                key={i}
-                className={
-                  `trick-card at-${seatOf(played.handId, view.you)}` +
-                  (sweeping
-                    ? ` is-sweeping sweep-${completedTrick.winner === view.you ? 'down' : 'up'}` +
-                      (i === completedTrick.winningIndex ? ' is-winner' : '')
-                    : i === liveWinnerIndex
-                      ? ' is-leading'
-                      : '')
-                }
-                style={sweeping ? { animationDelay: `${TRICK_HOLD_BEFORE_SWEEP_MS}ms` } : undefined}
-              >
-                <Card card={played.card} />
-              </div>
-            ))}
+            {trick.map((played, i) => {
+              const won = sweeping && i === completedTrick.winningIndex;
+              return (
+                <div
+                  key={i}
+                  className={
+                    `trick-card at-${seatOf(played.handId, view.you)}` +
+                    (sweeping
+                      ? ` is-sweeping sweep-${completedTrick.winner === view.you ? 'down' : 'up'}` +
+                        (won ? ' is-winner' : '')
+                      : i === liveWinnerIndex
+                        ? ' is-leading'
+                        : '')
+                  }
+                  /* The timing lives in useGame.ts so the hold that keeps this trick on screen
+                     and the animations that play during it cannot drift apart — they used to be
+                     a constant here and a constant there, kept in step by a comment in each.
+                     A winning card carries TWO animations (the pop, then the sweep), and a
+                     single `animation-delay` value applies to every animation in the list — so
+                     the delay meant for the sweep was silently delaying the pop as well, and the
+                     "this card won" beat played on top of the sweep instead of before it. Per
+                     animation values, in the same order as the stylesheet's shorthand. */
+                  style={
+                    sweeping
+                      ? won
+                        ? {
+                            animationDelay: `0ms, ${TRICK_HOLD_BEFORE_SWEEP_MS}ms`,
+                            animationDuration: `${TRICK_POP_MS}ms, ${TRICK_SWEEP_MS}ms`,
+                          }
+                        : {
+                            animationDelay: `${TRICK_HOLD_BEFORE_SWEEP_MS}ms`,
+                            animationDuration: `${TRICK_SWEEP_MS}ms`,
+                          }
+                      : undefined
+                  }
+                >
+                  <Card card={played.card} />
+                </div>
+              );
+            })}
           </div>
 
           {/* Direct user feedback: "i think we need a dealer chip on the table to show players
