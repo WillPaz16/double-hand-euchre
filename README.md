@@ -31,8 +31,8 @@ playable hand per player, so this isn't one of them. The full spec is in [RULES.
 
 - **Solo play** against a heuristic bot with a face: expressions and speech bubbles that react to
   how the hand is going, and four characters to choose from.
-- **Online multiplayer** by four-letter room code, with reconnect-to-your-seat, typed chat that
-  pops up in your opponent's speech bubble, and a turn indicator while you wait.
+- **Online multiplayer** by four-letter room code or a share link, with reconnect-to-your-seat,
+  typed chat that pops up in your opponent's speech bubble, and a turn indicator while you wait.
 - **Rules you agree on.** If your settings differ, both players choose before the first deal.
   A mid-game rule change is a proposal the other player accepts, and it starts next hand.
 - **Installable and offline.** It's a PWA: add it to a home screen, and solo play works with no
@@ -95,7 +95,7 @@ of them pass.
 
 | Check | What it guards |
 |---|---|
-| 196 unit & component tests (Vitest) | rules, scoring, room logic, multiplayer protocol, UI behavior, crash and storage fallbacks |
+| 200+ unit & component tests (Vitest) | rules, scoring, room logic, multiplayer protocol, UI behavior, crash and storage fallbacks |
 | 10,000-deal fuzz | random legal play under random rule settings never reaches an illegal state |
 | Layout audit (Playwright) | 11 screen sizes: whole-pixel art scaling, UI/scenery collisions, edge anchoring, hand-fan spacing |
 | Art checks | two generator runs are pixel-identical, card art is unchanged, sprites have no holes |
@@ -157,6 +157,19 @@ art/            asset generators, checks, and the art spec (ASSETS.md)
 public/         generated sprites and audio
 docs/           README screenshots
 ```
+
+## Docs
+
+| File | What's in it |
+|---|---|
+| [RULES.md](RULES.md) | The complete rules, and the reference the engine is built from. Starts with a summary for people who already know euchre. |
+| [art/ASSETS.md](art/ASSETS.md) | How every sprite is drawn by code, and the rules that keep it all crisp and consistent. |
+| [DEPLOY.md](DEPLOY.md) | Environments, the deploy pipeline, and running it locally. |
+
+Reading the code? [`shared/engine/`](shared/engine) is the best place to start: it's pure
+TypeScript with no DOM and no network, so the whole game is legible without a browser.
+[`shared/net/room.ts`](shared/net/room.ts) is the multiplayer rules on top of it, and
+[`worker/room-object.ts`](worker/room-object.ts) is the server that holds one room.
 
 ## Deploying
 

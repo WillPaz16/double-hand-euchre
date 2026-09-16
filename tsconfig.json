@@ -1,4 +1,7 @@
 {
+  // The app, the shared engine, the tests and the scripts. The Cloudflare Worker compiles under
+  // its own config (worker/tsconfig.json) because the Workers runtime is not a browser: mixing the
+  // DOM types in here with workerd's would type-check that code against APIs it does not have.
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",

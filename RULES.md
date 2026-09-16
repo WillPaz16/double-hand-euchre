@@ -1,8 +1,34 @@
-# Double-Hand Euchre — Rules Spec
+# The rules of Double-Hand Euchre
 
-Canonical source of truth for the game engine. Every engine test in Phase 1 traces back to
-a line in this document. Only the last section (§8 deferred items) remains open, and it's
-additive — nothing else here is subject to change without a deliberate rules discussion.
+The complete rules of the variant, and the reference the game engine is built from: tests in
+[`tests/`](tests) cite these sections by number, and any rule argument is settled here. If you just want
+to play, [the game](https://doublehand.willpaz16.workers.dev) teaches itself; come back when you
+want the fine print.
+
+**If you already know euchre**, three things are different and everything else is standard:
+
+1. **You play two hands.** Four hands are dealt, two to each player. Every trick has four cards,
+   two of them yours. It is four-handed euchre with each player holding both seats of a
+   partnership.
+2. **You pick one hand blind.** Before anyone looks, you choose one of your two face-down hands to
+   pick up. The other stays down, and you see it only when it is that hand's turn to play, so you
+   are holding one hand and remembering the other.
+3. **Going alone has three tiers.** The usual way scores 4. Committing before you look at your hand
+   scores 6, and committing before trump is even known scores 8.
+
+**Words this document uses**
+
+| Term | Meaning |
+|---|---|
+| hand | One of the four five-card piles dealt. Each player owns two. The game labels yours "Hand 1" and "Hand 2". |
+| selected hand | The one you chose, blind, and picked up. |
+| blind hand | Your other one. It plays every trick; you see it only on its own turn. |
+| upcard | The card turned face up from the kitty, offered as trump in round 1. |
+| maker | Whoever named trump. |
+| loner | Playing a hand alone, with your other hand set aside for the deal. |
+| euchred | The makers failed to take 3 tricks, so the other side scores. |
+
+Standard euchre terms (bowers, ordering up, marches) carry their usual meanings.
 
 ## 1. Setup
 
@@ -10,10 +36,10 @@ additive — nothing else here is subject to change without a deliberate rules d
 - Two players, **A** and **B**. Each player controls two hands, seated alternately:
   `A1, B1, A2, B2`. `{A1, A2}` are partners; `{B1, B2}` are partners. Structurally this is
   4-handed euchre with one player controlling both seats of each "partnership."
-- Dealer deals 4 packets of 5 cards face-down, one in front of each seat. A 4-card kitty
+- Dealer deals 4 face-down hands of 5 cards, one in front of each seat. A 4-card kitty
   remains; the top card of the kitty is turned face-up (the **upcard**).
 - **Blind selection**: before looking at any cards, each player chooses one of their two
-  packets to be their *selected* hand. The other becomes their *blind* hand. Selection order:
+  face-down hands to be their *selected* hand. The other becomes their *blind* hand. Selection order:
   non-dealer, then dealer. Neither player has seen any cards at this point.
 
 ## 2. Loner declaration windows
@@ -28,18 +54,15 @@ window in the sequence, and once a window passes it cannot be revisited.
    hand.
 3. **Blind-hand loner window** — trump is now known (the upcard's suit), but neither player
    has looked at their own selected hand. A player may declare a blind-hand loner here: alone,
-   trump known, hand unseen. Trump is fixed to the upcard's suit — this tier does not name a
-   suit, unlike the reducer's `DECLARE_BLIND_TRUMP_LONER` predecessor which incorrectly let it.
-   **6 points** on a win.
+   trump known, hand unseen. Trump is fixed to the upcard's suit: this tier accepts the upcard's
+   suit, it does not name one. **6 points** on a win.
 4. Both players now look at their selected hand. Normal bidding begins (§3), during which a
    standard loner may be called. **4 points** on a win.
 
-**Corrected from an earlier version of this document**, which had steps 2 and 3 the other way
-around (hand seen, trump blind). That was backwards: a player who has seen the upcard but not
-their own hand has *less* freedom than one who has seen their hand but not the trump — naming
-trump blind is a real decision, while committing to alone-with-a-fixed-trump before seeing
-your cards is closer to the full-blind gamble, just with the trump suit given away for free.
-The point values (6 sits between 4 and 8) only make sense under this ordering.
+**Why this order.** An earlier draft had these two windows the other way around (hand seen, trump
+blind), which is backwards: naming trump blind is a real decision, while committing to
+alone-with-a-fixed-trump before seeing your cards is closer to the full-blind gamble with the
+trump suit handed to you. The point values (6 sitting between 4 and 8) only make sense this way.
 
 Declaration order within each window: non-dealer, then dealer. If either player declares in
 a window, bidding ends there and play proceeds to §5 with that player as the lone maker. If
@@ -151,23 +174,21 @@ Standard euchre point values:
   is euchred exactly as normal: defenders get **2 points**, regardless of tier.
 - Game to **10 points** (default; a `config.ts` constant, changeable with no logic change).
 
-## 8. Misc — defaults and deferred items
+## 8. Defaults, and room left for variants
 
-Resolved with a v1 default, low-risk, config-only if wrong:
+Settled as defaults. Each is a config value, so changing one costs no engine work:
 - [x] Misdeal conditions: **none in v1** — the blind mechanic has no exposed-card-during-deal
       case, so there's nothing to misdeal on. Revisit only if a real deal produces a dispute.
 - [x] Blind hand reveal: **revealed to both players at the end of each deal**, purely for
       table transparency/curiosity. Cosmetic — a UI flag, not an engine rule.
 - [x] Dealer alternates every deal: **standard**, clockwise from the previous dealer.
 
-Genuinely deferred — not blocking Phase 1, since they're additive/variant rules layered on
-top of the shell above, not changes to it:
-- [ ] The "few crazy rules" you mentioned — bring these whenever ready; they slot in as
-      additional config or additional action types without touching what's above.
+House variants can be layered on later as extra config or extra action types, without changing
+anything above.
 
 ---
 
-**Status**: v1. Core shell and every structurally-significant question (trick rotation,
-declaration windows, loner mechanics, scoring) are resolved. Remaining items are either
-config defaults you can flip later at zero engine cost, or explicitly-deferred variant rules
-you'll add on top. **Ready for Phase 1** (engine implementation) as-is.
+**Status**: implemented. Every rule here is live in
+[`shared/engine/`](shared/engine) and exercised by the test suite plus a 10,000-deal fuzz run. The
+two blind-loner tiers ship **off** by default — they are this variant's own addition to euchre, so
+you opt into them in Settings (or mid-game, from the next hand).
