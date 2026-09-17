@@ -181,8 +181,13 @@ async function main(): Promise<void> {
   await sleep(250);
   const moverAfter = onTurn.lastSync();
   const otherAfter = offTurn.lastSync();
+  // Named for what it now checks. It used to say "the turn passes", which described the old
+  // sequential selection: the mover's list empties because they have already chosen, not
+  // because a turn moved to anyone. The assertion itself is unchanged and still the right one —
+  // the server having nothing further to offer the mover is the observable proof their move
+  // landed, given their own view is deliberately byte-identical (see above).
   check(
-    "the rightful seat's move is applied (the turn passes)",
+    "the rightful seat's move is applied (the server stops offering it)",
     !!moverAfter && moverAfter.legal.length === 0 && !!otherAfter && otherAfter.legal.length > 0,
     `mover legal=${moverAfter?.legal.length}, other legal=${otherAfter?.legal.length}`,
   );
