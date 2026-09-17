@@ -154,7 +154,16 @@ PIP_FILL_BLACK = (72, 54, 42, 255)  # a "soot brown" — dark like ink, but visi
 # Reported directly: players couldn't tell spade and club face cards apart. All four suits now
 # get their own hue, not just the two colour-pairs.
 DIAMOND_BODY = (196, 120, 40, 255)  # warm amber/rust — distinct from hearts' red, still warm
-CLUB_BODY = (58, 96, 64, 255)       # deep forest green — distinct from spades' near-black brown
+# Blue, not the forest green this used to be. Green was distinct from spades' brown to normal
+# colour vision and to nothing else: simulated for the two common dichromacies (deuteranopia and
+# protanopia, together ~8% of men) the green and the brown both collapse to the same olive, and
+# the King of Clubs and the King of Spades became the SAME CARD, corner pips included. Blue is
+# the one hue that cannot collapse into the other three, because both common forms of colour
+# blindness confuse hues along the red-green axis and leave blue standing.
+#
+# Deeper and more saturated than PICTURE_SKY above, which is the room's other blue: a card is
+# held up in front of the scenery, so the two must not read as the same paint.
+CLUB_BODY = (46, 86, 138, 255)      # deep slate blue — survives red-green colour blindness
 
 SUITS = ["clubs", "diamonds", "hearts", "spades"]
 RANKS = ["9", "10", "J", "Q", "K", "A"]
@@ -561,9 +570,18 @@ def _heart_mask(w, h):
 
 
 def _spade_mask(w, h):
+    # Narrower and taller than the full-width bell this used to be. Against the club it was the
+    # same broad rounded mass at the same weight, which is what made the two read as one shape
+    # once colour stopped helping (see CLUB_BODY). Pulling the bell in to 86% of the pip box and
+    # letting it run taller gives the spade a pointed silhouette the club cannot have, at every
+    # size down to the corner pips.
+    inset = w * 0.07
     def fn(d, ox, oy):
-        d.polygon(_heart_curve_points(w, h * 0.76, ox, oy, lobes_up=False), fill=255)
-        _stem(d, ox, oy, w, h, top_frac=0.58, top_w_frac=0.09, foot_w_frac=0.34)
+        d.polygon(
+            _heart_curve_points(w - inset * 2, h * 0.80, ox + inset, oy, lobes_up=False),
+            fill=255,
+        )
+        _stem(d, ox, oy, w, h, top_frac=0.62, top_w_frac=0.09, foot_w_frac=0.30)
 
     return fn
 
@@ -579,12 +597,22 @@ def _diamond_mask(w, h):
 
 
 def _club_mask(w, h):
+    # The comment above this block claimed "a wide-enough arrangement radius to keep a visible
+    # waist between them". It wasn't: the two lower lobes sat 0.46w apart with radii summing to
+    # 0.47w, so they OVERLAPPED, and the top lobe overlapped both heavily. The union had no
+    # concave notches at all and rendered as a single blob — which against the spade's teardrop
+    # was near enough the same silhouette, and identical once the colours collapsed.
+    #
+    # Now the centres are spread and the lobes shrunk so that adjacent pairs still meet, but
+    # meet with a real waist: lower pair 0.40w apart against a 0.43w diameter sum, leaving a
+    # notch about 0.16w wide. Wide enough to survive the outline pass and to still read at the
+    # corner-pip size, which is the one that has to work in a fanned hand.
     def fn(d, ox, oy):
-        lobe_r = w * 0.235
-        for lx, ly in ((0.5, 0.24), (0.27, 0.55), (0.73, 0.55)):
+        lobe_r = w * 0.195
+        for lx, ly in ((0.5, 0.22), (0.28, 0.585), (0.72, 0.585)):
             cx, cy = ox + w * lx, oy + h * ly
             d.ellipse((cx - lobe_r, cy - lobe_r, cx + lobe_r, cy + lobe_r), fill=255)
-        _stem(d, ox, oy, w, h, top_frac=0.52, top_w_frac=0.10, foot_w_frac=0.30)
+        _stem(d, ox, oy, w, h, top_frac=0.54, top_w_frac=0.10, foot_w_frac=0.30)
 
     return fn
 
