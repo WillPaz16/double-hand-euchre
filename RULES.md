@@ -39,8 +39,10 @@ Standard euchre terms (bowers, ordering up, marches) carry their usual meanings.
 - Dealer deals 4 face-down hands of 5 cards, one in front of each seat. A 4-card kitty
   remains; the top card of the kitty is turned face-up (the **upcard**).
 - **Blind selection**: before looking at any cards, each player chooses one of their two
-  face-down hands to be their *selected* hand. The other becomes their *blind* hand. Selection order:
-  non-dealer, then dealer. Neither player has seen any cards at this point.
+  face-down hands to be their *selected* hand. The other becomes their *blind* hand. Both
+  players choose **at the same time** — the choice reveals nothing and neither player learns
+  anything from watching the other make it, so there is nothing to take turns over. The deal
+  moves on once both have chosen. Neither player has seen any cards at this point.
 
 ## 2. Loner declaration windows
 
@@ -153,6 +155,20 @@ hand level instead of the player level. No extra state is needed: if a hand keep
 it keeps leading (falls out naturally); the lead only passes to a player's other hand when
 that other hand itself wins a trick. Nothing about a player "choosing" which hand acts —
 the ring plus the last winner fully determines it.
+
+**Exception — when someone is playing alone.** Going alone retires the maker's blind hand, so
+a trick is three hands: one belonging to the player going alone, two to the defender. Walking
+the ring cannot alternate three hands between two people, and doing so put the defender's two
+hands back to back — meaning the defender had to commit both cards before the alone player had
+shown anything. So when a **defender** leads, the alone hand is pulled into second place:
+
+```
+defending hand (leads) → the alone hand → defending hand
+```
+
+When the **alone hand itself leads**, there is nothing to interleave — one hand cannot go
+between two others — and the defender's two hands follow in ring order. The leader is always
+still whichever hand won the previous trick; only the order of the hands behind it changes.
 
 - Standard euchre follow-suit rules apply per card played; left bower is trump.
 - **Visibility**: only the hand currently taking its turn is shown to its owner. Since both

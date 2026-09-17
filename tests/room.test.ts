@@ -115,11 +115,21 @@ describe('room authority', () => {
     const r = seated();
     const turn = onTurn(r);
     const thief = offTurn(r);
-    expect(legalActions(r.state, thief.seat)).toEqual([]); // one seat on turn at a time
+
+    // This used to lean on the off-turn seat having NO legal actions, which held only while hand
+    // selection was sequential. Selection is simultaneous now, so both seats legitimately have
+    // moves here — which makes this the sharper test rather than a weaker one: the cheat is no
+    // longer refused as a side effect of "it isn't your turn", and the only thing between one
+    // player and the other's hand is that attribution comes from the socket, never the payload.
+    expect(legalActions(r.state, thief.seat).length).toBeGreaterThan(0);
 
     const stolen = submit(r, thief.client, turn.legal[0]!);
     expect(stolen.ok).toBe(false);
     if (!stolen.ok) expect(stolen.error).toMatch(/not legal/i);
+
+    // The thief's OWN equivalent move is accepted — what was rejected above is the attribution,
+    // not the shape of the action.
+    expect(submit(r, thief.client, legalActions(r.state, thief.seat)[0]!).ok).toBe(true);
 
     // ...and the same action from the rightful seat goes through.
     expect(submit(r, turn.client, turn.legal[0]!).ok).toBe(true);

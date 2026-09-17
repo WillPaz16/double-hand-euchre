@@ -1,0 +1,18 @@
+# Double-Hand Euchre — https://doublehand.willpaz16.workers.dev
+#
+# The game is meant to be found and played, so crawling it is welcome.
+User-agent: *
+Allow: /
+
+# Room links (/?room=XXXX) are the one thing worth keeping out of an index. A room lives only
+# as long as the two people sitting in it, so a crawled link is a dead table by the time anyone
+# clicks it — and a search result advertising someone's room code is the opposite of what a
+# share link is for. Note this is a hint, not a control: it asks crawlers not to LIST the URL,
+# and it is not what keeps a room private (nothing does — see README).
+Disallow: /?room=
+
+# Not pages. The multiplayer socket only answers a WebSocket upgrade and the crash-report sink
+# only answers POST, so neither renders anything a crawler could use.
+Disallow: /ws
+Disallow: /health
+Disallow: /report

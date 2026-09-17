@@ -89,7 +89,16 @@ export function OnlineGame({ code, onLeave }: { code: RoomCode; onLeave: () => v
         </button>
 
         {game.view && <Scoreboard view={game.view} />}
-        {game.view && <StatusBanner view={game.view} onRestart={() => undefined} />}
+        {/* A real handler, not the `() => undefined` that used to sit here: the button rendered,
+            accepted the click, and did nothing. A rematch takes both players — see
+            `requestRematch` in room.ts. */}
+        {game.view && (
+          <StatusBanner
+            view={game.view}
+            onRestart={game.requestRematch}
+            rematch={game.rematch}
+          />
+        )}
         {game.view && (
           <Table
             view={game.view}

@@ -12,9 +12,13 @@ const SUIT_LABEL: Record<string, string> = {
 export function StatusBanner({
   view,
   onRestart,
+  rematch,
 }: {
   view: PlayerView;
   onRestart?: () => void;
+  /** Online only: where a "play again" stands, since there it takes both players. Omitted in
+   *  solo play, where the button restarts immediately and there is nobody to wait for. */
+  rematch?: { mine: boolean; theirs: boolean } | null;
 }) {
   const opponentName = useOpponentName();
   // This is the game's entire TEXTUAL state channel — trump called, who's making, tricks won,
@@ -32,11 +36,18 @@ export function StatusBanner({
     return (
       <div className="status-banner big" role="status" aria-live="polite">
         <div>{message}</div>
-        {onRestart && (
-          <button className="bid-button" onClick={onRestart}>
-            Play again
-          </button>
-        )}
+        {/* Online, "play again" is an offer rather than a command: it restarts a game the other
+            player is also sitting in, so it waits for them the way a rule change does. The
+            button used to be wired to a no-op online — it rendered, took the click, and did
+            nothing at all. */}
+        {onRestart &&
+          (rematch?.mine ? (
+            <div className="rematch-waiting">Waiting for {opponentName}…</div>
+          ) : (
+            <button className="bid-button" onClick={onRestart}>
+              {rematch?.theirs ? `Play again — ${opponentName} is ready` : 'Play again'}
+            </button>
+          ))}
       </div>
     );
   }
