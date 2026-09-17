@@ -445,6 +445,10 @@ def body_color(suit: str):
 # held props live in that free middle band and can reach much further out. Getting this wrong
 # (treating it as one narrow column) is what made earlier drafts look cramped.
 INDEX_MARGIN = 6
+# 6px on the finished 50x70 card. Deliberately still 12: 14 and 16 were both tried to give
+# the club more pixels to show its lobes, and the reserved-corner guardrail rejected both —
+# 16 collides with the centred pip layout on the 9, 14 with the Jack's artwork. The corner
+# box has no headroom, so small-pip legibility is bought in _club_mask's geometry instead.
 INDEX_PIP = 12
 CHAR_SAFE_X = (28, 72)
 CX = CARD_W // 2
@@ -607,9 +611,19 @@ def _club_mask(w, h):
     # meet with a real waist: lower pair 0.40w apart against a 0.43w diameter sum, leaving a
     # notch about 0.16w wide. Wide enough to survive the outline pass and to still read at the
     # corner-pip size, which is the one that has to work in a fanned hand.
+    # Size-aware, because the geometry that reads as a clover on the big centre pip does not
+    # survive the corner one. A card is drawn at 100x140 and finished at 50x70, so an INDEX_PIP
+    # of 16 is EIGHT pixels on the saved card — at that size the gaps above close to a fraction
+    # of a pixel and the lobes fuse back into the blob this is meant to fix. The small regime
+    # shrinks the lobes and pushes them further apart, buying a gap wide enough to still be a
+    # gap after halving. It costs nothing on the large pip, which keeps its own proportions.
+    small = w <= 20
+    lobe_r = w * (0.18 if small else 0.195)
+    spread = 0.24 if small else 0.28
+    top_y = 0.20 if small else 0.22
+
     def fn(d, ox, oy):
-        lobe_r = w * 0.195
-        for lx, ly in ((0.5, 0.22), (0.28, 0.585), (0.72, 0.585)):
+        for lx, ly in ((0.5, top_y), (spread, 0.585), (1 - spread, 0.585)):
             cx, cy = ox + w * lx, oy + h * ly
             d.ellipse((cx - lobe_r, cy - lobe_r, cx + lobe_r, cy + lobe_r), fill=255)
         _stem(d, ox, oy, w, h, top_frac=0.54, top_w_frac=0.10, foot_w_frac=0.30)
