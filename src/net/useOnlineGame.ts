@@ -6,6 +6,7 @@ import {
   type ClientMessage,
   type LonerRules,
   type RoomCode,
+  type RematchView,
   type RulesView,
   type ServerMessage,
 } from '../../shared/net/protocol.ts';
@@ -91,6 +92,11 @@ export interface OnlineGame {
    *  than a flag so two declines in a row still each register as new. */
   rulesDeclined: number;
   sendChat: (text: string) => void;
+  /** Where a "play again" stands. Null until the first sync. */
+  rematch: RematchView | null;
+  /** Asks to play again. Takes effect only once the other player asks too — a rematch restarts
+   *  a game they are also sitting in, so it is theirs to agree to. */
+  requestRematch: () => void;
 }
 
 /** Connects to a room and mirrors the server's authoritative state.
@@ -115,6 +121,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
   const [chat, setChat] = useState<ChatMessage[]>([]);
   const [liveChat, setLiveChat] = useState<ChatMessage | null>(null);
   const [rulesDeclined, setRulesDeclined] = useState(0);
+  const [rematch, setRematch] = useState<RematchView | null>(null);
 
   const socketRef = useRef<WebSocket | null>(null);
   /** Set only by `leave()`. Distinct from the per-connection `cancelled` flag below: this one
@@ -214,6 +221,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
           setOpponentName(msg.opponentName);
           setOpponentAvatar(msg.opponentAvatar);
           setRules(msg.rules);
+          setRematch(msg.rematch ?? null);
           if (msg.completedTrick) setCompletedTrick(msg.completedTrick);
           return;
         }
@@ -290,6 +298,7 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
 
   const play = useCallback((action: Action) => send({ t: 'action', action }), [send]);
   const voteRules = useCallback((next: LonerRules) => send({ t: 'rules_vote', rules: next }), [send]);
+  const requestRematch = useCallback(() => send({ t: 'rematch' }), [send]);
   const sendChat = useCallback((text: string) => send({ t: 'chat', text }), [send]);
 
   const leave = useCallback(() => {
@@ -316,6 +325,8 @@ export function useOnlineGame(code: RoomCode): OnlineGame {
     leave,
     rules,
     voteRules,
+    rematch,
+    requestRematch,
     chat,
     liveChat,
     rulesDeclined,

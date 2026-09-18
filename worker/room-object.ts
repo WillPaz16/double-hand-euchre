@@ -19,6 +19,8 @@ import {
   opponentPresent,
   postChat,
   rulesViewFor,
+  rematchViewFor,
+  requestRematch,
   seatOf,
   submit,
   viewFor,
@@ -204,6 +206,7 @@ export class RoomObject extends DurableObject<Env> {
     if (msg.t === 'hello') return this.hello(ws, msg);
     if (msg.t === 'chat') return this.chat(ws, msg);
     if (msg.t === 'rules_vote') return this.rulesVote(ws, msg);
+    if (msg.t === 'rematch') return this.rematch(ws);
     return this.action(ws, msg);
   }
 
@@ -310,6 +313,24 @@ export class RoomObject extends DurableObject<Env> {
     await this.settle(voted.value);
   }
 
+  /** "Play again", which takes both players — see `requestRematch`. Settles rather than merely
+   *  persists, because the second player's request deals a whole new game and both seats need
+   *  the sync that carries it. */
+  private async rematch(ws: WebSocket): Promise<void> {
+    const bound = attachmentOf(ws);
+    const room = await this.current();
+    if (!bound || !room) {
+      send(ws, { t: 'rejected', reason: 'You are not seated in this room.' });
+      return;
+    }
+    const asked = requestRematch(room, bound.clientId, freshSeed());
+    if (!asked.ok) {
+      send(ws, { t: 'rejected', reason: asked.error });
+      return;
+    }
+    await this.settle(asked.value);
+  }
+
   private async action(ws: WebSocket, msg: ClientMessage & { t: 'action' }): Promise<void> {
     const bound = attachmentOf(ws);
     if (!bound) {
@@ -408,6 +429,7 @@ function syncFor(room: Room, seat: Player, completedTrick: CompletedTrick | null
     opponentName: opponentName(room, seat),
     opponentAvatar: opponentAvatar(room, seat),
     rules: rulesViewFor(room, seat),
+    rematch: rematchViewFor(room, seat),
   };
 }
 
@@ -425,7 +447,13 @@ function parse(raw: string): ClientMessage | null {
     const msg = JSON.parse(raw) as unknown;
     if (typeof msg !== 'object' || msg === null || !('t' in msg)) return null;
     const t = (msg as { t: unknown }).t;
-    if (t === 'hello' || t === 'action' || t === 'chat' || t === 'rules_vote') {
+    if (
+      t === 'hello' ||
+      t === 'action' ||
+      t === 'chat' ||
+      t === 'rules_vote' ||
+      t === 'rematch'
+    ) {
       return msg as ClientMessage;
     }
     return null;

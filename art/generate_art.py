@@ -154,7 +154,16 @@ PIP_FILL_BLACK = (72, 54, 42, 255)  # a "soot brown" — dark like ink, but visi
 # Reported directly: players couldn't tell spade and club face cards apart. All four suits now
 # get their own hue, not just the two colour-pairs.
 DIAMOND_BODY = (196, 120, 40, 255)  # warm amber/rust — distinct from hearts' red, still warm
-CLUB_BODY = (58, 96, 64, 255)       # deep forest green — distinct from spades' near-black brown
+# Blue, not the forest green this used to be. Green was distinct from spades' brown to normal
+# colour vision and to nothing else: simulated for the two common dichromacies (deuteranopia and
+# protanopia, together ~8% of men) the green and the brown both collapse to the same olive, and
+# the King of Clubs and the King of Spades became the SAME CARD, corner pips included. Blue is
+# the one hue that cannot collapse into the other three, because both common forms of colour
+# blindness confuse hues along the red-green axis and leave blue standing.
+#
+# Deeper and more saturated than PICTURE_SKY above, which is the room's other blue: a card is
+# held up in front of the scenery, so the two must not read as the same paint.
+CLUB_BODY = (46, 86, 138, 255)      # deep slate blue — survives red-green colour blindness
 
 SUITS = ["clubs", "diamonds", "hearts", "spades"]
 RANKS = ["9", "10", "J", "Q", "K", "A"]
@@ -436,7 +445,11 @@ def body_color(suit: str):
 # held props live in that free middle band and can reach much further out. Getting this wrong
 # (treating it as one narrow column) is what made earlier drafts look cramped.
 INDEX_MARGIN = 6
-INDEX_PIP = 12
+# 6px on the finished 50x70 card. Deliberately still 12: 14 and 16 were both tried to give
+# the club more pixels to show its lobes, and the reserved-corner guardrail rejected both —
+# 16 collides with the centred pip layout on the 9, 14 with the Jack's artwork. The corner
+# box has no headroom, so small-pip legibility is bought in _club_mask's geometry instead.
+INDEX_PIP = 14
 CHAR_SAFE_X = (28, 72)
 CX = CARD_W // 2
 
@@ -561,9 +574,18 @@ def _heart_mask(w, h):
 
 
 def _spade_mask(w, h):
+    # Narrower and taller than the full-width bell this used to be. Against the club it was the
+    # same broad rounded mass at the same weight, which is what made the two read as one shape
+    # once colour stopped helping (see CLUB_BODY). Pulling the bell in to 86% of the pip box and
+    # letting it run taller gives the spade a pointed silhouette the club cannot have, at every
+    # size down to the corner pips.
+    inset = w * 0.07
     def fn(d, ox, oy):
-        d.polygon(_heart_curve_points(w, h * 0.76, ox, oy, lobes_up=False), fill=255)
-        _stem(d, ox, oy, w, h, top_frac=0.58, top_w_frac=0.09, foot_w_frac=0.34)
+        d.polygon(
+            _heart_curve_points(w - inset * 2, h * 0.80, ox + inset, oy, lobes_up=False),
+            fill=255,
+        )
+        _stem(d, ox, oy, w, h, top_frac=0.62, top_w_frac=0.09, foot_w_frac=0.30)
 
     return fn
 
@@ -579,12 +601,32 @@ def _diamond_mask(w, h):
 
 
 def _club_mask(w, h):
+    # The comment above this block claimed "a wide-enough arrangement radius to keep a visible
+    # waist between them". It wasn't: the two lower lobes sat 0.46w apart with radii summing to
+    # 0.47w, so they OVERLAPPED, and the top lobe overlapped both heavily. The union had no
+    # concave notches at all and rendered as a single blob — which against the spade's teardrop
+    # was near enough the same silhouette, and identical once the colours collapsed.
+    #
+    # Now the centres are spread and the lobes shrunk so that adjacent pairs still meet, but
+    # meet with a real waist: lower pair 0.40w apart against a 0.43w diameter sum, leaving a
+    # notch about 0.16w wide. Wide enough to survive the outline pass and to still read at the
+    # corner-pip size, which is the one that has to work in a fanned hand.
+    # Size-aware, because the geometry that reads as a clover on the big centre pip does not
+    # survive the corner one. A card is drawn at 100x140 and finished at 50x70, so an INDEX_PIP
+    # of 16 is EIGHT pixels on the saved card — at that size the gaps above close to a fraction
+    # of a pixel and the lobes fuse back into the blob this is meant to fix. The small regime
+    # shrinks the lobes and pushes them further apart, buying a gap wide enough to still be a
+    # gap after halving. It costs nothing on the large pip, which keeps its own proportions.
+    small = w <= 20
+    lobe_r = w * (0.18 if small else 0.195)
+    spread = 0.24 if small else 0.28
+    top_y = 0.20 if small else 0.22
+
     def fn(d, ox, oy):
-        lobe_r = w * 0.235
-        for lx, ly in ((0.5, 0.24), (0.27, 0.55), (0.73, 0.55)):
+        for lx, ly in ((0.5, top_y), (spread, 0.585), (1 - spread, 0.585)):
             cx, cy = ox + w * lx, oy + h * ly
             d.ellipse((cx - lobe_r, cy - lobe_r, cx + lobe_r, cy + lobe_r), fill=255)
-        _stem(d, ox, oy, w, h, top_frac=0.52, top_w_frac=0.10, foot_w_frac=0.30)
+        _stem(d, ox, oy, w, h, top_frac=0.54, top_w_frac=0.10, foot_w_frac=0.30)
 
     return fn
 
@@ -609,9 +651,31 @@ def draw_card_frame(draw: ImageDraw.ImageDraw) -> None:
     draw.rectangle((3, 3, CARD_W - 4, CARD_H - 4), outline=PARCHMENT_SHADOW)
 
 
+# `pip_sprite` pads every sprite by `outline_px + 2` on each side so an outline and a drop
+# shadow have somewhere to land. For the corner pip that padding is pure transparency, and
+# reserving it was costing the index block 4px of width it never drew in — enough that raising
+# INDEX_PIP to match the number cards' own pip size collided with the face-card artwork. Trimming
+# the dead padding back to the outline buys that space back, so the corner pip is now rendered at
+# exactly the size the 9's pips are and simply placed, rather than drawn to a smaller recipe.
+#
+# A fixed inset rather than `getbbox()`: the bounding box of the drawn shape varies by suit (a
+# club does not fill its box the way a diamond does), and `_index_boxes` has to predict this
+# width from constants alone to keep its guardrail honest.
+CORNER_PIP_PAD = 2  # pip_sprite's pad (outline_px + 2 = 3) less the 1px outline worth keeping
+CORNER_PIP_W = INDEX_PIP + 2  # the mask, plus a 1px outline on each side
+
+
+def corner_pip(suit: str) -> Image.Image:
+    pip_img, _ = pip_sprite(suit, INDEX_PIP, body_color(suit), outline_px=1, shade_depth=1)
+    return pip_img.crop(
+        (CORNER_PIP_PAD, CORNER_PIP_PAD,
+         pip_img.width - CORNER_PIP_PAD, pip_img.height - CORNER_PIP_PAD)
+    )
+
+
 def paste_corners(card: Image.Image, rank: str, suit: str) -> None:
     text, body = text_color(suit), body_color(suit)
-    pip_img, _ = pip_sprite(suit, INDEX_PIP, body, outline_px=1, shade_depth=1)
+    pip_img = corner_pip(suit)
 
     two_digit = rank == "10"
     glyph_w = 8 + 10 if two_digit else 10  # tightened kerning on "10" keeps the block narrow
@@ -824,7 +888,7 @@ def draw_face(card: Image.Image, *, brow_color, brow_angle=0, mouth="smile", eye
 def _index_boxes(rank: str):
     """The two rectangles paste_corners() reserves — kept in sync with it by deriving from the
     same constants."""
-    pip_w = INDEX_PIP + 6  # pip_sprite pads by outline_px+2 on each side
+    pip_w = CORNER_PIP_W  # what corner_pip() actually pastes, padding already trimmed
     glyph_w = 8 + 10 if rank == "10" else 10
     bw, bh = max(glyph_w, pip_w), 14 + 3 + pip_w
     return [

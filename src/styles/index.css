@@ -3302,6 +3302,17 @@ body {
      controls jump vertically between bidding and play. */
   padding: 0.5rem 0 max(0.5rem, env(safe-area-inset-bottom));
 }
+/* The other half of "Play again" online: once you have asked, the button becomes a line of
+   text saying who you are waiting on. Sized to match `.bid-button`'s own padding and type so
+   the banner does not change height at the moment it swaps — the two states are the same
+   control wearing two faces, and a jump there would read as the game doing something. */
+.rematch-waiting {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.75rem;
+  color: #d8c6a8;
+  text-align: center;
+}
+
 .bid-button {
   /* <button> does NOT inherit font-family. Without this the game's most-clicked control
      renders in the browser's default UI font — it shipped in Arial for two commits while

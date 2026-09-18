@@ -31,7 +31,10 @@ export type ClientMessage =
   | { t: 'chat'; text: string }
   /** This player's pick while the two players' rule settings disagree. The table deals once
    *  both players' picks match. Ignored once rules are locked. */
-  | { t: 'rules_vote'; rules: LonerRules };
+  | { t: 'rules_vote'; rules: LonerRules }
+  /** "Play again" once the game is over. Needs both players, like everything else at this
+   *  table — one seat cannot restart a game somebody else is sitting in. */
+  | { t: 'rematch' };
 
 export type ServerMessage =
   /** Which seat you got. Sent once per successful `hello`, including on reconnect. */
@@ -61,6 +64,11 @@ export type ServerMessage =
       /** Which rules this table plays by, and — until they are settled — what each player
        *  wants. Sent on every sync because it is part of the table, like the score. */
       rules: RulesView;
+      /** Where a "play again" stands: whether you have asked for one, and whether they have.
+       *  Part of the table's state like the score, so it rides the sync both players already
+       *  get rather than needing a message of its own — and a reconnect mid-offer therefore
+       *  restores the offer instead of losing it. */
+      rematch: RematchView;
     }
   /** One new chat line, sent to both seats as it happens. */
   | { t: 'chat'; message: ChatMessage }
@@ -106,6 +114,14 @@ export interface RulesView {
   theirVote: LonerRules | null;
   /** A change both players agreed to mid-game, applied when the next hand is dealt. */
   next: LonerRules | null;
+}
+
+/** Where a rematch offer stands, from one seat's point of view. Two booleans rather than a
+ *  single "pending" flag because the screen says something different in each case: you are
+ *  waiting on them, or they are waiting on you. */
+export interface RematchView {
+  mine: boolean;
+  theirs: boolean;
 }
 
 export interface ChatMessage {

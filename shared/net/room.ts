@@ -4,6 +4,7 @@ import {
   legalActions,
   newGame,
   nextDeal,
+  otherPlayer,
   reduce,
   redact,
   sameAction,
@@ -26,6 +27,7 @@ import {
   type ClientId,
   type LonerRules,
   type RoomCode,
+  type RematchView,
   type RulesView,
 } from './protocol.ts';
 import { DEFAULT_AVATAR, type AvatarKey } from './avatars.ts';
@@ -64,6 +66,9 @@ export interface Room {
   /** The room's conversation, newest last, capped at MAX_CHAT_HISTORY. Stored with the room so
    *  it survives reconnects and restarts along with the game it belongs to. */
   chat: ChatMessage[];
+  /** Who has asked to play again once the game is over. Cleared the moment a rematch starts,
+   *  and stored with the room so an offer survives the asker reconnecting. */
+  rematch: Record<Player, boolean>;
 }
 
 export type RoomResult<T> = { ok: true; value: T } | { ok: false; error: string };
@@ -93,6 +98,7 @@ export function createRoom(
     pendingRules: null,
     rulesLocked: false,
     chat: [],
+    rematch: { A: false, B: false },
   };
 }
 
@@ -107,6 +113,7 @@ export function normaliseRoom(room: Room): Room {
     pendingRules: room.pendingRules ?? null,
     rulesLocked: room.rulesLocked ?? true,
     chat: room.chat ?? [],
+    rematch: room.rematch ?? { A: false, B: false },
   };
 }
 
@@ -267,6 +274,40 @@ export function rulesViewFor(room: Room, seat: Player): RulesView {
     theirVote: room.votes[other],
     next: room.pendingRules,
   };
+}
+
+export function rematchViewFor(room: Room, seat: Player): RematchView {
+  const other: Player = seat === 'A' ? 'B' : 'A';
+  return { mine: room.rematch[seat], theirs: room.rematch[other] };
+}
+
+/** Asks to play again, and starts a fresh game once BOTH seats have asked.
+ *
+ *  Direct user feedback: "the play again button doesnt work in multiplayer." It never could —
+ *  `OnlineGame` passed the button a no-op handler, because a unilateral restart is exactly the
+ *  thing a two-player table cannot have: one player cannot wipe a finished game out from under
+ *  the other before they have looked at the final score. So it works the way every other shared
+ *  decision at this table works — both players ask, and the game restarts when they agree.
+ *
+ *  A fresh `newGame` rather than `nextDeal`: this is a new game to 10, so the score starts over.
+ *  The agreed rules carry across, since they are the table's, not the game's — the players
+ *  settled them once and should not have to negotiate again to play a second game. The deal
+ *  passes to the other player, the way it would if the last hand had simply continued. */
+export function requestRematch(room: Room, clientId: ClientId, seed: string): RoomResult<Room> {
+  const seat = seatOf(room, clientId);
+  if (!seat) return err('You are not seated in this room.');
+  if (room.state.phase !== 'game_over') return err('The game is not over yet.');
+
+  const rematch = { ...room.rematch, [seat]: true };
+  if (!SEATS.every((s) => rematch[s])) return ok({ ...room, rematch });
+
+  return ok({
+    ...room,
+    state: newGame(seed, otherPlayer(room.state.dealer), room.state.config),
+    rematch: { A: false, B: false },
+    votes: { A: null, B: null },
+    pendingRules: null,
+  });
 }
 
 /** Adds a chat line from a seated player. The text is cleaned here rather than trusted: it is

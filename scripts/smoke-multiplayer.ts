@@ -140,9 +140,25 @@ async function main(): Promise<void> {
   const offTurn = onTurn === a ? b : a;
   const onTurnSync = onTurn === a ? syncA : syncB;
   const offTurnSync = onTurn === a ? syncB : syncA;
+  // A deal opens in the `select` phase, where BOTH seats are offered a move: choosing which of
+  // your two face-down packets to keep reveals nothing to anybody, so there is nothing to take
+  // turns over and both players choose at once (RULES.md §1).
+  //
+  // This used to assert that exactly ONE seat had moves. That was a fact about hand selection
+  // being sequential, standing in for the property actually under test here — the cheat below,
+  // which never depended on it. Two unit tests leaned on the same assumption in the same way,
+  // and all three broke together the moment selection became simultaneous.
   check(
-    'exactly one seat is offered moves',
-    onTurnSync.legal.length > 0 && offTurnSync.legal.length === 0,
+    'both seats are offered their own opening move',
+    onTurnSync.legal.length > 0 && offTurnSync.legal.length > 0,
+  );
+  // What the old assertion was really protecting: a seat is only ever handed its OWN actions.
+  // That is the invariant the cheat below tries to break, and unlike "one seat at a time" it
+  // holds in every phase, so it cannot be invalidated by a rules change again.
+  check(
+    'each seat is offered only its own actions',
+    syncA.legal.every((x) => !('player' in x) || x.player === seatedA.seat) &&
+      syncB.legal.every((x) => !('player' in x) || x.player === seatedB.seat),
   );
 
   const move: Action | undefined = onTurnSync.legal[0];
@@ -165,8 +181,13 @@ async function main(): Promise<void> {
   await sleep(250);
   const moverAfter = onTurn.lastSync();
   const otherAfter = offTurn.lastSync();
+  // Named for what it now checks. It used to say "the turn passes", which described the old
+  // sequential selection: the mover's list empties because they have already chosen, not
+  // because a turn moved to anyone. The assertion itself is unchanged and still the right one —
+  // the server having nothing further to offer the mover is the observable proof their move
+  // landed, given their own view is deliberately byte-identical (see above).
   check(
-    "the rightful seat's move is applied (the turn passes)",
+    "the rightful seat's move is applied (the server stops offering it)",
     !!moverAfter && moverAfter.legal.length === 0 && !!otherAfter && otherAfter.legal.length > 0,
     `mover legal=${moverAfter?.legal.length}, other legal=${otherAfter?.legal.length}`,
   );
@@ -194,6 +215,20 @@ async function main(): Promise<void> {
   intruder.send({ t: 'hello', code: CODE, clientId: intruder.clientId });
   const blocked = await intruder.next('rejected');
   check('a third client is refused', /two players/i.test(blocked.reason), blocked.reason);
+
+  // "Play again" reaches the server at all. Driving a real game to 10 points over the wire to
+  // reach `game_over` would take dozens of tricks, so this checks the half that actually
+  // breaks: that a `rematch` message survives the Worker's message-type guard, runs its
+  // handler, and comes back with the room's own refusal. A dropped message type would look
+  // exactly like the bug this replaced — a button that does nothing — so silence here is the
+  // failure worth catching, and `rejected` proves the path is live.
+  returning.send({ t: 'rematch' });
+  const tooEarly = await returning.next('rejected');
+  check(
+    'a rematch request reaches the server and is refused mid-game',
+    /not over/i.test(tooEarly.reason),
+    tooEarly.reason,
+  );
 
   returning.close();
   offTurn.close();

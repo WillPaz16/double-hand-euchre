@@ -21,10 +21,22 @@ const LADDER_CONFIG = {
 };
 
 describe('select phase', () => {
-  it('non-dealer selects before dealer, then both packets are cleared', () => {
+  it('lets both players pick at once, in either order', () => {
+    // Direct user feedback: "the first action for either player is selecting a hand ... those
+    // can be made simultaneously." This used to assert the opposite — that the dealer had NO
+    // legal action until the non-dealer had chosen — which made one player watch the other pick
+    // between two face-down packets for no gain: the choice reveals nothing and tells the
+    // opponent nothing.
     const s0 = newGame('seed-1', 'B', LADDER_CONFIG);
-    expect(legalActions(s0, 'B')).toEqual([]); // dealer can't act yet
+    expect(legalActions(s0, 'B').map((a) => a.type)).toEqual(['SELECT_HAND', 'SELECT_HAND']);
     expect(legalActions(s0, 'A').map((a) => a.type)).toEqual(['SELECT_HAND', 'SELECT_HAND']);
+
+    // Whoever goes first, the other still has their own pick and the first has none left — the
+    // phase only advances once both have chosen.
+    const dealerFirst = reduce(s0, { type: 'SELECT_HAND', player: 'B', packetIndex: 0 });
+    expect(dealerFirst.phase).toBe('select');
+    expect(legalActions(dealerFirst, 'B')).toEqual([]);
+    expect(legalActions(dealerFirst, 'A')).toHaveLength(2);
 
     const s1 = selectHands(s0, { A: 1, B: 0 });
     expect(s1.phase).toBe('loner_full_blind');

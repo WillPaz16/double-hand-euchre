@@ -1,6 +1,6 @@
 import type { Action, Card, Config, GameState, HandId, Player } from './types.ts';
 import { deal } from './deck.ts';
-import { otherPlayer, legalActions, actingHand } from './legal.ts';
+import { otherPlayer, legalActions, actingHand, trickOrder, sameHand } from './legal.ts';
 import { sameAction } from './action.ts';
 import { trickWinnerIndex } from './rules.ts';
 
@@ -266,9 +266,13 @@ export function reduce(state: GameState, action: Action): GameState {
 
     case 'PLAY_CARD': {
       const ring = base.ringOrder!;
-      const actingIndex =
-        (base.currentTrickLeaderRingIndex + base.currentTrick.length) % ring.length;
-      const hand = ring[actingIndex]!;
+      // `trickOrder`, not the ring rotated by hand: under a loner the two differ (see that
+      // function's docstring). This branch recomputing the cyclic index itself is what made the
+      // ordering a single change across two files — left alone, the reducer would have removed
+      // the played card from whichever hand the OLD order said was acting, quietly emptying the
+      // wrong hand while the UI highlighted the right one.
+      const order = trickOrder(base);
+      const hand = order[base.currentTrick.length]!;
       const ph = base.players[hand.player];
       const key = hand.role === 'selected' ? 'selectedHand' : 'blindHand';
       const newHandCards = removeCard(ph[key]!, action.card);
@@ -277,10 +281,16 @@ export function reduce(state: GameState, action: Action): GameState {
 
       let next: GameState = { ...base, players, currentTrick };
 
-      if (currentTrick.length === ring.length) {
+      if (currentTrick.length === order.length) {
+        // `trickWinnerIndex` returns a position within the TRICK, so it maps through the trick
+        // order to a hand, and only then back to a ring index. Adding the offset to the leader's
+        // ring index directly (what this did) is the same thing only while the trick order is
+        // the ring rotated — which a loner's no longer is, so it would have handed the next
+        // lead to the wrong hand.
         const winnerOffset = trickWinnerIndex(currentTrick, base.trump!);
-        const winnerRingIndex = (base.currentTrickLeaderRingIndex + winnerOffset) % ring.length;
-        const winningPlayer = ring[winnerRingIndex]!.player;
+        const winningHand = order[winnerOffset]!;
+        const winnerRingIndex = ring.findIndex((h) => sameHand(h, winningHand));
+        const winningPlayer = winningHand.player;
         const tricksWon = { ...base.tricksWon, [winningPlayer]: base.tricksWon[winningPlayer] + 1 };
         const trickNumber = base.trickNumber + 1;
 
