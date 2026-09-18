@@ -22,6 +22,8 @@ const URL = process.env.SERVER_URL ?? 'ws://localhost:8787';
 const CODE = process.env.ROOM_CODE ?? makeRoomCode();
 let fullHandCode = makeRoomCode();
 while (fullHandCode === CODE) fullHandCode = makeRoomCode();
+let rematchCode = makeRoomCode();
+while (rematchCode === CODE || rematchCode === fullHandCode) rematchCode = makeRoomCode();
 
 let failures = 0;
 function check(label: string, cond: boolean, detail = ''): void {
@@ -235,6 +237,7 @@ async function main(): Promise<void> {
   intruder.close();
 
   await playAFullTrick();
+  await playToGameOverAndRematch();
 
   console.log(failures === 0 ? '\nsmoke test passed' : `\nsmoke test FAILED (${failures})`);
   process.exit(failures === 0 ? 0 : 1);
@@ -294,6 +297,112 @@ async function playAFullTrick(): Promise<void> {
       `${completed.cards.length} cards, winner ${completed.winner}`,
     );
   }
+
+  p1.close();
+  p2.close();
+}
+
+/** Plays a whole game out to a winner, then rematches.
+ *
+ *  The only path in the app that a unit test cannot reach and a person will hit within twenty
+ *  minutes of sitting down: two players finish a game and both press Play Again. `requestRematch`
+ *  has tests, and the REFUSAL half runs earlier in this file, but a rematch actually succeeding
+ *  had never run anywhere — the server owns the game state, so there is no way to fake a
+ *  finished game over a socket. The only honest way to test it is to play one.
+ *
+ *  That costs real time: first to ten points is typically eight to twelve hands, and the server
+ *  deliberately waits NEXT_DEAL_DELAY_MS between them so players can read the hand they just
+ *  finished. About a minute, most of it spent waiting on purpose. */
+async function playToGameOverAndRematch(): Promise<void> {
+  console.log('\n  -- playing a full game, then rematching --');
+  const code = rematchCode;
+  const p1 = new Client('rematch-a', code);
+  const p2 = new Client('rematch-b', code);
+  await Promise.all([p1.open(), p2.open()]);
+  p1.send({ t: 'hello', code, clientId: p1.clientId });
+  await p1.next('seated');
+  p2.send({ t: 'hello', code, clientId: p2.clientId });
+  await p2.next('seated');
+  await sleep(250);
+
+  // Bounded high enough for a long game (every trick is four actions, plus bidding each hand)
+  // but still bounded, so a rules bug that stalls play fails the run instead of hanging CI.
+  let over = false;
+  for (let step = 0; step < 1500 && !over; step++) {
+    const s1 = p1.lastSync();
+    const s2 = p2.lastSync();
+    if (s1?.view.phase === 'game_over' || s2?.view.phase === 'game_over') {
+      over = true;
+      break;
+    }
+    const actor = s1 && s1.legal.length > 0 ? p1 : s2 && s2.legal.length > 0 ? p2 : null;
+    if (!actor) {
+      await sleep(120); // between hands: the server is waiting out its next-deal delay
+      continue;
+    }
+    const sync = actor === p1 ? s1! : s2!;
+    actor.send({ t: 'action', action: sync.legal[0]! });
+    await sleep(60);
+  }
+
+  check('two clients can play a game through to a winner', over);
+  if (!over) {
+    p1.close();
+    p2.close();
+    return;
+  }
+
+  const finished = p1.lastSync()!;
+  const scoreAtEnd = finished.view.gameScore;
+  check(
+    'the finished game has a winner at the target score',
+    finished.view.winner !== null && Math.max(scoreAtEnd.A, scoreAtEnd.B) >= 10,
+    `A=${scoreAtEnd.A} B=${scoreAtEnd.B} winner=${finished.view.winner}`,
+  );
+
+  // One player asks. Nothing should restart: the other has not agreed, and until they do the
+  // final score stays on screen for them to look at.
+  p1.send({ t: 'rematch' });
+  await sleep(300);
+  const afterOne = p1.lastSync()!;
+  const otherAfterOne = p2.lastSync()!;
+  check(
+    'one player asking for a rematch does not restart the game',
+    afterOne.view.phase === 'game_over',
+    afterOne.view.phase,
+  );
+  check(
+    'both players are shown who is waiting on whom',
+    afterOne.rematch?.mine === true &&
+      afterOne.rematch?.theirs === false &&
+      otherAfterOne.rematch?.mine === false &&
+      otherAfterOne.rematch?.theirs === true,
+    `asker=${JSON.stringify(afterOne.rematch)} other=${JSON.stringify(otherAfterOne.rematch)}`,
+  );
+
+  // The other agrees, and a fresh game deals.
+  p2.send({ t: 'rematch' });
+  await sleep(400);
+  const afterBoth = p1.lastSync()!;
+  check(
+    'both asking starts a fresh game',
+    afterBoth.view.phase === 'select',
+    afterBoth.view.phase,
+  );
+  check(
+    'the rematch resets the score',
+    afterBoth.view.gameScore.A === 0 && afterBoth.view.gameScore.B === 0,
+    `A=${afterBoth.view.gameScore.A} B=${afterBoth.view.gameScore.B}`,
+  );
+  check(
+    'the new game is playable',
+    afterBoth.legal.length > 0 || p2.lastSync()!.legal.length > 0,
+  );
+  check(
+    'the spent rematch offer is cleared',
+    afterBoth.rematch?.mine === false && afterBoth.rematch?.theirs === false,
+    JSON.stringify(afterBoth.rematch),
+  );
 
   p1.close();
   p2.close();
