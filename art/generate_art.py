@@ -449,7 +449,7 @@ INDEX_MARGIN = 6
 # the club more pixels to show its lobes, and the reserved-corner guardrail rejected both —
 # 16 collides with the centred pip layout on the 9, 14 with the Jack's artwork. The corner
 # box has no headroom, so small-pip legibility is bought in _club_mask's geometry instead.
-INDEX_PIP = 12
+INDEX_PIP = 14
 CHAR_SAFE_X = (28, 72)
 CX = CARD_W // 2
 
@@ -651,9 +651,31 @@ def draw_card_frame(draw: ImageDraw.ImageDraw) -> None:
     draw.rectangle((3, 3, CARD_W - 4, CARD_H - 4), outline=PARCHMENT_SHADOW)
 
 
+# `pip_sprite` pads every sprite by `outline_px + 2` on each side so an outline and a drop
+# shadow have somewhere to land. For the corner pip that padding is pure transparency, and
+# reserving it was costing the index block 4px of width it never drew in — enough that raising
+# INDEX_PIP to match the number cards' own pip size collided with the face-card artwork. Trimming
+# the dead padding back to the outline buys that space back, so the corner pip is now rendered at
+# exactly the size the 9's pips are and simply placed, rather than drawn to a smaller recipe.
+#
+# A fixed inset rather than `getbbox()`: the bounding box of the drawn shape varies by suit (a
+# club does not fill its box the way a diamond does), and `_index_boxes` has to predict this
+# width from constants alone to keep its guardrail honest.
+CORNER_PIP_PAD = 2  # pip_sprite's pad (outline_px + 2 = 3) less the 1px outline worth keeping
+CORNER_PIP_W = INDEX_PIP + 2  # the mask, plus a 1px outline on each side
+
+
+def corner_pip(suit: str) -> Image.Image:
+    pip_img, _ = pip_sprite(suit, INDEX_PIP, body_color(suit), outline_px=1, shade_depth=1)
+    return pip_img.crop(
+        (CORNER_PIP_PAD, CORNER_PIP_PAD,
+         pip_img.width - CORNER_PIP_PAD, pip_img.height - CORNER_PIP_PAD)
+    )
+
+
 def paste_corners(card: Image.Image, rank: str, suit: str) -> None:
     text, body = text_color(suit), body_color(suit)
-    pip_img, _ = pip_sprite(suit, INDEX_PIP, body, outline_px=1, shade_depth=1)
+    pip_img = corner_pip(suit)
 
     two_digit = rank == "10"
     glyph_w = 8 + 10 if two_digit else 10  # tightened kerning on "10" keeps the block narrow
@@ -866,7 +888,7 @@ def draw_face(card: Image.Image, *, brow_color, brow_angle=0, mouth="smile", eye
 def _index_boxes(rank: str):
     """The two rectangles paste_corners() reserves — kept in sync with it by deriving from the
     same constants."""
-    pip_w = INDEX_PIP + 6  # pip_sprite pads by outline_px+2 on each side
+    pip_w = CORNER_PIP_W  # what corner_pip() actually pastes, padding already trimmed
     glyph_w = 8 + 10 if rank == "10" else 10
     bw, bh = max(glyph_w, pip_w), 14 + 3 + pip_w
     return [
