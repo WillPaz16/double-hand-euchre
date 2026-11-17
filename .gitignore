@@ -27,8 +27,21 @@ __pycache__/
 *.log
 npm-debug.log*
 .DS_Store
+Thumbs.db
+*.swp
 .vscode/
 .idea/
+
+# Tool caches and incremental build state
+.vite/
+.cache/
+*.tsbuildinfo
+
+# Backups and archives. A `git bundle` of this repo carries its whole history (including old
+# commit emails), so one dropped in the tree must never be committed.
+*.bundle
+*.zip
+*.tgz
 
 # Local AI tooling — personal to one machine (absolute paths, plugin config), not project source
 .claude/
