@@ -7,7 +7,10 @@
 
 **▶ Play it: [doublehand.willpaz16.workers.dev](https://doublehand.willpaz16.workers.dev)**, solo against a bot or online with a friend. No account, no install, works on a phone.
 
-![A trick in play: the Old-Timer across the table, his two hands face down, yours fanned below](docs/screenshots/play.png)
+![A real game: picking a hand blind, bidding, going alone, and the first tricks against the Old-Timer](docs/gameplay.gif)
+
+*A real game, recorded as it plays: pick a hand blind, bid, go alone, and play the first tricks
+across the table from the Old-Timer.*
 
 ## A new way to play euchre
 
