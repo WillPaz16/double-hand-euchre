@@ -8,7 +8,7 @@ Allow: /
 # as long as the two people sitting in it, so a crawled link is a dead table by the time anyone
 # clicks it — and a search result advertising someone's room code is the opposite of what a
 # share link is for. Note this is a hint, not a control: it asks crawlers not to LIST the URL,
-# and it is not what keeps a room private (nothing does — see README).
+# and it is not what keeps a room private (nothing does — see SECURITY.md).
 Disallow: /?room=
 
 # Not pages. The multiplayer socket only answers a WebSocket upgrade and the crash-report sink
