@@ -1,4 +1,5 @@
 import { normaliseRoomCode } from '../shared/net/protocol.ts';
+import { withSecurityHeaders } from './security-headers.ts';
 
 export { RoomObject } from './room-object.ts';
 
@@ -17,44 +18,48 @@ export { RoomObject } from './room-object.ts';
  */
 export default {
   async fetch(request, env): Promise<Response> {
-    const url = new URL(request.url);
-
-    if (url.pathname === '/health') {
-      return Response.json({ ok: true });
-    }
-
-    if (url.pathname === '/report') {
-      return report(request, env);
-    }
-
-    if (url.pathname === '/ws') {
-      if (request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') {
-        return new Response('Expected a WebSocket upgrade.', { status: 426 });
-      }
-      if (!originAllowed(request.headers.get('Origin'), env.ALLOWED_ORIGINS)) {
-        // 403 rather than a silent drop, so a misconfigured allowlist is diagnosable from the
-        // client instead of looking like the server is down.
-        return new Response('Origin not allowed.', { status: 403 });
-      }
-      // Validated HERE, before an object is ever addressed: `idFromName` would happily mint a
-      // Durable Object for any string at all, so an unchecked code is a way to create objects.
-      const code = normaliseRoomCode(url.searchParams.get('code') ?? '');
-      if (!code) return new Response('Bad room code.', { status: 400 });
-
-      // Checked AFTER the cheap rejections above and BEFORE addressing an object: waking a
-      // Durable Object is the expensive part, and the point is to stop a flood of guessed codes
-      // from doing that. Keyed per client IP.
-      if (!(await underLimit(env.WS_LIMIT, clientIp(request)))) {
-        return new Response('Too many connections. Try again in a minute.', { status: 429 });
-      }
-
-      const stub = env.ROOM.get(env.ROOM.idFromName(code));
-      return stub.fetch(request);
-    }
-
-    return env.ASSETS.fetch(request);
+    return withSecurityHeaders(await route(request, env));
   },
 } satisfies ExportedHandler<Env>;
+
+async function route(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url);
+
+  if (url.pathname === '/health') {
+    return Response.json({ ok: true });
+  }
+
+  if (url.pathname === '/report') {
+    return report(request, env);
+  }
+
+  if (url.pathname === '/ws') {
+    if (request.headers.get('Upgrade')?.toLowerCase() !== 'websocket') {
+      return new Response('Expected a WebSocket upgrade.', { status: 426 });
+    }
+    if (!originAllowed(request.headers.get('Origin'), env.ALLOWED_ORIGINS)) {
+      // 403 rather than a silent drop, so a misconfigured allowlist is diagnosable from the
+      // client instead of looking like the server is down.
+      return new Response('Origin not allowed.', { status: 403 });
+    }
+    // Validated HERE, before an object is ever addressed: `idFromName` would happily mint a
+    // Durable Object for any string at all, so an unchecked code is a way to create objects.
+    const code = normaliseRoomCode(url.searchParams.get('code') ?? '');
+    if (!code) return new Response('Bad room code.', { status: 400 });
+
+    // Checked AFTER the cheap rejections above and BEFORE addressing an object: waking a
+    // Durable Object is the expensive part, and the point is to stop a flood of guessed codes
+    // from doing that. Keyed per client IP.
+    if (!(await underLimit(env.WS_LIMIT, clientIp(request)))) {
+      return new Response('Too many connections. Try again in a minute.', { status: 429 });
+    }
+
+    const stub = env.ROOM.get(env.ROOM.idFromName(code));
+    return stub.fetch(request);
+  }
+
+  return env.ASSETS.fetch(request);
+}
 
 /** The caller's address as Cloudflare sees it. Absent only when something else is in front of the
  *  Worker; those requests share one bucket rather than escaping the limit entirely. */
