@@ -35,6 +35,9 @@ export default defineConfig({
       // disabled" (the Phase 2 done-when criterion) literally true, not aspirational.
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,wav,woff,woff2}'],
+        // The link-preview image is for crawlers that fetch it once; precaching it would add
+        // 330 KB to every install for a file the game never shows.
+        globIgnores: ['og.png'],
       },
       manifest: {
         name: 'Double-Hand Euchre',
