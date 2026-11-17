@@ -5,6 +5,12 @@ name: CI
 # added after a prop-placement bug shipped verified once, by hand, at one viewport, in 2g.4).
 # This runs the checks that already exist in the repo — nothing here is new logic, only new
 # automation around it.
+# Read-only by default. Nothing here writes to the repository: deploys authenticate to Cloudflare
+# with their own API token, not with GITHUB_TOKEN. Actions are pinned to commit SHAs, so a moved
+# tag cannot change what runs in a job that holds a deploy token; Dependabot keeps them current.
+permissions:
+  contents: read
+
 on:
   push:
     # `main` is production, `dev` is the staging Worker — both deploy (see the `deploy` job).
@@ -15,9 +21,9 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           # 22, not 20: `npm run build` runs `wrangler types` (the Worker's type check), and
           # wrangler 4 requires Node >= 22. On 20 the build step fails outright.
@@ -35,7 +41,7 @@ jobs:
       - name: Engine fuzz (10k random legal deals)
         run: npm run fuzz
 
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: '3.11'
 
@@ -96,9 +102,9 @@ jobs:
       group: deploy-${{ github.ref_name }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 22
           cache: npm

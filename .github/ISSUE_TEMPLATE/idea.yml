@@ -1,0 +1,11 @@
+name: Idea or rules question
+description: A feature, a rule tweak, or a question about RULES.md
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like to see, or what's unclear?
+      description: For a rules question, say which section of RULES.md you read.
+    validations:
+      required: true
