@@ -47,6 +47,25 @@ What changes is what you're allowed to *see*:
 The full rules are in [RULES.md](RULES.md), written *before* the code and cited by number from the
 tests. The game also teaches itself: open the rules panel from the title screen or the pause menu.
 
+### What already existed
+
+Euchre has had two-player versions since at least 1863, and some of this variant's ideas have
+relatives. The closest we found ([Wikipedia's euchre variants](https://en.wikipedia.org/wiki/Euchre_variants)
+lists them):
+
+- **Two-handed euchre with extra hands.** Each player is dealt two hands but picks up only one, and
+  may swap it for the other, sight unseen. Either way, each player plays a single hand.
+- **Two-handed euchre with a dummy.** A small dummy hand is picked up after trump is called, and
+  you build your best five cards from the eight.
+- **Blind loners** are a house rule at some tables: going alone before looking at your cards,
+  sometimes for 8 points.
+
+What we couldn't find anywhere is the combination here: four hands dealt, each player holding
+*both* seats of a partnership, one hand chosen blind and the other seen only on its own turn, and
+going alone as a ladder priced by how much you knew when you committed. If you know of an older
+version, please [open an issue](https://github.com/WillPaz16/double-hand-euchre/issues/new/choose).
+We'd love to credit it.
+
 ## Why it's a game, not a gimmick
 
 - **It reuses a game you already know.** A new variant lives or dies on whether people can sit down
