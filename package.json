@@ -43,8 +43,8 @@
     "typescript": "^7.0.2",
     "vite": "^7.3.8",
     "vite-plugin-pwa": "^2.0.0",
-    "vitest": "^5.1.0",
-    "wrangler": "^4.131.2",
+    "vitest": "^5.1.1",
+    "wrangler": "^4.166.0",
     "ws": "^8.23.0"
   },
   "dependencies": {
